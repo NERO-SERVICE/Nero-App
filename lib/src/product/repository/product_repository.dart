@@ -7,4 +7,13 @@ class ProductRepository extends GetxService {
   ProductRepository(FirebaseFirestore db) {
     products = db.collection("products");
   }
+
+  Future<String?> saveProduct(Map<String, dynamic> data) async {
+    try {
+      var docs = await products.add(data);
+      return docs.id;
+    } catch (e) {
+      return null;
+    }
+  }
 }

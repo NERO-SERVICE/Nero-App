@@ -13,7 +13,7 @@ import '../../../common/components/trade_location_map.dart';
 import '../../../common/enum/market_enum.dart';
 import '../controller/product_write_controller.dart';
 
-class ProductWritePage extends StatelessWidget {
+class ProductWritePage extends GetView<ProductWriteController> {
   const ProductWritePage({super.key});
 
   @override
@@ -34,17 +34,25 @@ class ProductWritePage extends StatelessWidget {
           size: 18,
         ),
         actions: [
-          GestureDetector(
-              onTap: () {},
-              child: const Padding(
-                padding: EdgeInsets.only(top: 20.0, right: 25),
-                child: AppFont(
-                  '완료',
-                  color: Color(0xffD0EE17),
-                  fontWeight: FontWeight.bold,
-                  size: 16,
-                ),
-              ))
+          Obx(
+            () => GestureDetector(
+                onTap: () {
+                  if (controller.isPossibleSubmit.value) {
+                    controller.submit();
+                  }
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.0, right: 25),
+                  child: AppFont(
+                    '완료',
+                    color: controller.isPossibleSubmit.value
+                        ? const Color(0xffED7738)
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    size: 16,
+                  ),
+                )),
+          )
         ],
       ),
       body: Column(

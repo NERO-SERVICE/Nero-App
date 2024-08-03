@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/app.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/common/controller/data_load_controller.dart';
+import 'package:nero_app/src/common/repository/cloud_firebase_repository.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
 import 'package:nero_app/src/product/write/controller/product_write_controller.dart';
 import 'package:nero_app/src/product/write/page/product_write_page.dart';
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
       ),
       initialBinding: BindingsBuilder(() {
         var authenticationRepository =
-        AuthenticationRepository(FirebaseAuth.instance);
+            AuthenticationRepository(FirebaseAuth.instance);
         var user_repository = UserRepository(db);
         Get.put(authenticationRepository);
         Get.put(user_repository);
@@ -67,6 +69,7 @@ class MyApp extends StatelessWidget {
           authenticationRepository,
           user_repository,
         ));
+        Get.put(CloudFirebaseRepository(FirebaseStorage.instance));
       }),
       getPages: [
         GetPage(name: '/', page: () => const App()),
@@ -75,9 +78,9 @@ class MyApp extends StatelessWidget {
           name: '/login',
           page: () => const LoginPage(),
           binding: BindingsBuilder(
-                () {
+            () {
               Get.lazyPut<LoginController>(
-                      () => LoginController(Get.find<AuthenticationRepository>()));
+                  () => LoginController(Get.find<AuthenticationRepository>()));
             },
           ),
         ),
@@ -85,23 +88,27 @@ class MyApp extends StatelessWidget {
           name: '/signup/:uid',
           page: () => const SignupPage(),
           binding: BindingsBuilder(
-                () {
+            () {
               Get.create<SignupController>(() => SignupController(
                   Get.find<UserRepository>(), Get.parameters['uid'] as String));
             },
           ),
         ),
         GetPage(
-            name: '/product/write',
-            page: () => ProductWritePage(),
-            binding: BindingsBuilder(() {
+          name: '/product/write',
+          page: () => ProductWritePage(),
+          binding: BindingsBuilder(
+            () {
               Get.put(
                 ProductWriteController(
                   Get.find<AuthenticationController>().userModel.value,
                   Get.find<ProductRepository>(),
+                  Get.find<CloudFirebaseRepository>(),
                 ),
               );
-            }))
+            },
+          ),
+        ),
       ],
     );
   }
