@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/product_cateogry_selector.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../../common/components/app_font.dart';
@@ -18,7 +19,7 @@ class ProductWritePage extends GetView<ProductWriteController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: Get.back,

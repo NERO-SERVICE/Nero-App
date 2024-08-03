@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/controller/common_layout_controller.dart';
 import 'package:nero_app/src/common/repository/cloud_firebase_repository.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -40,9 +41,11 @@ class ProductWriteController extends GetxController {
   }
 
   submit() async {
+    CommonLayoutController.to.loading(true); // 로딩 시작
     var downloadUrls = await uploadImages(selectedImages);
     product(product.value.copyWith(imageUrls: downloadUrls));
     var saveId = _productRepository.saveProduct(product.value.toMap());
+    CommonLayoutController.to.loading(false); // 로딩 종료
 
     if (saveId != null) {
       await showDialog(

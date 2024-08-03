@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/src/app.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
+import 'package:nero_app/src/common/controller/common_layout_controller.dart';
 import 'package:nero_app/src/common/controller/data_load_controller.dart';
 import 'package:nero_app/src/common/repository/cloud_firebase_repository.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         Get.put(ProductRepository(db));
         Get.put(BottomNavController());
         Get.put(UserRepository(db));
+        Get.put(CommonLayoutController());
         Get.put(SplashController());
         Get.put(DataLoadController());
         Get.put(AuthenticationController(

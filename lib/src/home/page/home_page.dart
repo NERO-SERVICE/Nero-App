@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 
 import '../../common/components/app_font.dart';
 
@@ -9,7 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       appBar: AppBar(
         leadingWidth: Get.width * 0.6,
         leading: Padding(
