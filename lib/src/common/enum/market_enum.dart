@@ -30,3 +30,14 @@ enum ProductCategoryType {
   }
 
 }
+
+enum ProductStatusType{
+  sale('sale', '판매 중'),
+  reservation('reservation', '에약 중'),
+  soldOut('soldOut', '판매 완료'),
+  cancel('cancel', '취소');
+
+  const ProductStatusType(this.value, this.name);
+  final String value;
+  final String name;
+}

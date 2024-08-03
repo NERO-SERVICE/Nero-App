@@ -43,8 +43,13 @@ class ProductWriteController extends GetxController {
   submit() async {
     CommonLayoutController.to.loading(true); // 로딩 시작
     var downloadUrls = await uploadImages(selectedImages);
-    product(product.value.copyWith(imageUrls: downloadUrls));
-    var saveId = _productRepository.saveProduct(product.value.toMap());
+    product(product.value.copyWith(
+      owner: owner,
+      imageUrls: downloadUrls,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    ));
+    var saveId = await _productRepository.saveProduct(product.value.toMap());
     CommonLayoutController.to.loading(false); // 로딩 종료
 
     if (saveId != null) {

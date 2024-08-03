@@ -17,6 +17,13 @@ import '../controller/product_write_controller.dart';
 class ProductWritePage extends GetView<ProductWriteController> {
   const ProductWritePage({super.key});
 
+  // 구분선
+  Widget get _divider => const Divider(
+    color: Color(0xff3C3C3E),
+    indent: 25,
+    endIndent: 25,
+  );
+
   @override
   Widget build(BuildContext context) {
     return CommonLayout(
@@ -118,13 +125,6 @@ class ProductWritePage extends GetView<ProductWriteController> {
     );
   }
 }
-
-// 구분선
-Widget get _divider => const Divider(
-      color: Color(0xff3C3C3E),
-      indent: 25,
-      endIndent: 25,
-    );
 
 // 거래 희망 장소
 class _HopeTradeLocationMap extends GetView<ProductWriteController> {
