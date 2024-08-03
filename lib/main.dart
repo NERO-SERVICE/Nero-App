@@ -10,6 +10,7 @@ import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/common/controller/common_layout_controller.dart';
 import 'package:nero_app/src/common/controller/data_load_controller.dart';
 import 'package:nero_app/src/common/repository/cloud_firebase_repository.dart';
+import 'package:nero_app/src/home/controller/home_controller.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
 import 'package:nero_app/src/product/write/controller/product_write_controller.dart';
 import 'package:nero_app/src/product/write/page/product_write_page.dart';
@@ -75,7 +76,15 @@ class MyApp extends StatelessWidget {
       }),
       getPages: [
         GetPage(name: '/', page: () => const App()),
-        GetPage(name: '/home', page: () => const Root()),
+        GetPage(
+          name: '/home',
+          page: () => const Root(),
+          binding: BindingsBuilder(
+            () {
+              Get.put(HomeController(Get.find<ProductRepository>()));
+            },
+          ),
+        ),
         GetPage(
           name: '/login',
           page: () => const LoginPage(),
