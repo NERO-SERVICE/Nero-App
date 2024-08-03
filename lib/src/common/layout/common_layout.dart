@@ -10,7 +10,6 @@ class CommonLayout extends GetView<CommonLayoutController> {
   final Widget? bottomNavBar;
   final Widget? floatingActionButton;
   final bool useSafeArea;
-
   const CommonLayout({
     super.key,
     required this.body,
@@ -24,7 +23,7 @@ class CommonLayout extends GetView<CommonLayoutController> {
   Widget build(BuildContext context) {
     return Material(
       child: Obx(
-        () => Stack(
+            () => Stack(
           fit: StackFit.expand,
           children: [
             Scaffold(

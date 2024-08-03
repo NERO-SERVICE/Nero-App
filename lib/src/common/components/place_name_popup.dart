@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/btn.dart';
 
@@ -42,7 +40,8 @@ class _PlaceNamePopupState extends State<PlaceNamePopup> {
                 child: Container(
                   color: const Color(0xff212123),
                   height: 230,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -58,14 +57,19 @@ class _PlaceNamePopupState extends State<PlaceNamePopup> {
                         style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           hintText: '예) 강남역 1번 출구',
-                          hintStyle: TextStyle(color: Color.fromARGB(255, 995, 95, 95)),
+                          hintStyle: TextStyle(
+                              color: Color.fromARGB(255, 995, 95, 95)),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1.0),
                           ),
                         ),
                         onChanged: (value) {
@@ -83,8 +87,7 @@ class _PlaceNamePopupState extends State<PlaceNamePopup> {
                           disabled: !possible,
                           onTap: () {
                             Get.back(result: controller.text);
-                          }
-                      ),
+                          }),
                     ],
                   ),
                 ),

@@ -64,7 +64,6 @@ class MyApp extends StatelessWidget {
         Get.put(user_repository);
         Get.put(ProductRepository(db));
         Get.put(BottomNavController());
-        Get.put(UserRepository(db));
         Get.put(CommonLayoutController());
         Get.put(SplashController());
         Get.put(DataLoadController());
@@ -77,14 +76,11 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => const App()),
         GetPage(
-          name: '/home',
-          page: () => const Root(),
-          binding: BindingsBuilder(
-            () {
+            name: '/home',
+            page: () => const Root(),
+            binding: BindingsBuilder(() {
               Get.put(HomeController(Get.find<ProductRepository>()));
-            },
-          ),
-        ),
+            })),
         GetPage(
           name: '/login',
           page: () => const LoginPage(),
@@ -109,14 +105,12 @@ class MyApp extends StatelessWidget {
           name: '/product/write',
           page: () => ProductWritePage(),
           binding: BindingsBuilder(
-            () {
-              Get.put(
-                ProductWriteController(
-                  Get.find<AuthenticationController>().userModel.value,
-                  Get.find<ProductRepository>(),
-                  Get.find<CloudFirebaseRepository>(),
-                ),
-              );
+                () {
+              Get.put(ProductWriteController(
+                Get.find<AuthenticationController>().userModel.value,
+                Get.find<ProductRepository>(),
+                Get.find<CloudFirebaseRepository>(),
+              ));
             },
           ),
         ),

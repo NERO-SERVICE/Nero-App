@@ -11,7 +11,6 @@ class AuthenticationController extends GetxController {
 
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
-  RxBool isLogined = false.obs;
   Rx<AuthenticationStatus> status = AuthenticationStatus.init.obs;
   Rx<UserModel> userModel = const UserModel().obs;
 
@@ -19,6 +18,10 @@ class AuthenticationController extends GetxController {
     _authenticationRepository.user.listen((user) {
       _userStateChangedEvent(user);
     });
+  }
+
+  void reload() {
+    _userStateChangedEvent(userModel.value);
   }
 
   void _userStateChangedEvent(UserModel? user) async {

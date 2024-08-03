@@ -6,7 +6,6 @@ class GetxListener<T> extends StatefulWidget {
   final Widget child;
   final Function(T) listen;
   final Function()? initCall;
-
   const GetxListener({
     super.key,
     this.initCall,
@@ -18,11 +17,11 @@ class GetxListener<T> extends StatefulWidget {
   @override
   State<GetxListener> createState() {
     stream.listen(listen);
-    return _GetListenerState();
+    return _GetxListenerState();
   }
 }
 
-class _GetListenerState extends State<GetxListener> {
+class _GetxListenerState extends State<GetxListener> {
   @override
   void initState() {
     super.initState();

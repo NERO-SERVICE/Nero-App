@@ -18,19 +18,21 @@ class ProductWriteController extends GetxController {
   final CloudFirebaseRepository _cloudFirebaseRepository;
   RxBool isPossibleSubmit = false.obs;
   RxList<AssetEntity> selectedImages = <AssetEntity>[].obs;
-
   ProductWriteController(
-      this.owner, this._productRepository, this._cloudFirebaseRepository);
+      this.owner,
+      this._productRepository,
+      this._cloudFirebaseRepository,
+      );
 
   @override
   void onInit() {
     super.onInit();
     product.stream.listen((event) {
-      _isValidSumbmitPossible();
+      _isValidSubmitPossible();
     });
   }
 
-  _isValidSumbmitPossible() {
+  _isValidSubmitPossible() {
     if (selectedImages.isNotEmpty &&
         (product.value.productPrice ?? 0) >= 0 &&
         product.value.title != '') {
@@ -40,8 +42,64 @@ class ProductWriteController extends GetxController {
     }
   }
 
+  changeSelectedImages(List<AssetEntity>? images) {
+    selectedImages(images);
+  }
+
+  deleteImage(int index) {
+    selectedImages.removeAt(index);
+  }
+
+  changeTitle(String value) {
+    product(product.value.copyWith(title: value));
+  }
+
+  changeCategoryType(ProductCategoryType? type) {
+    product(product.value.copyWith(categoryType: type));
+  }
+
+  changePrice(String price) {
+    if (!RegExp(r'^[0-9]+$').hasMatch(price)) return;
+    product(product.value.copyWith(
+        productPrice: int.parse(price), isFree: int.parse(price) == 0));
+  }
+
+  changeIsFreeProduct() {
+    product(product.value.copyWith(isFree: !(product.value.isFree ?? false)));
+    if (product.value.isFree!) {
+      changePrice('0');
+    }
+  }
+
+  changeDescription(String value) {
+    product(product.value.copyWith(description: value));
+  }
+
+  changeTradeLocationMap(Map<String, dynamic> mapInfo) {
+    product(product.value.copyWith(
+        wantTradeLocationLabel: mapInfo['label'],
+        wantTradeLocation: mapInfo['location']));
+  }
+
+  clearWantTradeLocation() {
+    product(product.value
+        .copyWith(wantTradeLocationLabel: '', wantTradeLocation: null));
+  }
+
+  Future<List<String>> uploadImages(List<AssetEntity> images) async {
+    List<String> imageUrls = [];
+    for (var image in images) {
+      var file = await image.file;
+      if (file == null) return [];
+      var downloadUrl =
+      await _cloudFirebaseRepository.uploadFile(owner.uid!, file);
+      imageUrls.add(downloadUrl);
+    }
+    return imageUrls;
+  }
+
   submit() async {
-    CommonLayoutController.to.loading(true); // 로딩 시작
+    CommonLayoutController.to.loading(true);
     var downloadUrls = await uploadImages(selectedImages);
     product(product.value.copyWith(
       owner: owner,
@@ -49,10 +107,9 @@ class ProductWriteController extends GetxController {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     ));
-    var saveId = await _productRepository.saveProduct(product.value.toMap());
-    CommonLayoutController.to.loading(false); // 로딩 종료
-
-    if (saveId != null) {
+    var savedId = await _productRepository.saveProduct(product.value.toMap());
+    CommonLayoutController.to.loading(false);
+    if (savedId != null) {
       await showDialog(
         context: Get.context!,
         builder: (context) {
@@ -80,64 +137,5 @@ class ProductWriteController extends GetxController {
       );
       Get.back(result: true);
     }
-  }
-
-  Future<List<String>> uploadImages(List<AssetEntity> images) async {
-    List<String> imageUrls = [];
-    for (var image in images) {
-      var file = await image.file;
-      if (file == null) return [];
-      var downloadUrl =
-          await _cloudFirebaseRepository.uploadFile(owner.uid!, file);
-      imageUrls.add(downloadUrl);
-    }
-    return imageUrls;
-  }
-
-  changeSelectedImages(List<AssetEntity>? images) {
-    selectedImages(images);
-  }
-
-  deleteImage(int index) {
-    selectedImages.removeAt(index);
-  }
-
-  changeTitle(String value) {
-    product(product.value.copyWith(title: value));
-  }
-
-  changeCategoryType(ProductCategoryType? type) {
-    product(product.value.copyWith(categoryType: type));
-  }
-
-  changeIsFreeProduct() {
-    product(product.value.copyWith(isFree: !(product.value.isFree ?? false)));
-    if (product.value.isFree!) {
-      changePrice('0');
-    }
-  }
-
-  changePrice(String price) {
-    if (!RegExp(r'^[0-9]+$').hasMatch(price)) return;
-    product(product.value.copyWith(
-      productPrice: int.parse(price),
-      isFree: int.parse(price) == 0,
-    ));
-  }
-
-  changeDescription(String value) {
-    product(product.value.copyWith(description: value));
-  }
-
-  changeTradeLocationMap(Map<String, dynamic> mapInfo) {
-    product(product.value.copyWith(
-      wantTradeLocationLabel: mapInfo['label'],
-      wantTradeLocation: mapInfo['location'],
-    ));
-  }
-
-  clearWantTradeLocation() {
-    product(product.value
-        .copyWith(wantTradeLocationLabel: '', wantTradeLocation: null));
   }
 }

@@ -41,8 +41,8 @@ class ProductSearchOption extends Equatable {
 
   @override
   List<Object?> get props => [
-        lastItem,
-        status,
-        ownerId,
-      ];
+    lastItem,
+    status,
+    ownerId,
+  ];
 }

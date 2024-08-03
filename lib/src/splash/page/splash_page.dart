@@ -17,14 +17,16 @@ class SplashPage extends GetView<SplashController> {
     return Scaffold(
       body: Center(
         child: GetxListener<AuthenticationStatus>(
-          listen: (AuthenticationStatus status) {
+          listen: (AuthenticationStatus status) async {
             switch (status) {
               case AuthenticationStatus.authentication:
                 Get.offNamed('/home');
                 break;
               case AuthenticationStatus.unAuthenticated:
-                var userModel = Get.find<AuthenticationController>().userModel.value;
-                Get.offNamed('/signup/${userModel.uid}');
+                var userModel =
+                    Get.find<AuthenticationController>().userModel.value;
+                await Get.offNamed('/signup/${userModel.uid}');
+                Get.find<AuthenticationController>().reload();
                 break;
               case AuthenticationStatus.unknown:
                 Get.offNamed('/login');
@@ -63,9 +65,6 @@ class SplashPage extends GetView<SplashController> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        controller.loadStep(StepType.authCheck);
-      }),
     );
   }
 }
@@ -77,9 +76,7 @@ class _SplashView extends GetView<SplashController> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 200),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,19 +88,15 @@ class _SplashView extends GetView<SplashController> {
                   'assets/images/nero_icon.png',
                 ),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
               const AppFont(
-                '당신 곁의 네로',
+                '당신 근처의 네로',
                 fontWeight: FontWeight.bold,
                 size: 20,
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 15),
               AppFont(
-                '중고 거래부터 동네 정보까지.\n지금 내 동네를 선택하고 시작해보세요',
+                '멘탈 케어의 모든 것, \n지금 내 동네를 선택하고 시작해보세요!',
                 align: TextAlign.center,
                 size: 18,
                 color: Colors.white.withOpacity(0.6),
@@ -123,16 +116,12 @@ class _SplashView extends GetView<SplashController> {
                   );
                 },
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const CircularProgressIndicator(
-                strokeWidth: 1,
-                color: Colors.white,
-              )
+                  strokeWidth: 1, color: Colors.white)
             ],
           ),
-        ),
+        )
       ],
     );
   }

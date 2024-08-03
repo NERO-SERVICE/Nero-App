@@ -55,7 +55,7 @@ class Product extends Equatable {
       'status': status!.value,
       'wantTradeLocation': [
         wantTradeLocation?.latitude,
-        wantTradeLocation?.longitude,
+        wantTradeLocation?.longitude
       ],
       'wantTradeLocationLabel': wantTradeLocationLabel,
       'categoryType': categoryType?.code,
@@ -105,9 +105,9 @@ class Product extends Equatable {
     List<String>? imageUrls,
     List<String>? likers,
     ProductStatusType? status,
-    ProductCategoryType? categoryType,
     LatLng? wantTradeLocation,
     String? wantTradeLocationLabel,
+    ProductCategoryType? categoryType,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
