@@ -48,4 +48,14 @@ class ProductRepository extends GetxService {
       return (list: <Product>[], lastItem: null);
     }
   }
+
+  Future<Product?> getProduct(String docId) async {
+    try {
+      DocumentReference docRef = products.doc(docId);
+      var product = await docRef.get();
+      return Product.fromJson(docId, product.data() as Map<String, dynamic>);
+    } catch (e) {
+      return null;
+    }
+  }
 }

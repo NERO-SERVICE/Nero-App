@@ -7,15 +7,17 @@ class AppFont extends StatelessWidget {
   final double? size;
   final TextAlign? align;
   final FontWeight? fontWeight;
+  final TextDecoration? decoration;
 
   const AppFont(
-      this.text, {
-        super.key,
-        this.color = Colors.white,
-        this.align,
-        this.size,
-        this.fontWeight,
-      });
+    this.text, {
+    super.key,
+    this.color = Colors.white,
+    this.align,
+    this.size,
+    this.fontWeight,
+    this.decoration,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class AppFont extends StatelessWidget {
         color: color,
         fontSize: size,
         fontWeight: fontWeight,
+        decoration: decoration,
       ),
     );
   }
