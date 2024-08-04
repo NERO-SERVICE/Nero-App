@@ -12,6 +12,7 @@ import 'package:nero_app/src/common/components/price_view.dart';
 import 'package:nero_app/src/common/components/scroll_appbar.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
+import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/enum/market_enum.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/common/utils/data_util.dart';
@@ -110,19 +111,24 @@ class ProductDetailView extends GetView<ProductDetailController> {
             top: BorderSide(color: Color(0xff4D4D4F)),
           ),
         ),
-        child: Obx(() => _BottomNavWidget(
-              product: controller.product.value,
-            )),
+        child: Obx(
+          () => _BottomNavWidget(
+            product: controller.product.value,
+            onLikedEvent: controller.onLikedEvent,
+          ),
+        ),
       ),
     );
   }
 }
 
 class _BottomNavWidget extends StatelessWidget {
+  final Function() onLikedEvent;
   final Product product;
 
   const _BottomNavWidget({
     super.key,
+    required this.onLikedEvent,
     required this.product,
   });
 
@@ -154,16 +160,20 @@ class _BottomNavWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var likers = product.likers ?? [];
+    var uid = Get.find<AuthenticationController>().userModel.value.uid;
     return SizedBox(
       height: 50,
       child: Row(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: onLikedEvent,
             behavior: HitTestBehavior.translucent,
             child: Container(
               padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset('assets/svg/icons/like_off.svg'),
+              child: likers.contains(uid)
+              ? SvgPicture.asset('assets/svg/icons/like_on.svg')
+              : SvgPicture.asset('assets/svg/icons/like_off.svg'),
             ),
           ),
           const SizedBox(

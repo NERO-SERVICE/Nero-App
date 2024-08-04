@@ -28,6 +28,23 @@ class ProductDetailController extends GetxController {
     await _loadOtherProducts();
   }
 
+  void _updateProductInfo() async {
+    await _productRepository.editProduct(product.value);
+  }
+
+  void onLikedEvent() {
+    var likers = product.value.likers ?? [];
+    if (likers.contains(myUser.uid)) {
+      likers = likers.toList()..remove(myUser.uid);
+    } else {
+      likers = likers.toList()..add(myUser.uid!);
+    }
+    product(
+      product.value.copyWith(likers: List.unmodifiable([...likers])),
+    );
+    _updateProductInfo();
+  }
+
   Future<void> _loadProductDetailData() async {
     var result = await _productRepository.getProduct(docId);
     if (result == null) return;
