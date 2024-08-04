@@ -8,10 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/btn.dart';
 import 'package:nero_app/src/common/components/price_view.dart';
+import 'package:nero_app/src/common/components/scroll_appbar.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
 import 'package:nero_app/src/common/enum/market_enum.dart';
-import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/common/utils/data_util.dart';
 import 'package:nero_app/src/product/detail/controller/product_detail_controller.dart';
@@ -21,27 +21,44 @@ class ProductDetailView extends GetView<ProductDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonLayout(
-      body: SingleChildScrollView(
-        child: Obx(
-          () => Column(
-            children: [
-              SizedBox(
-                width: Get.width,
-                height: Get.width,
-                child: _ProductThumbnail(
-                  product: controller.product.value,
-                ),
-              ),
-              _ProfileSection(product: controller.product.value),
-              _ProductDetail(product: controller.product.value),
-              _HopeTradeLocation(product: controller.product.value),
-              _UserProducts(
-                product: controller.product.value,
-                ownerOtherProducts: controller.ownerOtherProducts.value,
-              ),
-            ],
+    return ScrollAppbarWidget(
+      actions: [
+        GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.translucent,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SvgPicture.asset('assets/svg/icons/share.svg'),
           ),
+        ),
+        GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.translucent,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SvgPicture.asset('assets/svg/icons/more_vertical.svg'),
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
+      body: Obx(
+        () => Column(
+          children: [
+            SizedBox(
+              width: Get.width,
+              height: Get.width,
+              child: _ProductThumbnail(
+                product: controller.product.value,
+              ),
+            ),
+            _ProfileSection(product: controller.product.value),
+            _ProductDetail(product: controller.product.value),
+            _HopeTradeLocation(product: controller.product.value),
+            _UserProducts(
+              product: controller.product.value,
+              ownerOtherProducts: controller.ownerOtherProducts.value,
+            ),
+          ],
         ),
       ),
       bottomNavBar: Container(
