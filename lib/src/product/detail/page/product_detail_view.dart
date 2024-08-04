@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +20,41 @@ import 'package:nero_app/src/product/detail/controller/product_detail_controller
 class ProductDetailView extends GetView<ProductDetailController> {
   const ProductDetailView({super.key});
 
+  void _showActionSheet(BuildContext context) {
+    var actions = controller.isMine
+        ? [
+            CupertinoActionSheetAction(
+              onPressed: () async {},
+              child: const Text('게시물 수정'),
+            ),
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () async {},
+              child: const Text('삭제'),
+            ),
+          ]
+        : [
+            CupertinoActionSheetAction(
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: const Text('게시물 신고'),
+            ),
+          ];
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: actions,
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('취소'),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScrollAppbarWidget(
@@ -32,7 +68,9 @@ class ProductDetailView extends GetView<ProductDetailController> {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            _showActionSheet(context);
+          },
           behavior: HitTestBehavior.translucent,
           child: Padding(
             padding: const EdgeInsets.all(15),

@@ -123,6 +123,7 @@ class MyApp extends StatelessWidget {
             () {
               Get.put(ProductDetailController(
                 Get.find<ProductRepository>(),
+                Get.find<AuthenticationController>().userModel.value,
               ));
             },
           ),

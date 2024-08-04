@@ -3,15 +3,22 @@ import 'package:nero_app/src/common/enum/market_enum.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/common/model/product_search_option.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
+import 'package:nero_app/src/user/model/user_model.dart';
 
 class ProductDetailController extends GetxController {
   final ProductRepository _productRepository;
+  final UserModel myUser;
 
-  ProductDetailController(this._productRepository);
+  ProductDetailController(
+    this._productRepository,
+    this.myUser,
+  );
 
   late String docId;
   Rx<Product> product = const Product.empty().obs;
   RxList<Product> ownerOtherProducts = <Product>[].obs;
+
+  bool get isMine => myUser.uid == product.value.owner?.uid;
 
   @override
   void onInit() async {
@@ -33,8 +40,7 @@ class ProductDetailController extends GetxController {
         status: const [
           ProductStatusType.sale,
           ProductStatusType.reservation,
-        ]
-    );
+        ]);
 
     var results = await _productRepository.getProducts(searchOption);
     ownerOtherProducts.addAll(results.list);
