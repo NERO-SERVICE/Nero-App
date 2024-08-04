@@ -136,7 +136,7 @@ class _HopeTradeLocationMap extends GetView<ProductWriteController> {
         onTap: () async {
           var result = await Get.to<Map<String, dynamic>?>(
             TradeLocationMap(
-              label: controller.product.value.wantTradeLocationLabel,
+              lable: controller.product.value.wantTradeLocationLabel,
               location: controller.product.value.wantTradeLocation,
             ),
           );

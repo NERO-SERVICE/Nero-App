@@ -10,12 +10,12 @@ import 'app_font.dart';
 import 'place_name_popup.dart';
 
 class TradeLocationMap extends StatefulWidget {
-  final String? label;
+  final String? lable;
   final LatLng? location;
 
   const TradeLocationMap({
     super.key,
-    this.label,
+    this.lable,
     this.location,
   });
 
@@ -25,13 +25,13 @@ class TradeLocationMap extends StatefulWidget {
 
 class _TradeLocationMapState extends State<TradeLocationMap> {
   final _mapController = MapController();
-  String label = '';
+  String lable = '';
   LatLng? location;
 
   @override
   void initState() {
     super.initState();
-    label = widget.label ?? '';
+    lable = widget.lable ?? '';
     location = widget.location;
   }
 
@@ -90,7 +90,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                       onPositionChanged: (position, hasGesture) {
                         if (hasGesture) {
                           setState(() {
-                            label = '';
+                            lable = '';
                           });
                         }
                       },
@@ -102,7 +102,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                       ),
                     ],
                     nonRotatedChildren: [
-                      if (label != '')
+                      if (lable != '')
                         Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -114,10 +114,11 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(7),
-                                  color: Color.fromARGB(255, 208, 208, 208),
+                                  color:
+                                      const Color.fromARGB(255, 208, 208, 208),
                                 ),
                                 child: AppFont(
-                                  label,
+                                  lable,
                                   color: Colors.black,
                                   size: 12,
                                 ),
@@ -208,4 +209,65 @@ Future<Position> _determinePosition() async {
   }
 
   return await Geolocator.getCurrentPosition();
+}
+
+class SimpleTradeLocationMap extends StatelessWidget {
+  // 경량화된 지도
+  final String? lable;
+  final LatLng myLocation;
+  final int interactiveFlags;
+
+  const SimpleTradeLocationMap(
+      {super.key,
+      required this.myLocation,
+      this.lable,
+      this.interactiveFlags =
+          InteractiveFlag.pinchZoom | InteractiveFlag.drag});
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterMap(
+      options: MapOptions(
+        center: myLocation,
+        interactiveFlags: interactiveFlags,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        ),
+      ],
+      nonRotatedChildren: [
+        if (lable != '')
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 7,
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7),
+                    color: const Color.fromARGB(255, 208, 208, 208),
+                  ),
+                  child: AppFont(
+                    lable!,
+                    color: Colors.black,
+                    size: 12,
+                  ),
+                ),
+                const SizedBox(height: 100),
+              ],
+            ),
+          ),
+        Center(
+          child: SvgPicture.asset(
+            'assets/svg/icons/want_location_marker.svg',
+            width: 45,
+          ),
+        ),
+      ],
+    );
+  }
 }

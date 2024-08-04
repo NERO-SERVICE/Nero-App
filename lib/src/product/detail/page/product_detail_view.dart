@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:nero_app/src/common/model/product.dart';
@@ -15,19 +18,22 @@ class ProductDetailView extends GetView<ProductDetailController> {
   @override
   Widget build(BuildContext context) {
     return CommonLayout(
-      body: Obx(
-        () => Column(
-          children: [
-            SizedBox(
-              width: Get.width,
-              height: Get.width,
-              child: _ProductThumbnail(
-                product: controller.product.value,
+      body: SingleChildScrollView(
+        child: Obx(
+          () => Column(
+            children: [
+              SizedBox(
+                width: Get.width,
+                height: Get.width,
+                child: _ProductThumbnail(
+                  product: controller.product.value,
+                ),
               ),
-            ),
-            _ProfileSection(product: controller.product.value),
-            _ProductDetail(product: controller.product.value),
-          ],
+              _ProfileSection(product: controller.product.value),
+              _ProductDetail(product: controller.product.value),
+              _HopeTradeLocation(product: controller.product.value),
+            ],
+          ),
         ),
       ),
     );
@@ -225,5 +231,58 @@ class _ProductDetail extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _HopeTradeLocation extends StatelessWidget {
+  // 지도 거래 장소
+  final Product product;
+
+  const _HopeTradeLocation({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return product.wantTradeLocation != null
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const AppFont(
+                      '거래 희망 장소',
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      behavior: HitTestBehavior.translucent,
+                      child: SvgPicture.asset('assets/svg/icons/right.svg'),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    height: 200,
+                    child: SimpleTradeLocationMap(
+                      myLocation: product.wantTradeLocation!,
+                      lable: product.wantTradeLocationLabel,
+                      interactiveFlags: InteractiveFlag.pinchZoom,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Divider(indent: 20, endIndent: 20, color: Color(0xff2C2C2E))
+            ],
+          )
+        : Container();
   }
 }
