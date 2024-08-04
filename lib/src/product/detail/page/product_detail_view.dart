@@ -5,8 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/components/price_view.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
+import 'package:nero_app/src/common/enum/market_enum.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/common/utils/data_util.dart';
@@ -32,6 +34,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
               _ProfileSection(product: controller.product.value),
               _ProductDetail(product: controller.product.value),
               _HopeTradeLocation(product: controller.product.value),
+              _UserProducts(
+                product: controller.product.value,
+                ownerOtherProducts: controller.ownerOtherProducts.value,
+              )
             ],
           ),
         ),
@@ -284,5 +290,99 @@ class _HopeTradeLocation extends StatelessWidget {
             ],
           )
         : Container();
+  }
+}
+
+class _UserProducts extends StatelessWidget {
+  final Product product;
+  final List<Product> ownerOtherProducts;
+
+  const _UserProducts(
+      {super.key, required this.product, required this.ownerOtherProducts});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppFont(
+                '${product.owner?.nickname}님의 판매 상품',
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                size: 15,
+              ),
+              GestureDetector(
+                onTap: () {},
+                behavior: HitTestBehavior.translucent,
+                child: SvgPicture.asset('assets/svg/icons/right.svg'),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: (ownerOtherProducts.length.clamp(0, 6) * 0.5).ceil() * 220,
+          child: GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            childAspectRatio: 0.85,
+            children: List.generate(
+              ownerOtherProducts.length.clamp(0, 6),
+              (index) => GestureDetector(
+                onTap: () {},
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(7),
+                      child: ownerOtherProducts[index].imageUrls!.isEmpty
+                          ? const SizedBox(
+                              height: 120,
+                              child: Center(child: Icon(Icons.error)))
+                          : SizedBox(
+                              height: 120,
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    ownerOtherProducts[index].imageUrls!.first,
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    strokeWidth: 1,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 15),
+                    AppFont(
+                      ownerOtherProducts[index].title ?? '',
+                      maxLine: 1,
+                      size: 14,
+                    ),
+                    const SizedBox(height: 5),
+                    PriceView(
+                      price: ownerOtherProducts[index].productPrice ?? 0,
+                      status: ownerOtherProducts[index].status ??
+                          ProductStatusType.sale,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
