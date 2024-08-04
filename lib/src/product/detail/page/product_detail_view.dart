@@ -30,7 +30,47 @@ class ProductDetailView extends GetView<ProductDetailController> {
             ),
             CupertinoActionSheetAction(
               isDestructiveAction: true,
-              onPressed: () async {},
+              onPressed: () async {
+                Get.back();
+                var isDeleted = await showDialog<bool?>(
+                  context: Get.context!,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                      content: const AppFont(
+                        '정말 삭제하시겠습니까?',
+                        color: Colors.black,
+                        size: 16,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            var result = await controller.deleteProduct();
+                            Get.back(result: result);
+                          },
+                          child: const AppFont(
+                            '삭제',
+                            size: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: Get.back,
+                          child: const AppFont(
+                            '취소',
+                            size: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (isDeleted != null && isDeleted) {
+                  Get.back(result: isDeleted);
+                }
+              },
               child: const Text('삭제'),
             ),
           ]
@@ -172,8 +212,8 @@ class _BottomNavWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(15.0),
               child: likers.contains(uid)
-              ? SvgPicture.asset('assets/svg/icons/like_on.svg')
-              : SvgPicture.asset('assets/svg/icons/like_off.svg'),
+                  ? SvgPicture.asset('assets/svg/icons/like_on.svg')
+                  : SvgPicture.asset('assets/svg/icons/like_off.svg'),
             ),
           ),
           const SizedBox(

@@ -45,6 +45,10 @@ class ProductDetailController extends GetxController {
     _updateProductInfo();
   }
 
+  Future<bool> deleteProduct() async {
+    return await _productRepository.deleteProduct(product.value.docId!);
+  }
+
   Future<void> _loadProductDetailData() async {
     var result = await _productRepository.getProduct(docId);
     if (result == null) return;

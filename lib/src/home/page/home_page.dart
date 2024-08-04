@@ -102,8 +102,11 @@ class _ProductList extends GetView<HomeController> {
 
   Widget _productOne(Product product) {
     return GestureDetector(
-      onTap: () {
-        Get.toNamed('/product/detail/${product.docId}');
+      onTap: () async {
+        var isNeedReload = await Get.toNamed('/product/detail/${product.docId}');
+        if (isNeedReload != null && isNeedReload) {
+          controller.refresh();
+        }
       },
       behavior: HitTestBehavior.translucent, // 빈 영역에도 탭 이벤트 발생
       child: Row(

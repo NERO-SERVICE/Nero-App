@@ -67,4 +67,14 @@ class ProductRepository extends GetxService {
       return;
     }
   }
+
+  Future<bool> deleteProduct(String docId) async {
+    try {
+      DocumentReference docRef = products.doc(docId);
+      await docRef.delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
