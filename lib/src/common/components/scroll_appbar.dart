@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 class ScrollAppbarWidget extends StatefulWidget {
   final Widget body;
   final List<Widget>? actions;
   final Widget? bottomNavBar;
-
+  final Function() onBack;
   const ScrollAppbarWidget({
     super.key,
     required this.body,
+    required this.onBack,
     this.bottomNavBar,
     this.actions,
   });
@@ -21,13 +21,12 @@ class ScrollAppbarWidget extends StatefulWidget {
 class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
   ScrollController controller = ScrollController();
   int alpha = 0;
-
   @override
   void initState() {
     super.initState();
     controller.addListener(() {
       setState(() {
-        alpha = (controller.offset).clamp(0, 255).toInt(); // 스크롤에 따른 앱바 투명도 조절
+        alpha = (controller.offset).clamp(0, 255).toInt();
       });
     });
   }
@@ -40,7 +39,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
       appBar: AppBar(
         leading: GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: Get.back,
+          onTap: widget.onBack,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: SvgPicture.asset('assets/svg/icons/back.svg'),
@@ -69,7 +68,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
       bottomNavigationBar: widget.bottomNavBar,

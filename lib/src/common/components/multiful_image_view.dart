@@ -2,12 +2,14 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/src/common/model/asset_value_entity.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import 'app_font.dart';
 
 class MultifulImageView extends StatefulWidget {
-  final List<AssetEntity>? initImages;
+  final List<AssetValueEntity>? initImages;
+
   const MultifulImageView({
     super.key,
     this.initImages,
@@ -22,8 +24,8 @@ class _MultifulImageViewState extends State<MultifulImageView> {
   var albums = <AssetPathEntity>[];
   int currentPage = 0;
   int lastPage = -1;
-  var imageList = <AssetEntity>[];
-  var selectedImages = <AssetEntity>[];
+  var imageList = <AssetValueEntity>[];
+  var selectedImages = <AssetValueEntity>[];
 
   @override
   void initState() {
@@ -67,7 +69,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
   Future<void> _pagingPhotos() async {
     if (albums.isNotEmpty) {
       var photos =
-      await albums.first.getAssetListPaged(page: currentPage, size: 60);
+          await albums.first.getAssetListPaged(page: currentPage, size: 60);
       if (currentPage == 0) {
         imageList.clear();
       }
@@ -76,17 +78,18 @@ class _MultifulImageViewState extends State<MultifulImageView> {
       }
 
       setState(() {
-        imageList.addAll(photos);
-        currentPage++;
+        photos.forEach((element) {
+          imageList.add(AssetValueEntity(asset: element));
+        });
       });
     }
   }
 
-  bool containValue(AssetEntity value) {
+  bool containValue(AssetValueEntity value) {
     return selectedImages.where((element) => element.id == value.id).isNotEmpty;
   }
 
-  String returnIndexValue(AssetEntity value) {
+  String returnIndexValue(AssetValueEntity value) {
     var find = selectedImages.asMap().entries.where((element) {
       return element.value.id == value.id;
     });
@@ -94,7 +97,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
     return (find.first.key + 1).toString();
   }
 
-  void _selectedImage(AssetEntity imageList) async {
+  void _selectedImage(AssetValueEntity imageList) async {
     setState(() {
       if (containValue(imageList)) {
         selectedImages.remove(imageList);
@@ -106,7 +109,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
     });
   }
 
-  Widget _photoWidget(AssetEntity asset) {
+  Widget _photoWidget(AssetValueEntity asset) {
     return FutureBuilder<Uint8List?>(
       future: asset.thumbnailDataWithSize(const ThumbnailSize(200, 200)),
       builder: (_, snapshot) {

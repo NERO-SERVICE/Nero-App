@@ -19,6 +19,7 @@ class ProductDetailController extends GetxController {
   RxList<Product> ownerOtherProducts = <Product>[].obs;
 
   bool get isMine => myUser.uid == product.value.owner?.uid;
+  bool isEdited = false;
 
   @override
   void onInit() async {
@@ -26,6 +27,11 @@ class ProductDetailController extends GetxController {
     docId = Get.parameters['docId'] ?? '';
     await _loadProductDetailData();
     await _loadOtherProducts();
+  }
+
+  void refresh() async{
+    isEdited = true;
+    await _loadProductDetailData();
   }
 
   void _updateProductInfo() async {

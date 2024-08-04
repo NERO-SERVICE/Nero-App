@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/product_category_selector.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:nero_app/src/common/model/asset_value_entity.dart';
 
 import '../../../common/components/app_font.dart';
 import '../../../common/components/common_text_field.dart';
@@ -16,11 +17,12 @@ import '../controller/product_write_controller.dart';
 
 class ProductWritePage extends GetView<ProductWriteController> {
   const ProductWritePage({super.key});
+
   Widget get _divder => const Divider(
-    color: Color(0xff3C3C3E),
-    indent: 25,
-    endIndent: 25,
-  );
+        color: Color(0xff3C3C3E),
+        indent: 25,
+        endIndent: 25,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class ProductWritePage extends GetView<ProductWriteController> {
         ),
         actions: [
           Obx(
-                () => GestureDetector(
+            () => GestureDetector(
               onTap: () {
                 if (controller.isPossibleSubmit.value) {
                   controller.submit();
@@ -154,37 +156,37 @@ class _HopeTradeLocationMap extends GetView<ProductWriteController> {
               color: Colors.white,
             ),
             Obx(
-                  () => controller.product.value.wantTradeLocationLabel == null ||
-                  controller.product.value.wantTradeLocationLabel == ''
+              () => controller.product.value.wantTradeLocationLabel == null ||
+                      controller.product.value.wantTradeLocationLabel == ''
                   ? Row(
-                children: [
-                  const AppFont(
-                    '장소 선택',
-                    size: 13,
-                    color: Color(0xff6D7179),
-                  ),
-                  SvgPicture.asset('assets/svg/icons/right.svg'),
-                ],
-              )
+                      children: [
+                        const AppFont(
+                          '장소 선택',
+                          size: 13,
+                          color: Color(0xff6D7179),
+                        ),
+                        SvgPicture.asset('assets/svg/icons/right.svg'),
+                      ],
+                    )
                   : Row(
-                children: [
-                  AppFont(
-                      controller.product.value.wantTradeLocationLabel ??
-                          '',
-                      size: 13,
-                      color: Colors.white),
-                  GestureDetector(
-                    onTap: () {
-                      controller.clearWantTradeLocation();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                      SvgPicture.asset('assets/svg/icons/delete.svg'),
+                      children: [
+                        AppFont(
+                            controller.product.value.wantTradeLocationLabel ??
+                                '',
+                            size: 13,
+                            color: Colors.white),
+                        GestureDetector(
+                          onTap: () {
+                            controller.clearWantTradeLocation();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                SvgPicture.asset('assets/svg/icons/delete.svg'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),
@@ -200,12 +202,15 @@ class _ProductDescription extends GetView<ProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: CommonTextField(
-        hintColor: Color(0xff6D7179),
-        hintText: '아라동에 올릴 게시글 내용을 작성해주세요.\n(판매 금지 물품은 게시가 제한될 수 있어요.)',
-        textInputType: TextInputType.multiline,
-        maxLines: 10,
-        onChange: controller.changeDescription,
+      child: Obx(
+        () => CommonTextField(
+          hintColor: Color(0xff6D7179),
+          hintText: '아라동에 올릴 게시글 내용을 작성해주세요.\n(판매 금지 물품은 게시가 제한될 수 있어요.)',
+          textInputType: TextInputType.multiline,
+          initText: controller.product.value.description,
+          maxLines: 10,
+          onChange: controller.changeDescription,
+        ),
       ),
     );
   }
@@ -222,7 +227,7 @@ class _PriceSettingView extends GetView<ProductWriteController> {
         children: [
           Expanded(
             child: Obx(
-                  () => CommonTextField(
+              () => CommonTextField(
                   hintColor: const Color(0xff6D7179),
                   hintText: '₩ 가격 (선택사항)',
                   textInputType: TextInputType.number,
@@ -234,7 +239,7 @@ class _PriceSettingView extends GetView<ProductWriteController> {
             ),
           ),
           Obx(
-                () => CustomCheckbox(
+            () => CustomCheckbox(
               label: '나눔',
               isChecked: controller.product.value.isFree ?? false,
               toggleCallBack: controller.changeIsFreeProduct,
@@ -267,7 +272,7 @@ class _CategorySelectView extends GetView<ProductWriteController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Obx(
-                  () => AppFont(
+              () => AppFont(
                 controller.product.value.categoryType!.name,
                 size: 16,
                 color: Colors.white,
@@ -288,10 +293,13 @@ class _ProductTitleView extends GetView<ProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: CommonTextField(
-        hintText: '글 제목',
-        onChange: controller.changeTitle,
-        hintColor: const Color(0xff6D7179),
+      child: Obx(
+        () => CommonTextField(
+          hintText: '글 제목',
+          initText: controller.product.value.title,
+          onChange: controller.changeTitle,
+          hintColor: const Color(0xff6D7179),
+        ),
       ),
     );
   }
@@ -303,7 +311,7 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
   Widget _photoSelectIcon() {
     return GestureDetector(
       onTap: () async {
-        var selectedImages = await Get.to<List<AssetEntity>?>(
+        var selectedImages = await Get.to<List<AssetValueEntity>?>(
           MultifulImageView(
             initImages: controller.selectedImages,
           ),
@@ -326,7 +334,7 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Obx(
-                      () => AppFont(
+                  () => AppFont(
                     '${controller.selectedImages.length}',
                     size: 13,
                     color: const Color(0xff868B95),
@@ -350,7 +358,7 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
       margin: const EdgeInsets.only(left: 15),
       height: 77,
       child: Obx(
-            () => ListView.builder(
+        () => ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return Stack(
@@ -362,19 +370,33 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
                     child: SizedBox(
                       width: 67,
                       height: 67,
-                      child: FutureBuilder(
-                        future: controller.selectedImages[index].file,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Image.file(
-                              snapshot.data!,
+                      child: controller.selectedImages[index].thumbnail != null
+                          ? CachedNetworkImage(
+                              imageUrl:
+                                  controller.selectedImages[index].thumbnail!,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Center(
+                                      child: CircularProgressIndicator(
+                                value: downloadProgress.progress,
+                                strokeWidth: 1,
+                              )),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                               fit: BoxFit.cover,
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
-                      ),
+                            )
+                          : FutureBuilder(
+                              future: controller.selectedImages[index].file,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Image.file(
+                                    snapshot.data!,
+                                    fit: BoxFit.cover,
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            ),
                     ),
                   ),
                 ),

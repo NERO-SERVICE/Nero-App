@@ -25,7 +25,17 @@ class ProductDetailView extends GetView<ProductDetailController> {
     var actions = controller.isMine
         ? [
             CupertinoActionSheetAction(
-              onPressed: () async {},
+              onPressed: () async {
+                var isNeedRefresh = await Get.toNamed('/product/write',
+                    parameters: {
+                      'product_doc_id': controller.product.value.docId ?? ''
+                    });
+                if (isNeedRefresh != null &&
+                    isNeedRefresh is bool &&
+                    isNeedRefresh) {
+                  controller.refresh();
+                }
+              },
               child: const Text('게시물 수정'),
             ),
             CupertinoActionSheetAction(
@@ -99,6 +109,9 @@ class ProductDetailView extends GetView<ProductDetailController> {
   @override
   Widget build(BuildContext context) {
     return ScrollAppbarWidget(
+      onBack: () {
+        Get.back(result: controller.isEdited);
+      },
       actions: [
         GestureDetector(
           onTap: () {},
@@ -121,7 +134,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
         const SizedBox(width: 10),
       ],
       body: Obx(
-        () => Column(
+            () => Column(
           children: [
             SizedBox(
               width: Get.width,
@@ -152,7 +165,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
           ),
         ),
         child: Obx(
-          () => _BottomNavWidget(
+              () => _BottomNavWidget(
             product: controller.product.value,
             onLikedEvent: controller.onLikedEvent,
           ),
