@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/components/btn.dart';
 import 'package:nero_app/src/common/components/price_view.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
@@ -37,10 +39,94 @@ class ProductDetailView extends GetView<ProductDetailController> {
               _UserProducts(
                 product: controller.product.value,
                 ownerOtherProducts: controller.ownerOtherProducts.value,
-              )
+              ),
             ],
           ),
         ),
+      ),
+      bottomNavBar: Container(
+        padding: EdgeInsets.only(
+            left: 5,
+            right: 20,
+            top: 10,
+            bottom: 15 + MediaQuery.of(context).padding.bottom),
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Color(0xff4D4D4F)),
+          ),
+        ),
+        child: Obx(() => _BottomNavWidget(
+              product: controller.product.value,
+            )),
+      ),
+    );
+  }
+}
+
+class _BottomNavWidget extends StatelessWidget {
+  final Product product;
+
+  const _BottomNavWidget({
+    super.key,
+    required this.product,
+  });
+
+  Widget _price() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AppFont(
+          product.productPrice == 0
+              ? '무료 나눔'
+              : '${NumberFormat('###,###,###,###').format(product.productPrice)}원',
+          size: 16,
+          fontWeight: FontWeight.bold,
+          color: product.productPrice == 0
+              ? const Color(0xffED7738)
+              : Colors.white,
+        ),
+        const SizedBox(height: 3),
+        const AppFont(
+          '가격 제안 불가',
+          size: 13,
+          fontWeight: FontWeight.bold,
+          color: Color(0xff878B93),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.translucent,
+            child: Container(
+              padding: const EdgeInsets.all(15.0),
+              child: SvgPicture.asset('assets/svg/icons/like_off.svg'),
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+            child: VerticalDivider(
+              color: Color(0xff34373C),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Expanded(child: _price()),
+          Btn(
+            onTap: () {},
+            child: const AppFont(
+              '채팅하기',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
