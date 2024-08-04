@@ -19,10 +19,10 @@ class ProductWritePage extends GetView<ProductWriteController> {
   const ProductWritePage({super.key});
 
   Widget get _divder => const Divider(
-        color: Color(0xff3C3C3E),
-        indent: 25,
-        endIndent: 25,
-      );
+    color: Color(0xff3C3C3E),
+    indent: 25,
+    endIndent: 25,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,25 +42,27 @@ class ProductWritePage extends GetView<ProductWriteController> {
           size: 18,
         ),
         actions: [
-          Obx(
-            () => GestureDetector(
-              onTap: () {
-                if (controller.isPossibleSubmit.value) {
-                  controller.submit();
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(top: 20.0, right: 25),
-                child: AppFont(
-                  '완료',
-                  color: controller.isPossibleSubmit.value
-                      ? const Color(0xffED7738)
-                      : Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  size: 16,
+          GetBuilder<ProductWriteController>(
+            builder: (controller) {
+              return GestureDetector(
+                onTap: () {
+                  if (controller.isPossibleSubmit.value) {
+                    controller.submit();
+                  }
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.0, right: 25),
+                  child: AppFont(
+                    '완료',
+                    color: controller.isPossibleSubmit.value
+                        ? const Color(0xffED7738)
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    size: 16,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           )
         ],
       ),
@@ -155,38 +157,38 @@ class _HopeTradeLocationMap extends GetView<ProductWriteController> {
               size: 16,
               color: Colors.white,
             ),
-            Obx(
-              () => controller.product.value.wantTradeLocationLabel == null ||
-                      controller.product.value.wantTradeLocationLabel == ''
-                  ? Row(
-                      children: [
-                        const AppFont(
-                          '장소 선택',
-                          size: 13,
-                          color: Color(0xff6D7179),
-                        ),
-                        SvgPicture.asset('assets/svg/icons/right.svg'),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        AppFont(
-                            controller.product.value.wantTradeLocationLabel ??
-                                '',
-                            size: 13,
-                            color: Colors.white),
-                        GestureDetector(
-                          onTap: () {
-                            controller.clearWantTradeLocation();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                                SvgPicture.asset('assets/svg/icons/delete.svg'),
-                          ),
-                        ),
-                      ],
+            GetBuilder<ProductWriteController>(
+              builder: (controller) {
+                return controller.product.value.wantTradeLocationLabel == null ||
+                    controller.product.value.wantTradeLocationLabel == ''
+                    ? Row(
+                  children: [
+                    const AppFont(
+                      '장소 선택',
+                      size: 13,
+                      color: Color(0xff6D7179),
                     ),
+                    SvgPicture.asset('assets/svg/icons/right.svg'),
+                  ],
+                )
+                    : Row(
+                  children: [
+                    AppFont(
+                        controller.product.value.wantTradeLocationLabel ?? '',
+                        size: 13,
+                        color: Colors.white),
+                    GestureDetector(
+                      onTap: () {
+                        controller.clearWantTradeLocation();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/delete.svg'),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -202,15 +204,17 @@ class _ProductDescription extends GetView<ProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: Obx(
-        () => CommonTextField(
-          hintColor: Color(0xff6D7179),
-          hintText: '아라동에 올릴 게시글 내용을 작성해주세요.\n(판매 금지 물품은 게시가 제한될 수 있어요.)',
-          textInputType: TextInputType.multiline,
-          initText: controller.product.value.description,
-          maxLines: 10,
-          onChange: controller.changeDescription,
-        ),
+      child: GetBuilder<ProductWriteController>(
+        builder: (controller) {
+          return CommonTextField(
+            hintColor: Color(0xff6D7179),
+            hintText: '아라동에 올릴 게시글 내용을 작성해주세요.\n(판매 금지 물품은 게시가 제한될 수 있어요.)',
+            textInputType: TextInputType.multiline,
+            initText: controller.product.value.description,
+            maxLines: 10,
+            onChange: controller.changeDescription,
+          );
+        },
       ),
     );
   }
@@ -226,8 +230,9 @@ class _PriceSettingView extends GetView<ProductWriteController> {
       child: Row(
         children: [
           Expanded(
-            child: Obx(
-              () => CommonTextField(
+            child: GetBuilder<ProductWriteController>(
+              builder: (controller) {
+                return CommonTextField(
                   hintColor: const Color(0xff6D7179),
                   hintText: '₩ 가격 (선택사항)',
                   textInputType: TextInputType.number,
@@ -235,15 +240,19 @@ class _PriceSettingView extends GetView<ProductWriteController> {
                   onChange: controller.changePrice,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))
-                  ]),
+                  ],
+                );
+              },
             ),
           ),
-          Obx(
-            () => CustomCheckbox(
-              label: '나눔',
-              isChecked: controller.product.value.isFree ?? false,
-              toggleCallBack: controller.changeIsFreeProduct,
-            ),
+          GetBuilder<ProductWriteController>(
+            builder: (controller) {
+              return CustomCheckbox(
+                label: '나눔',
+                isChecked: controller.product.value.isFree ?? false,
+                toggleCallBack: controller.changeIsFreeProduct,
+              );
+            },
           ),
         ],
       ),
@@ -271,12 +280,14 @@ class _CategorySelectView extends GetView<ProductWriteController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Obx(
-              () => AppFont(
-                controller.product.value.categoryType!.name,
-                size: 16,
-                color: Colors.white,
-              ),
+            GetBuilder<ProductWriteController>(
+              builder: (controller) {
+                return AppFont(
+                  controller.product.value.categoryType!.name,
+                  size: 16,
+                  color: Colors.white,
+                );
+              },
             ),
             SvgPicture.asset('assets/svg/icons/right.svg'),
           ],
@@ -293,13 +304,15 @@ class _ProductTitleView extends GetView<ProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Obx(
-        () => CommonTextField(
-          hintText: '글 제목',
-          initText: controller.product.value.title,
-          onChange: controller.changeTitle,
-          hintColor: const Color(0xff6D7179),
-        ),
+      child: GetBuilder<ProductWriteController>(
+        builder: (controller) {
+          return CommonTextField(
+            hintText: '글 제목',
+            initText: controller.product.value.title,
+            onChange: controller.changeTitle,
+            hintColor: const Color(0xff6D7179),
+          );
+        },
       ),
     );
   }
@@ -333,12 +346,14 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Obx(
-                  () => AppFont(
-                    '${controller.selectedImages.length}',
-                    size: 13,
-                    color: const Color(0xff868B95),
-                  ),
+                GetBuilder<ProductWriteController>(
+                  builder: (controller) {
+                    return AppFont(
+                      '${controller.selectedImages.length}',
+                      size: 13,
+                      color: const Color(0xff868B95),
+                    );
+                  },
                 ),
                 const AppFont(
                   '/10',
@@ -357,63 +372,65 @@ class _PhotoSelectedView extends GetView<ProductWriteController> {
     return Container(
       margin: const EdgeInsets.only(left: 15),
       height: 77,
-      child: Obx(
-        () => ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, right: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: SizedBox(
-                      width: 67,
-                      height: 67,
-                      child: controller.selectedImages[index].thumbnail != null
-                          ? CachedNetworkImage(
-                              imageUrl:
-                                  controller.selectedImages[index].thumbnail!,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) => Center(
-                                      child: CircularProgressIndicator(
+      child: GetBuilder<ProductWriteController>(
+        builder: (controller) {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, right: 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: SizedBox(
+                        width: 67,
+                        height: 67,
+                        child: controller.selectedImages[index].thumbnail != null
+                            ? CachedNetworkImage(
+                          imageUrl:
+                          controller.selectedImages[index].thumbnail!,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                              child: CircularProgressIndicator(
                                 value: downloadProgress.progress,
                                 strokeWidth: 1,
                               )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                              fit: BoxFit.cover,
-                            )
-                          : FutureBuilder(
-                              future: controller.selectedImages[index].file,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Image.file(
-                                    snapshot.data!,
-                                    fit: BoxFit.cover,
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            ),
+                          errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                          fit: BoxFit.cover,
+                        )
+                            : FutureBuilder(
+                          future: controller.selectedImages[index].file,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Image.file(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () {
-                      controller.deleteImage(index);
-                    },
-                    child: SvgPicture.asset('assets/svg/icons/remove.svg'),
-                  ),
-                )
-              ],
-            );
-          },
-          itemCount: controller.selectedImages.length,
-        ),
+                  Positioned(
+                    right: 10,
+                    child: GestureDetector(
+                      onTap: () {
+                        controller.deleteImage(index);
+                      },
+                      child: SvgPicture.asset('assets/svg/icons/remove.svg'),
+                    ),
+                  )
+                ],
+              );
+            },
+            itemCount: controller.selectedImages.length,
+          );
+        },
       ),
     );
   }
