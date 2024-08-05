@@ -117,6 +117,7 @@ class _ChatBody extends GetView<ChatController> {
         stream: controller.chatStream,
         builder: (context, snapshot) {
           var useProfileImage = false;
+          String lastDateYYYYMMDD = '';
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: List.generate(
@@ -125,6 +126,8 @@ class _ChatBody extends GetView<ChatController> {
                 var chat = snapshot.data![index];
                 var isMine = chat.uid == controller.myUid;
                 var messageGroupWidget = <Widget>[];
+                var currentDateYYYYMMDD =
+                    DateFormat('yyyyMMdd').format(chat.createdAt!);
                 if (!useProfileImage && isMine) {
                   useProfileImage = true;
                   messageGroupWidget.add(CircleAvatar(
@@ -142,19 +145,53 @@ class _ChatBody extends GetView<ChatController> {
                   message: chat.text ?? '',
                 ));
                 useProfileImage = !isMine;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: isMine
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                      children: messageGroupWidget),
+                return Column(
+                  children: [
+                    Builder(
+                      builder: (context) {
+                        if (lastDateYYYYMMDD == '' ||
+                            lastDateYYYYMMDD != currentDateYYYYMMDD) {
+                          lastDateYYYYMMDD = currentDateYYYYMMDD;
+                          return _ChatDateView(dateTime: chat.createdAt!);
+                        }
+                        return Container();
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: isMine
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: messageGroupWidget),
+                    ),
+                  ],
                 );
               },
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _ChatDateView extends StatelessWidget {
+  final DateTime dateTime;
+
+  const _ChatDateView({super.key, required this.dateTime});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 20.0, bottom: 15),
+      child: Center(
+        child: AppFont(
+          DateFormat('yyyy년 MM월 dd일').format(dateTime),
+          size: 13,
+          color: const Color(0xff6D7179),
+        ),
       ),
     );
   }
