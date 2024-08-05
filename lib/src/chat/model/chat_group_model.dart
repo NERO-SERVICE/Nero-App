@@ -29,7 +29,7 @@ class ChatGroupModel extends Equatable {
     DateTime? createdAt,
     String? productId,
     String? owner,
-    List<String>? chatter,
+    List<String>? chatters,
   }) {
     return ChatGroupModel(
       chatters: chatters ?? this.chatters,

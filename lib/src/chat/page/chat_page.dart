@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/src/chat/controller/chat_controller.dart';
+import 'package:nero_app/src/chat/model/chat_model.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/user_temperature_widget.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
@@ -41,7 +42,9 @@ class ChatPage extends GetView<ChatController> {
       body: Column(
         children: [
           _HeaderItemInfo(),
-          Spacer(),
+          Expanded(
+            child: _ChatBody(),
+          ),
           _TextFieldWidget(),
           KeyboardVisibilityBuilder(builder: (context, visible) {
             return SizedBox(
@@ -70,26 +73,26 @@ class _TextFieldWidget extends GetView<ChatController> {
               decoration: const InputDecoration(
                 filled: true,
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.all(Radius.circular(30.0))
-                ),
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.all(Radius.circular(30.0))
-                ),
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
                 border: InputBorder.none,
                 hintStyle: TextStyle(color: Color(0xff696D75)),
                 hintText: '메세지 보내기',
                 contentPadding:
-                  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 fillColor: Color(0xff2B2E32),
               ),
               maxLines: null,
-              onSubmitted: (value) {},
+              onSubmitted: controller.submitMessage,
             ),
           ),
           GestureDetector(
-            onTap: () async {},
+            onTap: () async {
+              controller.submitMessage(controller.textController.text);
+            },
             behavior: HitTestBehavior.translucent,
             child: Container(
               padding: const EdgeInsets.all(7),
@@ -97,6 +100,44 @@ class _TextFieldWidget extends GetView<ChatController> {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class _ChatBody extends GetView<ChatController> {
+  const _ChatBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      reverse: true,
+      child: StreamBuilder<List<ChatModel>>(
+        stream: controller.chatStream,
+        builder: (context, snapshot) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: List.generate(
+              snapshot.data?.length ?? 0,
+              (index) {
+                var chat = snapshot.data![index];
+                var isMine = chat.uid == controller.myUid;
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment:
+                      isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  children: [
+                    _MessageBox(
+                      date: chat.createdAt ?? DateTime.now(),
+                      isMine: isMine,
+                      message: chat.text ?? '',
+                    )
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -156,6 +197,75 @@ class _HeaderItemInfo extends GetView<ChatController> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _MessageBox extends StatelessWidget {
+  final bool isMine;
+  final String message;
+  final DateTime date;
+
+  const _MessageBox({
+    super.key,
+    this.isMine = false,
+    required this.date,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        mainAxisAlignment:
+            isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (isMine)
+            SizedBox(
+              width: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  AppFont(
+                    DateFormat('HH:mm').format(date),
+                    color: const Color(0xff6D7179),
+                    size: 12,
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(width: 10),
+          Container(
+            constraints:
+                BoxConstraints(minWidth: 100, maxWidth: Get.width * 0.7),
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: isMine ? const Color(0xffED7738) : const Color(0xff2B2E32),
+            ),
+            child: AppFont(
+              message,
+              maxLine: null,
+            ),
+          ),
+          const SizedBox(width: 10),
+          if (!isMine)
+            SizedBox(
+              width: 50,
+              child: Row(
+                children: [
+                  AppFont(
+                    DateFormat('HH:mm').format(date),
+                    color: const Color(0xff6D7179),
+                    size: 12,
+                  ),
+                ],
+              ),
+            )
+        ],
       ),
     );
   }
