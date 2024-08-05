@@ -116,6 +116,7 @@ class _ChatBody extends GetView<ChatController> {
       child: StreamBuilder<List<ChatModel>>(
         stream: controller.chatStream,
         builder: (context, snapshot) {
+          var useProfileImage = false;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: List.generate(
@@ -123,17 +124,32 @@ class _ChatBody extends GetView<ChatController> {
               (index) {
                 var chat = snapshot.data![index];
                 var isMine = chat.uid == controller.myUid;
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment:
-                      isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-                  children: [
-                    _MessageBox(
-                      date: chat.createdAt ?? DateTime.now(),
-                      isMine: isMine,
-                      message: chat.text ?? '',
-                    )
-                  ],
+                var messageGroupWidget = <Widget>[];
+                if (!useProfileImage && isMine) {
+                  useProfileImage = true;
+                  messageGroupWidget.add(CircleAvatar(
+                    backgroundImage:
+                        Image.asset('assets/images/default_profile.png').image,
+                    backgroundColor: Colors.black,
+                    radius: 18,
+                  ));
+                } else if (!isMine) {
+                  messageGroupWidget.add(const SizedBox(width: 36));
+                }
+                messageGroupWidget.add(_MessageBox(
+                  date: chat.createdAt ?? DateTime.now(),
+                  isMine: isMine,
+                  message: chat.text ?? '',
+                ));
+                useProfileImage = !isMine;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: isMine
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                      children: messageGroupWidget),
                 );
               },
             ),
