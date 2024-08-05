@@ -69,6 +69,7 @@ class _TextFieldWidget extends GetView<ChatController> {
         children: [
           Expanded(
             child: TextField(
+              controller: controller.textController,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 filled: true,
