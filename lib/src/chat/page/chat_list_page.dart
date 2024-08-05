@@ -9,8 +9,24 @@ import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/user/model/user_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class ChatListPage extends StatelessWidget {
+class ChatListPage extends StatefulWidget {
   const ChatListPage({super.key});
+
+  @override
+  State<ChatListPage> createState() => _ChatListPageState();
+}
+
+class _ChatListPageState extends State<ChatListPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    String? productId;
+    if (Get.arguments != null) {
+      productId = Get.arguments['productId'] as String?;
+    }
+    Get.find<ChatListController>().load(productId: productId);
+  }
 
   @override
   Widget build(BuildContext context) {

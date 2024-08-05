@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/src/app.dart';
+import 'package:nero_app/src/chat/page/chat_list_page.dart';
+import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'common/components/app_font.dart';
 import 'common/controller/bottom_nav_controller.dart';
 import 'home/page/home_page.dart';
@@ -14,12 +19,19 @@ class Root extends GetView<BottomNavController> {
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
         controller: controller.tabController,
-        children: const [
-          HomePage(),
-          Center(child: AppFont('동네 생활')),
-          Center(child: AppFont('내 근처')),
-          Center(child: AppFont('채팅')),
-          Center(child: AppFont('나의 네로')),
+        children: [
+          const HomePage(),
+          const Center(child: AppFont('동네 생활')),
+          const Center(child: AppFont('내 근처')),
+          const ChatListPage(),
+          Center(
+            child: GestureDetector(
+              onTap: () {
+                Get.find<AuthenticationController>().logout();
+              },
+              child: const AppFont('나의 네로'),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: Obx(
