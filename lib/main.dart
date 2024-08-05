@@ -127,6 +127,7 @@ class MyApp extends StatelessWidget {
             () {
               Get.put(ProductDetailController(
                 Get.find<ProductRepository>(),
+                Get.find<ChatRepository>(),
                 Get.find<AuthenticationController>().userModel.value,
               ));
             },

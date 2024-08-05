@@ -24,6 +24,10 @@ class ChatGroupModel extends Equatable {
 
   Map<String, dynamic> toMap() => _$ChatGroupModelToJson(this);
 
+  int get chatCount {
+    return chatters?.where((uid) => uid != owner).toList().length ?? 0;
+  }
+
   ChatGroupModel copyWith({
     DateTime? updatedAt,
     DateTime? createdAt,

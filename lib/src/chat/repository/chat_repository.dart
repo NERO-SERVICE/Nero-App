@@ -49,6 +49,14 @@ class ChatRepository extends GetxService {
         .add(chatModel.toMap());
   }
 
+  Future<ChatGroupModel?> loadAllChats(String docId) async {
+    var doc = await db.collection('chats').doc(docId).get();
+    if (doc.exists) {
+      return ChatGroupModel.fromJson(doc.data()!);
+    }
+    return null;
+  }
+
   Stream<List<ChatModel>> loadChatInfoOneStream(
       String productDocId, String targetUid) {
     return db
