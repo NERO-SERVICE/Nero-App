@@ -134,7 +134,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
         const SizedBox(width: 10),
       ],
       body: Obx(
-            () => Column(
+        () => Column(
           children: [
             SizedBox(
               width: Get.width,
@@ -165,7 +165,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
           ),
         ),
         child: Obx(
-              () => _BottomNavWidget(
+          () => _BottomNavWidget(
             product: controller.product.value,
             onLikedEvent: controller.onLikedEvent,
           ),
@@ -238,7 +238,9 @@ class _BottomNavWidget extends StatelessWidget {
           const SizedBox(width: 15),
           Expanded(child: _price()),
           Btn(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed('/chat/${product.docId}/${product.owner!.uid}/$uid');
+            },
             child: const AppFont(
               '채팅하기',
               fontWeight: FontWeight.bold,

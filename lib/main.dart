@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/app.dart';
+import 'package:nero_app/src/chat/controller/chat_controller.dart';
+import 'package:nero_app/src/chat/repository/chat_repository.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/common/controller/common_layout_controller.dart';
@@ -26,6 +28,7 @@ import 'package:nero_app/src/user/signup/page/signup_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
+import 'src/chat/page/chat_page.dart';
 import 'src/user/repository/authentication_repository.dart';
 
 late SharedPreferences prefs;
@@ -65,6 +68,7 @@ class MyApp extends StatelessWidget {
         Get.put(authenticationRepository);
         Get.put(user_repository);
         Get.put(ProductRepository(db));
+        Get.put(ChatRepository(db));
         Get.put(BottomNavController());
         Get.put(CommonLayoutController());
         Get.put(SplashController());
@@ -124,6 +128,19 @@ class MyApp extends StatelessWidget {
               Get.put(ProductDetailController(
                 Get.find<ProductRepository>(),
                 Get.find<AuthenticationController>().userModel.value,
+              ));
+            },
+          ),
+        ),
+        GetPage(
+          name: '/chat/:docId/:ownerUid/:customerUid',
+          page: () => const ChatPage(),
+          binding: BindingsBuilder(
+            () {
+              Get.put(ChatController(
+                Get.find<ChatRepository>(),
+                Get.find<UserRepository>(),
+                Get.find<ProductRepository>(),
               ));
             },
           ),
