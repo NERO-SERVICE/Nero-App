@@ -257,7 +257,13 @@ class _BottomNavWidget extends StatelessWidget {
             ),
           if (isMine)
             Btn(
-              onTap: () {},
+              onTap: () {
+                if (chatInfo.chatters != null) {
+                  Get.toNamed('/chat-list', arguments: {
+                    'productId': product.docId,
+                  });
+                }
+              },
               child: AppFont(
                 '채팅 ${chatInfo.chatCount}개',
                 fontWeight: FontWeight.bold,

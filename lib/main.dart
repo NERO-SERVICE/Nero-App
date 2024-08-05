@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/app.dart';
 import 'package:nero_app/src/chat/controller/chat_controller.dart';
+import 'package:nero_app/src/chat/controller/chat_list_controller.dart';
+import 'package:nero_app/src/chat/page/chat_list_page.dart';
 import 'package:nero_app/src/chat/repository/chat_repository.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
@@ -146,6 +148,18 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
+        GetPage(
+          name: '/chat-list',
+          page: () => const ChatListPage(),
+          binding: BindingsBuilder(() {
+            Get.put(ChatListController(
+              Get.find<ChatRepository>(),
+              Get.find<ProductRepository>(),
+              Get.find<UserRepository>(),
+              Get.find<AuthenticationController>().userModel.value.uid ?? '',
+            ));
+          }),
+        )
       ],
     );
   }
