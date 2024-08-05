@@ -10,14 +10,15 @@ import 'package:nero_app/src/user/model/user_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatListPage extends StatefulWidget {
-  const ChatListPage({super.key});
+  final bool useBackBtn;
+
+  const ChatListPage({super.key, this.useBackBtn = false});
 
   @override
   State<ChatListPage> createState() => _ChatListPageState();
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-
   @override
   void initState() {
     super.initState();
@@ -36,13 +37,15 @@ class _ChatListPageState extends State<ChatListPage> {
           '채팅',
           size: 20,
         ),
-        leading: GestureDetector(
-          onTap: Get.back,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: SvgPicture.asset('assets/svg/icons/back.svg'),
-          ),
-        ),
+        leading: widget.useBackBtn
+            ? GestureDetector(
+                onTap: Get.back,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SvgPicture.asset('assets/svg/icons/back.svg'),
+                ),
+              )
+            : Container(),
       ),
       body: const ChatScrollWidget(),
     );

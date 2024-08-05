@@ -153,6 +153,10 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
+        GetPage(
+          name: '/chat-list',
+          page: () => const ChatListPage(useBackBtn: true),
+        )
       ],
     );
   }
