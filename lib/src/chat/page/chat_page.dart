@@ -128,7 +128,7 @@ class _ChatBody extends GetView<ChatController> {
                 var messageGroupWidget = <Widget>[];
                 var currentDateYYYYMMDD =
                     DateFormat('yyyyMMdd').format(chat.createdAt!);
-                if (!useProfileImage && isMine) {
+                if (!useProfileImage && !isMine) {
                   useProfileImage = true;
                   messageGroupWidget.add(CircleAvatar(
                     backgroundImage:
