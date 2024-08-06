@@ -45,6 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
 	<array>
         <dict>
             <key>CFBundleTypeRole</key>
@@ -53,6 +54,7 @@
             <string>com.example.nero_client</string>
             <key>CFBundleURLSchemes</key>
             <array>
+                <string>kakaoe3da93b3ceaab701f6b768dc3268743b</string>
                 <string>com.googleusercontent.apps.11058933581-1sq7hhc96pvf63ksovv4h7rrbuuhodfh</string>
             </array>
         </dict>

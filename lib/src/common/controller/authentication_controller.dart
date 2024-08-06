@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:nero_app/src/user/repository/user_repository.dart';
 
-import '../../user/controller/user_repository.dart';
 import '../../user/model/user_model.dart';
 import '../../user/repository/authentication_repository.dart';
 import '../enum/authentication_status.dart';

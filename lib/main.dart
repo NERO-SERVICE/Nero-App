@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:nero_app/kakao/home/page/mypage.dart';
 import 'package:nero_app/src/app.dart';
 import 'package:nero_app/src/chat/controller/chat_controller.dart';
 import 'package:nero_app/src/chat/controller/chat_list_controller.dart';
@@ -22,9 +24,9 @@ import 'package:nero_app/src/product/write/controller/product_write_controller.d
 import 'package:nero_app/src/product/write/page/product_write_page.dart';
 import 'package:nero_app/src/root.dart';
 import 'package:nero_app/src/splash/controller/splash_controller.dart';
-import 'package:nero_app/src/user/controller/user_repository.dart';
 import 'package:nero_app/src/user/login/controller/login_controller.dart';
 import 'package:nero_app/src/user/login/page/login_page.dart';
+import 'package:nero_app/src/user/repository/user_repository.dart';
 import 'package:nero_app/src/user/signup/controller/signup_controller.dart';
 import 'package:nero_app/src/user/signup/page/signup_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,8 +37,10 @@ import 'src/user/repository/authentication_repository.dart';
 
 late SharedPreferences prefs;
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  KakaoSdk.init(nativeAppKey: 'e3da93b3ceaab701f6b768dc3268743b');
   prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -65,7 +69,7 @@ class MyApp extends StatelessWidget {
       ),
       initialBinding: BindingsBuilder(() {
         var authenticationRepository =
-            AuthenticationRepository(FirebaseAuth.instance);
+        AuthenticationRepository(FirebaseAuth.instance);
         var user_repository = UserRepository(db);
         Get.put(authenticationRepository);
         Get.put(user_repository);
@@ -81,15 +85,16 @@ class MyApp extends StatelessWidget {
         ));
         Get.put(CloudFirebaseRepository(FirebaseStorage.instance));
         Get.lazyPut<ChatListController>(() => ChatListController(
-              Get.find<ChatRepository>(),
-              Get.find<ProductRepository>(),
-              Get.find<UserRepository>(),
-              Get.find<AuthenticationController>().userModel.value.uid ?? '',
-            ),
+          Get.find<ChatRepository>(),
+          Get.find<ProductRepository>(),
+          Get.find<UserRepository>(),
+          Get.find<AuthenticationController>().userModel.value.uid ?? '',
+        ),
           fenix: true,
         );
       }),
       getPages: [
+        GetPage(name: '/kakaomypage', page: () => MyPage()),
         GetPage(name: '/', page: () => const App()),
         GetPage(
             name: '/home',
@@ -101,9 +106,9 @@ class MyApp extends StatelessWidget {
           name: '/login',
           page: () => const LoginPage(),
           binding: BindingsBuilder(
-            () {
+                () {
               Get.lazyPut<LoginController>(
-                  () => LoginController(Get.find<AuthenticationRepository>()));
+                      () => LoginController(Get.find<AuthenticationRepository>()));
             },
           ),
         ),
@@ -111,7 +116,7 @@ class MyApp extends StatelessWidget {
           name: '/signup/:uid',
           page: () => const SignupPage(),
           binding: BindingsBuilder(
-            () {
+                () {
               Get.create<SignupController>(() => SignupController(
                   Get.find<UserRepository>(), Get.parameters['uid'] as String));
             },
@@ -121,7 +126,7 @@ class MyApp extends StatelessWidget {
           name: '/product/write',
           page: () => ProductWritePage(),
           binding: BindingsBuilder(
-            () {
+                () {
               Get.put(ProductWriteController(
                 Get.find<AuthenticationController>().userModel.value,
                 Get.find<ProductRepository>(),
@@ -134,7 +139,7 @@ class MyApp extends StatelessWidget {
           name: '/product/detail/:docId',
           page: () => ProductDetailView(),
           binding: BindingsBuilder(
-            () {
+                () {
               Get.put(ProductDetailController(
                 Get.find<ProductRepository>(),
                 Get.find<ChatRepository>(),
@@ -147,7 +152,7 @@ class MyApp extends StatelessWidget {
           name: '/chat/:docId/:ownerUid/:customerUid',
           page: () => const ChatPage(),
           binding: BindingsBuilder(
-            () {
+                () {
               Get.put(ChatController(
                 Get.find<ChatRepository>(),
                 Get.find<UserRepository>(),

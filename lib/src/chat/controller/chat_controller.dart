@@ -6,8 +6,8 @@ import 'package:nero_app/src/chat/repository/chat_repository.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
-import 'package:nero_app/src/user/controller/user_repository.dart';
 import 'package:nero_app/src/user/model/user_model.dart';
+import 'package:nero_app/src/user/repository/user_repository.dart';
 
 class ChatController extends GetxController {
   final TextEditingController textController = TextEditingController();

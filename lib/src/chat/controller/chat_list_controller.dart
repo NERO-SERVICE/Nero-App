@@ -6,8 +6,8 @@ import 'package:nero_app/src/chat/model/chat_group_model.dart';
 import 'package:nero_app/src/chat/repository/chat_repository.dart';
 import 'package:nero_app/src/common/model/product.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
-import 'package:nero_app/src/user/controller/user_repository.dart';
 import 'package:nero_app/src/user/model/user_model.dart';
+import 'package:nero_app/src/user/repository/user_repository.dart';
 
 class ChatListController extends GetxController {
   final ChatRepository _chatRepository;

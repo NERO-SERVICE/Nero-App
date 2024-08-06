@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/btn.dart';
+import 'package:nero_app/kakao/user/controller/signup_controller.dart';
+import 'package:nero_app/kakao/user/repository/user_repository.dart';
+import 'package:nero_app/kakao/api_service.dart';
 
 import '../../../common/components/app_font.dart';
 import '../controller/login_controller.dart';
@@ -68,28 +71,59 @@ class LoginPage extends GetView<LoginController> {
   }
 
   Widget _snsLoginBtn() {
+    final signupController = Get.put(
+      SignupController(userRepository: UserRepository(apiService: ApiService())),
+    );
+
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 80),
-        child: Column(
-          children: [
-            Btn(
-              color: Colors.white,
-              onTap: controller.googleLogin,
-              child: Row(
-                children: [
-                  Image.asset('assets/images/google.png'),
-                  const SizedBox(
-                    width: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 80),
+      child: Column(
+        children: [
+          Btn(
+            color: Colors.white,
+            onTap: controller.googleLogin,
+            child: Row(
+              children: [
+                Image.asset('assets/images/google.png'),
+                const SizedBox(
+                  width: 30,
+                ),
+                const AppFont(
+                  'Google로 계속하기',
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Btn(
+            color: Colors.yellow,
+            onTap: () async {
+              await signupController.loginWithKakao();
+            },
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Image.asset(
+                    'assets/images/kakao.png',
+                    fit: BoxFit.contain,
                   ),
-                  const AppFont(
-                    'Google로 계속하기',
-                    color: Colors.black,
-                  )
-                ],
-              ),
-            )
-          ],
-        ));
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                const AppFont(
+                  'Kakao로 계속하기',
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/src/app.dart';
 import 'package:nero_app/src/chat/page/chat_list_page.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
+import 'package:nero_app/src/user/repository/authentication_repository.dart';
 import 'common/components/app_font.dart';
 import 'common/controller/bottom_nav_controller.dart';
 import 'home/page/home_page.dart';

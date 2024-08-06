@@ -32,6 +32,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def kakaoApiKey = localProperties.getProperty("kakaoApiKey")
+
 android {
     namespace = "com.nero.nero_app"
     compileSdk = flutter.compileSdkVersion
@@ -51,6 +53,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+
+        manifestPlaceholders += [kakaoApiKey:kakaoApiKey]
     }
 
     buildTypes {

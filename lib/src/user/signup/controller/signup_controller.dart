@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:nero_app/src/user/repository/user_repository.dart';
 
-import '../../controller/user_repository.dart';
 import '../../model/user_model.dart';
 
 class SignupController extends GetxController {

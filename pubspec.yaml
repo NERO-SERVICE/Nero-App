@@ -57,7 +57,9 @@ dependencies:
   timeago: ^3.3.0
   flutter_keyboard_visibility: ^6.0.0
   http: ^1.2.2
-  kakao_flutter_sdk: ^1.9.5
+  kakao_flutter_sdk_user: ^1.2.1
+  dio: ^5.5.0+1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
