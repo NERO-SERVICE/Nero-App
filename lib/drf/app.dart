@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/src/init/page/init_start_page.dart';
 import 'package:nero_app/src/splash/page/splash_page.dart';
-import '../main.dart';
-import 'init/page/init_start_page.dart';
+import '../../main.dart';
 
 class App extends StatefulWidget {
   const App({super.key});

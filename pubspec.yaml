@@ -60,6 +60,7 @@ dependencies:
   kakao_flutter_sdk_user: ^1.2.1
   dio: ^5.5.0+1
   provider: ^6.1.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -96,6 +97,7 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/svg/icons/
+    - env
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

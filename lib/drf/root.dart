@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/src/chat/page/chat_list_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/controller/authentication_controller.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
-import 'package:nero_app/src/chat/page/chat_list_page.dart';
 import 'package:nero_app/src/home/page/home_page.dart';
 
 class Root extends GetView<BottomNavController> {
@@ -32,7 +32,7 @@ class Root extends GetView<BottomNavController> {
         ],
       ),
       bottomNavigationBar: Obx(
-            () => BottomNavigationBar(
+        () => BottomNavigationBar(
           currentIndex: controller.menuIndex.value,
           type: BottomNavigationBarType.fixed,
           backgroundColor: const Color(0xff212123),
@@ -57,7 +57,8 @@ class Root extends GetView<BottomNavController> {
               label: '동네 생활',
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/arround-life-off.svg'),
+                child:
+                    SvgPicture.asset('assets/svg/icons/arround-life-off.svg'),
               ),
               activeIcon: Padding(
                 padding: const EdgeInsets.all(8.0),

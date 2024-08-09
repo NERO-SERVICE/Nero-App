@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/drf/splash/enum/drf_step_type.dart';
+import 'package:nero_app/src/common/controller/authentication_controller.dart';
+import 'package:nero_app/src/common/controller/data_load_controller.dart';
 import 'package:nero_app/src/common/enum/authentication_status.dart';
+
 import '../../common/components/app_font.dart';
 import '../../common/components/getx_listener.dart';
-import '../../common/controller/authentication_controller.dart';
-import '../../common/controller/data_load_controller.dart';
-import '../controller/splash_controller.dart';
-import '../enum/step_type.dart';
+import '../controller/drf_splash_controller.dart';
 
-class SplashPage extends GetView<SplashController> {
-  const SplashPage({super.key});
+class DrfSplashPage extends GetView<DrfSplashController> {
+  const DrfSplashPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +23,9 @@ class SplashPage extends GetView<SplashController> {
                 Get.offNamed('/home');
                 break;
               case AuthenticationStatus.unAuthenticated:
-                var userModel =
-                    Get.find<AuthenticationController>().userModel.value;
-                await Get.offNamed('/signup/${userModel?.uid}');
+                var drfUserModel =
+                    Get.find<AuthenticationController>().drfUserModel.value;
+                await Get.offNamed('/signup/${drfUserModel.uid}');
                 Get.find<AuthenticationController>().reload();
                 break;
               case AuthenticationStatus.unknown:
@@ -38,28 +39,28 @@ class SplashPage extends GetView<SplashController> {
           child: GetxListener<bool>(
             listen: (bool value) {
               if (value) {
-                controller.loadStep(StepType.authCheck);
+                controller.loadStep(DrfStepType.authCheck);
               }
             },
             stream: Get.find<DataLoadController>().isDataLoad,
-            child: GetxListener<StepType>(
+            child: GetxListener<DrfStepType>(
               initCall: () {
-                controller.loadStep(StepType.dataLoad);
+                controller.loadStep(DrfStepType.dataLoad);
               },
-              listen: (StepType? value) {
+              listen: (DrfStepType? value) {
                 if (value == null) return;
                 switch (value) {
-                  case StepType.init:
-                  case StepType.dataLoad:
+                  case DrfStepType.init:
+                  case DrfStepType.dataLoad:
                     Get.find<DataLoadController>().loadData();
                     break;
-                  case StepType.authCheck:
+                  case DrfStepType.authCheck:
                     Get.find<AuthenticationController>().authCheck();
                     break;
                 }
               },
               stream: controller.loadStep,
-              child: const _SplashView(),
+              child: const _DrfSplashView(),
             ),
           ),
         ),
@@ -68,8 +69,8 @@ class SplashPage extends GetView<SplashController> {
   }
 }
 
-class _SplashView extends GetView<SplashController> {
-  const _SplashView({super.key});
+class _DrfSplashView extends GetView<DrfSplashController> {
+  const _DrfSplashView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class _SplashView extends GetView<SplashController> {
           child: Column(
             children: [
               Obx(
-                    () {
+                () {
                   return Text(
                     '${controller.loadStep.value.name}중 입니다.',
                     style: const TextStyle(color: Colors.white),

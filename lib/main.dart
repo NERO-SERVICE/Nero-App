@@ -3,44 +3,41 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:nero_app/kakao/home/page/mypage.dart';
+import 'package:nero_app/drf/api_service.dart';
+import 'package:nero_app/drf/home/controller/drf_home_controller.dart';
+import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
+import 'package:nero_app/drf/user/repository/drf_user_repository.dart';
+import 'package:nero_app/route/drf_routes.dart';
+import 'package:nero_app/route/firebase_routes.dart';
 import 'package:nero_app/src/app.dart';
-import 'package:nero_app/src/chat/controller/chat_controller.dart';
 import 'package:nero_app/src/chat/controller/chat_list_controller.dart';
-import 'package:nero_app/src/chat/page/chat_list_page.dart';
 import 'package:nero_app/src/chat/repository/chat_repository.dart';
-import 'package:nero_app/src/common/controller/authentication_controller.dart';
+import 'package:nero_app/src/common/controller/authentication_controller.dart'
+    as firebase_auth_cont;
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/common/controller/common_layout_controller.dart';
 import 'package:nero_app/src/common/controller/data_load_controller.dart';
 import 'package:nero_app/src/common/repository/cloud_firebase_repository.dart';
-import 'package:nero_app/src/home/controller/home_controller.dart';
-import 'package:nero_app/src/product/detail/controller/product_detail_controller.dart';
-import 'package:nero_app/src/product/detail/page/product_detail_view.dart';
 import 'package:nero_app/src/product/repository/product_repository.dart';
-import 'package:nero_app/src/product/write/controller/product_write_controller.dart';
-import 'package:nero_app/src/product/write/page/product_write_page.dart';
-import 'package:nero_app/src/root.dart';
 import 'package:nero_app/src/splash/controller/splash_controller.dart';
-import 'package:nero_app/src/user/login/controller/login_controller.dart';
-import 'package:nero_app/src/user/login/page/login_page.dart';
-import 'package:nero_app/src/user/repository/user_repository.dart';
-import 'package:nero_app/src/user/signup/controller/signup_controller.dart';
-import 'package:nero_app/src/user/signup/page/signup_page.dart';
+import 'package:nero_app/src/user/repository/authentication_repository.dart'
+    as firebase_auth;
+import 'package:nero_app/src/user/repository/user_repository.dart'
+    as firebase_user_repo;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
-import 'src/chat/page/chat_page.dart';
-import 'src/user/repository/authentication_repository.dart';
 
 late SharedPreferences prefs;
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  KakaoSdk.init(nativeAppKey: 'e3da93b3ceaab701f6b768dc3268743b');
+  await dotenv.load();
+
+  KakaoSdk.init(nativeAppKey: dotenv.env['kakaoAppKey']);
   prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -54,6 +51,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var db = FirebaseFirestore.instance;
+    bool useKakaoAuth = dotenv.env['USE_KAKAO_AUTH'] == 'true';
+
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: '/',
@@ -68,103 +67,55 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xff212123),
       ),
       initialBinding: BindingsBuilder(() {
-        var authenticationRepository =
-        AuthenticationRepository(FirebaseAuth.instance);
-        var user_repository = UserRepository(db);
-        Get.put(authenticationRepository);
-        Get.put(user_repository);
+        // 카카오 인증
+        Get.put(ApiService());
+        var kakaoAuthRepo =
+            DrfAuthenticationRepository(apiService: Get.find<ApiService>());
+        var kakaoUserRepo =
+            DrfUserRepository(apiService: Get.find<ApiService>());
+        Get.put<DrfAuthenticationRepository>(kakaoAuthRepo);
+        Get.put<DrfUserRepository>(kakaoUserRepo);
+        var apiService = ApiService();
+        Get.put(DrfHomeController(userRepository: kakaoUserRepo));
+
+        // 구글 인증
+        var firebaseAuthRepo =
+            firebase_auth.AuthenticationRepository(FirebaseAuth.instance);
+        var firebaseUserRepo = firebase_user_repo.UserRepository(db);
+        Get.put<firebase_auth.AuthenticationRepository>(firebaseAuthRepo);
+        Get.put<firebase_user_repo.UserRepository>(firebaseUserRepo);
         Get.put(ProductRepository(db));
         Get.put(ChatRepository(db));
         Get.put(BottomNavController());
         Get.put(CommonLayoutController());
         Get.put(SplashController());
         Get.put(DataLoadController());
-        Get.put(AuthenticationController(
-          authenticationRepository,
-          user_repository,
+        Get.put(firebase_auth_cont.AuthenticationController(
+          firebaseAuthRepo,
+          firebaseUserRepo,
+          kakaoAuthRepo,
+          kakaoUserRepo,
+          apiService,
         ));
         Get.put(CloudFirebaseRepository(FirebaseStorage.instance));
-        Get.lazyPut<ChatListController>(() => ChatListController(
-          Get.find<ChatRepository>(),
-          Get.find<ProductRepository>(),
-          Get.find<UserRepository>(),
-          Get.find<AuthenticationController>().userModel.value.uid ?? '',
-        ),
+        Get.lazyPut<ChatListController>(
+          () => ChatListController(
+            Get.find<ChatRepository>(),
+            Get.find<ProductRepository>(),
+            Get.find<firebase_user_repo.UserRepository>(),
+            Get.find<firebase_auth_cont.AuthenticationController>()
+                    .userModel
+                    .value
+                    .uid ??
+                '',
+          ),
           fenix: true,
         );
       }),
       getPages: [
-        GetPage(name: '/kakaomypage', page: () => MyPage()),
         GetPage(name: '/', page: () => const App()),
-        GetPage(
-            name: '/home',
-            page: () => const Root(),
-            binding: BindingsBuilder(() {
-              Get.put(HomeController(Get.find<ProductRepository>()));
-            })),
-        GetPage(
-          name: '/login',
-          page: () => const LoginPage(),
-          binding: BindingsBuilder(
-                () {
-              Get.lazyPut<LoginController>(
-                      () => LoginController(Get.find<AuthenticationRepository>()));
-            },
-          ),
-        ),
-        GetPage(
-          name: '/signup/:uid',
-          page: () => const SignupPage(),
-          binding: BindingsBuilder(
-                () {
-              Get.create<SignupController>(() => SignupController(
-                  Get.find<UserRepository>(), Get.parameters['uid'] as String));
-            },
-          ),
-        ),
-        GetPage(
-          name: '/product/write',
-          page: () => ProductWritePage(),
-          binding: BindingsBuilder(
-                () {
-              Get.put(ProductWriteController(
-                Get.find<AuthenticationController>().userModel.value,
-                Get.find<ProductRepository>(),
-                Get.find<CloudFirebaseRepository>(),
-              ));
-            },
-          ),
-        ),
-        GetPage(
-          name: '/product/detail/:docId',
-          page: () => ProductDetailView(),
-          binding: BindingsBuilder(
-                () {
-              Get.put(ProductDetailController(
-                Get.find<ProductRepository>(),
-                Get.find<ChatRepository>(),
-                Get.find<AuthenticationController>().userModel.value,
-              ));
-            },
-          ),
-        ),
-        GetPage(
-          name: '/chat/:docId/:ownerUid/:customerUid',
-          page: () => const ChatPage(),
-          binding: BindingsBuilder(
-                () {
-              Get.put(ChatController(
-                Get.find<ChatRepository>(),
-                Get.find<UserRepository>(),
-                Get.find<ProductRepository>(),
-              ));
-            },
-          ),
-        ),
-        GetPage(
-          name: '/chat-list',
-          page: () => const ChatListPage(useBackBtn: true),
-        )
+        ...FirebaseRoutes.routes, // Firebase 라우트
+        ...DrfRoutes.routes, // DRF 라우트
       ],
     );
   }

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/btn.dart';
-import 'package:nero_app/kakao/user/controller/signup_controller.dart';
-import 'package:nero_app/kakao/user/repository/user_repository.dart';
-import 'package:nero_app/kakao/api_service.dart';
+import 'package:nero_app/src/user/login/controller/login_controller.dart';
 
-import '../../../common/components/app_font.dart';
-import '../controller/login_controller.dart';
-
-class LoginPage extends GetView<LoginController> {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   Widget _logoView() {
@@ -71,17 +67,13 @@ class LoginPage extends GetView<LoginController> {
   }
 
   Widget _snsLoginBtn() {
-    final signupController = Get.put(
-      SignupController(userRepository: UserRepository(apiService: ApiService())),
-    );
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Column(
         children: [
           Btn(
             color: Colors.white,
-            onTap: controller.googleLogin,
+            onTap: () => Get.find<LoginController>().googleLogin(),
             child: Row(
               children: [
                 Image.asset('assets/images/google.png'),
@@ -97,10 +89,8 @@ class LoginPage extends GetView<LoginController> {
           ),
           const SizedBox(height: 10),
           Btn(
-            color: Colors.yellow,
-            onTap: () async {
-              await signupController.loginWithKakao();
-            },
+            color: Colors.white,
+            onTap: () => Get.find<LoginController>().kakaoLogin(),
             child: Row(
               children: [
                 SizedBox(
