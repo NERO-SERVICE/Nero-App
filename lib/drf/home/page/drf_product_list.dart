@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/drf/home/controller/drf_product_service.dart';
 import 'package:nero_app/drf/home/page/drf_home_detail_page.dart';
+import 'package:nero_app/drf/home/page/drf_home_write_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 
 class DrfProductListPage extends StatefulWidget {
@@ -57,6 +59,12 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
                 );
               },
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => DrfHomeWritePage());
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
