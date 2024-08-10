@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/drf/home/page/drf_home_page.dart';
 import 'package:nero_app/drf/root.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/init/page/init_start_page.dart';
@@ -14,6 +15,7 @@ class DrfRoutes {
         Get.put(SplashController());
       }),
     ),
+    GetPage(name: '/drf/home', page: () => DrfHomePage()),
     GetPage(
       name: '/drf/init',
       page: () => InitStartPage(

@@ -57,6 +57,7 @@ class DrfAuthenticationRepository extends GetxService {
       user.value = DrfUserModel.fromJson(responseData['user']);
       print(user.value);
       print("유저 ID: ${user.value?.uid}");
+      Get.offAllNamed('/drf/home');
     } catch (e) {
       print('Kakao login failed: $e');
     } finally {
@@ -67,6 +68,7 @@ class DrfAuthenticationRepository extends GetxService {
   Future<void> logout() async {
     user.value = null;
     await clearDrfTokens(); // 로그아웃 시 토큰 삭제
+    Get.offAllNamed('/login'); // 로그인 페이지로 라우팅
   }
 
   // DRF 회원가입 함수

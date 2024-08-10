@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DioService { // 로그인유저 세션 관리
+class DioService {
   Dio _dio = Dio();
   String _accessToken = '';
   String _refreshToken = '';
@@ -11,29 +11,30 @@ class DioService { // 로그인유저 세션 관리
   DioService() {
     BaseOptions options = BaseOptions(
       baseUrl: "https://neromakebrain.site/api/v1",
-      connectTimeout: const Duration(seconds: 10),  // 연결 타임아웃 시간
-      receiveTimeout: const Duration(seconds: 15),  // 응답 타임아웃 시간
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
     );
 
     _dio = Dio(options);
     _initializeInterceptors();
   }
 
-  Future<void> _initializeTokens() async { // 서버 토큰 클라이언트에 저장
+  Future<void> _initializeTokens() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _accessToken = prefs.getString('accessToken') ?? '';
     _refreshToken = prefs.getString('refreshToken') ?? '';
   }
 
-  void _initializeInterceptors() { // accessToke 만료 시 서버에 refreshToken으로 요청
+  void _initializeInterceptors() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         await _initializeTokens();
         if (_accessToken.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $_accessToken';
+          print("accessToken: ${_accessToken}");
         }
         return handler.next(options);
       },
@@ -55,6 +56,7 @@ class DioService { // 로그인유저 세션 관리
                 queryParameters: opts.queryParameters);
             return handler.resolve(response);
           } catch (error) {
+            print('Failed to refresh token: $error');
             return handler.reject(e);
           }
         }
@@ -72,8 +74,12 @@ class DioService { // 로그인유저 세션 관리
         _accessToken = response.data['accessToken'];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('accessToken', _accessToken);
+      } else {
+        print('Failed to refresh token: ${response.data}');
+        throw Exception('Failed to refresh token');
       }
     } catch (e) {
+      print('Failed to refresh token: $e');
       throw Exception('Failed to refresh token');
     }
   }
@@ -94,4 +100,3 @@ class DioService { // 로그인유저 세션 관리
     return _dio.delete(url, data: data);
   }
 }
-
