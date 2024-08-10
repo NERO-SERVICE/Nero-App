@@ -13,6 +13,12 @@ class LoginController extends GetxController {
   }
 
   void kakaoLogin() async {
+    // final check = drfAuthenticationRepository.getDrfAccessToken();
     await drfAuthenticationRepository.signUpWithKakao();
+    // if(check == null){
+    //   await drfAuthenticationRepository.signUpWithKakao();
+    // } else{
+    //   await drfAuthenticationRepository.loginWithKakao();
+    // }
   }
 }
