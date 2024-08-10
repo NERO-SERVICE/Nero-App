@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:nero_app/drf/api_service.dart';
-import 'package:nero_app/drf/home/controller/drf_home_controller.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/drf/user/repository/drf_user_repository.dart';
 import 'package:nero_app/route/drf_routes.dart';
@@ -51,8 +49,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var db = FirebaseFirestore.instance;
-    bool useKakaoAuth = dotenv.env['USE_KAKAO_AUTH'] == 'true';
-
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: '/',
@@ -67,16 +63,10 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xff212123),
       ),
       initialBinding: BindingsBuilder(() {
-        // 카카오 인증
-        Get.put(ApiService());
-        var kakaoAuthRepo =
-            DrfAuthenticationRepository(apiService: Get.find<ApiService>());
-        var kakaoUserRepo =
-            DrfUserRepository(apiService: Get.find<ApiService>());
-        Get.put<DrfAuthenticationRepository>(kakaoAuthRepo);
-        Get.put<DrfUserRepository>(kakaoUserRepo);
-        var apiService = ApiService();
-        Get.put(DrfHomeController(userRepository: kakaoUserRepo));
+        // // 카카오 인증
+        var kakaoAuthRepo = Get.put(DrfAuthenticationRepository());
+        var kakaoUserRepo = Get.put(
+            DrfUserRepository(drfAuthenticationRepository: kakaoAuthRepo));
 
         // 구글 인증
         var firebaseAuthRepo =
@@ -95,7 +85,7 @@ class MyApp extends StatelessWidget {
           firebaseUserRepo,
           kakaoAuthRepo,
           kakaoUserRepo,
-          apiService,
+          // apiService,
         ));
         Get.put(CloudFirebaseRepository(FirebaseStorage.instance));
         Get.lazyPut<ChatListController>(

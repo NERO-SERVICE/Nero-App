@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
-import 'package:nero_app/drf/api_service.dart';
 import 'package:nero_app/drf/user/model/drf_user_model.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/drf/user/repository/drf_user_repository.dart';
 import 'package:nero_app/src/user/model/user_model.dart';
 import 'package:nero_app/src/user/repository/authentication_repository.dart'
-as firebase_auth;
+    as firebase_auth;
 import 'package:nero_app/src/user/repository/user_repository.dart'
-as firebase_user_repo;
+    as firebase_user_repo;
 
 import '../enum/authentication_status.dart';
 
@@ -16,15 +15,13 @@ class AuthenticationController extends GetxController {
   final firebase_user_repo.UserRepository firebaseUserRepository;
   final DrfAuthenticationRepository kakaoAuthRepo;
   final DrfUserRepository kakaoUserRepo;
-  final ApiService apiService;
 
   AuthenticationController(
-      this.firebaseAuthRepo,
-      this.firebaseUserRepository,
-      this.kakaoAuthRepo,
-      this.kakaoUserRepo,
-      this.apiService,
-      );
+    this.firebaseAuthRepo,
+    this.firebaseUserRepository,
+    this.kakaoAuthRepo,
+    this.kakaoUserRepo,
+  );
 
   Rx<AuthenticationStatus> status = AuthenticationStatus.init.obs;
   Rx<UserModel> userModel = const UserModel().obs;
@@ -59,16 +56,19 @@ class AuthenticationController extends GetxController {
 
   void _userStateChangedEvent(UserModel? user) async {
     if (user == null) {
-      print("---authentication_controller/authCheck/_userStateChangedEvent => unknown---");
+      print(
+          "---authentication_controller/authCheck/_userStateChangedEvent => unknown---");
       status(AuthenticationStatus.unknown);
     } else {
       var result = await firebaseUserRepository.findUserOne(user.uid!);
       if (result == null) {
-        print("---authentication_controller/authCheck/_userStateChangedEvent => unAuthenticated---");
+        print(
+            "---authentication_controller/authCheck/_userStateChangedEvent => unAuthenticated---");
         userModel(user);
         status(AuthenticationStatus.unAuthenticated);
       } else {
-        print("---authentication_controller/authCheck/_userStateChangedEvent => authentication---");
+        print(
+            "---authentication_controller/authCheck/_userStateChangedEvent => authentication---");
         status(AuthenticationStatus.authentication);
         userModel(result);
       }
@@ -77,16 +77,19 @@ class AuthenticationController extends GetxController {
 
   void _drfUserStateChangedEvent(DrfUserModel? user) async {
     if (user == null) {
-      print("---authentication_controller/authCheck/drf_userStateChangedEvent => unknown---");
+      print(
+          "---authentication_controller/authCheck/drf_userStateChangedEvent => unknown---");
       status(AuthenticationStatus.unknown);
     } else {
       var result = await kakaoUserRepo.findUserOne(user.uid!);
       if (result == null) {
-        print("---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
+        print(
+            "---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
         drfUserModel(user);
         status(AuthenticationStatus.unAuthenticated);
       } else {
-        print("---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
+        print(
+            "---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
         status(AuthenticationStatus.authentication);
         drfUserModel(result);
         Get.toNamed('/drf/home', arguments: drfUserModel.value);
@@ -104,7 +107,6 @@ class AuthenticationController extends GetxController {
     }
     status(AuthenticationStatus.unknown);
   }
-
 
   Future<void> loginWithGoogle() async {
     isUsingGoogleAuth.value = false;

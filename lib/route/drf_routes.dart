@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:nero_app/drf/home/controller/drf_home_controller.dart';
-import 'package:nero_app/drf/home/page/drf_home_page.dart';
 import 'package:nero_app/drf/root.dart';
 import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/src/init/page/init_start_page.dart';
@@ -9,13 +7,6 @@ import 'package:nero_app/src/splash/page/splash_page.dart';
 
 class DrfRoutes {
   static final routes = [
-    GetPage(
-      name: '/drf/home',
-      page: () => const DrfHomePage(),
-      binding: BindingsBuilder(() {
-        Get.put(DrfHomeController(userRepository: Get.find()));
-      }),
-    ),
     GetPage(
       name: '/drf',
       page: () => const SplashPage(),
