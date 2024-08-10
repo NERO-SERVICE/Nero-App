@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
 class DrfProduct extends Equatable {
-  final String docId;
+  final int id;
   final String title;
   final String? description;
   final int productPrice;
   final bool isFree;
   final List<String> imageUrls;
-  final int owner; // Assuming owner is represented by user ID
+  final int owner;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int viewCount;
@@ -15,10 +15,10 @@ class DrfProduct extends Equatable {
   final List<dynamic>? wantTradeLocation;
   final String? wantTradeLocationLabel;
   final String categoryType;
-  final List<int> likers; // Assuming likers are represented by user IDs
+  final List<int> likers;
 
   DrfProduct({
-    required this.docId,
+    required this.id,
     required this.title,
     this.description,
     required this.productPrice,
@@ -35,15 +35,14 @@ class DrfProduct extends Equatable {
     required this.likers,
   });
 
-  // Factory constructor to create an instance of DrfProduct from JSON
   factory DrfProduct.fromJson(Map<String, dynamic> json) {
     return DrfProduct(
-      docId: json['docId'] ?? '',
+      id: json['id'] ?? 0,
       title: json['title'] ?? '',
       description: json['description'],
       productPrice: json['productPrice'] ?? 0,
       isFree: json['isFree'] ?? false,
-      imageUrls: (json['image_urls'] as List<dynamic>).map((e) => e.toString()).toList(),
+      imageUrls: (json['imageUrls'] as List<dynamic>).map((e) => e.toString()).toList(),
       owner: json['owner'] ?? 0,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
@@ -56,15 +55,14 @@ class DrfProduct extends Equatable {
     );
   }
 
-  // Method to convert an instance of DrfProduct to JSON
   Map<String, dynamic> toJson() {
     return {
-      'docId': docId,
+      'id': id,
       'title': title,
       'description': description,
       'productPrice': productPrice,
       'isFree': isFree,
-      'image_urls': imageUrls,
+      'imageUrls': imageUrls,
       'owner': owner,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
@@ -79,7 +77,7 @@ class DrfProduct extends Equatable {
 
   @override
   List<Object?> get props => [
-    docId,
+    id,
     title,
     description,
     productPrice,

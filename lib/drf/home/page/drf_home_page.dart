@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nero_app/drf/home/controller/drf_product_service.dart';
 import 'package:nero_app/drf/home/page/drf_product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrfHomePage extends StatelessWidget {
-  final DrfProductService _productService = DrfProductService();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

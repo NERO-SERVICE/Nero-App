@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nero_app/drf/home/controller/drf_product_service.dart';
+import 'package:nero_app/drf/home/page/drf_home_detail_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 
 class DrfProductListPage extends StatefulWidget {
@@ -37,18 +38,25 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
       body: _products.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount: _products.length,
-        itemBuilder: (context, index) {
-          final product = _products[index];
-          return ListTile(
-            title: Text(product.title),
-            subtitle: Text(product.description ?? 'No description available'),
-            onTap: () {
-              // 상품 상세 페이지로 이동
-            },
-          );
-        },
-      ),
+              itemCount: _products.length,
+              itemBuilder: (context, index) {
+                final product = _products[index];
+                return ListTile(
+                  title: Text(product.title),
+                  subtitle: Text(product.description ?? 'No description'),
+                  onTap: () {
+                    // Product 상세 페이지로 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DrfProductDetailPage(productId: product.id),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
