@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:nero_app/drf/dio_service.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 
 class DrfProductService {
   final DioService _dio = DioService();
+  ScrollController scrollController = ScrollController();
 
   // product 리스트 불러오기
   Future<List<DrfProduct>> getProducts() async {

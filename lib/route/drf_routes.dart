@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
-import 'package:nero_app/drf/home/page/drf_home_page.dart';
-import 'package:nero_app/drf/root.dart';
-import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
+import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
+import 'package:nero_app/drf/drf_root.dart';
+import 'package:nero_app/drf/home/page/drf_home_detail_page.dart';
+import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/src/init/page/init_start_page.dart';
 import 'package:nero_app/src/splash/controller/splash_controller.dart';
 import 'package:nero_app/src/splash/page/splash_page.dart';
+import 'package:nero_app/src/user/repository/authentication_repository.dart';
 
 class DrfRoutes {
   static final routes = [
@@ -15,7 +17,7 @@ class DrfRoutes {
         Get.put(SplashController());
       }),
     ),
-    GetPage(name: '/drf/home', page: () => DrfHomePage()),
+    // GetPage(name: '/drf/home', page: () => DrfHomePage()),
     GetPage(
       name: '/drf/init',
       page: () => InitStartPage(
@@ -25,10 +27,10 @@ class DrfRoutes {
       ),
     ),
     GetPage(
-      name: '/drf/root',
-      page: () => const Root(),
+      name: '/drf/home',
+      page: () => const DrfRoot(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<BottomNavController>(() => BottomNavController());
+        Get.lazyPut<DrfBottomNavController>(() => DrfBottomNavController());
       }),
     ),
   ];

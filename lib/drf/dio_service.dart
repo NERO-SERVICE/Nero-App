@@ -32,7 +32,7 @@ class DioService {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         await _initializeTokens();
-        if (_accessToken.isNotEmpty) {
+        if (_accessToken.isNotEmpty) { // 1. 클라이언트에 accessToken 존재
           options.headers['Authorization'] = 'Bearer $_accessToken';
           print("accessToken: ${_accessToken}");
         }
@@ -67,7 +67,7 @@ class DioService {
 
   Future<void> _refreshTokenRequest() async {
     try {
-      final response = await _dio.post('/accounts/auth/token/refresh', data: {
+      final response = await _dio.post('/accounts/auth/token/refresh/', data: {
         'refreshToken': _refreshToken,
       });
       if (response.statusCode == 200) {

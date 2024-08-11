@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/drf/user/repository/drf_user_repository.dart';
 import 'package:nero_app/route/drf_routes.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         var kakaoAuthRepo = Get.put(DrfAuthenticationRepository());
         var kakaoUserRepo = Get.put(
             DrfUserRepository(drfAuthenticationRepository: kakaoAuthRepo));
+        Get.put(DrfBottomNavController());
 
         // 구글 인증
         var firebaseAuthRepo =

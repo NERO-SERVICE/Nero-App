@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/src/chat/page/chat_list_page.dart';
+import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
+import 'package:nero_app/drf/home/page/drf_home_page.dart';
+import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
-import 'package:nero_app/src/common/controller/authentication_controller.dart';
-import 'package:nero_app/src/common/controller/bottom_nav_controller.dart';
-import 'package:nero_app/src/home/page/home_page.dart';
 
-class Root extends GetView<BottomNavController> {
-  const Root({super.key});
+class DrfRoot extends GetView<DrfBottomNavController> {
+  const DrfRoot({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +16,15 @@ class Root extends GetView<BottomNavController> {
         physics: const NeverScrollableScrollPhysics(),
         controller: controller.tabController,
         children: [
-          const HomePage(),
+          DrfHomePage(),
           const Center(child: AppFont('동네 생활')),
-          const Center(child: AppFont('내 근처')),
-          const ChatListPage(),
+          const Center(child: AppFont('채팅')),
           Center(
             child: GestureDetector(
               onTap: () {
-                Get.find<AuthenticationController>().logout();
+                Get.find<DrfAuthenticationRepository>().logout();
               },
-              child: const AppFont('나의 네로'),
+              child: const AppFont('로그아웃'),
             ),
           ),
         ],
@@ -63,17 +61,6 @@ class Root extends GetView<BottomNavController> {
               activeIcon: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset('assets/svg/icons/arround-life-on.svg'),
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: '내 근처',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/near-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/near-on.svg'),
               ),
             ),
             BottomNavigationBarItem(
