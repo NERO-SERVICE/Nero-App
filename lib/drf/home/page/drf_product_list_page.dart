@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/drf/home/controller/drf_product_service.dart';
-import 'package:nero_app/drf/home/page/drf_home_detail_page.dart';
 import 'package:nero_app/drf/home/page/drf_home_write_page.dart';
+import 'package:nero_app/drf/product/detail/page/drf_product_detail_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 
@@ -59,10 +59,11 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
   Widget _productOne(DrfProduct product) {
     return GestureDetector(
       onTap: () async {
+        await Get.toNamed('/drf/product/detail/${product.id}');
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DrfProductDetailPage(productId: product.id),
+            builder: (context) => DrfProductDetailPage(),
           ),
         );
       },

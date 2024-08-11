@@ -35,6 +35,23 @@ class DrfProduct extends Equatable {
     required this.likers,
   });
 
+  DrfProduct.empty()
+      : id = 0,
+        title = '',
+        description = null,
+        productPrice = 0,
+        isFree = false,
+        imageUrls = [],
+        owner = 0,
+        createdAt = DateTime.now(),
+        updatedAt = DateTime.now(),
+        viewCount = 0,
+        status = 'sale',
+        wantTradeLocation = null,
+        wantTradeLocationLabel = null,
+        categoryType = '',
+        likers = [];
+
   factory DrfProduct.fromJson(Map<String, dynamic> json) {
     return DrfProduct(
       id: json['id'] ?? 0,
@@ -42,7 +59,9 @@ class DrfProduct extends Equatable {
       description: json['description'],
       productPrice: json['productPrice'] ?? 0,
       isFree: json['isFree'] ?? false,
-      imageUrls: (json['imageUrls'] as List<dynamic>).map((e) => e.toString()).toList(),
+      imageUrls: (json['imageUrls'] as List<dynamic>)
+          .map((e) => e.toString())
+          .toList(),
       owner: json['owner'] ?? 0,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
@@ -77,20 +96,20 @@ class DrfProduct extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    title,
-    description,
-    productPrice,
-    isFree,
-    imageUrls,
-    owner,
-    createdAt,
-    updatedAt,
-    viewCount,
-    status,
-    wantTradeLocation,
-    wantTradeLocationLabel,
-    categoryType,
-    likers,
-  ];
+        id,
+        title,
+        description,
+        productPrice,
+        isFree,
+        imageUrls,
+        owner,
+        createdAt,
+        updatedAt,
+        viewCount,
+        status,
+        wantTradeLocation,
+        wantTradeLocationLabel,
+        categoryType,
+        likers,
+      ];
 }

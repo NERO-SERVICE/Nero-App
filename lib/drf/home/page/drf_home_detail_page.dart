@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/drf/home/controller/drf_product_service.dart';
+import 'package:nero_app/drf/product/model/drf_product.dart';
 
-class DrfProductDetailPage extends StatefulWidget {
+class DrfHomeDetailPage extends StatefulWidget {
   final int productId;
 
-  DrfProductDetailPage({required this.productId});
+  DrfHomeDetailPage({required this.productId});
 
   @override
   _DrfProductDetailPageState createState() => _DrfProductDetailPageState();
 }
 
-class _DrfProductDetailPageState extends State<DrfProductDetailPage> {
+class _DrfProductDetailPageState extends State<DrfHomeDetailPage> {
   final DrfProductService _productService = DrfProductService();
   DrfProduct? _product;
   bool _isLoading = true;
