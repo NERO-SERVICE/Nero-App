@@ -193,7 +193,11 @@ class _ProductThumbnail extends StatelessWidget {
           ),
         ),
         Positioned(
+          bottom: 20,  // Adjust the position to move the indicator to the bottom
+          left: 0,
+          right: 0,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               product.imageUrls?.length ?? 0,
               (index) => Container(
@@ -201,7 +205,7 @@ class _ProductThumbnail extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: const Color(0xff212123)),
+                    shape: BoxShape.circle, color: Colors.white,),
               ),
             ),
           ),

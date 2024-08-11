@@ -18,22 +18,23 @@ class DrfProduct extends Equatable {
   final List<int> likers;
 
   DrfProduct({
-    required this.id,
-    required this.title,
+    this.id = 0,  // 기본값 제공
+    this.title = '',
     this.description,
-    required this.productPrice,
-    required this.isFree,
-    required this.imageUrls,
-    required this.owner,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.viewCount,
-    required this.status,
+    this.productPrice = 0,  // 기본값 제공
+    this.isFree = false,  // 기본값 제공
+    this.imageUrls = const [],  // 기본값 제공
+    this.owner = 0,  // 기본값 제공
+    required this.createdAt,  // 이 필드는 여전히 필수로 설정
+    required this.updatedAt,  // 이 필드는 여전히 필수로 설정
+    this.viewCount = 0,  // 기본값 제공
+    this.status = 'sale',  // 기본값 제공
     this.wantTradeLocation,
     this.wantTradeLocationLabel,
-    required this.categoryType,
-    required this.likers,
+    this.categoryType = 'General',  // 기본값 제공
+    this.likers = const [],  // 기본값 제공
   });
+
 
   DrfProduct.empty()
       : id = 0,
