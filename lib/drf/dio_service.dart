@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +30,8 @@ class DioService {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         await _initializeTokens();
-        if (_accessToken.isNotEmpty) { // 1. 클라이언트에 accessToken 존재
+        if (_accessToken.isNotEmpty) {
+          // 1. 클라이언트에 accessToken 존재
           options.headers['Authorization'] = 'Bearer $_accessToken';
           print("accessToken: ${_accessToken}");
         }
@@ -68,10 +67,10 @@ class DioService {
   Future<void> _refreshTokenRequest() async {
     try {
       final response = await _dio.post('/accounts/auth/token/refresh/', data: {
-        'refreshToken': _refreshToken,
+        'refresh': _refreshToken,
       });
       if (response.statusCode == 200) {
-        _accessToken = response.data['accessToken'];
+        _accessToken = response.data['access'];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('accessToken', _accessToken);
       } else {
