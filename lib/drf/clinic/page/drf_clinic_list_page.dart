@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/drf/clinic/detail/drf_clinic_detail_page.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
+import 'package:nero_app/drf/clinic/write/page/drf_clinic_write_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 
 class DrfClinicListPage extends StatefulWidget {
@@ -117,7 +118,7 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //Get.to(() => DrfClinicWritePage());
+          Get.to(() => DrfClinicWritePage());
         },
         child: Icon(Icons.add),
       ),
