@@ -117,8 +117,11 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => DrfClinicWritePage());
+        onPressed: () async {
+          final result = await Get.to(() => DrfClinicWritePage());
+          if (result == true) {
+            _loadClinics();  // 클리닉이 생성되었을 경우 리스트를 다시 로드
+          }
         },
         child: Icon(Icons.add),
       ),

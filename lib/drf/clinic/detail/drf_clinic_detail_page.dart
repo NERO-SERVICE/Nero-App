@@ -4,19 +4,46 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
+import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 
-class DrfClinicDetailPage extends StatelessWidget {
+class DrfClinicDetailPage extends StatefulWidget {
   final DrfClinic clinic;
-  final DrfClinicController clinicController = Get.find();
 
   DrfClinicDetailPage({required this.clinic});
+
+  @override
+  State<DrfClinicDetailPage> createState() => _DrfClinicDetailPageState();
+}
+
+class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
+  final DrfClinicRepository _clinicRepository = DrfClinicRepository();
+  final DrfClinicController clinicController = Get.find();
+
+  DrfClinic? clinic;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadClinic();
+  }
+
+  Future<void> _loadClinic() async {
+    try {
+      final _clinic = await _clinicRepository.getClinic(widget.clinic.clinicId);
+      setState(() {
+        clinic = _clinic;
+      });
+    } catch (e) {
+      print('Failed to load clinic: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(clinic.title),
+        title: Text(widget.clinic.title),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -24,9 +51,9 @@ class DrfClinicDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildDetailRow('Recent Day:',
-                DateFormat('yyyy.MM.dd HH:mm').format(clinic.recentDay)),
+                DateFormat('yyyy.MM.dd HH:mm').format(widget.clinic.recentDay)),
             Obx(() {
-              final drugs = clinicController.getDrugsForClinic(clinic.clinicId);
+              final drugs = clinicController.getDrugsForClinic(widget.clinic.clinicId);
               if (drugs.isEmpty) {
                 return Center(child: Text('No drugs available'));
               }
@@ -50,20 +77,20 @@ class DrfClinicDetailPage extends StatelessWidget {
               );
             }),
             _buildDetailRow('Next Day:',
-                DateFormat('yyyy.MM.dd HH:mm').format(clinic.nextDay)),
+                DateFormat('yyyy.MM.dd HH:mm').format(widget.clinic.nextDay)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final updated = await clinicController.updateClinic(
                   DrfClinic(
-                    clinicId: clinic.clinicId,
-                    owner: clinic.owner,
-                    recentDay: clinic.recentDay,
-                    nextDay: clinic.nextDay.add(Duration(days: 7)),
-                    createdAt: clinic.createdAt,
+                    clinicId: widget.clinic.clinicId,
+                    owner: widget.clinic.owner,
+                    recentDay: widget.clinic.recentDay,
+                    nextDay: widget.clinic.nextDay.add(Duration(days: 7)),
+                    createdAt: widget.clinic.createdAt,
                     updatedAt: DateTime.now(),
-                    title: '${clinic.title} (Updated)',
-                    drugs: clinic.drugs,
+                    title: '${widget.clinic.title} (Updated)',
+                    drugs: widget.clinic.drugs,
                   ),
                 );
                 if (updated) {
@@ -79,7 +106,7 @@ class DrfClinicDetailPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 final deleted =
-                    await clinicController.deleteClinic(clinic.clinicId);
+                    await clinicController.deleteClinic(widget.clinic.clinicId);
                 if (deleted) {
                   Get.snackbar('Success', 'Clinic deleted successfully');
                   Navigator.pop(context);

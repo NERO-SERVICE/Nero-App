@@ -23,11 +23,11 @@ class DrfClinicWriteController extends GetxController {
     drugs.removeAt(index);
   }
 
-  Future<bool> createClinic() async {
+  Future<void> createClinic() async {
     try {
       DrfClinic newClinic = DrfClinic(
-        clinicId: 0, // 이 필드는 서버에서 처리됨
-        owner: 1, // 이 필드는 서버에서 처리됨
+        clinicId: 0,
+        owner: 1,
         recentDay: recentDay.value,
         nextDay: nextDay.value,
         createdAt: DateTime.now(),
@@ -36,14 +36,17 @@ class DrfClinicWriteController extends GetxController {
         drugs: drugs.toList(),
       );
 
-      final result = await _clinicRepository.createClinic(newClinic);
-      return result != null;
+      final createdClinic = await _clinicRepository.createClinic(newClinic);
+      if (createdClinic != null) {
+        Get.back(result: true); // 클리닉 생성 성공 후, 결과와 함께 뒤로 돌아감
+      } else {
+        Get.snackbar('Error', 'Failed to create clinic');
+      }
     } catch (e) {
       print('Failed to create clinic: $e');
-      return false;
+      Get.snackbar('Error', 'Failed to create clinic');
     }
   }
-
 
   @override
   void onClose() {

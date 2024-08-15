@@ -21,18 +21,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
 
-      // 새로운 Clinic 생성
-      final success = await controller.createClinic();
-      if (success) {
-        Get.back();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Clinic created successfully!'),
-        ));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Failed to create clinic.'),
-        ));
-      }
+      await controller.createClinic();
     }
   }
 
@@ -140,8 +129,8 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   void _addDrugDialog(BuildContext context) {
     final drugNumberController = TextEditingController();
 
-    List<String> statuses = ['콘서타 18mg', '콘서타 27mg', '메디카넷 18mg'];
-    List<String> times = ['morning', 'lunch', 'evening'];
+    List<String> statuses = ['콘서타 18mg', '콘서타 27mg', '콘서타 36mg', '메디카넷 18mg', '페로스핀 18mg'];
+    List<String> times = ['morning', 'lunch', 'dinner'];
 
     RxString selectedStatus = statuses[0].obs;
     RxString selectedTime = times[0].obs;
