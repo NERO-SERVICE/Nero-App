@@ -95,7 +95,7 @@ class _SplashView extends GetView<SplashController> {
               ),
               const SizedBox(height: 40),
               AppFont(
-                '중고 거래부터 동네 정보까지.\n지금 내 동네를 선택하고 시작해보세요',
+                '토탈 케어 플랫폼 \n 네로를 시작하세요',
                 align: TextAlign.center,
                 size: 18,
                 color: Colors.white.withOpacity(0.6),
