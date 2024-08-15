@@ -60,14 +60,8 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
     return GestureDetector(
       onTap: () async {
         await Get.toNamed('/drf/product/detail/${product.id}');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DrfProductDetailPage(),
-          ),
-        );
       },
-      behavior: HitTestBehavior.translucent, // 빈 영역에도 탭 이벤트 발생
+      behavior: HitTestBehavior.translucent,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
