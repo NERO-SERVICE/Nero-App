@@ -11,16 +11,17 @@ class DrfClinicWritePage extends StatefulWidget {
 
 class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   final _formKey = GlobalKey<FormState>();
-  final DrfClinicWriteController controller = Get.put(DrfClinicWriteController());
+  late DrfClinicWriteController controller;
 
-  String? _title;
-  DateTime _recentDay = DateTime.now();
-  DateTime _nextDay = DateTime.now().add(Duration(days: 7));
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(DrfClinicWriteController());
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-
       await controller.createClinic();
     }
   }

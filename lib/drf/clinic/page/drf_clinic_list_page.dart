@@ -15,6 +15,8 @@ class DrfClinicListPage extends StatefulWidget {
 class _DrfClinicListPageState extends State<DrfClinicListPage> {
   final DrfClinicRepository _clinicRepository = DrfClinicRepository();
   List<DrfClinic> _clinics = [];
+  bool _isLoading = false;
+
 
   @override
   void initState() {
@@ -23,6 +25,10 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
   }
 
   Future<void> _loadClinics() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       final clinics = await _clinicRepository.getClinics();
       setState(() {
@@ -30,8 +36,25 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
       });
     } catch (e) {
       print('Failed to load clinics: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+
+  Future<void> _handleClinicCreation() async {
+    final result = await Get.to(() => DrfClinicWritePage());
+    if (result == true) {
+      // 클리닉이 생성되었을 경우에만 리스트를 다시 로드
+      await _loadClinics();
+      if (_clinics.isNotEmpty) {
+        final newClinic = _clinics.last; // 리스트에서 마지막으로 추가된 클리닉
+        await Get.to(() => DrfClinicDetailPage(clinic: newClinic)); // 상세 페이지로 이동
+      }
+    }
+  }
+
 
   Widget _subInfo(DrfClinic clinic) {
     return Row(
@@ -102,7 +125,9 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
       appBar: AppBar(
         title: Text('Clinics'),
       ),
-      body: ListView.separated(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
         padding: const EdgeInsets.only(left: 25.0, top: 20, right: 25),
         itemCount: _clinics.length,
         itemBuilder: (context, index) {
@@ -117,12 +142,7 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final result = await Get.to(() => DrfClinicWritePage());
-          if (result == true) {
-            _loadClinics();  // 클리닉이 생성되었을 경우 리스트를 다시 로드
-          }
-        },
+        onPressed: _handleClinicCreation,
         child: Icon(Icons.add),
       ),
     );

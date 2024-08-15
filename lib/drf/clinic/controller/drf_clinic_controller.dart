@@ -22,6 +22,12 @@ class DrfClinicController extends GetxController {
     }
   }
 
+  Future<void> addClinicAndUpdateList(DrfClinic newClinic) async {
+    clinics.add(newClinic);
+    fetchClinics();
+  }
+
+
   List<DrfDrug> getDrugsForClinic(int clinicId) {
     return clinics.firstWhere((clinic) => clinic.clinicId == clinicId).drugs;
   }
