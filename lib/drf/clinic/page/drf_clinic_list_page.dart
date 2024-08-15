@@ -81,7 +81,10 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
   Widget _clinicItem(DrfClinic clinic) {
     return GestureDetector(
       onTap: () async {
-        await Get.to(() => DrfClinicDetailPage(clinic: clinic));
+        final result = await Get.to(() => DrfClinicDetailPage(clinic: clinic));
+        if (result == true) {
+          await _loadClinics();
+        }
       },
       behavior: HitTestBehavior.translucent,
       child: Row(

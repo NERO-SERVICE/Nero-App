@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
+import 'package:nero_app/drf/clinic/page/drf_clinic_list_page.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 
@@ -19,6 +20,7 @@ class DrfClinicDetailPage extends StatefulWidget {
 class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
   final DrfClinicRepository _clinicRepository = DrfClinicRepository();
   final DrfClinicController clinicController = Get.find();
+  bool _isDeleting = false;
 
   DrfClinic? clinic;
 
@@ -36,6 +38,23 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
       });
     } catch (e) {
       print('Failed to load clinic: $e');
+    }
+  }
+
+  Future<void> _deleteClinic() async {
+    setState(() {
+      _isDeleting = true; // 로딩 상태로 변경
+    });
+
+    final deleted = await clinicController.deleteClinic(widget.clinic.clinicId);
+    if (deleted) {
+      Get.snackbar('Success', 'Clinic deleted successfully');
+      Get.offAll(() => DrfClinicListPage()); // 삭제 후 리스트 페이지로 이동
+    } else {
+      Get.snackbar('Error', 'Failed to delete clinic');
+      setState(() {
+        _isDeleting = false; // 실패 시 로딩 상태 해제
+      });
     }
   }
 
@@ -95,7 +114,7 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
                 );
                 if (updated) {
                   Get.snackbar('Success', 'Clinic updated successfully');
-                  Navigator.pop(context);
+                  Get.back(result: true);
                 } else {
                   Get.snackbar('Error', 'Failed to update clinic');
                 }
@@ -104,17 +123,10 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () async {
-                final deleted =
-                    await clinicController.deleteClinic(widget.clinic.clinicId);
-                if (deleted) {
-                  Get.snackbar('Success', 'Clinic deleted successfully');
-                  Navigator.pop(context);
-                } else {
-                  Get.snackbar('Error', 'Failed to delete clinic');
-                }
-              },
-              child: Text('Delete Clinic'),
+              onPressed: _isDeleting ? null : _deleteClinic,
+              child: _isDeleting
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text('Delete Clinic'),
               style: ElevatedButton.styleFrom(surfaceTintColor: Colors.red),
             ),
             const SizedBox(height: 20),
