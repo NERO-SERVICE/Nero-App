@@ -39,6 +39,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           child: ListView(
             children: [
               TextFormField(
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(labelText: 'Title'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -96,7 +97,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormat('yyyy-MM-dd').format(date.value)),
+              Text(DateFormat('yyyy-MM-dd').format(date.value), style: TextStyle(color: Colors.white)),
               Icon(Icons.calendar_today, size: 16, color: Colors.grey),
             ],
           ),
