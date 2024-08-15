@@ -8,7 +8,6 @@ import 'package:nero_app/drf/product/detail/controller/drf_product_detail_contro
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/scroll_appbar.dart';
-import 'package:nero_app/src/common/components/user_temperature_widget.dart';
 import 'package:nero_app/src/common/utils/data_util.dart';
 
 class DrfProductDetailPage extends GetView<DrfProductDetailController> {
@@ -193,7 +192,7 @@ class _ProductThumbnail extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: 20,  // Adjust the position to move the indicator to the bottom
+          bottom: 20, // Adjust the position to move the indicator to the bottom
           left: 0,
           right: 0,
           child: Row(
@@ -205,7 +204,9 @@ class _ProductThumbnail extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.white,),
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -240,7 +241,7 @@ class _ProfileSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       AppFont(
-                        product.owner.toString(),
+                        "${product.nickname} 님",
                         size: 16,
                         color: Colors.white,
                       ),
@@ -253,20 +254,6 @@ class _ProfileSection extends StatelessWidget {
                     ],
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    UserTemperatureWidget(
-                        temperature: product.owner.toDouble() ?? 36.7),
-                    const SizedBox(height: 5),
-                    const AppFont(
-                      '매너온도',
-                      decoration: TextDecoration.underline,
-                      color: Color(0xff878B93),
-                      size: 12,
-                    )
-                  ],
-                )
               ],
             ),
           );

@@ -104,6 +104,7 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
                   DrfClinic(
                     clinicId: widget.clinic.clinicId,
                     owner: widget.clinic.owner,
+                    nickname: widget.clinic.nickname,
                     recentDay: widget.clinic.recentDay,
                     nextDay: widget.clinic.nextDay.add(Duration(days: 7)),
                     createdAt: widget.clinic.createdAt,

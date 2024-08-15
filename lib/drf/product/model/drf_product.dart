@@ -8,6 +8,7 @@ class DrfProduct extends Equatable {
   final bool isFree;
   final List<String> imageUrls;
   final int owner;
+  final String nickname;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int viewCount;
@@ -18,23 +19,23 @@ class DrfProduct extends Equatable {
   final List<int> likers;
 
   DrfProduct({
-    this.id = 0,  // 기본값 제공
+    this.id = 0, // 기본값 제공
     this.title = '',
     this.description,
-    this.productPrice = 0,  // 기본값 제공
-    this.isFree = false,  // 기본값 제공
-    this.imageUrls = const [],  // 기본값 제공
-    this.owner = 0,  // 기본값 제공
-    required this.createdAt,  // 이 필드는 여전히 필수로 설정
-    required this.updatedAt,  // 이 필드는 여전히 필수로 설정
-    this.viewCount = 0,  // 기본값 제공
-    this.status = 'sale',  // 기본값 제공
+    this.productPrice = 0, // 기본값 제공
+    this.isFree = false, // 기본값 제공
+    this.imageUrls = const [], // 기본값 제공
+    this.owner = 0, // 기본값 제공
+    this.nickname = '',
+    required this.createdAt, // 이 필드는 여전히 필수로 설정
+    required this.updatedAt, // 이 필드는 여전히 필수로 설정
+    this.viewCount = 0, // 기본값 제공
+    this.status = 'sale', // 기본값 제공
     this.wantTradeLocation,
     this.wantTradeLocationLabel,
-    this.categoryType = 'General',  // 기본값 제공
-    this.likers = const [],  // 기본값 제공
+    this.categoryType = 'General', // 기본값 제공
+    this.likers = const [], // 기본값 제공
   });
-
 
   DrfProduct.empty()
       : id = 0,
@@ -44,6 +45,7 @@ class DrfProduct extends Equatable {
         isFree = false,
         imageUrls = [],
         owner = 0,
+        nickname = '',
         createdAt = DateTime.now(),
         updatedAt = DateTime.now(),
         viewCount = 0,
@@ -64,6 +66,7 @@ class DrfProduct extends Equatable {
           .map((e) => e.toString())
           .toList(),
       owner: json['owner'] ?? 0,
+      nickname: json['nickname'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       viewCount: json['viewCount'] ?? 0,
@@ -84,6 +87,7 @@ class DrfProduct extends Equatable {
       'isFree': isFree,
       'imageUrls': imageUrls,
       'owner': owner,
+      'nickname': nickname,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'viewCount': viewCount,
@@ -104,6 +108,7 @@ class DrfProduct extends Equatable {
         isFree,
         imageUrls,
         owner,
+        nickname,
         createdAt,
         updatedAt,
         viewCount,

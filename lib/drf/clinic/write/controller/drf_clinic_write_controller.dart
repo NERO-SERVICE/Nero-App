@@ -30,6 +30,7 @@ class DrfClinicWriteController extends GetxController {
       DrfClinic newClinic = DrfClinic(
         clinicId: 0,
         owner: 1,
+        nickname: '',
         recentDay: recentDay.value,
         nextDay: nextDay.value,
         createdAt: DateTime.now(),

@@ -33,6 +33,7 @@ class _DrfHomeWritePageState extends State<DrfHomeWritePage> {
         isFree: _isFree,
         imageUrls: [], // 이미지 URL은 비워둠
         owner: 1, // 예시로 유저 ID를 지정
+        nickname: '유저',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         viewCount: 0,

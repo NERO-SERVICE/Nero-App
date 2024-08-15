@@ -60,7 +60,7 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
     return Row(
       children: [
         AppFont(
-          "유저 ${clinic.owner}",
+          "${clinic.nickname}",
           color: const Color(0xff878B93),
           size: 12,
         ),

@@ -5,6 +5,7 @@ import 'drf_drug.dart';
 class DrfClinic extends Equatable {
   final int clinicId;
   final int owner;
+  final String nickname;
   final DateTime recentDay;
   final DateTime nextDay;
   final DateTime createdAt;
@@ -15,6 +16,7 @@ class DrfClinic extends Equatable {
   DrfClinic({
     required this.clinicId,
     required this.owner,
+    required this.nickname,
     required this.recentDay,
     required this.nextDay,
     required this.createdAt,
@@ -25,7 +27,8 @@ class DrfClinic extends Equatable {
 
   DrfClinic.empty()
       : clinicId = 0,
-        owner = 0,
+        owner = 1,
+        nickname = '',
         recentDay = DateTime.now(),
         nextDay = DateTime.now(),
         createdAt = DateTime.now(),
@@ -37,6 +40,7 @@ class DrfClinic extends Equatable {
     return DrfClinic(
       clinicId: json['clinicId'] ?? 0,
       owner: json['owner'] ?? 0,
+      nickname: json['nickname'] ?? '',
       recentDay: DateTime.parse(json['recentDay']),
       nextDay: DateTime.parse(json['nextDay']),
       createdAt: DateTime.parse(json['createdAt']),
@@ -52,6 +56,7 @@ class DrfClinic extends Equatable {
     return {
       'clinicId': clinicId,
       'owner': owner,
+      'nickname': nickname,
       'recentDay': recentDay.toIso8601String(),
       'nextDay': nextDay.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -65,6 +70,7 @@ class DrfClinic extends Equatable {
   List<Object?> get props => [
         clinicId,
         owner,
+        nickname,
         recentDay,
         nextDay,
         createdAt,
