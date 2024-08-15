@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/drf/clinic/page/drf_clinic_list_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
 import 'package:nero_app/drf/home/page/drf_home_page.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+
+import 'todaylog/page/drf_today_page.dart';
 
 class DrfRoot extends GetView<DrfBottomNavController> {
   const DrfRoot({super.key});
@@ -20,7 +21,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
         children: [
           DrfHomePage(),
           DrfClinicPage(),
-          const Center(child: AppFont('채팅')),
+          DrfTodayPage(),
           Center(
             child: GestureDetector(
               onTap: () {
@@ -54,7 +55,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
               ),
             ),
             BottomNavigationBarItem(
-              label: '동네 생활',
+              label: '진료기록',
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child:
@@ -66,7 +67,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
               ),
             ),
             BottomNavigationBarItem(
-              label: '채팅',
+              label: '하루기록',
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset('assets/svg/icons/chat-off.svg'),
