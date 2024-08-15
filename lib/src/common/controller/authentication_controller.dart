@@ -15,13 +15,14 @@ class AuthenticationController extends GetxController {
   final firebase_user_repo.UserRepository firebaseUserRepository;
   final DrfAuthenticationRepository kakaoAuthRepo;
   final DrfUserRepository kakaoUserRepo;
+  RxBool isLoading = true.obs;
 
   AuthenticationController(
-    this.firebaseAuthRepo,
-    this.firebaseUserRepository,
-    this.kakaoAuthRepo,
-    this.kakaoUserRepo,
-  );
+      this.firebaseAuthRepo,
+      this.firebaseUserRepository,
+      this.kakaoAuthRepo,
+      this.kakaoUserRepo,
+      );
 
   Rx<AuthenticationStatus> status = AuthenticationStatus.init.obs;
   Rx<UserModel> userModel = const UserModel().obs;
@@ -29,24 +30,31 @@ class AuthenticationController extends GetxController {
   RxBool isUsingKakaoAuth = true.obs;
   RxBool isUsingGoogleAuth = true.obs;
 
-  void authCheck() async {
+  authCheck() async {
+    isLoading.value = true;
     firebaseAuthRepo.user.listen((user) {
       print("---authentication_controller/authCheck/firebase---");
       _userStateChangedEvent(user);
     });
 
-    // Kakao authentication check
     if (isUsingKakaoAuth.value) {
       print("---authentication_controller/authCheck/isUsingKakaoAuth---");
       var kakaoUser = kakaoAuthRepo.user.value;
       if (kakaoUser != null) {
         _drfUserStateChangedEvent(kakaoUser);
+      } else {
+        final user = await kakaoAuthRepo.fetchAndSaveUserInfo();
+        if (user != null) {
+          _drfUserStateChangedEvent(user);
+        } else {
+          status(AuthenticationStatus.unknown);
+        }
       }
     }
+    isLoading.value = false; // 로딩 끝
   }
 
   void reload() {
-    print("---authentication_controller/reload---");
     if (isUsingKakaoAuth.value) {
       _drfUserStateChangedEvent(drfUserModel.value);
     } else {
@@ -56,19 +64,13 @@ class AuthenticationController extends GetxController {
 
   void _userStateChangedEvent(UserModel? user) async {
     if (user == null) {
-      print(
-          "---authentication_controller/authCheck/_userStateChangedEvent => unknown---");
       status(AuthenticationStatus.unknown);
     } else {
       var result = await firebaseUserRepository.findUserOne(user.uid!);
       if (result == null) {
-        print(
-            "---authentication_controller/authCheck/_userStateChangedEvent => unAuthenticated---");
         userModel(user);
         status(AuthenticationStatus.unAuthenticated);
       } else {
-        print(
-            "---authentication_controller/authCheck/_userStateChangedEvent => authentication---");
         status(AuthenticationStatus.authentication);
         userModel(result);
       }
@@ -77,19 +79,13 @@ class AuthenticationController extends GetxController {
 
   void _drfUserStateChangedEvent(DrfUserModel? user) async {
     if (user == null) {
-      print(
-          "---authentication_controller/authCheck/drf_userStateChangedEvent => unknown---");
       status(AuthenticationStatus.unknown);
     } else {
       var result = await kakaoUserRepo.findUserOne(user.uid!);
       if (result == null) {
-        print(
-            "---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
         drfUserModel(user);
         status(AuthenticationStatus.unAuthenticated);
       } else {
-        print(
-            "---authentication_controller/authCheck/drf_userStateChangedEvent => unAuthenticated---");
         status(AuthenticationStatus.authentication);
         drfUserModel(result);
         Get.toNamed('/drf/home', arguments: drfUserModel.value);

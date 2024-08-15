@@ -17,6 +17,7 @@ class DioService {
     );
 
     _dio = Dio(options);
+    _initializeTokens();
     _initializeInterceptors();
   }
 
@@ -29,7 +30,6 @@ class DioService {
   void _initializeInterceptors() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        await _initializeTokens();
         if (_accessToken.isNotEmpty) {
           // 1. 클라이언트에 accessToken 존재
           options.headers['Authorization'] = 'Bearer $_accessToken';
@@ -73,6 +73,7 @@ class DioService {
         _accessToken = response.data['access'];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('accessToken', _accessToken);
+        print('Token refreshed successfully');
       } else {
         print('Failed to refresh token: ${response.data}');
         throw Exception('Failed to refresh token');
@@ -81,6 +82,14 @@ class DioService {
       print('Failed to refresh token: $e');
       throw Exception('Failed to refresh token');
     }
+  }
+
+  Future<void> saveTokens(String accessToken, String refreshToken) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _accessToken = accessToken;
+    _refreshToken = refreshToken;
+    await prefs.setString('accessToken', accessToken);
+    await prefs.setString('refreshToken', refreshToken);
   }
 
   Future<Response> get(String url, {Map<String, dynamic>? params}) async {

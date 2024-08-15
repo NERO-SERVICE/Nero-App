@@ -13,6 +13,75 @@ class DrfAuthenticationRepository extends GetxService {
   var isLoading = false.obs;
   DioService dioService = DioService();
 
+  Future<void> _refreshTokenRequest() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? refreshToken = prefs.getString('refreshToken');
+
+      if (refreshToken == null) {
+        throw Exception('No refresh token found');
+      }
+
+      final response = await dioService.post('/accounts/auth/token/refresh/', data: {
+        'refresh': refreshToken,
+      });
+
+      if (response.statusCode == 200) {
+        final newAccessToken = response.data['access'];
+        prefs.setString('accessToken', newAccessToken);
+        print('Token refreshed successfully');
+      } else {
+        print('Failed to refresh token: ${response.data}');
+        throw Exception('Failed to refresh token');
+      }
+    } catch (e) {
+      print('Failed to refresh token: $e');
+      throw Exception('Failed to refresh token');
+    }
+  }
+
+  // 자동 로그인 시도 및 유저 정보 로드
+  Future<DrfUserModel?> fetchAndSaveUserInfo() async {
+    try {
+      final tokens = await getDrfTokens();
+      final String? accessToken = tokens['accessToken'];
+      final String? refreshToken = tokens['refreshToken'];
+
+      if (accessToken != null && refreshToken != null) {
+        var userInfo = await getUserInfoWithTokens(accessToken);
+
+        if (userInfo == null) {
+          await _refreshTokenRequest();
+          final newAccessToken = (await getDrfTokens())['accessToken'];
+          if (newAccessToken != null) {
+            userInfo = await getUserInfoWithTokens(newAccessToken);
+          }
+        }
+
+        if (userInfo != null) {
+          user.value = DrfUserModel.fromJson(userInfo);
+          return user.value;
+        }
+      }
+    } catch (e) {
+      print("자동 로그인 실패: $e");
+    }
+    return null;
+  }
+
+  // 토큰을 사용해 유저 정보 가져오기
+  Future<Map<String, dynamic>?> getUserInfoWithTokens(String accessToken) async {
+    final response = await dioService.get('/accounts/userinfo/', params: {
+      'access_token': accessToken,
+    });
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
+
+
   // 카카오 회원가입
   Future<void> signUpWithKakao() async {
     isLoading.value = true;
@@ -104,16 +173,6 @@ class DrfAuthenticationRepository extends GetxService {
     } else {
     String responseBody = response.data;
     throw Exception('Failed to authenticate with Kakao: $responseBody');
-    }
-  }
-
-  // 유저 id에 따른 유저 정보 불러오기
-  Future<Map<String, dynamic>> getUserInfo(String uid) async {
-    final response = await dioService.post('/accounts/userinfo/$uid/');
-    if (response.statusCode == 200) {
-      return response.data;
-    } else {
-      throw Exception('Failed to load user info: ${response.data}');
     }
   }
 
