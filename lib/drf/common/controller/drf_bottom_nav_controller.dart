@@ -9,7 +9,7 @@ class DrfBottomNavController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
   }
 
   void changeBottomNav(int index) {

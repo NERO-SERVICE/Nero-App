@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/drf/calendar/page/drf_calendar_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
 import 'package:nero_app/drf/home/page/drf_home_page.dart';
@@ -22,6 +23,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
           DrfHomePage(),
           DrfClinicPage(),
           DrfTodayPage(),
+          DrfCalendarPage(),
           Center(
             child: GestureDetector(
               onTap: () {
@@ -75,6 +77,17 @@ class DrfRoot extends GetView<DrfBottomNavController> {
               activeIcon: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset('assets/svg/icons/chat-on.svg'),
+              ),
+            ),
+            BottomNavigationBarItem(
+              label: '하루기록',
+              icon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset('assets/svg/icons/near-off.svg'),
+              ),
+              activeIcon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset('assets/svg/icons/near-on.svg'),
               ),
             ),
             BottomNavigationBarItem(
