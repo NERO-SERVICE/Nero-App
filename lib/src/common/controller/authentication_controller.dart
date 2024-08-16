@@ -15,7 +15,6 @@ class AuthenticationController extends GetxController {
   final firebase_user_repo.UserRepository firebaseUserRepository;
   final DrfAuthenticationRepository kakaoAuthRepo;
   final DrfUserRepository kakaoUserRepo;
-  RxBool isLoading = true.obs;
 
   AuthenticationController(
       this.firebaseAuthRepo,
@@ -31,7 +30,6 @@ class AuthenticationController extends GetxController {
   RxBool isUsingGoogleAuth = true.obs;
 
   authCheck() async {
-    isLoading.value = true;
     firebaseAuthRepo.user.listen((user) {
       print("---authentication_controller/authCheck/firebase---");
       _userStateChangedEvent(user);
@@ -51,7 +49,6 @@ class AuthenticationController extends GetxController {
         }
       }
     }
-    isLoading.value = false; // 로딩 끝
   }
 
   void reload() {

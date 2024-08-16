@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -22,7 +23,8 @@ class DrfAuthenticationRepository extends GetxService {
         throw Exception('No refresh token found');
       }
 
-      final response = await dioService.post('/accounts/auth/token/refresh/', data: {
+      final response = await dioService.post(
+          '/accounts/auth/token/refresh/', data: {
         'refresh': refreshToken,
       });
 
@@ -70,7 +72,8 @@ class DrfAuthenticationRepository extends GetxService {
   }
 
   // 토큰을 사용해 유저 정보 가져오기
-  Future<Map<String, dynamic>?> getUserInfoWithTokens(String accessToken) async {
+  Future<Map<String, dynamic>?> getUserInfoWithTokens(
+      String accessToken) async {
     final response = await dioService.get('/accounts/userinfo/', params: {
       'access_token': accessToken,
     });
@@ -108,7 +111,7 @@ class DrfAuthenticationRepository extends GetxService {
 
       print("카카오 회원가입 완료");
 
-      if(kakaoAccessToken != null) {
+      if (kakaoAccessToken != null) {
         loginWithKakao();
       }
     } catch (e) {
@@ -141,7 +144,8 @@ class DrfAuthenticationRepository extends GetxService {
   }
 
   // DRF 회원가입 함수
-  Future<Map<String, dynamic>> signUp(String kakaoAccessToken, String? kakaoId, String? nickname) async {
+  Future<Map<String, dynamic>> signUp(String kakaoAccessToken, String? kakaoId,
+      String? nickname) async {
     final response = await http.post(
       Uri.parse('${baseUrl}/accounts/auth/kakao/'),
       headers: {'Content-Type': 'application/json'},
@@ -171,8 +175,8 @@ class DrfAuthenticationRepository extends GetxService {
     if (response.statusCode == 200) {
       return response.data;
     } else {
-    String responseBody = response.data;
-    throw Exception('Failed to authenticate with Kakao: $responseBody');
+      String responseBody = response.data;
+      throw Exception('Failed to authenticate with Kakao: $responseBody');
     }
   }
 
@@ -188,7 +192,8 @@ class DrfAuthenticationRepository extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('accessToken');
     String? refreshToken = prefs.getString('refreshToken');
-    print("getDrfToken | accessToken: ${accessToken}, refreshToken: ${refreshToken}");
+    print(
+        "getDrfToken | accessToken: ${accessToken}, refreshToken: ${refreshToken}");
     return {'accessToken': accessToken, 'refreshToken': refreshToken};
   }
 

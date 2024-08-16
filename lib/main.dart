@@ -47,15 +47,54 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  String _lastRoute = '/splash';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _loadLastRoute();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _saveLastRoute();
+    }
+  }
+
+  Future<void> _loadLastRoute() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _lastRoute = prefs.getString('lastRoute') ?? '/splash';
+    });
+  }
+
+  Future<void> _saveLastRoute() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('lastRoute', _lastRoute);
+  }
 
   @override
   Widget build(BuildContext context) {
     var db = FirebaseFirestore.instance;
     return GetMaterialApp(
       title: '네로 프로젝트',
-      initialRoute: '/',
+      initialRoute: _lastRoute,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,

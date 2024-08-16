@@ -19,7 +19,7 @@ class SplashPage extends GetView<SplashController> {
           listen: (AuthenticationStatus status) async {
             switch (status) {
               case AuthenticationStatus.authentication:
-                Get.offNamed('/home');
+                Get.offNamed('/drf/home');
                 break;
               case AuthenticationStatus.unAuthenticated:
                 var userModel =
