@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
 import 'package:nero_app/drf/product/repository/drf_product_repository.dart';
@@ -116,6 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(DrfProductRepository());
         Get.put(DrfUserModel());
         Get.put(DrfClinicController());
+        Get.lazyPut(() => DrfFastlogController());
 
         // 구글 인증
         var firebaseAuthRepo =

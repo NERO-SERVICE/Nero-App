@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/controller/drf_calendar_controller.dart';
+import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
+import 'package:nero_app/drf/calendar/fastlog/page/drf_fastlog_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DrfCalendarPage extends StatelessWidget {
   final DrfCalendarController controller = Get.put(DrfCalendarController());
+  final DrfFastlogController fastlogController = Get.find<DrfFastlogController>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,8 @@ class DrfCalendarPage extends StatelessWidget {
               },
               onDaySelected: (selectedDay, focusedDay) {
                 controller.onDaySelected(selectedDay, focusedDay);
+                fastlogController.setSelectedDate(selectedDay);
+                Get.to(() => DrfFastlogPage());
               },
               onPageChanged: (focusedDay) {
                 controller.onPageChanged(focusedDay);
