@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:nero_app/src/common/components/product_category_selector.dart';
+import 'package:nero_app/src/common/enum/market_enum.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class DrfProduct extends Equatable {
   final int id;
@@ -87,7 +90,6 @@ class DrfProduct extends Equatable {
       'isFree': isFree,
       'imageUrls': imageUrls,
       'owner': owner,
-      'nickname': nickname,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'viewCount': viewCount,
@@ -97,6 +99,42 @@ class DrfProduct extends Equatable {
       'categoryType': categoryType,
       'likers': likers,
     };
+  }
+
+  DrfProduct copyWith({
+    String? title,
+    String? description,
+    int? owner,
+    int? productPrice,
+    int? viewCount,
+    bool? isFree,
+    List<String>? imageUrls,
+    List<int>? likers,
+    String? status,
+    List<dynamic>? wantTradeLocation,
+    String? wantTradeLocationLabel,
+    String? categoryType,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return DrfProduct(
+      id: id,
+      title: title ?? this.title,
+      owner: owner ?? this.owner,
+      description: description ?? this.description,
+      productPrice: productPrice ?? this.productPrice,
+      isFree: isFree ?? this.isFree,
+      viewCount: viewCount ?? this.viewCount,
+      imageUrls: imageUrls ?? this.imageUrls,
+      likers: likers ?? this.likers,
+      status: status ?? this.status,
+      wantTradeLocation: wantTradeLocation ?? this.wantTradeLocation,
+      wantTradeLocationLabel:
+      wantTradeLocationLabel ?? this.wantTradeLocationLabel,
+      categoryType: categoryType ?? this.categoryType,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
   }
 
   @override

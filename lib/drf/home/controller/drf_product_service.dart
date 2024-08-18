@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/drf/dio_service.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
@@ -33,22 +36,34 @@ class DrfProductService {
     }
   }
 
-  // Product 생성하기
-  Future<DrfProduct?> createProduct(DrfProduct product) async {
+  // Product 생성하기 (이미지 업로드 포함)
+  Future<DrfProduct?> createProduct(DrfProduct product, List<File> imageFiles) async {
     try {
-      // DrfProduct 객체를 JSON 형식으로 변환
-      final data = product.toJson();
-      print('Request Data: $data');  // 전송 데이터 확인
+      // Multipart request를 위한 FormData 객체 생성
+      FormData formData = FormData.fromMap({
+        ...product.toJson(),  // 기존 product 데이터를 JSON으로 변환 후 추가
+        'imageFiles': [
+          for (var file in imageFiles)
+            await MultipartFile.fromFile(file.path)
+        ],
+      });
+
+      // 서버로 전송할 데이터를 출력
+      print('FormData to be sent:');
+      formData.fields.forEach((field) {
+        print('Field: ${field.key}: ${field.value}');
+      });
+      formData.files.forEach((file) {
+        print('File: ${file.key}: ${file.value.filename}');
+      });
 
       // POST 요청을 통해 데이터를 서버로 전송
-      final response = await _dio.post('/products/create/', data: data);
+      final response = await _dio.postFormData('/products/create/', formData: formData);
 
       // 서버에서 201 상태 코드(성공적으로 생성됨)를 반환한 경우
       if (response.statusCode == 201) {
-        // 응답 데이터를 DrfProduct 객체로 변환하여 반환
         return DrfProduct.fromJson(response.data);
       } else {
-        // 그렇지 않으면 null 반환
         return null;
       }
     } catch (e) {
@@ -57,13 +72,22 @@ class DrfProductService {
     }
   }
 
-  // Product 수정하기
-  Future<bool> updateProduct(DrfProduct product) async {
+  // Product 수정하기 (이미지 업로드 포함)
+  Future<bool> updateProduct(DrfProduct product, List<File>? imageFiles) async {
     try {
-      final response = await _dio.put(
-        '/products/${product.id}/update/',
-        data: product.toJson(),
-      );
+      // Multipart request를 위한 FormData 객체 생성
+      FormData formData = FormData.fromMap({
+        ...product.toJson(),  // 기존 product 데이터를 JSON으로 변환 후 추가
+        if (imageFiles != null)
+          'imageFiles': [
+            for (var file in imageFiles)
+              await MultipartFile.fromFile(file.path)
+          ],
+      });
+
+      // PUT 요청을 통해 데이터를 서버로 전송
+      final response = await _dio.putFormData('/products/${product.id}/update/', formData: formData);
+
       return response.statusCode == 200;
     } catch (e) {
       print('Failed to edit product: $e');

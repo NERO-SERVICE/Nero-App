@@ -107,4 +107,43 @@ class DioService {
   Future<Response> delete(String url, {Map<String, dynamic>? data}) async {
     return _dio.delete(url, data: data);
   }
+
+  // FormData를 사용하는 POST 요청
+  Future<Response> postFormData(String url, {FormData? formData}) async {
+    return _dio.post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+  }
+
+  // FormData를 사용하는 PUT 요청
+  Future<Response> putFormData(String url, {FormData? formData}) async {
+    return _dio.put(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+  }
+
+  // FormData를 사용하는 DELETE 요청
+  Future<Response> deleteFormData(String url, {FormData? formData}) async {
+    return _dio.delete(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+  }
 }
