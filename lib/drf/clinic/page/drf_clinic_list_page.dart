@@ -125,9 +125,6 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Clinics'),
-      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView.separated(

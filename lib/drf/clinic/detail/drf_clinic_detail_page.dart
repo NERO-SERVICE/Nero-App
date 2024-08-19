@@ -62,19 +62,40 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.clinic.title),
+        leadingWidth: Get.width * 0.6,
+        leading: Padding(
+          padding: const EdgeInsets.only(),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Get.back();
+                },
+                constraints: BoxConstraints(),
+              ),
+              AppFont(
+                widget.clinic.title,
+                fontWeight: FontWeight.bold,
+                size: 20,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow('Recent Day:',
-                DateFormat('yyyy.MM.dd HH:mm').format(widget.clinic.recentDay)),
+            _buildDetailRow('최근 진료일',
+                DateFormat('yyyy년 MM월 dd일').format(widget.clinic.recentDay)),
             Obx(() {
               final drugs = clinicController.getDrugsForClinic(widget.clinic.clinicId);
               if (drugs.isEmpty) {
-                return Center(child: Text('No drugs available'));
+                return Center(child: Text('등록된 약이 없습니다'));
               }
               return ListView.separated(
                 shrinkWrap: true,
@@ -88,57 +109,65 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
                   return _drugItem(drug);
                 },
                 separatorBuilder: (context, index) => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Divider(
-                    color: Color(0xff3C3C3E),
-                  ),
+                  padding: EdgeInsets.symmetric(vertical: 0)
                 ),
               );
             }),
-            _buildDetailRow('Next Day:',
-                DateFormat('yyyy.MM.dd HH:mm').format(widget.clinic.nextDay)),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final updated = await clinicController.updateClinic(
-                  DrfClinic(
-                    clinicId: widget.clinic.clinicId,
-                    owner: widget.clinic.owner,
-                    nickname: widget.clinic.nickname,
-                    recentDay: widget.clinic.recentDay,
-                    nextDay: widget.clinic.nextDay.add(Duration(days: 7)),
-                    createdAt: widget.clinic.createdAt,
-                    updatedAt: DateTime.now(),
-                    title: '${widget.clinic.title} (Updated)',
-                    drugs: widget.clinic.drugs,
+            _buildDetailRow('다음 진료 예약일',
+                DateFormat('yyyy년 MM월 dd일').format(widget.clinic.nextDay)),
+            const SizedBox(height: 20),
+            Center(
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final updated = await clinicController.updateClinic(
+                        DrfClinic(
+                          clinicId: widget.clinic.clinicId,
+                          owner: widget.clinic.owner,
+                          nickname: widget.clinic.nickname,
+                          recentDay: widget.clinic.recentDay,
+                          nextDay: widget.clinic.nextDay.add(Duration(days: 7)),
+                          createdAt: widget.clinic.createdAt,
+                          updatedAt: DateTime.now(),
+                          title: '${widget.clinic.title} (Updated)',
+                          drugs: widget.clinic.drugs,
+                        ),
+                      );
+                      if (updated) {
+                        Get.snackbar('Success', 'Clinic updated successfully');
+                        Get.back(result: true);
+                      } else {
+                        Get.snackbar('Error', 'Failed to update clinic');
+                      }
+                    },
+                    child: Text('수정하기'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.withOpacity(0.3),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                      textStyle: TextStyle(fontSize: 18),
+                      elevation: 5,
+                    ),
                   ),
-                );
-                if (updated) {
-                  Get.snackbar('Success', 'Clinic updated successfully');
-                  Get.back(result: true);
-                } else {
-                  Get.snackbar('Error', 'Failed to update clinic');
-                }
-              },
-              child: Text('Update Clinic'),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _isDeleting ? null : _deleteClinic,
+                    child: _isDeleting
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text('삭제하기'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.withOpacity(0.3),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                      textStyle: TextStyle(fontSize: 18),
+                      elevation: 5,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _isDeleting ? null : _deleteClinic,
-              child: _isDeleting
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Delete Clinic'),
-              style: ElevatedButton.styleFrom(surfaceTintColor: Colors.red),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Drugs in this Clinic',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
@@ -164,41 +193,57 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
         // 약물 세부 정보 페이지로 이동 (추후 구현 필요)
       },
       behavior: HitTestBehavior.translucent,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.medical_services_outlined,
-            size: 40,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 10),
-                AppFont(
-                  drug.status,
-                  color: Colors.white,
-                  size: 16,
-                ),
-                const SizedBox(height: 5),
-                AppFont(
-                  'Number: ${drug.number}',
-                  color: const Color(0xff878B93),
-                  size: 12,
-                ),
-                const SizedBox(height: 5),
-                AppFont(
-                  'Time: ${drug.time}',
-                  color: const Color(0xff878B93),
-                  size: 12,
-                ),
-              ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[800], // 배경색 설정
+          borderRadius: BorderRadius.circular(12), // 모서리 둥글게
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1), // 그림자 색상 및 투명도
+              spreadRadius: 4, // 그림자의 확산 반경
+              blurRadius: 15, // 그림자의 흐림 정도
+              offset: Offset(4, 4), // 그림자의 위치 (x, y)
             ),
-          )
-        ],
+          ],
+        ),
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.medical_services_outlined,
+              size: 40,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  AppFont(
+                    drug.status,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  const SizedBox(height: 5),
+                  AppFont(
+                    '처방 개수 : ${drug.number}',
+                    color: const Color(0xff878B93),
+                    size: 12,
+                  ),
+                  const SizedBox(height: 5),
+                  AppFont(
+                    '복용 시간 : ${drug.time}',
+                    color: const Color(0xff878B93),
+                    size: 12,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
