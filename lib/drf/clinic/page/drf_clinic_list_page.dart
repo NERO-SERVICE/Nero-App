@@ -6,6 +6,7 @@ import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 import 'package:nero_app/drf/clinic/write/page/drf_clinic_write_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 
 class DrfClinicListPage extends StatefulWidget {
   @override
@@ -124,7 +125,7 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView.separated(

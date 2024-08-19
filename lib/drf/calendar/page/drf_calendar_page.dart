@@ -5,6 +5,7 @@ import 'package:nero_app/drf/calendar/controller/drf_calendar_controller.dart';
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
 import 'package:nero_app/drf/calendar/fastlog/page/drf_fastlog_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -14,7 +15,7 @@ class DrfCalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       appBar: AppBar(
         leadingWidth: Get.width * 0.6,
         leading: Padding(

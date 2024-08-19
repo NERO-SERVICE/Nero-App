@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
+
+import '../../../../src/common/components/app_font.dart';
 
 class DrfFastlogPage extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
@@ -8,15 +12,25 @@ class DrfFastlogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       appBar: AppBar(
-        title: Obx(() => Text(
-              '${controller.selectedDate.value.toLocal().toString().split(' ')[0]} 빠른 기록',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            )),
+        leadingWidth: Get.width * 0.8,
+        leading: GestureDetector(
+          onTap: Get.back,
+          child: Row(
+            children: [
+              const SizedBox(width: 10),
+              SvgPicture.asset('assets/svg/icons/close.svg'),
+              const SizedBox(width: 20),
+              AppFont(
+                '${controller.selectedDate.value.toLocal().toString().split(' ')[0]} 빠른 기록',
+                fontWeight: FontWeight.bold,
+                size: 20,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -25,9 +39,15 @@ class DrfFastlogPage extends StatelessWidget {
               if (controller.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
-
               if (controller.fastlogs.isEmpty) {
-                return Center(child: Text('No logs found for this date.'));
+                return Center(
+                  child: Text(
+                    '작성된 글이 없습니다',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                );
               }
 
               return ListView.builder(
@@ -56,25 +76,25 @@ class DrfFastlogPage extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: _textController,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.grey.shade600),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Color(0xff323232),
                       labelText: '기록 작성',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: Colors.grey.shade600),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: Colors.grey.shade600,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: Colors.grey.shade600,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: Colors.grey.shade600,
                         ),
                       ),
                     ),

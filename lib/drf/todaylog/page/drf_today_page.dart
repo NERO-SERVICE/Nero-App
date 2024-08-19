@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/todaylog/controller/drf_today_controller.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +18,7 @@ class DrfTodayPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => DrfTodayController()),
       ],
-      child: Scaffold(
+      child: CommonLayout(
         appBar: AppBar(
           leadingWidth: Get.width * 0.6,
           leading: Padding(

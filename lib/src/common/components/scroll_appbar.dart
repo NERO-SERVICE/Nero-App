@@ -45,7 +45,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
             child: SvgPicture.asset('assets/svg/icons/back.svg'),
           ),
         ),
-        backgroundColor: const Color(0xff212123).withAlpha(alpha),
+        backgroundColor: const Color(0xff323232).withAlpha(alpha),
         elevation: 0,
         actions: widget.actions,
       ),
@@ -64,7 +64,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
                 end: Alignment.bottomCenter,
                 colors: [
                   Color(0xff323232),
-                  Color(0xff212123).withOpacity(0),
+                  Color(0xff323232).withOpacity(0),
                 ],
               ),
             ),

@@ -3,12 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_list_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrfClinicPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       appBar: AppBar(
         leadingWidth: Get.width * 0.6,
         leading: Padding(

@@ -5,6 +5,7 @@ import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
 import 'package:nero_app/drf/product/write/page/drf_product_write_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/layout/common_layout.dart';
 
 class DrfProductListPage extends StatefulWidget {
   @override
@@ -102,7 +103,7 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CommonLayout(
       body: ListView.separated(
         controller: controller.scrollController,
         padding: const EdgeInsets.only(left: 25.0, top: 20, right: 25),

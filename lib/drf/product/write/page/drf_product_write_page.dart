@@ -49,7 +49,7 @@ class _DrfProductWritePageState extends State<DrfProductWritePage> {
               padding: EdgeInsets.only(top: 20.0, right: 25),
               child: AppFont(
                 '완료',
-                color: Color(0xffED7738),
+                color: Color(0xffD0EE17),
                 fontWeight: FontWeight.bold,
                 size: 16,
               ),
