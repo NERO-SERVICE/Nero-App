@@ -11,9 +11,12 @@ class DrfFastlogPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(
-          '${controller.selectedDate.value.toLocal().toString().split(' ')[0]}일의 빠른 기록',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        )),
+              '${controller.selectedDate.value.toLocal().toString().split(' ')[0]} 빠른 기록',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            )),
       ),
       body: Column(
         children: [
@@ -55,9 +58,25 @@ class DrfFastlogPage extends StatelessWidget {
                     controller: _textController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Color(0xff323232),
                       labelText: '기록 작성',
                       labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -69,6 +88,10 @@ class DrfFastlogPage extends StatelessWidget {
                       _textController.clear();
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Color(0xff323232),
+                  ),
                   child: Text('전송'),
                 ),
               ],
