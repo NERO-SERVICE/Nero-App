@@ -45,7 +45,8 @@ class DrfClinicWriteController extends GetxController {
         final clinicController = Get.find<DrfClinicController>();
         clinicController.clinics.add(createdClinic);
         clinicController.fetchClinics();
-        Get.offAll(() => DrfClinicListPage());
+
+        Get.back(result: true);
       } else {
         Get.snackbar('Error', 'Failed to create clinic');
       }
