@@ -80,7 +80,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
               ),
             ),
             BottomNavigationBarItem(
-              label: '하루기록',
+              label: '빠른메모',
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset('assets/svg/icons/near-off.svg'),
