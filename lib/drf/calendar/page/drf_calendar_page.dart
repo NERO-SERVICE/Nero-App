@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/controller/drf_calendar_controller.dart';
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
 import 'package:nero_app/drf/calendar/fastlog/page/drf_fastlog_page.dart';
+import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DrfCalendarPage extends StatelessWidget {
@@ -13,7 +16,34 @@ class DrfCalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('달력'),
+        leadingWidth: Get.width * 0.6,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Row(children: [
+            const AppFont(
+              '빠른메모',
+              fontWeight: FontWeight.bold,
+              size: 20,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 10),
+          ]),
+        ),
+        actions: [
+          SvgPicture.asset('assets/svg/icons/search.svg'),
+          const SizedBox(width: 15),
+          SvgPicture.asset('assets/svg/icons/list.svg'),
+          const SizedBox(width: 15),
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.white),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              await prefs.remove('refreshToken');
+              Navigator.of(context).pushReplacementNamed('/login');
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [

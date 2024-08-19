@@ -49,7 +49,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
         elevation: 0,
         actions: widget.actions,
       ),
-      backgroundColor: const Color(0xff212123),
+      backgroundColor: const Color(0xff323232),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -63,7 +63,7 @@ class _ScrollAppbarWidgetState extends State<ScrollAppbarWidget> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xff212123),
+                  Color(0xff323232),
                   Color(0xff212123).withOpacity(0),
                 ],
               ),
