@@ -101,12 +101,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          color: Color(0xff212123),
+          color: Color(0xff323232),
           titleTextStyle: TextStyle(
             color: Colors.white,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xff212123),
+        scaffoldBackgroundColor: const Color(0xff323232),
       ),
       initialBinding: BindingsBuilder(() {
         // // 카카오 인증

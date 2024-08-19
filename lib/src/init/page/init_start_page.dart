@@ -19,7 +19,7 @@ class InitStartPage extends StatelessWidget {
               width: 99,
               height: 116,
               child: Image.asset(
-                'assets/images/nero_icon.png',
+                'assets/images/nero_init.png',
               ),
             ),
             const SizedBox(

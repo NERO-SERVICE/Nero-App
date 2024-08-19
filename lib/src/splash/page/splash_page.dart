@@ -80,11 +80,16 @@ class _SplashView extends GetView<SplashController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: 99,
-                height: 116,
-                child: Image.asset(
-                  'assets/images/nero_icon.png',
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  height: 136,
+                  child: FittedBox(
+                    fit: BoxFit.contain, // 비율을 유지하면서 부모 크기에 맞춤
+                    child: Image.asset(
+                      'assets/images/nero_init.png',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 40),

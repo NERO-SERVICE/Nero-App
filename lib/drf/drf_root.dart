@@ -38,7 +38,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
         () => BottomNavigationBar(
           currentIndex: controller.menuIndex.value,
           type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color(0xff212123),
+          backgroundColor: const Color(0xff323232),
           selectedItemColor: const Color(0xffffffff),
           unselectedItemColor: const Color(0xfffffff),
           selectedFontSize: 11.0,
