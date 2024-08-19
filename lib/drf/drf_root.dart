@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/page/drf_calendar_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
-import 'package:nero_app/drf/home/page/drf_home_page.dart';
+import 'package:nero_app/drf/product/home/page/drf_home_page.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 

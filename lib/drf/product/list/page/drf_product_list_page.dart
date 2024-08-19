@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nero_app/drf/home/controller/drf_product_service.dart';
-import 'package:nero_app/drf/product/write/page/drf_home_write_page.dart';
+import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
+import 'package:nero_app/drf/product/write/page/drf_product_write_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 
@@ -12,8 +12,8 @@ class DrfProductListPage extends StatefulWidget {
 }
 
 class _DrfProductListPageState extends State<DrfProductListPage> {
-  final DrfProductService _productService = DrfProductService();
-  final DrfProductService controller = DrfProductService();
+  final DrfProductController _productService = DrfProductController();
+  final DrfProductController controller = DrfProductController();
   List<DrfProduct> _products = [];
 
   @override
@@ -120,7 +120,7 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(() => DrfHomeWritePage());
+          Get.to(() => DrfProductWritePage());
         },
         child: Icon(Icons.add),
       ),

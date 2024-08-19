@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/drf/home/controller/drf_product_service.dart';
+import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/src/common/model/asset_value_entity.dart';
 
 class DrfProductWriteController extends GetxController {
-  DrfProductService _drfProductService = DrfProductService();
+  DrfProductController _drfProductService = DrfProductController();
   final Rx<DrfProduct> product = DrfProduct(
     owner: 1,
     createdAt: DateTime.now(),

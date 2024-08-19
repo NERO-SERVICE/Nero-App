@@ -10,12 +10,12 @@ import 'package:nero_app/src/common/components/multiful_image_view.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/model/asset_value_entity.dart';
 
-class DrfHomeWritePage extends StatefulWidget {
+class DrfProductWritePage extends StatefulWidget {
   @override
-  _DrfHomeWritePageState createState() => _DrfHomeWritePageState();
+  _DrfProductWritePageState createState() => _DrfProductWritePageState();
 }
 
-class _DrfHomeWritePageState extends State<DrfHomeWritePage> {
+class _DrfProductWritePageState extends State<DrfProductWritePage> {
   Widget get _divider => const Divider(
         color: Color(0xff3C3C3E),
         indent: 25,
