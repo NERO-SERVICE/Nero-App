@@ -7,7 +7,6 @@ import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/common_text_field.dart';
 import 'package:nero_app/src/common/components/custom_checkbox.dart';
 import 'package:nero_app/src/common/components/multiful_image_view.dart';
-import 'package:nero_app/src/common/components/product_category_selector.dart';
 import 'package:nero_app/src/common/components/trade_location_map.dart';
 import 'package:nero_app/src/common/model/asset_value_entity.dart';
 
@@ -43,7 +42,6 @@ class _DrfHomeWritePageState extends State<DrfHomeWritePage> {
         ),
         actions: [
           GestureDetector(
-            // onTap: _submitForm,
             onTap: () {
               controller.submit(context);
             },
@@ -69,8 +67,6 @@ class _DrfHomeWritePageState extends State<DrfHomeWritePage> {
                   _PhotoSelectedView(),
                   _divider,
                   _ProductTitleView(),
-                  _divider,
-                  // _CategorySelectView(),
                   _divider,
                   _PriceSettingView(),
                   _divider,
@@ -101,12 +97,14 @@ class _DrfHomeWritePageState extends State<DrfHomeWritePage> {
                   children: [
                     SvgPicture.asset('assets/svg/icons/photo_small.svg'),
                     const SizedBox(width: 10),
-                    Obx(
-                      () => AppFont(
-                        '${controller.selectedImages.length}/10',
-                        size: 13,
-                        color: Colors.white,
-                      ),
+                    GetBuilder<DrfProductWriteController>(
+                      builder: (controller) {
+                        return AppFont(
+                          '${controller.selectedImages.length}/10',
+                          size: 13,
+                          color: Colors.white,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -132,8 +130,7 @@ class _PhotoSelectedView extends GetView<DrfProductWriteController> {
       onTap: () async {
         var selectedImages = await Get.to<List<AssetValueEntity>?>(
           MultifulImageView(
-            initImages: controller.selectedImages
-                .toList(), // AssetValueEntity로 변환된 리스트 전달
+            initImages: controller.selectedImages.toList(),
           ),
         );
         controller.changeSelectedImages(selectedImages);
@@ -148,12 +145,14 @@ class _PhotoSelectedView extends GetView<DrfProductWriteController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Obx(
-              () => AppFont(
-                '${controller.selectedImages.length}',
-                size: 13,
-                color: const Color(0xff868B95),
-              ),
+            GetBuilder<DrfProductWriteController>(
+              builder: (controller) {
+                return AppFont(
+                  '${controller.selectedImages.length}',
+                  size: 13,
+                  color: const Color(0xff868B95),
+                );
+              },
             ),
             AppFont(
               '/10',
@@ -170,42 +169,44 @@ class _PhotoSelectedView extends GetView<DrfProductWriteController> {
     return Container(
       margin: const EdgeInsets.only(left: 15),
       height: 77,
-      child: Obx(
-        () => ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, right: 20),
-                  child: FutureBuilder(
-                    future: controller.selectedImages[index].file,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Image.file(
-                          snapshot.data!,
-                          fit: BoxFit.cover,
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
+      child: GetBuilder<DrfProductWriteController>(
+        builder: (controller) {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, right: 20),
+                    child: FutureBuilder(
+                      future: controller.selectedImages[index].file,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Image.file(
+                            snapshot.data!,
+                            fit: BoxFit.cover,
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () {
-                      controller.deleteImage(index);
-                    },
-                    child: SvgPicture.asset('assets/svg/icons/remove.svg'),
-                  ),
-                )
-              ],
-            );
-          },
-          itemCount: controller.selectedImages.length,
-        ),
+                  Positioned(
+                    right: 10,
+                    child: GestureDetector(
+                      onTap: () {
+                        controller.deleteImage(index);
+                      },
+                      child: SvgPicture.asset('assets/svg/icons/remove.svg'),
+                    ),
+                  )
+                ],
+              );
+            },
+            itemCount: controller.selectedImages.length,
+          );
+        },
       ),
     );
   }
@@ -231,46 +232,15 @@ class _ProductTitleView extends GetView<DrfProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Obx(
-        () => CommonTextField(
-          hintText: '글 제목',
-          initText: controller.product.value.title,
-          onChange: controller.changeTitle,
-          hintColor: const Color(0xff6D7179),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategorySelectView extends GetView<DrfProductWriteController> {
-  const _CategorySelectView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
-      child: GestureDetector(
-        onTap: () async {
-          var selectedCategoryType = await Get.dialog<String?>(
-            const ProductCategorySelector(),
+      child: GetBuilder<DrfProductWriteController>(
+        builder: (controller) {
+          return CommonTextField(
+            hintText: '글 제목',
+            initText: controller.product.value.title,
+            onChange: controller.changeTitle,
+            hintColor: const Color(0xff6D7179),
           );
-          controller.changeCategoryType(selectedCategoryType);
         },
-        behavior: HitTestBehavior.translucent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Obx(
-              () => AppFont(
-                controller.product.value.categoryType,
-                size: 16,
-                color: Colors.white,
-              ),
-            ),
-            SvgPicture.asset('assets/svg/right.svg'),
-          ],
-        ),
       ),
     );
   }
@@ -287,7 +257,7 @@ class _PriceSettingView extends GetView<DrfProductWriteController> {
         children: [
           Expanded(
             child: Obx(
-              () => CommonTextField(
+                  () => CommonTextField(
                 hintColor: const Color(0xff6D7179),
                 hintText: '가격 (선택 사항)',
                 textInputType: TextInputType.number,
@@ -300,7 +270,7 @@ class _PriceSettingView extends GetView<DrfProductWriteController> {
             ),
           ),
           Obx(
-            () => CustomCheckbox(
+                () => CustomCheckbox(
               label: '나눔',
               isChecked: controller.product.value.isFree,
               toggleCallBack: controller.changeIsFreeProduct,
@@ -319,15 +289,17 @@ class _ProductDescription extends GetView<DrfProductWriteController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: Obx(
-        () => CommonTextField(
-          hintColor: Color(0xff6D7179),
-          hintText: '게시글을 작성해주세요\n(규정을 준수하지 않은 게시물은 삭제될 수 있습니다)',
-          textInputType: TextInputType.multiline,
-          maxLines: 10,
-          initText: controller.product.value.description,
-          onChange: controller.changeDescription,
-        ),
+      child: GetBuilder<DrfProductWriteController>(
+        builder: (controller) {
+          return CommonTextField(
+            hintColor: Color(0xff6D7179),
+            hintText: '게시글을 작성해주세요\n(규정을 준수하지 않은 게시물은 삭제될 수 있습니다)',
+            textInputType: TextInputType.multiline,
+            maxLines: 10,
+            initText: controller.product.value.description,
+            onChange: controller.changeDescription,
+          );
+        },
       ),
     );
   }
@@ -361,36 +333,40 @@ class _HopeTradeLocationMap extends GetView<DrfProductWriteController> {
               size: 16,
               color: Colors.white,
             ),
-            Obx(
-              () => controller.product.value.wantTradeLocationLabel == null ||
-                      controller.product.value.wantTradeLocationLabel!.isEmpty
-                  ? Row(
-                      children: [
-                        const AppFont(
-                          '장소 선택',
-                          size: 13,
-                          color: Color(0xff6D7179),
-                        ),
-                        SvgPicture.asset('assets/svg/icons/right.svg'),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        AppFont(
-                          controller.product.value.wantTradeLocationLabel ?? '',
-                          size: 13,
-                          color: Colors.white,
-                        ),
-                        GestureDetector(
-                          onTap: () => controller.clearWantTradeLocation(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                                SvgPicture.asset('assets/svg/icons/delete.svg'),
+            GetBuilder<DrfProductWriteController>(
+              builder: (controller) {
+                return controller.product.value.wantTradeLocationLabel ==
+                            null ||
+                        controller.product.value.wantTradeLocationLabel!.isEmpty
+                    ? Row(
+                        children: [
+                          const AppFont(
+                            '장소 선택',
+                            size: 13,
+                            color: Color(0xff6D7179),
                           ),
-                        )
-                      ],
-                    ),
+                          SvgPicture.asset('assets/svg/icons/right.svg'),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          AppFont(
+                            controller.product.value.wantTradeLocationLabel ??
+                                '',
+                            size: 13,
+                            color: Colors.white,
+                          ),
+                          GestureDetector(
+                            onTap: () => controller.clearWantTradeLocation(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                  'assets/svg/icons/delete.svg'),
+                            ),
+                          )
+                        ],
+                      );
+              },
             ),
           ],
         ),
