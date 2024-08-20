@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
-import 'package:nero_app/drf/clinic/page/drf_clinic_list_page.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 
 class DrfClinicWriteController extends GetxController {
@@ -55,7 +54,6 @@ class DrfClinicWriteController extends GetxController {
       Get.snackbar('Error', 'Failed to create clinic');
     }
   }
-
 
   @override
   void onClose() {

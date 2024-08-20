@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,13 +34,26 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Future<void> _selectDate(BuildContext context, Rx<DateTime> date) async {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(16),
-          height: 400,
-          child: DrfCalendarWidget(
-            selectedDate: date,
-            focusedDate: date,
+        return ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              height: 400,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: DrfCalendarWidget(
+                selectedDate: date,
+                focusedDate: date,
+              ),
+            ),
           ),
         );
       },
@@ -48,6 +63,10 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       date.value = selectedDate;
     }
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
