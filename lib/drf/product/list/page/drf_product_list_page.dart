@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -121,11 +123,26 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => DrfProductWritePage());
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: ClipRRect(
+        borderRadius: BorderRadius.circular(50.0),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            onPressed: () {
+              Get.to(() => DrfProductWritePage());
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: BorderSide(
+                color: Colors.white,
+                width: 1.0,
+              ),
+            ),
+            child: Icon(Icons.add, color: Colors.white),
+          ),
+        ),
       ),
     );
   }

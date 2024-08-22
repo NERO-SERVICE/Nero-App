@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -142,9 +144,24 @@ class _DrfClinicListPageState extends State<DrfClinicListPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _handleClinicCreation,
-        child: Icon(Icons.add),
+      floatingActionButton: ClipRRect(
+        borderRadius: BorderRadius.circular(50.0),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            onPressed: _handleClinicCreation,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: BorderSide(
+                color: Colors.white,
+                width: 1,
+              ),
+            ),
+            child: Icon(Icons.add, color: Colors.white),
+          ),
+        ),
       ),
     );
   }

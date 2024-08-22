@@ -45,9 +45,13 @@ class DrfTodayPage extends StatelessWidget {
               SvgPicture.asset('assets/svg/icons/list.svg'),
               const SizedBox(width: 15),
               IconButton(
-                icon: Icon(Icons.logout, color: Colors.white,),
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
                 onPressed: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   await prefs.remove('accessToken');
                   await prefs.remove('refreshToken');
                   Navigator.of(context).pushReplacementNamed('/login');
@@ -60,17 +64,22 @@ class DrfTodayPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton(
+                _buildCustomButton(
+                  context,
+                  icon: Icons.question_answer,
+                  label: '하루 설문',
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DrfTodayLogPage()),
                     );
                   },
-                  child: Text('하루 설문'),
                 ),
                 SizedBox(height: 16),
-                ElevatedButton(
+                _buildCustomButton(
+                  context,
+                  icon: Icons.warning,
+                  label: '부작용 기록',
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -78,10 +87,12 @@ class DrfTodayPage extends StatelessWidget {
                           builder: (context) => DrfTodaySideEffectPage()),
                     );
                   },
-                  child: Text('부작용 기록'),
                 ),
                 SizedBox(height: 16),
-                ElevatedButton(
+                _buildCustomButton(
+                  context,
+                  icon: Icons.edit,
+                  label: '셀프 기록',
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -89,7 +100,6 @@ class DrfTodayPage extends StatelessWidget {
                           builder: (context) => DrfTodaySelfLogPage()),
                     );
                   },
-                  child: Text('셀프 기록'),
                 ),
               ],
             ),
@@ -98,4 +108,37 @@ class DrfTodayPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildCustomButton(BuildContext context, {
+  required IconData icon,
+  required String label,
+  required VoidCallback onPressed,
+}) {
+  return SizedBox(
+    height: 100,
+    child: ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(
+        icon,
+        size: 30,
+        color: Colors.white,
+      ),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        backgroundColor: Colors.grey[800],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
+  );
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -97,19 +99,24 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
               if (drugs.isEmpty) {
                 return Center(child: Text('등록된 약이 없습니다'));
               }
-              return ListView.separated(
-                shrinkWrap: true,
-                // 이걸 추가해야 스크롤 가능한 부모 위젯에서 정상 작동
-                physics: NeverScrollableScrollPhysics(),
-                // 부모 스크롤과 충돌하지 않도록 설정
-                padding: const EdgeInsets.only(left: 25.0, top: 20, right: 25),
-                itemCount: drugs.length,
-                itemBuilder: (context, index) {
-                  final drug = drugs[index];
-                  return _drugItem(drug);
-                },
-                separatorBuilder: (context, index) => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0)
+              return ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    // 이걸 추가해야 스크롤 가능한 부모 위젯에서 정상 작동
+                    physics: NeverScrollableScrollPhysics(),
+                    // 부모 스크롤과 충돌하지 않도록 설정
+                    padding: const EdgeInsets.only(left: 10.0, top: 20, right: 10),
+                    itemCount: drugs.length,
+                    itemBuilder: (context, index) {
+                      final drug = drugs[index];
+                      return _drugItem(drug);
+                    },
+                    separatorBuilder: (context, index) => const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0)
+                    ),
+                  ),
                 ),
               );
             }),
@@ -195,16 +202,16 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
       behavior: HitTestBehavior.translucent,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[800], // 배경색 설정
           borderRadius: BorderRadius.circular(12), // 모서리 둥글게
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1), // 그림자 색상 및 투명도
-              spreadRadius: 4, // 그림자의 확산 반경
-              blurRadius: 15, // 그림자의 흐림 정도
-              offset: Offset(4, 4), // 그림자의 위치 (x, y)
-            ),
-          ],
+          color: Colors.black.withOpacity(0.2)
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.1), // 그림자 색상 및 투명도
+          //     spreadRadius: 4, // 그림자의 확산 반경
+          //     blurRadius: 15, // 그림자의 흐림 정도
+          //     offset: Offset(4, 4), // 그림자의 위치 (x, y)
+          //   ),
+          // ],
         ),
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.symmetric(vertical: 10),
