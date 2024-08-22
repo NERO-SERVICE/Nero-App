@@ -142,7 +142,8 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.all(15.0),
-                              child: Btn(
+                              child: // TradeLocationMap 위젯에서 결과를 반환하는 부분
+                              Btn(
                                 onTap: () async {
                                   var result = await Get.dialog<String>(
                                     useSafeArea: false,
@@ -150,7 +151,10 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                                   );
                                   Get.back(result: {
                                     'label': result,
-                                    'location': _mapController.center,
+                                    'location': {
+                                      'latitude': _mapController.center.latitude,
+                                      'longitude': _mapController.center.longitude,
+                                    },
                                   });
                                 },
                                 child: const AppFont(
@@ -158,6 +162,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                                   align: TextAlign.center,
                                 ),
                               ),
+
                             ),
                           ),
                         ),

@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
@@ -101,13 +102,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          color: Color(0xff323232),
+          color: Colors.transparent,
           titleTextStyle: TextStyle(
             color: Colors.white,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xff323232),
+        scaffoldBackgroundColor: Colors.transparent, // 투명으로 설정
       ),
+      builder: (context, child) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/background.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            child ?? Container(),
+          ],
+        );
+      },
       initialBinding: BindingsBuilder(() {
         // // 카카오 인증
         var kakaoAuthRepo = Get.put(DrfAuthenticationRepository());
@@ -154,7 +168,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }),
       getPages: [
-        GetPage(name: '/', page: () => const App()),
+        GetPage(
+          name: '/',
+          page: () => BackgroundLayout(
+            child: const App(),
+          ),
+        ),
         ...FirebaseRoutes.routes, // Firebase 라우트
         ...DrfRoutes.routes, // DRF 라우트
       ],

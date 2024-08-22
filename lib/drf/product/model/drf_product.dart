@@ -1,7 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:nero_app/src/common/components/product_category_selector.dart';
-import 'package:nero_app/src/common/enum/market_enum.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 class DrfProduct extends Equatable {
   final int id;
@@ -16,28 +13,28 @@ class DrfProduct extends Equatable {
   final DateTime updatedAt;
   final int viewCount;
   final String status;
-  final List<dynamic>? wantTradeLocation;
+  final Map<String, double>? wantTradeLocation; // Map to hold latitude and longitude
   final String? wantTradeLocationLabel;
   final String categoryType;
   final List<int> likers;
 
   DrfProduct({
-    this.id = 0, // 기본값 제공
+    this.id = 0,
     this.title = '',
     this.description,
-    this.productPrice = 0, // 기본값 제공
-    this.isFree = false, // 기본값 제공
-    this.imageUrls = const [], // 기본값 제공
-    this.owner = 0, // 기본값 제공
+    this.productPrice = 0,
+    this.isFree = false,
+    this.imageUrls = const [],
+    this.owner = 0,
     this.nickname = '',
-    required this.createdAt, // 이 필드는 여전히 필수로 설정
-    required this.updatedAt, // 이 필드는 여전히 필수로 설정
-    this.viewCount = 0, // 기본값 제공
-    this.status = 'sale', // 기본값 제공
-    this.wantTradeLocation,
+    required this.createdAt,
+    required this.updatedAt,
+    this.viewCount = 0,
+    this.status = 'sale',
+    this.wantTradeLocation = const {},
     this.wantTradeLocationLabel,
-    this.categoryType = 'General', // 기본값 제공
-    this.likers = const [], // 기본값 제공
+    this.categoryType = 'General',
+    this.likers = const [],
   });
 
   DrfProduct.empty()
@@ -53,7 +50,7 @@ class DrfProduct extends Equatable {
         updatedAt = DateTime.now(),
         viewCount = 0,
         status = 'sale',
-        wantTradeLocation = null,
+        wantTradeLocation = const {},
         wantTradeLocationLabel = null,
         categoryType = '',
         likers = [];
@@ -74,7 +71,12 @@ class DrfProduct extends Equatable {
       updatedAt: DateTime.parse(json['updatedAt']),
       viewCount: json['viewCount'] ?? 0,
       status: json['status'] ?? 'sale',
-      wantTradeLocation: json['wantTradeLocation'],
+      wantTradeLocation: json['wantTradeLocation'] != null
+          ? {
+        'latitude': json['wantTradeLocation']['latitude'],
+        'longitude': json['wantTradeLocation']['longitude'],
+      }
+          : null,
       wantTradeLocationLabel: json['wantTradeLocationLabel'],
       categoryType: json['categoryType'] ?? '',
       likers: (json['likers'] as List<dynamic>).map((e) => e as int).toList(),
@@ -94,7 +96,10 @@ class DrfProduct extends Equatable {
       'updatedAt': updatedAt.toIso8601String(),
       'viewCount': viewCount,
       'status': status,
-      'wantTradeLocation': wantTradeLocation,
+      'wantTradeLocation': {
+        'latitude': wantTradeLocation!['latitude'],
+        'longitude': wantTradeLocation!['longitude'],
+      },
       'wantTradeLocationLabel': wantTradeLocationLabel,
       'categoryType': categoryType,
       'likers': likers,
@@ -111,7 +116,7 @@ class DrfProduct extends Equatable {
     List<String>? imageUrls,
     List<int>? likers,
     String? status,
-    List<dynamic>? wantTradeLocation,
+    Map<String, double>? wantTradeLocation, // CopyWith for the Map
     String? wantTradeLocationLabel,
     String? categoryType,
     DateTime? createdAt,
@@ -139,21 +144,21 @@ class DrfProduct extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        description,
-        productPrice,
-        isFree,
-        imageUrls,
-        owner,
-        nickname,
-        createdAt,
-        updatedAt,
-        viewCount,
-        status,
-        wantTradeLocation,
-        wantTradeLocationLabel,
-        categoryType,
-        likers,
-      ];
+    id,
+    title,
+    description,
+    productPrice,
+    isFree,
+    imageUrls,
+    owner,
+    nickname,
+    createdAt,
+    updatedAt,
+    viewCount,
+    status,
+    wantTradeLocation,
+    wantTradeLocationLabel,
+    categoryType,
+    likers,
+  ];
 }

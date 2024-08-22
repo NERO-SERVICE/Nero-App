@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class DrfProductWriteController extends GetxController {
     owner: 1,
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
-    wantTradeLocation: [],
+    wantTradeLocation: {},
   ).obs;
 
   RxList<AssetValueEntity> selectedImages = <AssetValueEntity>[].obs;
@@ -68,7 +69,7 @@ class DrfProductWriteController extends GetxController {
   void changeTradeLocationMap(Map<String, dynamic> mapInfo) {
     product.value = product.value.copyWith(
       wantTradeLocationLabel: mapInfo['label'],
-      wantTradeLocation: mapInfo['location'] as List<dynamic>,
+      wantTradeLocation: mapInfo['location'] as Map<String, double>,
     );
   }
 

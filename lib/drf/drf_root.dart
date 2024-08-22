@@ -16,93 +16,102 @@ class DrfRoot extends GetView<DrfBottomNavController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: controller.tabController,
+      body: Stack(
         children: [
-          DrfHomePage(),
-          DrfClinicPage(),
-          DrfTodayPage(),
-          DrfCalendarPage(),
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                Get.find<DrfAuthenticationRepository>().logout();
-              },
-              child: const AppFont('로그아웃'),
-            ),
+          Column(
+            children: [
+              Expanded(
+                child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: controller.tabController,
+                  children: [
+                    DrfHomePage(),
+                    DrfClinicPage(),
+                    DrfTodayPage(),
+                    DrfCalendarPage(),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.find<DrfAuthenticationRepository>().logout();
+                        },
+                        child: const AppFont('로그아웃'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Obx(
+                    () => BottomNavigationBar(
+                  currentIndex: controller.menuIndex.value,
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: Colors.transparent,
+                  selectedItemColor: const Color(0xffffffff),
+                  unselectedItemColor: const Color(0xffaaaaaa),
+                  selectedFontSize: 11.0,
+                  unselectedFontSize: 11.0,
+                  onTap: controller.changeBottomNav,
+                  items: [
+                    BottomNavigationBarItem(
+                      label: '홈',
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/home-off.svg'),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/home-on.svg'),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      label: '진료기록',
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/arround-life-off.svg'),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/arround-life-on.svg'),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      label: '하루기록',
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/chat-off.svg'),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/chat-on.svg'),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      label: '빠른메모',
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/near-off.svg'),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/near-on.svg'),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      label: '나의 네로',
+                      icon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/my-off.svg'),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/my-on.svg'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
-      ),
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          currentIndex: controller.menuIndex.value,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color(0xff323232),
-          selectedItemColor: const Color(0xffffffff),
-          unselectedItemColor: const Color(0xfffffff),
-          selectedFontSize: 11.0,
-          unselectedFontSize: 11.0,
-          onTap: controller.changeBottomNav,
-          items: [
-            BottomNavigationBarItem(
-              label: '홈',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/home-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/home-on.svg'),
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: '진료기록',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    SvgPicture.asset('assets/svg/icons/arround-life-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/arround-life-on.svg'),
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: '하루기록',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/chat-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/chat-on.svg'),
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: '빠른메모',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/near-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/near-on.svg'),
-              ),
-            ),
-            BottomNavigationBarItem(
-              label: '나의 네로',
-              icon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/my-off.svg'),
-              ),
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/svg/icons/my-on.svg'),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

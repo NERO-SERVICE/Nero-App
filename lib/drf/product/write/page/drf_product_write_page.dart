@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nero_app/drf/product/write/controller/drf_product_write_controller.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/common_text_field.dart';
@@ -314,10 +315,18 @@ class _HopeTradeLocationMap extends GetView<DrfProductWriteController> {
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
       child: GestureDetector(
         onTap: () async {
+          // TradeLocationMap 위젯에서 반환된 결과를 처리하는 부분
           var result = await Get.to<Map<String, dynamic>?>(
             TradeLocationMap(
               lable: controller.product.value.wantTradeLocationLabel,
-              location: controller.product.value.wantTradeLocation?.first,
+              location: controller.product.value.wantTradeLocation != null &&
+                  controller.product.value.wantTradeLocation!['latitude'] != null &&
+                  controller.product.value.wantTradeLocation!['longitude'] != null
+                  ? LatLng(
+                controller.product.value.wantTradeLocation!['latitude']!,
+                controller.product.value.wantTradeLocation!['longitude']!,
+              )
+                  : null,
             ),
           );
           if (result != null) {
@@ -335,37 +344,34 @@ class _HopeTradeLocationMap extends GetView<DrfProductWriteController> {
             ),
             GetBuilder<DrfProductWriteController>(
               builder: (controller) {
-                return controller.product.value.wantTradeLocationLabel ==
-                            null ||
-                        controller.product.value.wantTradeLocationLabel!.isEmpty
+                return controller.product.value.wantTradeLocationLabel == null ||
+                    controller.product.value.wantTradeLocationLabel!.isEmpty
                     ? Row(
-                        children: [
-                          const AppFont(
-                            '장소 선택',
-                            size: 13,
-                            color: Color(0xff6D7179),
-                          ),
-                          SvgPicture.asset('assets/svg/icons/right.svg'),
-                        ],
-                      )
+                  children: [
+                    const AppFont(
+                      '장소 선택',
+                      size: 13,
+                      color: Color(0xff6D7179),
+                    ),
+                    SvgPicture.asset('assets/svg/icons/right.svg'),
+                  ],
+                )
                     : Row(
-                        children: [
-                          AppFont(
-                            controller.product.value.wantTradeLocationLabel ??
-                                '',
-                            size: 13,
-                            color: Colors.white,
-                          ),
-                          GestureDetector(
-                            onTap: () => controller.clearWantTradeLocation(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                  'assets/svg/icons/delete.svg'),
-                            ),
-                          )
-                        ],
-                      );
+                  children: [
+                    AppFont(
+                      controller.product.value.wantTradeLocationLabel ?? '',
+                      size: 13,
+                      color: Colors.white,
+                    ),
+                    GestureDetector(
+                      onTap: () => controller.clearWantTradeLocation(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/svg/icons/delete.svg'),
+                      ),
+                    )
+                  ],
+                );
               },
             ),
           ],
@@ -374,3 +380,4 @@ class _HopeTradeLocationMap extends GetView<DrfProductWriteController> {
     );
   }
 }
+
