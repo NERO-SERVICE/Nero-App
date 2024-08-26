@@ -6,6 +6,7 @@ class Btn extends StatelessWidget {
   final EdgeInsets padding;
   final Color color;
   final bool disabled;
+  final ShapeBorder? shape;
 
   const Btn({
     super.key,
@@ -14,6 +15,7 @@ class Btn extends StatelessWidget {
     this.disabled = false,
     this.color = const Color(0xffD0EE17),
     this.padding = const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    this.shape,
   });
 
   @override
@@ -25,10 +27,18 @@ class Btn extends StatelessWidget {
         }
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: shape != null && shape is RoundedRectangleBorder
+            ? (shape as RoundedRectangleBorder).borderRadius
+            : BorderRadius.circular(7),
         child: Container(
           padding: padding,
-          color: disabled ? Colors.grey : color,
+          decoration: ShapeDecoration(
+            color: disabled ? Colors.grey : color,
+            shape: shape ??
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7),
+                ),
+          ),
           child: child,
         ),
       ),

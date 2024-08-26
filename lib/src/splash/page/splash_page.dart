@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/enum/authentication_status.dart';
-import '../../common/components/app_font.dart';
+
 import '../../common/components/getx_listener.dart';
 import '../../common/controller/authentication_controller.dart';
 import '../../common/controller/data_load_controller.dart';
@@ -14,56 +14,93 @@ class SplashPage extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: GetxListener<AuthenticationStatus>(
-          listen: (AuthenticationStatus status) async {
-            switch (status) {
-              case AuthenticationStatus.authentication:
-                Get.offNamed('/drf/home');
-                break;
-              case AuthenticationStatus.unAuthenticated:
-                var userModel =
-                    Get.find<AuthenticationController>().userModel.value;
-                await Get.offNamed('/signup/${userModel?.uid}');
-                Get.find<AuthenticationController>().reload();
-                break;
-              case AuthenticationStatus.unknown:
-                Get.offNamed('/login');
-                break;
-              case AuthenticationStatus.init:
-                break;
-            }
-          },
-          stream: Get.find<AuthenticationController>().status,
-          child: GetxListener<bool>(
-            listen: (bool value) {
-              if (value) {
-                controller.loadStep(StepType.authCheck);
-              }
-            },
-            stream: Get.find<DataLoadController>().isDataLoad,
-            child: GetxListener<StepType>(
-              initCall: () {
-                controller.loadStep(StepType.dataLoad);
-              },
-              listen: (StepType? value) {
-                if (value == null) return;
-                switch (value) {
-                  case StepType.init:
-                  case StepType.dataLoad:
-                    Get.find<DataLoadController>().loadData();
+      body: Stack(
+        children: [
+          const _BackgroundView(),
+          Center(
+            child: GetxListener<AuthenticationStatus>(
+              listen: (AuthenticationStatus status) async {
+                switch (status) {
+                  case AuthenticationStatus.authentication:
+                    Get.offNamed('/drf/home');
                     break;
-                  case StepType.authCheck:
-                    Get.find<AuthenticationController>().authCheck();
+                  case AuthenticationStatus.unAuthenticated:
+                    var userModel =
+                        Get.find<AuthenticationController>().userModel.value;
+                    await Get.offNamed('/signup/${userModel?.uid}');
+                    Get.find<AuthenticationController>().reload();
+                    break;
+                  case AuthenticationStatus.unknown:
+                    Get.offNamed('/login');
+                    break;
+                  case AuthenticationStatus.init:
                     break;
                 }
               },
-              stream: controller.loadStep,
-              child: const _SplashView(),
+              stream: Get.find<AuthenticationController>().status,
+              child: GetxListener<bool>(
+                listen: (bool value) {
+                  if (value) {
+                    controller.loadStep(StepType.authCheck);
+                  }
+                },
+                stream: Get.find<DataLoadController>().isDataLoad,
+                child: GetxListener<StepType>(
+                  initCall: () {
+                    controller.loadStep(StepType.dataLoad);
+                  },
+                  listen: (StepType? value) {
+                    if (value == null) return;
+                    switch (value) {
+                      case StepType.init:
+                      case StepType.dataLoad:
+                        Get.find<DataLoadController>().loadData();
+                        break;
+                      case StepType.authCheck:
+                        Get.find<AuthenticationController>().authCheck();
+                        break;
+                    }
+                  },
+                  stream: controller.loadStep,
+                  child: const _SplashView(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BackgroundView extends StatelessWidget {
+  const _BackgroundView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/login_background.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.7),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -73,59 +110,79 @@ class _SplashView extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 65),
+          Expanded(
+            child: _ContentView(),
+          ),
+          const SizedBox(height: 200, child: _ProgressView()),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContentView extends StatelessWidget {
+  const _ContentView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
-      children: [
-        const SizedBox(height: 200),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Container(
-                  height: 136,
-                  child: FittedBox(
-                    fit: BoxFit.contain, // 비율을 유지하면서 부모 크기에 맞춤
-                    child: Image.asset(
-                      'assets/images/nero_init.png',
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              const AppFont(
-                '당신 곁의 네로',
-                fontWeight: FontWeight.bold,
-                size: 20,
-              ),
-              const SizedBox(height: 40),
-              AppFont(
-                '토탈 케어 플랫폼 \n 네로를 시작하세요',
-                align: TextAlign.center,
-                size: 18,
-                color: Colors.white.withOpacity(0.6),
-              )
-            ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text(
+          'By Your Side',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+            color: Colors.white,
           ),
         ),
-        SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              Obx(
-                    () {
-                  return Text(
-                    '${controller.loadStep.value.name}중 입니다.',
-                    style: const TextStyle(color: Colors.white),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              const CircularProgressIndicator(
-                  strokeWidth: 1, color: Colors.white)
-            ],
+        SizedBox(height: 8),
+        Text(
+          '오늘도 한발짝\n스스로를 돌아보며\n네로(Nero)',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 44,
+            color: Colors.white,
           ),
-        )
+        ),
+      ],
+    );
+  }
+}
+
+class _ProgressView extends GetView<SplashController> {
+  const _ProgressView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Obx(
+              () {
+            return Text(
+              '${controller.loadStep.value.name}중 입니다.',
+              style: const TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        const CircularProgressIndicator(
+            strokeWidth: 1, color: Colors.white),
       ],
     );
   }

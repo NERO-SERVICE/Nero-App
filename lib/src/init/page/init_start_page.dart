@@ -1,55 +1,108 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:nero_app/src/common/components/btn.dart';
 
 import '../../common/components/app_font.dart';
-import '../../common/components/btn.dart';
 
 class InitStartPage extends StatelessWidget {
   final Function() onStart;
+
   const InitStartPage({super.key, required this.onStart});
+
+  Widget _backgroundView() {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/login_background.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.7),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _contentView() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 100),
+          const Text(
+            'By Your Side',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '오늘도 한발짝\n스스로를 돌아보며\n네로(Nero)',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              fontSize: 44,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _startBtn() {
+    return Positioned(
+      bottom: 96,
+      left: 32,
+      right: 32,
+      child: Btn(
+        color: const Color(0xffD0EE17),
+        onTap: onStart,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: const Center(
+          child: Text(
+            '시작하기',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 99,
-              height: 116,
-              child: Image.asset(
-                'assets/images/nero_init.png',
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            const AppFont(
-              '당신 곁의 네로',
-              fontWeight: FontWeight.bold,
-              size: 20,
-            ),
-            AppFont(
-              '토탈 케어 플랫폼 \n 네로를 시작하세요',
-              align: TextAlign.center,
-              size: 18,
-              color: Colors.white.withOpacity(0.6),
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-            left: 25, right: 25, bottom: 25 + Get.mediaQuery.padding.bottom),
-        child: Btn(
-            onTap: onStart,
-            child: const AppFont(
-              '시작하기',
-              align: TextAlign.center,
-              size: 18,
-              fontWeight: FontWeight.bold,
-            )),
+      body: Stack(
+        children: [
+          _backgroundView(),
+          _contentView(),
+          _startBtn(),
+        ],
       ),
     );
   }

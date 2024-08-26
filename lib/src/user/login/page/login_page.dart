@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/btn.dart';
@@ -9,14 +10,15 @@ class LoginPage extends StatelessWidget {
 
   Widget _logoView() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const SizedBox(height: 35),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Container(
             height: 136,
             child: FittedBox(
-              fit: BoxFit.contain, // 비율을 유지하면서 부모 크기에 맞춤
+              fit: BoxFit.contain,
               child: Image.asset(
                 'assets/images/nero_init.png',
               ),
@@ -24,7 +26,7 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          height: 40,
+          height: 200,
         ),
         const AppFont(
           '당신 곁의 네로',
@@ -39,7 +41,7 @@ class LoginPage extends StatelessWidget {
           align: TextAlign.center,
           size: 18,
           color: Colors.white.withOpacity(0.6),
-        )
+        ),
       ],
     );
   }
@@ -55,7 +57,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
             child: AppFont(
               '회원가입/로그인',
               color: Colors.white,
@@ -76,41 +78,22 @@ class LoginPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Column(
         children: [
-          Btn(
-            color: Colors.white,
-            onTap: () => Get.find<LoginController>().googleLogin(),
-            child: Row(
-              children: [
-                Image.asset('assets/images/google.png'),
-                const SizedBox(
-                  width: 30,
-                ),
-                const AppFont(
-                  'Google로 계속하기',
-                  color: Colors.black,
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 10),
           Btn(
-            color: Colors.white,
+            color: Color(0xffFEE500),
             onTap: () => Get.find<LoginController>().kakaoLogin(),
             child: Row(
               children: [
                 SizedBox(
                   width: 24,
                   height: 24,
-                  child: Image.asset(
-                    'assets/images/kakao.png',
-                    fit: BoxFit.contain,
-                  ),
+                  child: SvgPicture.asset('assets/images/kakao.svg')
                 ),
                 const SizedBox(
-                  width: 30,
+                  width: 40,
                 ),
                 const AppFont(
-                  'Kakao로 계속하기',
+                  '카카오로 계속하기',
                   color: Colors.black,
                 ),
               ],
@@ -124,13 +107,37 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          _logoView(),
-          _textDivider(),
-          _snsLoginBtn(),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/login_background.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.7),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _logoView(),
+              _textDivider(),
+              _snsLoginBtn(),
+            ],
+          ),
         ],
       ),
     );
