@@ -7,12 +7,7 @@ class BackgroundLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/background.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
+      color: const Color(0xFF1C1B1B),
       child: child,
     );
   }

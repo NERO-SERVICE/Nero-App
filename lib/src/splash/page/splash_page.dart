@@ -90,11 +90,11 @@ class _BackgroundView extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
+                begin: Alignment.center,
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(0.9),
                 ],
               ),
             ),
@@ -146,7 +146,7 @@ class _ContentView extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Text(
-          '오늘도 한발짝\n스스로를 돌아보며\n네로(Nero)',
+          '오늘도 한발짝\n스스로 돌아보며\n네로(Nero)',
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,

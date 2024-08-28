@@ -54,7 +54,7 @@ class InitStartPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            '오늘도 한발짝\n스스로를 돌아보며\n네로(Nero)',
+            '오늘도 한발짝\n스스로 돌아보며\n네로(Nero)',
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w600,

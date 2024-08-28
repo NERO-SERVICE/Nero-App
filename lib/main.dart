@@ -113,21 +113,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             color: Colors.white,
           ),
         ),
-        scaffoldBackgroundColor: Colors.transparent, // 투명으로 설정
+        scaffoldBackgroundColor: const Color(0xFF1C1B1B),
       ),
-      builder: (context, child) {
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/background.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-            child ?? Container(),
-          ],
-        );
-      },
       initialBinding: BindingsBuilder(() {
         // // 카카오 인증
         var kakaoAuthRepo = Get.put(DrfAuthenticationRepository());
@@ -180,8 +167,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             child: const App(),
           ),
         ),
-        ...FirebaseRoutes.routes, // Firebase 라우트
-        ...DrfRoutes.routes, // DRF 라우트
+        ...FirebaseRoutes.routes,
+        ...DrfRoutes.routes,
       ],
     );
   }

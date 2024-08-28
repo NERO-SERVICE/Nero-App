@@ -3,10 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
-import 'package:nero_app/drf/product/write/page/drf_product_write_page.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
+import 'package:nero_app/drf/product/write/page/drf_product_write_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
 
@@ -17,8 +16,8 @@ class DrfProductListPage extends StatefulWidget {
 
 class _DrfProductListPageState extends State<DrfProductListPage> {
   final DrfProductController _productService = DrfProductController();
-  final DrfProductController controller = DrfProductController();
   List<DrfProduct> _products = [];
+  final PageController _pageController = PageController(viewportFraction: 0.7);
 
   @override
   void initState() {
@@ -47,7 +46,7 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
         ),
         const AppFont(
           ' · ',
-          color: const Color(0xff878B93),
+          color: Color(0xff878B93),
           size: 12,
         ),
         AppFont(
@@ -65,14 +64,14 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
         await Get.toNamed('/drf/product/detail/${product.id}');
       },
       behavior: HitTestBehavior.translucent,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(7),
             child: SizedBox(
-              width: 100,
-              height: 100,
+              width: 300,
+              height: 400,
               child: product.imageUrls.isNotEmpty
                   ? Image.network(
                       product.imageUrls.first,
@@ -84,22 +83,14 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
                     ),
             ),
           ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 10),
-                AppFont(
-                  product.title ?? '',
-                  color: Colors.white,
-                  size: 16,
-                ),
-                const SizedBox(height: 5),
-                subInfo(product)
-              ],
-            ),
-          )
+          const SizedBox(height: 10),
+          AppFont(
+            product.title ?? '',
+            color: Colors.white,
+            size: 16,
+          ),
+          const SizedBox(height: 5),
+          subInfo(product),
         ],
       ),
     );
@@ -108,19 +99,23 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
   @override
   Widget build(BuildContext context) {
     return CommonLayout(
-      body: ListView.separated(
-        controller: controller.scrollController,
-        padding: const EdgeInsets.only(left: 25.0, top: 20, right: 25),
-        itemCount: _products.length,
-        itemBuilder: (context, index) {
-          final product = _products[index];
-          return _productOne(product);
-        },
-        separatorBuilder: (context, index) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: Divider(
-            color: Color(0xff3C3C3E),
-          ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: PageView.builder(
+          controller: _pageController,
+          itemCount: _products.length,
+          itemBuilder: (context, index) {
+            return FractionallySizedBox(
+              widthFactor: 1.0,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: index == 0 ? 25.0 : 10.0,
+                  right: index == _products.length - 1 ? 25.0 : 10.0,
+                ),
+                child: _productOne(_products[index]),
+              ),
+            );
+          },
         ),
       ),
       floatingActionButton: ClipRRect(
