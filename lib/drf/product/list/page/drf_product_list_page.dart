@@ -2,11 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
 import 'package:nero_app/drf/product/model/drf_product.dart';
 import 'package:nero_app/drf/product/write/page/drf_product_write_page.dart';
-import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/layout/common_layout.dart';
 
 class DrfProductListPage extends StatefulWidget {
@@ -39,20 +37,14 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
   Widget subInfo(DrfProduct product) {
     return Row(
       children: [
-        AppFont(
+        Text(
           "${product.nickname}",
-          color: const Color(0xff878B93),
-          size: 12,
-        ),
-        const AppFont(
-          ' · ',
-          color: Color(0xff878B93),
-          size: 12,
-        ),
-        AppFont(
-          DateFormat('yyyy.MM.dd').format(product.createdAt),
-          color: const Color(0xff878B93),
-          size: 12,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 25,
+            color: Colors.white,
+          ),
         ),
       ],
     );
@@ -64,8 +56,7 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
         await Get.toNamed('/drf/product/detail/${product.id}');
       },
       behavior: HitTestBehavior.translucent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(7),
@@ -83,14 +74,28 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
                     ),
             ),
           ),
-          const SizedBox(height: 10),
-          AppFont(
-            product.title ?? '',
-            color: Colors.white,
-            size: 16,
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.9),
+                  ],
+                  stops: [0.3, 1.0],
+                ),
+              ),
+            ),
           ),
-          const SizedBox(height: 5),
-          subInfo(product),
+          Positioned(
+            bottom: 45,
+            left: 24,
+            right: 0,
+            child: subInfo(product),
+          ),
         ],
       ),
     );
@@ -101,21 +106,24 @@ class _DrfProductListPageState extends State<DrfProductListPage> {
     return CommonLayout(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: PageView.builder(
-          controller: _pageController,
-          itemCount: _products.length,
-          itemBuilder: (context, index) {
-            return FractionallySizedBox(
-              widthFactor: 1.0,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? 25.0 : 10.0,
-                  right: index == _products.length - 1 ? 25.0 : 10.0,
+        child: SizedBox(
+          height: 400,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: _products.length,
+            itemBuilder: (context, index) {
+              return FractionallySizedBox(
+                widthFactor: 1.0,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0 ? 25.0 : 10.0,
+                    right: index == _products.length - 1 ? 25.0 : 10.0,
+                  ),
+                  child: _productOne(_products[index]),
                 ),
-                child: _productOne(_products[index]),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
       floatingActionButton: ClipRRect(

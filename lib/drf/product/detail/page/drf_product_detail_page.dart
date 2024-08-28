@@ -135,9 +135,9 @@ class DrfProductDetailPage extends GetView<DrfProductDetailController> {
                 product: controller.product.value,
               ),
             ),
-            _ProfileSection(product: controller.product.value),
             _ProductDetail(product: controller.product.value),
             _HopeTradeLocation(product: controller.product.value),
+            _ProfileSection(product: controller.product.value),
             _UserProducts(
               product: controller.product.value,
               ownerOtherProducts: controller.ownerOtherProducts.value,
@@ -164,7 +164,7 @@ class _ProductThumbnail extends StatelessWidget {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: Get.size.width - 40,
+            height: Get.size.width,
             viewportFraction: 1,
             aspectRatio: 0,
             enlargeCenterPage: false,
@@ -247,7 +247,7 @@ class _ProfileSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       const AppFont(
-                        '송파 어딘가',
+                        '에디터',
                         size: 13,
                         color: Color(0xffABAEB6),
                       )
@@ -290,15 +290,19 @@ class _ProductDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppFont(
-            product.title ?? '',
-            size: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+          Text(
+            "${product.title}",
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              fontSize: 25,
+              color: Colors.white,
+              height: 2,
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -321,13 +325,18 @@ class _ProductDetail extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 30),
-          AppFont(
-            product.description ?? '',
-            size: 16,
-            color: Colors.white,
+          const SizedBox(height: 20),
+          Text(
+            "${product.description}",
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+              color: Colors.white,
+              height: 2,
+            ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           _statistic(),
         ],
       ),
@@ -335,8 +344,9 @@ class _ProductDetail extends StatelessWidget {
   }
 }
 
+
+
 class _HopeTradeLocation extends StatelessWidget {
-  // 지도 거래 장소
   final DrfProduct product;
 
   const _HopeTradeLocation({super.key, required this.product});
@@ -391,7 +401,7 @@ class _UserProducts extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppFont(
-                '${product.owner}님의 판매 상품',
+                '${product.nickname}님의 다른 게시물',
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 size: 15,
