@@ -30,6 +30,7 @@ class DrfProductWriteController extends GetxController {
     selectedImages.removeAt(index);
   }
 
+
   // 제품 제목 변경
   void changeTitle(String value) {
     product.value = product.value.copyWith(title: value);

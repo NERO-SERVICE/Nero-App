@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/write/controller/drf_clinic_write_controller.dart';
 import 'package:nero_app/drf/drf_calendar_widget.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:nero_app/src/common/components/common_text_field.dart';
+import 'package:nero_app/src/common/components/trade_location_map.dart';
 
 class DrfClinicWritePage extends StatefulWidget {
   @override
@@ -64,10 +67,6 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,73 +91,93 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           ]),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: ListView(
             children: [
-              TextFormField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(labelText: '제목'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  controller.titleController.text = value ?? '';
-                },
+              SizedBox(height: 18),
+              Text(
+                '처방받은 내용을 기록해주세요',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Color(0xffD9D9D9),
+                ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 46),
+              _divider,
+              _clinicTitleView(),
+              _divider,
+              const SizedBox(height: 18),
+              _HopeTradeLocationMap(),
+              const SizedBox(height: 18),
+              _divider,
+              const SizedBox(height: 18),
               Text(
                 '최근 진료일',
                 style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
                   color: Colors.white,
-                  fontSize: 20,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
               _buildDateSelector('Recent Day', controller.recentDay),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
+              _divider,
+              const SizedBox(height: 18),
               Text(
-                '다음 진료일',
+                '다음 예약 진료일',
                 style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
                   color: Colors.white,
-                  fontSize: 20,
                 ),
               ),
               const SizedBox(height: 20),
               _buildDateSelector('Next Day', controller.nextDay),
               const SizedBox(height: 20),
+              _divider,
+              const SizedBox(height: 18),
+              _registerDrug(),
               _buildDrugsList(),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 60,
+              _divider,
+              _clinicDescription(),
+              _divider,
+              const SizedBox(height: 24),
+              Center(
                 child: ElevatedButton(
-                  onPressed: () => _addDrugDialog(context),
+                  onPressed: () async {
+                    _submitForm;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('진료 기록이 제출되었습니다.')),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 66.0),
                   ),
-                  child: Text('약물 등록', style: TextStyle(fontSize: 18),),
+                  child: Text(
+                    '제출하기',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25,
+                      color: Color(0xffD9D9D9),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xffD0EE17),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text('진료 기록 생성', style: TextStyle(fontSize: 18),),
-                ),
-              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -166,12 +185,18 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
     );
   }
 
+  Widget get _divider => const Divider(
+        color: Color(0xff3C3C3E),
+        indent: 0,
+        endIndent: 0,
+      );
+
   Widget _buildDateSelector(String label, Rx<DateTime> date) {
     return Obx(() {
       return GestureDetector(
         onTap: () => _selectDate(context, date),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(16),
@@ -198,8 +223,10 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
         itemBuilder: (context, index) {
           final drug = controller.drugs[index];
           return ListTile(
-            title: Text('${drug.status} - ${drug.number} pills (${drug.time})',
-            style: TextStyle(color: Colors.white, fontSize: 15),),
+            title: Text(
+              '${drug.status} - ${drug.number} pills (${drug.time})',
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
             trailing: IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
@@ -221,7 +248,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       '콘서타 36mg',
       '폭세틴 20mg',
       '메디카넷 18mg',
-      '페로스핀 18mg'
+      '페로스핀 18mg',
     ];
     List<String> times = ['morning', 'lunch', 'dinner'];
 
@@ -297,6 +324,145 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _clinicTitleView() {
+    return GetBuilder<DrfClinicWriteController>(
+      builder: (controller) {
+        return CommonTextField(
+          hintText: '글 제목',
+          initText: controller.product.value.title,
+          onChange: controller.changeTitle,
+          hintColor: const Color(0xff6D7179),
+        );
+      },
+    );
+  }
+
+  Widget _clinicDescription() {
+    return GetBuilder<DrfClinicWriteController>(
+      builder: (controller) {
+        return CommonTextField(
+          hintColor: Color(0xff6D7179),
+          hintText: '이번 진료 중 특이사항을 작성해주세요',
+          textInputType: TextInputType.multiline,
+          maxLines: 10,
+          initText: controller.product.value.description,
+          onChange: controller.changeDescription,
+        );
+      },
+    );
+  }
+
+  Widget _HopeTradeLocationMap() {
+    return GestureDetector(
+      onTap: () async {
+        // TradeLocationMap 위젯에서 반환된 결과를 처리하는 부분
+        var result = await Get.to<Map<String, dynamic>?>(
+          TradeLocationMap(
+            lable: controller.product.value.wantTradeLocationLabel,
+            location: controller.product.value.wantTradeLocation != null &&
+                    controller.product.value.wantTradeLocation!['latitude'] !=
+                        null &&
+                    controller.product.value.wantTradeLocation!['longitude'] !=
+                        null
+                ? LatLng(
+                    controller.product.value.wantTradeLocation!['latitude']!,
+                    controller.product.value.wantTradeLocation!['longitude']!,
+                  )
+                : null,
+          ),
+        );
+        if (result != null) {
+          controller.changeTradeLocationMap(result);
+        }
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const AppFont(
+            '진료 위치',
+            size: 16,
+            color: Colors.white,
+          ),
+          GetBuilder<DrfClinicWriteController>(
+            builder: (controller) {
+              return controller.product.value.wantTradeLocationLabel == null ||
+                      controller.product.value.wantTradeLocationLabel!.isEmpty
+                  ? Row(
+                      children: [
+                        const AppFont(
+                          '장소선택',
+                          size: 13,
+                          color: Color(0xffD0EE17),
+                        ),
+                        SvgPicture.asset(
+                          'assets/svg/icons/right.svg',
+                          height: 24,
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        AppFont(
+                          controller.product.value.wantTradeLocationLabel ?? '',
+                          size: 13,
+                          color: Colors.white,
+                        ),
+                        GestureDetector(
+                          onTap: () => controller.clearWantTradeLocation(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SvgPicture.asset(
+                              'assets/svg/icons/delete.svg',
+                              height: 24,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _registerDrug() {
+    return GestureDetector(
+      onTap: () async {
+        _addDrugDialog(context);
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const AppFont(
+            '약물 등록',
+            size: 16,
+            color: Colors.white,
+          ),
+          GetBuilder<DrfClinicWriteController>(
+            builder: (controller) {
+              return Row(
+                children: [
+                  const AppFont(
+                    '선택하기',
+                    size: 13,
+                    color: Color(0xffD0EE17),
+                  ),
+                  SvgPicture.asset(
+                    'assets/svg/icons/right.svg',
+                    height: 24,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
