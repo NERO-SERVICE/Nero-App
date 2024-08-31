@@ -12,7 +12,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 class DrfCalendarPage extends StatelessWidget {
   final DrfCalendarController controller = Get.put(DrfCalendarController());
-  final DrfFastlogController fastlogController = Get.find<DrfFastlogController>();
+  final DrfFastlogController fastlogController =
+      Get.find<DrfFastlogController>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class DrfCalendarPage extends StatelessWidget {
       appBar: AppBar(
         leadingWidth: Get.width * 0.6,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 25),
+          padding: const EdgeInsets.only(left: 32),
           child: Row(children: [
             const AppFont(
               '빠른메모',
@@ -49,7 +50,22 @@ class DrfCalendarPage extends StatelessWidget {
       ),
       body: BackgroundLayout(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                '날짜별로 모아 달력에 저장하는 빠른 메모,\n까먹을 것 같은 모든 정보들을\n빠른 메모에 적어주세요!',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Color(0xffD9D9D9),
+                ),
+              ),
+            ),
+            SizedBox(height: 32),
             Obx(
               () => TableCalendar(
                 firstDay: DateTime.utc(2010, 10, 16),
@@ -90,7 +106,7 @@ class DrfCalendarPage extends StatelessWidget {
                   weekdayStyle: TextStyle(color: Color(0xff6D7179)),
                   weekendStyle: TextStyle(color: Color(0xff6D7179)),
                 ),
-                daysOfWeekHeight: 40,
+                daysOfWeekHeight: 60,
                 calendarStyle: CalendarStyle(
                   todayDecoration: BoxDecoration(
                     color: Colors.grey,

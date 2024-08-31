@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
-import 'package:nero_app/src/common/layout/common_layout.dart';
-
-import '../../../../src/common/components/app_font.dart';
 
 class DrfFastlogPage extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
@@ -12,28 +9,49 @@ class DrfFastlogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonLayout(
+    return Scaffold(
       appBar: AppBar(
-        leadingWidth: Get.width * 0.8,
-        leading: GestureDetector(
-          onTap: Get.back,
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              SvgPicture.asset('assets/svg/icons/close.svg'),
-              const SizedBox(width: 20),
-              AppFont(
-                '${controller.selectedDate.value.toLocal().toString().split(' ')[0]} 빠른 기록',
-                fontWeight: FontWeight.bold,
-                size: 20,
-                color: Colors.white,
-              ),
-            ],
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('yyyy년 M월 d일')
+                      .format(controller.selectedDate.value),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 13),
+                Text(
+                  '기억해야 하는 모든 것을 적어주세요',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Color(0xffD9D9D9),
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
+          ),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -74,28 +92,39 @@ class DrfFastlogPage extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _textController,
-                    style: TextStyle(color: Colors.grey.shade600),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xff323232),
-                      labelText: '기록 작성',
-                      labelStyle: TextStyle(color: Colors.grey.shade600),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade600,
-                        ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: 50,
+                      maxHeight: 50,
+                    ),
+                    child: TextField(
+                      controller: _textController,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: Color(0xffD9D9D9),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade600,
+                      decoration: InputDecoration(
+                        labelText: '기록 작성',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Color(0xffD9D9D9),
                         ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade600,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(28),
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.3),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                       ),
                     ),
                   ),
@@ -109,16 +138,25 @@ class DrfFastlogPage extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Color(0xff323232),
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15.0,
+                      horizontal: 18.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    minimumSize: Size(50, 50),
+                    maximumSize: Size(50, 50),
                   ),
-                  child: Text('전송'),
+                  child: Icon(Icons.send, color: Colors.white),
                 ),
               ],
             ),
           ),
         ],
       ),
+      resizeToAvoidBottomInset: true,
     );
   }
 }
