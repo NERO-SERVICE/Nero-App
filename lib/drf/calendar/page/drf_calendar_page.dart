@@ -33,10 +33,6 @@ class DrfCalendarPage extends StatelessWidget {
           ]),
         ),
         actions: [
-          SvgPicture.asset('assets/svg/icons/search.svg'),
-          const SizedBox(width: 15),
-          SvgPicture.asset('assets/svg/icons/list.svg'),
-          const SizedBox(width: 15),
           IconButton(
             icon: Icon(Icons.logout, color: Colors.white),
             onPressed: () async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
+import 'package:intl/intl.dart';
 import 'package:nero_app/drf/calendar/fastlog/controller/drf_fastlog_controller.dart';
 
 class DrfFastlogPage extends StatelessWidget {

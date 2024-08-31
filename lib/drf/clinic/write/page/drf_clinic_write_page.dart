@@ -174,12 +174,12 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormat('yyyy-MM-dd').format(date.value),
+              Text(DateFormat('yyyy년 MM월 dd일').format(date.value),
                   style: TextStyle(color: Colors.white)),
               Icon(Icons.calendar_today, size: 16, color: Colors.grey),
             ],

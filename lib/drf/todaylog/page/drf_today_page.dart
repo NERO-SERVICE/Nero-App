@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/background_layout.dart';
@@ -45,10 +44,6 @@ class DrfTodayPage extends StatelessWidget {
               ),
             ),
             actions: [
-              SvgPicture.asset('assets/svg/icons/search.svg'),
-              const SizedBox(width: 15),
-              SvgPicture.asset('assets/svg/icons/list.svg'),
-              const SizedBox(width: 15),
               IconButton(
                 icon: Icon(
                   Icons.logout,
@@ -410,7 +405,7 @@ class DrfTodayPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            '${DateTime.now().toLocal()}'.split(' ')[0],
+            DateFormat('M월 d일').format(DateTime.now().toLocal()),
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w600,
