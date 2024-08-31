@@ -109,32 +109,65 @@ class DrfTodaySelfLogPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: TextField(
-                            controller: _textController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              labelText: '기록 작성',
-                              labelStyle: TextStyle(color: Colors.white),
-                              border: OutlineInputBorder(),
-                              filled: true,
-                              fillColor: Colors.black.withOpacity(0.5),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: 50,
+                              maxHeight: 50,
+                            ),
+                            child: TextField(
+                              controller: _textController,
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                color: Color(0xffD9D9D9),
+                              ),
+                              decoration: InputDecoration(
+                                labelText: '기록 작성',
+                                labelStyle: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                  color: Color(0xffD9D9D9),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.withOpacity(0.3),
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16.0), // 텍스트 필드 내 여백 설정
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () async {
                             if (_textController.text.isNotEmpty) {
-                              await Provider.of<DrfTodayController>(context,
-                                  listen: false)
+                              await Provider.of<DrfTodayController>(context, listen: false)
                                   .submitSelfLog(_textController.text);
                               _textController.clear();
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.withOpacity(0.8),
+                            backgroundColor: Colors.grey.withOpacity(0.3),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 15.0,
+                              horizontal: 18.0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            minimumSize: Size(50, 50),
+                            maximumSize: Size(50, 50),
                           ),
-                          child: Text('전송'),
+                          child: Icon(Icons.send, color: Colors.white),
                         ),
                       ],
                     ),
