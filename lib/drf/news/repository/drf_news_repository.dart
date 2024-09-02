@@ -9,7 +9,7 @@ class DrfNewsRepository {
   // 최신 뉴스 4개 불러오기
   Future<List<DrfNews>> getLatestNews() async {
     try {
-      final response = await _dio.get('/latest-news/');
+      final response = await _dio.get('/news/latest/');
       print(response.data);
 
       List<DrfNews> news = response.data
