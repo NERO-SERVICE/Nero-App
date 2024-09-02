@@ -53,21 +53,31 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppFont(
-                  '네로 주민과 만나서\n얘기하고 싶은 장소를 선택해주세요',
-                  fontWeight: FontWeight.bold,
-                  size: 16,
+                Text(
+                  '진료 위치',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25,
+                    color: Color(0xffFFFFFF),
+                  ),
                 ),
-                SizedBox(height: 15),
-                AppFont(
-                  '만나서 거래할 때는 누구나 찾기 쉬운 공공장소가 좋아요',
-                  size: 13,
+                SizedBox(height: 13),
+                Text(
+                  '어디에서 진료받으셨어요?\n위치를 골라주세요',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Color(0xffFFFFFF),
+                  ),
                 ),
+                SizedBox(height: 44),
               ],
             ),
           ),
@@ -77,7 +87,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var myLocation =
-                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
+                  LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
                   if (location != null) {
                     myLocation = location!;
                   }
@@ -86,7 +96,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                     options: MapOptions(
                       center: myLocation,
                       interactiveFlags:
-                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       onPositionChanged: (position, hasGesture) {
                         if (hasGesture) {
                           setState(() {
@@ -98,7 +108,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                     children: [
                       TileLayer(
                         urlTemplate:
-                            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                       ),
                     ],
                     nonRotatedChildren: [
@@ -115,7 +125,7 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(7),
                                   color:
-                                      const Color.fromARGB(255, 208, 208, 208),
+                                  const Color.fromARGB(255, 208, 208, 208),
                                 ),
                                 child: AppFont(
                                   lable,
@@ -141,10 +151,10 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                           child: SizedBox(
                             width: double.infinity,
                             child: Padding(
-                              padding: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.all(24.0),
                               child: // TradeLocationMap 위젯에서 결과를 반환하는 부분
-                              Btn(
-                                onTap: () async {
+                              ElevatedButton(
+                                onPressed: () async {
                                   var result = await Get.dialog<String>(
                                     useSafeArea: false,
                                     PlaceNamePopup(),
@@ -157,12 +167,23 @@ class _TradeLocationMapState extends State<TradeLocationMap> {
                                     },
                                   });
                                 },
-                                child: const AppFont(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xff1C1B1B),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 66.0),
+                                ),
+                                child: Text(
                                   '선택 완료',
-                                  align: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Pretendard',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 25,
+                                    color: Color(0xffD0EE17),
+                                  ),
                                 ),
                               ),
-
                             ),
                           ),
                         ),
@@ -224,10 +245,10 @@ class SimpleTradeLocationMap extends StatelessWidget {
 
   const SimpleTradeLocationMap(
       {super.key,
-      required this.myLocation,
-      this.lable,
-      this.interactiveFlags =
-          InteractiveFlag.pinchZoom | InteractiveFlag.drag});
+        required this.myLocation,
+        this.lable,
+        this.interactiveFlags =
+        InteractiveFlag.pinchZoom | InteractiveFlag.drag});
 
   @override
   Widget build(BuildContext context) {
@@ -268,7 +289,8 @@ class SimpleTradeLocationMap extends StatelessWidget {
           ),
         Center(
           child: SvgPicture.asset(
-            'assets/svg/icons/want_location_marker.svg',
+            'assets/svg/icons/location_mark.svg',
+            height: 45,
             width: 45,
           ),
         ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/src/common/components/btn.dart';
@@ -36,61 +38,70 @@ class _PlaceNamePopupState extends State<PlaceNamePopup> {
               right: 0,
               bottom: 0,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: const Color(0xff212123),
-                  height: 230,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const AppFont(
-                        '선택한 곳의 장소명을 입력해주세요',
-                        fontWeight: FontWeight.bold,
-                        size: 16,
-                      ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        autofocus: true,
-                        controller: controller,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: const InputDecoration(
-                          hintText: '예) 강남역 1번 출구',
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 995, 95, 95)),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1.0),
-                          ),
+                borderRadius: BorderRadius.circular(16),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.3),
+                    height: 250,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const AppFont(
+                          '선택한 곳의 장소명을 입력해주세요',
+                          fontWeight: FontWeight.bold,
+                          size: 16,
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            possible = value != '';
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 15),
-                      Btn(
-                          child: const AppFont(
-                            '만남 장소 등록',
-                            align: TextAlign.center,
+                        const SizedBox(height: 20),
+                        TextField(
+                          autofocus: true,
+                          controller: controller,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            hintText: '예) 잠실역 1번 출구',
+                            hintStyle: TextStyle(
+                                color: Color(0xffCDCDCD)),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(8.0)),
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(8.0)),
+                              borderSide:
+                              BorderSide(color: Colors.white, width: 1.0),
+                            ),
                           ),
-                          disabled: !possible,
-                          onTap: () {
-                            Get.back(result: controller.text);
-                          }),
-                    ],
+                          onChanged: (value) {
+                            setState(() {
+                              possible = value != '';
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        Btn(
+                            child: const Text(
+                              '선택 완료',
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 25,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            disabled: !possible,
+                            onTap: () {
+                              Get.back(result: controller.text);
+                            },),
+                      ],
+                    ),
                   ),
-                ),
+                )
               ),
             )
           ],

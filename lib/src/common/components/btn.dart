@@ -14,7 +14,7 @@ class Btn extends StatelessWidget {
     required this.onTap,
     this.disabled = false,
     this.color = const Color(0xffD0EE17),
-    this.padding = const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    this.padding = const EdgeInsets.symmetric(vertical: 15, horizontal: 41),
     this.shape,
   });
 
@@ -33,10 +33,10 @@ class Btn extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: ShapeDecoration(
-            color: disabled ? Colors.grey : color,
+            color: disabled ? Color(0xffD9D9D9).withOpacity(0.5) : color,
             shape: shape ??
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
+                  borderRadius: BorderRadius.circular(16),
                 ),
           ),
           child: child,
