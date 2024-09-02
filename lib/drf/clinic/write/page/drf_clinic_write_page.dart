@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/write/controller/drf_clinic_write_controller.dart';
+import 'package:nero_app/drf/common/time_selection_button_bar.dart';
 import 'package:nero_app/drf/drf_calendar_widget.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/common_text_field.dart';
@@ -145,8 +146,9 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
               _divider,
               const SizedBox(height: 18),
               _registerDrug(),
+              const SizedBox(height: 10),
               _buildDrugsList(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               _divider,
               _clinicDescription(),
               _divider,
@@ -164,7 +166,8 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 66.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 66.0),
                   ),
                   child: Text(
                     '제출하기',
@@ -187,6 +190,12 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
 
   Widget get _divider => const Divider(
         color: Color(0xff3C3C3E),
+        indent: 0,
+        endIndent: 0,
+      );
+
+  Widget get _dialogDivider => const Divider(
+        color: Color(0xffD9D9D9),
         indent: 0,
         endIndent: 0,
       );
@@ -222,16 +231,27 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
         itemCount: controller.drugs.length,
         itemBuilder: (context, index) {
           final drug = controller.drugs[index];
-          return ListTile(
-            title: Text(
-              '${drug.status} - ${drug.number} pills (${drug.time})',
-              style: TextStyle(color: Colors.white, fontSize: 15),
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: Color(0xff1C1B1B),
+              border: Border.all(
+                color: Color(0xffD0EE17),
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            trailing: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                controller.removeDrug(index);
-              },
+            child: ListTile(
+              title: Text(
+                '${drug.status} · ${drug.number}정 (${drug.time})',
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.close, color: Colors.white),
+                onPressed: () {
+                  controller.removeDrug(index);
+                },
+              ),
             ),
           );
         },
@@ -258,57 +278,147 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Drug'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDropdown('Status', statuses, selectedStatus),
-              const SizedBox(height: 10),
-              _buildTextField('Number', drugNumberController),
-              const SizedBox(height: 10),
-              _buildDropdown('Time', times, selectedTime),
-            ],
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Color(0xffD8D8D8).withOpacity(0.5),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '종류',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        _buildDropdown(statuses, selectedStatus),
+                        const SizedBox(height: 27),
+                        _dialogDivider,
+                        const SizedBox(height: 18),
+                        Text(
+                          '개수',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        _buildTextField('개수', drugNumberController),
+                        const SizedBox(height: 27),
+                        _dialogDivider,
+                        const SizedBox(height: 18),
+                        TimeSelectionWidget(selectedTime: selectedTime),
+                        const SizedBox(height: 27),
+                        _dialogDivider,
+                        const SizedBox(height: 18),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final drug = DrfDrug(
+                                drugId: 0,
+                                clinicId: 0,
+                                status: selectedStatus.value,
+                                number: int.parse(drugNumberController.text),
+                                time: selectedTime.value,
+                              );
+                              controller.addDrug(drug);
+                              Get.back();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xff323232),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 66.0,
+                              ),
+                            ),
+                            child: Text(
+                              '등록하기',
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Color(0xffD0EE17),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 24,
+                  right: 24,
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final drug = DrfDrug(
-                  drugId: 0,
-                  clinicId: 0,
-                  // 실제 clinicId는 서버에서 처리됨
-                  status: selectedStatus.value,
-                  // 문자열로 전달
-                  number: int.parse(drugNumberController.text),
-                  time: selectedTime.value, // 문자열로 전달
-                );
-                controller.addDrug(drug);
-                Get.back();
-              },
-              child: Text('Add'),
-            ),
-          ],
         );
       },
     );
   }
 
-  Widget _buildDropdown(
-      String label, List<String> options, RxString selectedOption) {
+  Widget _buildDropdown(List<String> options, RxString selectedOption) {
     return Obx(() {
       return DropdownButtonFormField<String>(
-        decoration: InputDecoration(labelText: label),
+        menuMaxHeight: 200,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Color(0xffD9D9D9),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          ),
+        ),
         value: selectedOption.value,
         items: options.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           );
         }).toList(),
         onChanged: (value) {
@@ -321,9 +431,29 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      style: TextStyle(
+        fontSize: 15,
+        color: Colors.black,
+        fontFamily: 'Pretendard',
+        fontWeight: FontWeight.w500,
+      ),
       decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
+        filled: true,
+        fillColor: Color(0xffD9D9D9).withOpacity(0.5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0),
       ),
     );
   }
