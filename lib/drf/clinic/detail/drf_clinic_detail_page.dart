@@ -204,14 +204,6 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12), // 모서리 둥글게
           color: Colors.black.withOpacity(0.2)
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.1), // 그림자 색상 및 투명도
-          //     spreadRadius: 4, // 그림자의 확산 반경
-          //     blurRadius: 15, // 그림자의 흐림 정도
-          //     offset: Offset(4, 4), // 그림자의 위치 (x, y)
-          //   ),
-          // ],
         ),
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.symmetric(vertical: 10),

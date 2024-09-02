@@ -340,10 +340,12 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                             onPressed: () async {
                               final drug = DrfDrug(
                                 drugId: 0,
-                                clinicId: 0,
+                                item: 0,
                                 status: selectedStatus.value,
                                 number: int.parse(drugNumberController.text),
+                                initialNumber: 0,
                                 time: selectedTime.value,
+                                allow: true,
                               );
                               controller.addDrug(drug);
                               Get.back();

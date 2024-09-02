@@ -1,11 +1,11 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/drf/clinic/detail/drf_clinic_detail_page.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
+import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 import 'package:nero_app/drf/clinic/write/page/drf_clinic_write_page.dart';
 import 'package:nero_app/drf/todaylog/controller/drf_today_controller.dart';
@@ -18,7 +18,36 @@ import 'drf_today_log_page.dart';
 import 'drf_today_self_log_page.dart';
 import 'drf_today_side_effect_page.dart';
 
-class DrfTodayPage extends StatelessWidget {
+class DrfTodayPage extends StatefulWidget {
+  @override
+  State<DrfTodayPage> createState() => _DrfTodayPageState();
+}
+
+class _DrfTodayPageState extends State<DrfTodayPage> {
+  late Future<List<DrfDrug>> _drugsFuture;
+  final List<int> _selectedDrugIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _drugsFuture = _loadDrugs();
+  }
+
+  void _toggleDrugSelection(int drugId) {
+    setState(() {
+      if (_selectedDrugIds.contains(drugId)) {
+        _selectedDrugIds.remove(drugId); // 이미 선택된 경우 선택 해제
+      } else {
+        _selectedDrugIds.add(drugId); // 선택되지 않은 경우 선택 추가
+      }
+    });
+  }
+
+  Future<List<DrfDrug>> _loadDrugs() async {
+    final DrfClinicRepository clinicRepository = DrfClinicRepository();
+    return await clinicRepository.getDrugsFromLatestClinic();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BackgroundLayout(
@@ -62,7 +91,7 @@ class DrfTodayPage extends StatelessWidget {
                 ),
                 onPressed: () async {
                   SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                  await SharedPreferences.getInstance();
                   await prefs.remove('accessToken');
                   await prefs.remove('refreshToken');
                   Navigator.of(context).pushReplacementNamed('/login');
@@ -186,6 +215,169 @@ class DrfTodayPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDrugWidget(BuildContext context) {
+    return FutureBuilder<List<DrfDrug>>(
+      future: _drugsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Failed to load drugs'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No drugs available'));
+        } else {
+          final drugs = snapshot.data!;
+          return _buildDrugList(context, drugs);
+        }
+      },
+    );
+  }
+
+  Widget _buildDrugList(BuildContext context, List<DrfDrug> drugs) {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Color(0xff323232),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            DateFormat('M월 d일').format(DateTime.now().toLocal()),
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 16),
+          Column(
+            children: drugs.map((drug) {
+              final isSelected = _selectedDrugIds.contains(drug.drugId);
+              final initialNumber = drug.initialNumber; // 클리닉에 처음 등록된 약물 개수
+              final displayNumber = isSelected ? drug.number - 1 : drug.number;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: drug.allow
+                            ? () {
+                          _toggleDrugSelection(drug.drugId);
+                        }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          side: BorderSide(
+                            color: isSelected ? Color(0xffD0EE17) : Colors.transparent,
+                            width: 1.0,
+                          ),
+                          backgroundColor: Color(0xff1C1B1B),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                drug.status,
+                                style: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '$displayNumber/$initialNumber', // 남은 수량/총 수량
+                                style: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 75.0),
+            child: ElevatedButton(
+              onPressed: _selectedDrugIds.isNotEmpty
+                  ? () async {
+                // 서버에 선택된 약물 정보 전송
+                print('제출하기 버튼 클릭: $_selectedDrugIds');
+                await _submitSelectedDrugs();
+              }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                _selectedDrugIds.isNotEmpty ? Color(0xff1C1B1B) : Color(0xff7D7D7D),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Text(
+                  '제출하기',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xffD0EE17),
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submitSelectedDrugs() async {
+    // 서버로 선택된 약물을 전송하는 로직
+    // 이 예시에서는 서버와의 통신을 가정하고, 서버에서 새로운 상태를 가져오는 식으로 처리합니다.
+    try {
+      // 서버에 데이터 전송 후, 서버에서 업데이트된 데이터 다시 불러오기
+      final updatedDrugs = await _fetchUpdatedDrugs();
+      setState(() {
+        // 서버로부터 받아온 최신 데이터를 반영
+        _drugsFuture = Future.value(updatedDrugs);
+        _selectedDrugIds.clear(); // 선택된 약물 초기화
+      });
+    } catch (e) {
+      print('Failed to submit drugs: $e');
+    }
+  }
+
+  Future<List<DrfDrug>> _fetchUpdatedDrugs() async {
+    // 서버에서 업데이트된 약물 정보를 불러오는 로직 구현
+    // 예시: DrfClinicRepository를 사용하여 최신 약물 정보 불러오기
+    final DrfClinicRepository clinicRepository = DrfClinicRepository();
+    return await clinicRepository.getDrugsFromLatestClinic();
+  }
+
 
   Widget _clinicWriteWidget(BuildContext context) {
     return Container(
@@ -351,13 +543,13 @@ class DrfTodayPage extends StatelessWidget {
   }
 
   Widget _buildCustomButton(
-    BuildContext context, {
-    required String labelTop,
-    required String labelBottom,
-    required VoidCallback onPressed,
-    EdgeInsetsGeometry padding =
+      BuildContext context, {
+        required String labelTop,
+        required String labelBottom,
+        required VoidCallback onPressed,
+        EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-  }) {
+      }) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -399,93 +591,6 @@ class DrfTodayPage extends StatelessWidget {
             Icons.chevron_right,
             color: Color(0xffD0EE17),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrugWidget(BuildContext context) {
-    int itemCount = 5;
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Color(0xff323232),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            DateFormat('M월 d일').format(DateTime.now().toLocal()),
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 16),
-          Column(
-            children: List.generate(itemCount, (index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // 버튼 클릭 시 동작
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff1C1B1B),
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          '리스트 버튼 ${index + 1}',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-          SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 75.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // 제출하기 버튼 클릭 시 동작
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff1C1B1B),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  '제출하기',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xffD0EE17),
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
