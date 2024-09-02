@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -26,8 +28,17 @@ class DrfTodayPage extends StatelessWidget {
         ],
         child: CommonLayout(
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             backgroundColor: Colors.transparent,
             elevation: 0,
+            flexibleSpace: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
             leadingWidth: Get.width * 0.6,
             leading: Padding(
               padding: const EdgeInsets.only(left: 25),

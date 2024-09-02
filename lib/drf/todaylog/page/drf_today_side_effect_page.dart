@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:nero_app/drf/todaylog/controller/drf_today_controller.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ class DrfTodaySideEffectPage extends StatelessWidget {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           leading: IconButton(
             icon: Icon(Icons.chevron_left, color: Colors.white),
             onPressed: () {
@@ -18,6 +21,14 @@ class DrfTodaySideEffectPage extends StatelessWidget {
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
         ),
         body: Stack(
           children: [

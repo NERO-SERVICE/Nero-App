@@ -10,6 +10,7 @@ class DrfFastlogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.chevron_left, color: Colors.white),

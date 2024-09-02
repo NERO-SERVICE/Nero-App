@@ -71,25 +71,24 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        leadingWidth: Get.width * 0.6,
-        leading: Padding(
-          padding: const EdgeInsets.only(),
-          child: Row(children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Get.back();
-              },
-              constraints: BoxConstraints(),
+        scrolledUnderElevation: 0, // 앱바 scroll 색상 오류 해결
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: Container(
+              color: Colors.transparent,
             ),
-            const AppFont(
-              '진료 기록',
-              fontWeight: FontWeight.bold,
-              size: 20,
-              color: Colors.white,
-            ),
-          ]),
+          ),
         ),
       ),
       body: Form(
@@ -98,6 +97,16 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: ListView(
             children: [
+              SizedBox(height: 29),
+              Text(
+                '진료 기록',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                  color: Colors.white,
+                ),
+              ),
               SizedBox(height: 18),
               Text(
                 '처방받은 내용을 기록해주세요',

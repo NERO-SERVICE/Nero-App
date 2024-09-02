@@ -26,7 +26,7 @@ class DrfTodaySelfLogPage extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  'assets/images/sideeffect_background.png',
+                  'assets/images/selflog_background.png',
                   fit: BoxFit.cover,
                 ),
               ),
