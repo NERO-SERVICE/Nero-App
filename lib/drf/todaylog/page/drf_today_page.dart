@@ -300,7 +300,7 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
-                                '$displayNumber/$initialNumber', // 남은 수량/총 수량
+                                '$displayNumber/$initialNumber',
                                 style: TextStyle(
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w500,
@@ -324,7 +324,6 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
             child: ElevatedButton(
               onPressed: _selectedDrugIds.isNotEmpty
                   ? () async {
-                // 서버에 선택된 약물 정보 전송
                 print('제출하기 버튼 클릭: $_selectedDrugIds');
                 await _submitSelectedDrugs();
               }
