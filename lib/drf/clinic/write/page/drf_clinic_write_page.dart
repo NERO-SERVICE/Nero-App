@@ -21,11 +21,31 @@ class DrfClinicWritePage extends StatefulWidget {
 class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   final _formKey = GlobalKey<FormState>();
   late DrfClinicWriteController controller;
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(DrfClinicWriteController());
+
+    _titleController = TextEditingController(text: controller.clinic.value.title);
+    _descriptionController = TextEditingController(text: controller.clinic.value.description);
+
+    _titleController.addListener(() {
+      controller.changeTitle(_titleController.text);
+    });
+
+    _descriptionController.addListener(() {
+      controller.changeDescription(_descriptionController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   Future<void> _submitForm() async {
@@ -471,11 +491,22 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Widget _clinicTitleView() {
     return GetBuilder<DrfClinicWriteController>(
       builder: (controller) {
-        return CommonTextField(
-          hintText: '글 제목',
-          initText: controller.clinic.value.title,
-          onChange: (value) => controller.changeTitle(value),
-          hintColor: const Color(0xff6D7179),
+        return TextFormField(
+          controller: _titleController,
+          cursorColor: Color(0xffD9D9D9),
+          decoration: InputDecoration(
+            hintText: '글 제목',
+            hintStyle: TextStyle(color: Colors.grey),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 15,
+            color: Color(0xffD9D9D9),
+          ),
         );
       },
     );
@@ -484,17 +515,28 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Widget _clinicDescription() {
     return GetBuilder<DrfClinicWriteController>(
       builder: (controller) {
-        return CommonTextField(
-          hintColor: Color(0xff6D7179),
-          hintText: '이번 진료 중 특이사항을 작성해주세요',
-          textInputType: TextInputType.multiline,
+        return TextFormField(
+          controller: _descriptionController,
+          cursorColor: Color(0xffD9D9D9),
+          decoration: InputDecoration(
+            hintText: '이번 진료 중 특이사항을 작성해주세요',
+            hintStyle: TextStyle(color: Colors.grey),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 15,
+            color: Color(0xffD9D9D9),
+          ),
           maxLines: 10,
-          initText: controller.clinic.value.description,
-          onChange: (value) => controller.changeDescription(value),
         );
       },
     );
   }
+
 
   Widget _HopeTradeLocationMap() {
     return GestureDetector(
