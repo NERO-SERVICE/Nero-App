@@ -42,17 +42,16 @@ late SharedPreferences prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     ),
   );
-
   KakaoSdk.init(nativeAppKey: dotenv.env['kakaoAppKey']);
   prefs = await SharedPreferences.getInstance();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   await initializeDateFormatting();
   runApp(const MyApp());
 }
