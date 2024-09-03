@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 class DrfDrug extends Equatable {
   final int drugId;
-  final int item;
   final String status;
   final int number;
   final int initialNumber;
@@ -11,7 +10,6 @@ class DrfDrug extends Equatable {
 
   DrfDrug({
     required this.drugId,
-    required this.item,
     required this.status,
     required this.number,
     required this.initialNumber,
@@ -21,7 +19,6 @@ class DrfDrug extends Equatable {
 
   DrfDrug.empty()
       : drugId = 0,
-        item = 0,
         status = '',
         number = 0,
         initialNumber = 0,
@@ -31,7 +28,6 @@ class DrfDrug extends Equatable {
   factory DrfDrug.fromJson(Map<String, dynamic> json) {
     return DrfDrug(
       drugId: json['drugId'] ?? 0,
-      item: json['item'] ?? 0,
       status: json['status'] ?? '',
       number: json['number'] ?? 0,
       initialNumber: json['initialNumber'] ?? 0,
@@ -42,8 +38,6 @@ class DrfDrug extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'drugId': drugId,
-      'item': item,
       'status': status,
       'number': number,
       'initialNumber': initialNumber,
@@ -53,5 +47,5 @@ class DrfDrug extends Equatable {
   }
 
   @override
-  List<Object?> get props => [drugId, item, status, number, initialNumber, time, allow];
+  List<Object?> get props => [drugId, status, number, initialNumber, time, allow];
 }

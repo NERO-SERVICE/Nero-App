@@ -1,54 +1,91 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
-import 'package:nero_app/drf/product/controller/drf_product_controller.dart';
-import 'package:nero_app/drf/product/model/drf_product.dart';
 
 class DrfClinicWriteController extends GetxController {
   final DrfClinicRepository _clinicRepository = DrfClinicRepository();
-  DrfProductController _drfProductService = DrfProductController();
-  final Rx<DrfProduct> product = DrfProduct(
+
+  // 클리닉 정보
+  final Rx<DrfClinic> clinic = DrfClinic(
+    clinicId: 1,
     owner: 1,
+    nickname: '',
+    recentDay: DateTime.now(),
+    nextDay: DateTime.now(),
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
-    wantTradeLocation: {},
+    title: '',
+    description: '',
+    drugs: [],
   ).obs;
 
-  // Form fields controllers
-  final titleController = TextEditingController();
+  // 상태 관리
+  RxBool isPossibleSubmit = false.obs;
   final recentDay = DateTime.now().obs;
   final nextDay = DateTime.now().obs;
 
-  // Drug management
+  // 위치 정보
+  final Rxn<double> clinicLatitude = Rxn<double>();
+  final Rxn<double> clinicLongitude = Rxn<double>();
+
+  // Drug 관리
   var drugs = <DrfDrug>[].obs;
 
-  // 제품 제목 변경
+  // 수정 모드 여부
+  bool isEditMode = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    var clinicId = Get.parameters['clinic_id'];
+    if (clinicId != null) {
+      isEditMode = true;
+      _loadClinicDetail(int.parse(clinicId));
+    }
+    clinic.stream.listen((event) {
+      _isValidSubmitPossible();
+    });
+  }
+
+  Future<void> _loadClinicDetail(int clinicId) async {
+    var clinicData = await _clinicRepository.getClinic(clinicId);
+    if (clinicData != null) {
+      clinic(clinicData);
+      drugs.addAll(clinicData.drugs);
+      if (clinicData.clinicLatitude != null &&
+          clinicData.clinicLongitude != null) {
+        clinicLatitude.value = clinicData.clinicLatitude;
+        clinicLongitude.value = clinicData.clinicLongitude;
+      }
+    }
+  }
+
+  void _isValidSubmitPossible() {
+    if (clinic.value.title.isNotEmpty &&
+        clinic.value.recentDay != null &&
+        clinic.value.nextDay != null) {
+      isPossibleSubmit(true);
+    } else {
+      isPossibleSubmit(false);
+    }
+  }
+
   void changeTitle(String value) {
-    product.value = product.value.copyWith(title: value);
+    clinic.update((val) {
+      if (val != null) {
+        clinic.value = val.copyWith(title: value);
+      }
+    });
   }
 
-  // 설명 변경
   void changeDescription(String value) {
-    product.value = product.value.copyWith(description: value);
-  }
-
-  // 거래 위치 변경
-  void changeTradeLocationMap(Map<String, dynamic> mapInfo) {
-    product.value = product.value.copyWith(
-      wantTradeLocationLabel: mapInfo['label'],
-      wantTradeLocation: mapInfo['location'] as Map<String, double>,
-    );
-  }
-
-  // 거래 위치 초기화
-  void clearWantTradeLocation() {
-    product.value = product.value.copyWith(
-      wantTradeLocationLabel: '',
-      wantTradeLocation: null,
-    );
+    clinic.update((val) {
+      if (val != null) {
+        clinic.value = val.copyWith(description: value);
+      }
+    });
   }
 
   void addDrug(DrfDrug drug) {
@@ -59,23 +96,39 @@ class DrfClinicWriteController extends GetxController {
     drugs.removeAt(index);
   }
 
+  void changeLocationLabel(String value) {
+    clinic.update((val) {
+      if (val != null) {
+        clinic.value = val.copyWith(locationLabel: value);
+      }
+    });
+  }
+
+  void changeLocation(double? latitude, double? longitude) {
+    clinicLatitude.value = latitude;
+    clinicLongitude.value = longitude;
+    clinic.update((val) {
+      if (val != null) {
+        clinic.value = val.copyWith(
+          clinicLatitude: latitude,
+          clinicLongitude: longitude,
+        );
+      }
+    });
+  }
+
   Future<void> createClinic() async {
     try {
-      DrfClinic newClinic = DrfClinic(
-        clinicId: 0,
-        owner: 1,
-        nickname: '',
+      DrfClinic newClinic = clinic.value.copyWith(
+        clinicLatitude: clinicLatitude.value,
+        clinicLongitude: clinicLongitude.value,
         recentDay: recentDay.value,
         nextDay: nextDay.value,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        title: titleController.text,
         drugs: drugs.toList(),
       );
 
       final createdClinic = await _clinicRepository.createClinic(newClinic);
       if (createdClinic != null) {
-        // 새로 생성된 클리닉을 추가하고 리스트를 업데이트
         final clinicController = Get.find<DrfClinicController>();
         clinicController.clinics.add(createdClinic);
         clinicController.fetchClinics();
@@ -90,9 +143,46 @@ class DrfClinicWriteController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    titleController.dispose();
-    super.onClose();
+  Future<void> updateClinic(DrfClinic clinicData) async {
+    try {
+      DrfClinic updatedClinic = clinicData.copyWith(
+        title: clinic.value.title,
+        description: clinic.value.description,
+        recentDay: clinic.value.recentDay,
+        nextDay: clinic.value.nextDay,
+        clinicLatitude: clinicLatitude.value,
+        clinicLongitude: clinicLongitude.value,
+        locationLabel: clinic.value.locationLabel,
+        drugs: drugs.toList(),
+      );
+
+      bool success = await _clinicRepository.updateClinic(updatedClinic);
+      if (success) {
+        final clinicController = Get.find<DrfClinicController>();
+        clinicController.fetchClinics();
+        Get.back(result: true);
+      } else {
+        Get.snackbar('Error', 'Failed to update clinic');
+      }
+    } catch (e) {
+      print('Failed to update clinic: $e');
+      Get.snackbar('Error', 'Failed to update clinic');
+    }
+  }
+
+  Future<void> deleteClinic(int clinicId) async {
+    try {
+      bool success = await _clinicRepository.deleteClinic(clinicId);
+      if (success) {
+        final clinicController = Get.find<DrfClinicController>();
+        clinicController.fetchClinics();
+        Get.back(result: true);
+      } else {
+        Get.snackbar('Error', 'Failed to delete clinic');
+      }
+    } catch (e) {
+      print('Failed to delete clinic: $e');
+      Get.snackbar('Error', 'Failed to delete clinic');
+    }
   }
 }

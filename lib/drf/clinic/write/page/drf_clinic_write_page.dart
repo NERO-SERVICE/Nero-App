@@ -31,7 +31,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      await controller.createClinic();
+      await controller.createClinic(); // 서버로 데이터 전송
     }
   }
 
@@ -165,7 +165,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    _submitForm;
+                    await _submitForm();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('진료 기록이 제출되었습니다.')),
                     );
@@ -339,11 +339,10 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               final drug = DrfDrug(
-                                drugId: 0,
-                                item: 0,
+                                drugId: 1,
                                 status: selectedStatus.value,
                                 number: int.parse(drugNumberController.text),
-                                initialNumber: 0,
+                                initialNumber: int.parse(drugNumberController.text),
                                 time: selectedTime.value,
                                 allow: true,
                               );
@@ -474,8 +473,8 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       builder: (controller) {
         return CommonTextField(
           hintText: '글 제목',
-          initText: controller.product.value.title,
-          onChange: controller.changeTitle,
+          initText: controller.clinic.value.title,
+          onChange: (value) => controller.changeTitle(value),
           hintColor: const Color(0xff6D7179),
         );
       },
@@ -490,8 +489,8 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
           hintText: '이번 진료 중 특이사항을 작성해주세요',
           textInputType: TextInputType.multiline,
           maxLines: 10,
-          initText: controller.product.value.description,
-          onChange: controller.changeDescription,
+          initText: controller.clinic.value.description,
+          onChange: (value) => controller.changeDescription(value),
         );
       },
     );
@@ -500,24 +499,24 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
   Widget _HopeTradeLocationMap() {
     return GestureDetector(
       onTap: () async {
-        // TradeLocationMap 위젯에서 반환된 결과를 처리하는 부분
         var result = await Get.to<Map<String, dynamic>?>(
           TradeLocationMap(
-            lable: controller.product.value.wantTradeLocationLabel,
-            location: controller.product.value.wantTradeLocation != null &&
-                    controller.product.value.wantTradeLocation!['latitude'] !=
-                        null &&
-                    controller.product.value.wantTradeLocation!['longitude'] !=
-                        null
+            lable: controller.clinic.value.locationLabel ?? '',
+            location: controller.clinicLatitude.value != null &&
+                controller.clinicLongitude.value != null
                 ? LatLng(
-                    controller.product.value.wantTradeLocation!['latitude']!,
-                    controller.product.value.wantTradeLocation!['longitude']!,
-                  )
+              controller.clinicLatitude.value!,
+              controller.clinicLongitude.value!,
+            )
                 : null,
           ),
         );
         if (result != null) {
-          controller.changeTradeLocationMap(result);
+          controller.changeLocationLabel(result['label']);
+          controller.changeLocation(
+            result['location'].latitude,
+            result['location'].longitude,
+          );
         }
       },
       behavior: HitTestBehavior.translucent,
@@ -529,44 +528,45 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
             size: 16,
             color: Colors.white,
           ),
-          GetBuilder<DrfClinicWriteController>(
-            builder: (controller) {
-              return controller.product.value.wantTradeLocationLabel == null ||
-                      controller.product.value.wantTradeLocationLabel!.isEmpty
-                  ? Row(
-                      children: [
-                        const AppFont(
-                          '장소선택',
-                          size: 13,
-                          color: Color(0xffD0EE17),
-                        ),
-                        SvgPicture.asset(
-                          'assets/svg/icons/right.svg',
-                          height: 24,
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        AppFont(
-                          controller.product.value.wantTradeLocationLabel ?? '',
-                          size: 13,
-                          color: Colors.white,
-                        ),
-                        GestureDetector(
-                          onTap: () => controller.clearWantTradeLocation(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(
-                              'assets/svg/icons/delete.svg',
-                              height: 24,
-                            ),
-                          ),
-                        )
-                      ],
-                    );
-            },
-          ),
+          Obx(() {
+            return controller.clinic.value.locationLabel == null ||
+                controller.clinic.value.locationLabel!.isEmpty
+                ? Row(
+              children: [
+                const AppFont(
+                  '장소선택',
+                  size: 13,
+                  color: Color(0xffD0EE17),
+                ),
+                SvgPicture.asset(
+                  'assets/svg/icons/right.svg',
+                  height: 24,
+                ),
+              ],
+            )
+                : Row(
+              children: [
+                AppFont(
+                  controller.clinic.value.locationLabel!,
+                  size: 13,
+                  color: Colors.white,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    controller.changeLocationLabel('');
+                    controller.changeLocation(null, null);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset(
+                      'assets/svg/icons/delete.svg',
+                      height: 24,
+                    ),
+                  ),
+                )
+              ],
+            );
+          }),
         ],
       ),
     );
