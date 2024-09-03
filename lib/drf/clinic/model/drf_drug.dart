@@ -34,7 +34,7 @@ class DrfDrug extends Equatable {
       item: json['item'] ?? 0,
       status: json['status'] ?? '',
       number: json['number'] ?? 0,
-      initialNumber: json['number'] ?? 0,
+      initialNumber: json['initialNumber'] ?? 0,
       time: json['time'] ?? '',
       allow: json['allow'] ?? true,
     );

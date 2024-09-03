@@ -257,7 +257,7 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
           Column(
             children: drugs.map((drug) {
               final isSelected = _selectedDrugIds.contains(drug.drugId);
-              final initialNumber = drug.initialNumber; // 클리닉에 처음 등록된 약물 개수
+              final initialNumber = drug.initialNumber;
               final displayNumber = isSelected ? drug.number - 1 : drug.number;
 
               return Padding(
@@ -355,28 +355,24 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
   }
 
   Future<void> _submitSelectedDrugs() async {
-    // 서버로 선택된 약물을 전송하는 로직
-    // 이 예시에서는 서버와의 통신을 가정하고, 서버에서 새로운 상태를 가져오는 식으로 처리합니다.
+    final DrfClinicRepository clinicRepository = DrfClinicRepository();
+
     try {
-      // 서버에 데이터 전송 후, 서버에서 업데이트된 데이터 다시 불러오기
-      final updatedDrugs = await _fetchUpdatedDrugs();
-      setState(() {
-        // 서버로부터 받아온 최신 데이터를 반영
-        _drugsFuture = Future.value(updatedDrugs);
-        _selectedDrugIds.clear(); // 선택된 약물 초기화
-      });
+      final success = await clinicRepository.consumeSelectedDrugs(_selectedDrugIds);
+
+      if (success) {
+        final updatedDrugs = await _loadDrugs();
+        setState(() {
+          _drugsFuture = Future.value(updatedDrugs);
+          _selectedDrugIds.clear();
+        });
+      } else {
+        print('Failed to consume selected drugs.');
+      }
     } catch (e) {
-      print('Failed to submit drugs: $e');
+      print('Error during drug submission: $e');
     }
   }
-
-  Future<List<DrfDrug>> _fetchUpdatedDrugs() async {
-    // 서버에서 업데이트된 약물 정보를 불러오는 로직 구현
-    // 예시: DrfClinicRepository를 사용하여 최신 약물 정보 불러오기
-    final DrfClinicRepository clinicRepository = DrfClinicRepository();
-    return await clinicRepository.getDrugsFromLatestClinic();
-  }
-
 
   Widget _clinicWriteWidget(BuildContext context) {
     return Container(
