@@ -107,8 +107,6 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
                   ),
                   SizedBox(height: 34),
                   _buildAnimatedButtonBar(),
-                  SizedBox(height: 20),
-                  _buildDateSelector("날짜 선택", selectedDate),
                 ],
               ),
             ),
