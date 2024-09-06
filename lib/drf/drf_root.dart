@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/page/drf_calendar_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
+import 'package:nero_app/drf/mymypage/page/drf_my_page.dart';
+import 'package:nero_app/drf/mypage/page/drf_monthly_matrix_view.dart';
 import 'package:nero_app/drf/product/home/page/drf_home_page.dart';
-import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
-import 'package:nero_app/src/common/components/app_font.dart';
 
 import 'todaylog/page/drf_today_page.dart';
 
@@ -29,14 +29,15 @@ class DrfRoot extends GetView<DrfBottomNavController> {
                     DrfClinicPage(),
                     DrfTodayPage(),
                     DrfCalendarPage(),
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.find<DrfAuthenticationRepository>().logout();
-                        },
-                        child: const AppFont('로그아웃'),
-                      ),
-                    ),
+                    // Center(
+                    //   child: GestureDetector(
+                    //     onTap: () {
+                    //       Get.find<DrfAuthenticationRepository>().logout();
+                    //     },
+                    //     child: const AppFont('로그아웃'),
+                    //   ),
+                    // ),
+                    DrfMonthlyMatrixView(),
                   ],
                 ),
               ),
