@@ -288,12 +288,11 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Text(
-                                drug.status,
+                                drug.drugArchive.drugName,
                                 style: TextStyle(
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                   fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),

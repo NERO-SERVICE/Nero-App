@@ -1,8 +1,17 @@
+import 'dart:ui';
+
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:nero_app/drf/drf_calendar_widget.dart';
 import 'package:nero_app/drf/mypage/controller/drf_montly_check_controller.dart';
+import 'package:nero_app/drf/mypage/page/drf_user_side_effect_log_page.dart';
+import 'package:nero_app/drf/mypage/page/drf_user_survey_log_page.dart';
+import 'package:nero_app/drf/todaylog/page/drf_today_log_page.dart';
+import 'package:nero_app/drf/todaylog/page/drf_today_self_log_page.dart';
+import 'package:nero_app/drf/todaylog/page/drf_today_side_effect_page.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +29,7 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
   int currentIndex = -1, previousIndex = 0;
+  final Rx<DateTime> selectedDate = DateTime.now().obs;
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -27,6 +37,8 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
   @override
   void initState() {
     super.initState();
+    _monthlyCheckController.setSelectedType('all');
+
     _monthlyCheckController.preloadMonthlyData(
         currentYear.value, currentMonth.value);
 
@@ -57,7 +69,6 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
     _monthlyCheckController.preloadMonthlyData(
         currentYear.value, currentMonth.value);
 
-    // Trigger the fade animation on page change
     _animationController.reset();
     _animationController.forward();
   }
@@ -96,6 +107,8 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
                   ),
                   SizedBox(height: 34),
                   _buildAnimatedButtonBar(),
+                  SizedBox(height: 20),
+                  _buildDateSelector("날짜 선택", selectedDate),
                 ],
               ),
             ),
@@ -130,7 +143,7 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
                     'assets/images/to_be_continued.png',
                     fit: BoxFit.cover,
                   ),
-                  Container(// Optional: Dark overlay for better contrast
+                  Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -147,6 +160,60 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
                 ],
               ),
             ),
+            SizedBox(height: 33),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                '지난 하루 기록',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: _buildCustomButton(
+                context,
+                labelTop: '오늘 컨디션을 기록하는',
+                labelBottom: '하루 설문',
+                onPressed: () async {
+                  await _selectDate(context, selectedDate);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DrfUserSurveyLogPage(
+                        selectedDate: selectedDate.value,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: _buildCustomButton(
+                context,
+                labelTop: '평소와 다르지 않았을까',
+                labelBottom: '부작용 설문',
+                onPressed: () async {
+                  await _selectDate(context, selectedDate);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DrfUserSideEffectLogPage(
+                        selectedDate: selectedDate.value,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -512,6 +579,119 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
         child: Text('$day', style: TextStyle(color: Colors.white)),
       ),
     );
+  }
+
+  Widget _buildCustomButton(
+      BuildContext context, {
+        required String labelTop,
+        required String labelBottom,
+        required VoidCallback onPressed,
+        EdgeInsetsGeometry padding =
+        const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        padding: padding,
+        backgroundColor: Color(0xff323232),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  labelTop,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: Color(0xffD9D9D9),
+                  ),
+                ),
+                Text(
+                  labelBottom,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 36,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.chevron_right,
+            color: Color(0xffD0EE17),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector(String label, Rx<DateTime> date) {
+    return Obx(() {
+      return GestureDetector(
+        onTap: () => _selectDate(context, date),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat('yyyy년 MM월 dd일').format(date.value),
+                style: TextStyle(color: Colors.white),
+              ),
+              Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+// 날짜 선택 기능
+  Future<void> _selectDate(BuildContext context, Rx<DateTime> date) async {
+    final selectedDate = await showModalBottomSheet<DateTime>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              height: 400,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: DrfCalendarWidget(
+                selectedDate: date,
+                focusedDate: date,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedDate != null && selectedDate != date.value) {
+      date.value = selectedDate;
+    }
   }
 
   TextStyle _dayLabelStyle() {
