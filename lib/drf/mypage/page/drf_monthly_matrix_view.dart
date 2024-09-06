@@ -1,200 +1,361 @@
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/drf/mypage/controller/drf_montly_check_controller.dart';
+import 'package:nero_app/src/common/components/app_font.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DrfMonthlyMatrixView extends StatefulWidget {
   @override
   _MonthlyMatrixViewState createState() => _MonthlyMatrixViewState();
 }
 
-class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView> {
+class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
+    with SingleTickerProviderStateMixin {
   final DrfMonthlyCheckController _monthlyCheckController =
       Get.put(DrfMonthlyCheckController());
   final PageController _pageController =
       PageController(initialPage: DateTime.now().month - 1);
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
+  int currentIndex = -1, previousIndex = 0;
+
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
     _monthlyCheckController.preloadMonthlyData(
         currentYear.value, currentMonth.value);
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _fadeAnimation =
+        Tween<double>(begin: 0, end: 1).animate(_animationController);
+    _animationController.forward();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void onPageChanged(int index) {
     setState(() {
+      if (currentIndex != -1) {
+        previousIndex = currentIndex;
+      }
+      currentIndex = index;
       currentMonth.value = index + 1;
     });
     _monthlyCheckController.preloadMonthlyData(
         currentYear.value, currentMonth.value);
+
+    // Trigger the fade animation on page change
+    _animationController.reset();
+    _animationController.forward();
+  }
+
+  double getAnimationValue(int currentIndex, int widgetIndex, int previousIndex,
+      {bool begin = true}) {
+    if (widgetIndex == currentIndex) {
+      return begin ? 0.9 : 1;
+    } else {
+      return begin ? 1 : 0.9;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('연간 관리')),
-      body: Column(
-        children: [
-          GetBuilder<DrfMonthlyCheckController>(
-            builder: (_) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AnimatedButtonBar(
-                  backgroundColor: Color(0xffD9D9D9).withOpacity(0.5),
-                  foregroundColor: Color(0xffD0EE17),
-                  radius: 16.0,
-                  innerVerticalPadding: 16,
-                  children: [
-                    ButtonBarEntry(
-                      onTap: () {
-                        _monthlyCheckController.setSelectedType('all');
-                        _monthlyCheckController.preloadMonthlyData(
-                            currentYear.value, currentMonth.value);
-                        _monthlyCheckController.update();
-                      },
-                      child: Text('전체'),
-                    ),
-                    ButtonBarEntry(
-                      onTap: () {
-                        _monthlyCheckController.setSelectedType('dose');
-                        _monthlyCheckController.preloadMonthlyData(
-                            currentYear.value, currentMonth.value);
-                        _monthlyCheckController.update();
-                      },
-                      child: Text('약 복용'),
-                    ),
-                    ButtonBarEntry(
-                      onTap: () {
-                        _monthlyCheckController.setSelectedType('side_effect');
-                        _monthlyCheckController.preloadMonthlyData(
-                            currentYear.value, currentMonth.value);
-                        _monthlyCheckController.update();
-                      },
-                      child: Text('부작용'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: Column(
-              children: [
-                Obx(() {
-                  return Text(
-                    '${currentYear.value}년 ${currentMonth.value}월',
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 55),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '연간 관리',
                     style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
                       fontSize: 24,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Sun',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Mon',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Tue',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Wed',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Thu',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Fri',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                      Text(
-                        'Sat',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: 12,
-                    onPageChanged: onPageChanged,
-                    itemBuilder: (context, index) {
-                      return GetBuilder<DrfMonthlyCheckController>(
-                        builder: (_) {
-                          return Column(
-                            children: [
-                              Expanded(
-                                child: _buildMonthlyMatrix(),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+                  SizedBox(height: 34),
+                  _buildAnimatedButtonBar(),
+                ],
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  _buildPageView(),
+                ],
+              ),
+            ),
+            SizedBox(height: 33),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                '월간 레포트',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(height: 33),
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/to_be_continued.png',
+                    fit: BoxFit.cover,
+                  ),
+                  Container(// Optional: Dark overlay for better contrast
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '추후 공개됩니다',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leadingWidth: Get.width * 0.6,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 25),
+        child: Row(children: [
+          const AppFont(
+            '마이페이지',
+            fontWeight: FontWeight.bold,
+            size: 20,
+            color: Colors.white,
           ),
+          const SizedBox(width: 10),
+        ]),
+      ),
+      actions: [
+        SvgPicture.asset('assets/svg/icons/search.svg'),
+        const SizedBox(width: 15),
+        SvgPicture.asset('assets/svg/icons/list.svg'),
+        const SizedBox(width: 15),
+        IconButton(
+          icon: Icon(Icons.logout, color: Colors.white),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('accessToken');
+            await prefs.remove('refreshToken');
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAnimatedButtonBar() {
+    return GetBuilder<DrfMonthlyCheckController>(
+      builder: (_) {
+        return AnimatedButtonBar(
+          backgroundColor: Color(0xffD9D9D9).withOpacity(0.5),
+          foregroundColor: Color(0xffD0EE17),
+          radius: 16.0,
+          innerVerticalPadding: 16,
+          children: [
+            ButtonBarEntry(
+              onTap: () {
+                _monthlyCheckController.setSelectedType('all');
+                _monthlyCheckController.preloadMonthlyData(
+                    currentYear.value, currentMonth.value);
+                _monthlyCheckController.update();
+              },
+              child: Text(
+                '전체',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                  color: _monthlyCheckController.selectedType.value == 'all'
+                      ? Colors.black // Selected color
+                      : Colors.white, // Unselected color
+                ),
+              ),
+            ),
+            ButtonBarEntry(
+              onTap: () {
+                _monthlyCheckController.setSelectedType('dose');
+                _monthlyCheckController.preloadMonthlyData(
+                    currentYear.value, currentMonth.value);
+                _monthlyCheckController.update();
+              },
+              child: Text(
+                '약 복용',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                  color: _monthlyCheckController.selectedType.value == 'dose'
+                      ? Colors.black
+                      : Colors.white,
+                ),
+              ),
+            ),
+            ButtonBarEntry(
+              onTap: () {
+                _monthlyCheckController.setSelectedType('side_effect');
+                _monthlyCheckController.preloadMonthlyData(
+                    currentYear.value, currentMonth.value);
+                _monthlyCheckController.update();
+              },
+              child: Text(
+                '부작용',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                  color: _monthlyCheckController.selectedType.value == 'side_effect'
+                      ? Colors.black
+                      : Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPageView() {
+    return Container(
+      height: 500, // PageView의 고정 높이
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: 12,
+        onPageChanged: onPageChanged,
+        itemBuilder: (context, index) {
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: TweenAnimationBuilder(
+              duration: const Duration(milliseconds: 400),
+              tween: Tween<double>(
+                begin: getAnimationValue(currentIndex, index, previousIndex),
+                end: getAnimationValue(currentIndex, index, previousIndex,
+                    begin: false),
+              ),
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: IntrinsicHeight(
+                      // 자식 높이 유동적으로 조절
+                      child: _buildCardContent(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCardContent() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF181818).withOpacity(0.1),
+            Color(0xFFFEFCFC).withOpacity(0.3),
+          ],
+          stops: [0, 0.8],
+        ),
+        borderRadius: BorderRadius.circular(15), // Rounded corners
+      ),
+      child: Card(
+        color: Colors.transparent, // Transparent to show gradient
+        elevation: 0, // No shadow
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15), // Rounded corners
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              _buildMonthYearText(),
+              const SizedBox(height: 16),
+              _buildDayLabels(),
+              const SizedBox(height: 10),
+              _buildMonthlyMatrix(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMonthYearText() {
+    return Text(
+      '${currentYear.value}년 ${currentMonth.value}월',
+      style: TextStyle(
+        fontSize: 24,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _buildDayLabels() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Sun', style: _dayLabelStyle()),
+          Text('Mon', style: _dayLabelStyle()),
+          Text('Tue', style: _dayLabelStyle()),
+          Text('Wed', style: _dayLabelStyle()),
+          Text('Thu', style: _dayLabelStyle()),
+          Text('Fri', style: _dayLabelStyle()),
+          Text('Sat', style: _dayLabelStyle()),
         ],
       ),
     );
@@ -205,7 +366,6 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView> {
       builder: (_) {
         final String currentMonthKey =
             '${currentYear.value}-${currentMonth.value}';
-
         final data = _monthlyCheckController.monthlyCheckCache[currentMonthKey];
 
         if (data == null) {
@@ -240,11 +400,18 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView> {
           }
         }
 
-        return GridView.count(
-          crossAxisCount: 7,
-          children: dayWidgets,
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
+        return SizedBox(
+          height: 300, // 매트릭스 부분의 고정된 높이 설정
+          child: GridView.count(
+            crossAxisCount: 7,
+            // 열 개수는 고정
+            childAspectRatio: 1,
+            // 셀의 가로와 세로 비율을 동일하게 설정
+            children: dayWidgets,
+            physics: NeverScrollableScrollPhysics(),
+            // 내부 스크롤 비활성화
+            shrinkWrap: true, // 그리드 크기를 고정된 높이에 맞춤
+          ),
         );
       },
     );
@@ -259,19 +426,15 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView> {
         boxShadow: hasSideEffect
             ? [
                 BoxShadow(
-                  color: Color(0xff8B16DB), // 그림자 색상
-                  offset: Offset(0, 0), // 그림자의 x, y 좌표
-                  blurRadius: 4, // 흐림 정도
-                  spreadRadius: 4, // 그림자의 확산 정도
-                ),
+                    color: Color(0xff8B16DB),
+                    offset: Offset(0, 0),
+                    blurRadius: 4,
+                    spreadRadius: 4)
               ]
             : [],
       ),
       child: Center(
-        child: Text(
-          '$day',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text('$day', style: TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -293,11 +456,17 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
-        child: Text(
-          '$day',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text('$day', style: TextStyle(color: Colors.white)),
       ),
+    );
+  }
+
+  TextStyle _dayLabelStyle() {
+    return TextStyle(
+      fontFamily: 'Pretendard',
+      fontWeight: FontWeight.w500,
+      fontSize: 15,
+      color: Color(0xffD9D9D9),
     );
   }
 }
