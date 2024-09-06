@@ -261,38 +261,42 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
   }
 
   Widget _buildPageView() {
-    return Container(
-      height: 500, // PageView의 고정 높이
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: 12,
-        onPageChanged: onPageChanged,
-        itemBuilder: (context, index) {
-          return FadeTransition(
-            opacity: _fadeAnimation,
-            child: TweenAnimationBuilder(
-              duration: const Duration(milliseconds: 400),
-              tween: Tween<double>(
-                begin: getAnimationValue(currentIndex, index, previousIndex),
-                end: getAnimationValue(currentIndex, index, previousIndex,
-                    begin: false),
-              ),
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: IntrinsicHeight(
-                      // 자식 높이 유동적으로 조절
-                      child: _buildCardContent(),
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          height: constraints.maxWidth, // 너비에 기반하여 높이 유동적으로 조정
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: 12,
+            onPageChanged: onPageChanged,
+            itemBuilder: (context, index) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 400),
+                  tween: Tween<double>(
+                    begin: getAnimationValue(currentIndex, index, previousIndex),
+                    end: getAnimationValue(currentIndex, index, previousIndex,
+                        begin: false),
                   ),
-                );
-              },
-            ),
-          );
-        },
-      ),
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: IntrinsicHeight(
+                          // 자식 높이 유동적으로 조절
+                          child: _buildCardContent(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -333,15 +337,50 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
   }
 
   Widget _buildMonthYearText() {
-    return Text(
-      '${currentYear.value}년 ${currentMonth.value}월',
-      style: TextStyle(
-        fontSize: 24,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        currentIndex > 0
+            ? FloatingActionButton(
+          mini: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            _pageController.previousPage(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          child: Icon(Icons.arrow_back_ios, color: Colors.white),
+        )
+            : SizedBox(width: 32),
+
+        Text(
+          '${currentYear.value}년 ${currentMonth.value}월',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        currentIndex < 11
+            ? FloatingActionButton(
+          mini: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            _pageController.nextPage(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+        )
+            : SizedBox(width: 32),
+      ],
     );
   }
+
 
   Widget _buildDayLabels() {
     return Padding(
@@ -376,46 +415,60 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
         int monthStartIndex = data.monthStart;
         List<Widget> dayWidgets = [];
 
-        for (int i = 0; i < monthStartIndex; i++) {
-          dayWidgets.add(Container());
-        }
+        // 6x7 매트릭스를 미리 구성
+        int totalCells = 6 * 7; // 6줄, 7일씩 42개의 셀
 
-        for (int day = 1; day <= totalDays; day++) {
-          bool hasDose =
-              data.doseCheck.containsKey(day) && data.doseCheck[day]!;
-          bool hasSideEffect = data.sideEffectCheck.containsKey(day) &&
-              data.sideEffectCheck[day]!;
+        for (int i = 0; i < totalCells; i++) {
+          int day = i - monthStartIndex + 1;
 
-          if (_monthlyCheckController.selectedType.value == 'dose' && hasDose) {
-            dayWidgets.add(_buildDayCell(day, hasDose, false));
-          } else if (_monthlyCheckController.selectedType.value ==
-                  'side_effect' &&
-              hasSideEffect) {
-            dayWidgets.add(_buildDayCell(day, false, hasSideEffect));
-          } else if (_monthlyCheckController.selectedType.value == 'all') {
-            dayWidgets
-                .add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
+          if (i < monthStartIndex || day > totalDays) {
+            // 달력의 빈 칸 (transparent 처리)
+            dayWidgets.add(Container(
+              margin: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.transparent, // 빈 칸은 투명하게 처리
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ));
           } else {
-            dayWidgets.add(_buildDayCell(day, false, false));
+            // 달력의 실제 날짜
+            bool hasDose = data.doseCheck.containsKey(day) && data.doseCheck[day]!;
+            bool hasSideEffect = data.sideEffectCheck.containsKey(day) &&
+                data.sideEffectCheck[day]!;
+
+            if (_monthlyCheckController.selectedType.value == 'dose' && hasDose) {
+              dayWidgets.add(_buildDayCell(day, hasDose, false));
+            } else if (_monthlyCheckController.selectedType.value ==
+                'side_effect' &&
+                hasSideEffect) {
+              dayWidgets.add(_buildDayCell(day, false, hasSideEffect));
+            } else if (_monthlyCheckController.selectedType.value == 'all') {
+              dayWidgets.add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
+            } else {
+              dayWidgets.add(_buildDayCell(day, false, false));
+            }
           }
         }
 
-        return SizedBox(
-          height: 300, // 매트릭스 부분의 고정된 높이 설정
-          child: GridView.count(
-            crossAxisCount: 7,
-            // 열 개수는 고정
-            childAspectRatio: 1,
-            // 셀의 가로와 세로 비율을 동일하게 설정
-            children: dayWidgets,
-            physics: NeverScrollableScrollPhysics(),
-            // 내부 스크롤 비활성화
-            shrinkWrap: true, // 그리드 크기를 고정된 높이에 맞춤
-          ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            double cellWidth = (constraints.maxWidth - 32) / 7; // 7열 기반의 너비 계산
+            double cellHeight = cellWidth; // 셀의 가로와 세로 비율 동일하게 설정
+
+            return GridView.count(
+              crossAxisCount: 7, // 7열 고정
+              childAspectRatio: 1, // 셀의 가로 세로 비율 동일하게 유지
+              children: dayWidgets,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(8), // 외부 패딩 적용
+            );
+          },
         );
       },
     );
   }
+
 
   Widget _buildDayCellWithShadow(int day, bool hasDose, bool hasSideEffect) {
     return Container(
