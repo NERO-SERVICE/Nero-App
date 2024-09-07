@@ -45,7 +45,15 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
 
   Future<List<DrfDrug>> _loadDrugs() async {
     final DrfClinicRepository clinicRepository = DrfClinicRepository();
-    return await clinicRepository.getDrugsFromLatestClinic();
+    try {
+      print("Loading drugs...");
+      List<DrfDrug> drugs = await clinicRepository.getDrugsFromLatestClinic();
+      print("Loaded drugs: ${drugs.length}");
+      return drugs;
+    } catch (e) {
+      print('Error loading drugs: $e');
+      return []; // 에러 발생 시 빈 리스트 반환
+    }
   }
 
   @override

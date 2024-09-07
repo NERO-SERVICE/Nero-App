@@ -221,10 +221,13 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 10),
-                  AppFont(
-                    drug.status,
-                    color: Colors.white,
-                    size: 16,
+                  Text(
+                    drug.drugArchive.drugName,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   AppFont(

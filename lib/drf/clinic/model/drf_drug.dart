@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'drf_drug_archive.dart';
 
 class DrfDrug extends Equatable {
   final int drugId;
-  final String status;
+  final DrfDrugArchive drugArchive;
   final int number;
   final int initialNumber;
   final String time;
@@ -10,7 +11,7 @@ class DrfDrug extends Equatable {
 
   DrfDrug({
     required this.drugId,
-    required this.status,
+    required this.drugArchive,
     required this.number,
     required this.initialNumber,
     required this.time,
@@ -18,8 +19,8 @@ class DrfDrug extends Equatable {
   });
 
   DrfDrug.empty()
-      : drugId = 0,
-        status = '',
+      : drugId = 1,
+        drugArchive = DrfDrugArchive.empty(),
         number = 0,
         initialNumber = 0,
         time = '',
@@ -27,8 +28,8 @@ class DrfDrug extends Equatable {
 
   factory DrfDrug.fromJson(Map<String, dynamic> json) {
     return DrfDrug(
-      drugId: json['drugId'] ?? 0,
-      status: json['status'] ?? '',
+      drugId: json['drugId'] ?? 1,
+      drugArchive: DrfDrugArchive.fromJson(json['drugArchive']),
       number: json['number'] ?? 0,
       initialNumber: json['initialNumber'] ?? 0,
       time: json['time'] ?? '',
@@ -36,9 +37,10 @@ class DrfDrug extends Equatable {
     );
   }
 
+
   Map<String, dynamic> toJson() {
     return {
-      'status': status,
+      'drugArchive': drugArchive.id,
       'number': number,
       'initialNumber': initialNumber,
       'time': time,
@@ -46,6 +48,25 @@ class DrfDrug extends Equatable {
     };
   }
 
+  DrfDrug copyWith({
+    int? drugId,
+    DrfDrugArchive? drugArchive,
+    int? number,
+    int? initialNumber,
+    String? time,
+    bool? allow,
+  }) {
+    return DrfDrug(
+      drugId: drugId ?? this.drugId,
+      drugArchive: drugArchive ?? this.drugArchive,
+      number: number ?? this.number,
+      initialNumber: initialNumber ?? this.initialNumber,
+      time: time ?? this.time,
+      allow: allow ?? this.allow,
+    );
+  }
+
   @override
-  List<Object?> get props => [drugId, status, number, initialNumber, time, allow];
+  List<Object?> get props =>
+      [drugId, drugArchive, number, initialNumber, time, allow];
 }

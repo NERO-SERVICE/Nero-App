@@ -26,7 +26,7 @@ class DrfClinic extends Equatable {
     required this.updatedAt,
     required this.title,
     this.description,
-    this.drugs = const [],
+    required this.drugs,
     this.clinicLatitude,
     this.clinicLongitude,
     this.locationLabel,
@@ -45,7 +45,7 @@ class DrfClinic extends Equatable {
         drugs = [],
         clinicLatitude = null,
         clinicLongitude = null,
-        locationLabel = null;
+        locationLabel = '';
 
   factory DrfClinic.fromJson(Map<String, dynamic> json) {
     return DrfClinic(
@@ -58,17 +58,16 @@ class DrfClinic extends Equatable {
       updatedAt: DateTime.parse(json['updatedAt']),
       title: json['title'] ?? '',
       description: json['description'],
-      drugs: (json['drugs'] as List<dynamic>?)
-          ?.map((e) => DrfDrug.fromJson(e))
-          .toList() ??
-          [],
+      drugs: (json['drugs'] as List<dynamic>)
+          .map<DrfDrug>((item) => DrfDrug.fromJson(item))
+          .toList(),
       clinicLatitude: json['clinicLatitude'] != null
           ? json['clinicLatitude'].toDouble()
           : null,
       clinicLongitude: json['clinicLongitude'] != null
           ? json['clinicLongitude'].toDouble()
           : null,
-      locationLabel: json['locationLabel'],
+      locationLabel: json['locationLabel'] ?? "",
     );
   }
 
@@ -82,9 +81,9 @@ class DrfClinic extends Equatable {
       'title': title,
       'description': description,
       'drugs': drugs.map((e) => e.toJson()).toList(),
-      'clinicLatitude': clinicLatitude,
-      'clinicLongitude': clinicLongitude,
-      'locationLabel': locationLabel,
+      'clinicLatitude': clinicLatitude ?? 0,
+      'clinicLongitude': clinicLongitude ?? 0,
+      'locationLabel': locationLabel ?? '',
     };
   }
 

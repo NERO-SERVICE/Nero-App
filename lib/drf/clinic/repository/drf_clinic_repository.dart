@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
+import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
 import 'package:nero_app/drf/dio_service.dart';
 
 class DrfClinicRepository {
@@ -11,7 +12,7 @@ class DrfClinicRepository {
   Future<List<DrfClinic>> getClinics() async {
     try {
       final response = await _dio.get('/clinics/lists/');
-      print('Response Data: ${response.data}');  // 서버로부터 받은 데이터 출력
+      print('Response Data: ${response.data}');
 
       List<DrfClinic> clinics = response.data
           .map<DrfClinic>((item) => DrfClinic.fromJson(item))
@@ -27,7 +28,7 @@ class DrfClinicRepository {
   Future<DrfClinic?> getClinic(int clinicId) async {
     try {
       final response = await _dio.get('/clinics/$clinicId/');
-      print('Response Data: ${response.data}');  // 서버로부터 받은 데이터 출력
+      print('Response Data: ${response.data}');
       return DrfClinic.fromJson(response.data);
     } catch (e) {
       print('Failed to load clinic: $e');
@@ -39,7 +40,14 @@ class DrfClinicRepository {
   Future<DrfClinic?> createClinic(DrfClinic clinic) async {
     try {
       final data = clinic.toJson();
-      print('Request Data: $data');  // 서버에 보낼 데이터 출력
+      print('Request Data: $data');
+
+      data['drugs'] = clinic.drugs.map((drfDrug) {
+        return {
+          ...drfDrug.toJson(),
+          'drugArchive': drfDrug.drugArchive.id,
+        };
+      }).toList();
 
       final response = await _dio.post('/clinics/create/', data: data);
 
@@ -61,7 +69,15 @@ class DrfClinicRepository {
   Future<bool> updateClinic(DrfClinic clinic) async {
     try {
       final data = clinic.toJson();
-      print('Request Data: $data');  // 서버에 보낼 데이터 출력
+      print('Request Data: $data');
+
+      // drugArchive는 단일 객체로 처리
+      data['drugs'] = clinic.drugs.map((drfDrug) {
+        return {
+          ...drfDrug.toJson(),
+          'drugArchive': drfDrug.drugArchive.id,
+        };
+      }).toList();
 
       final response = await _dio.put(
         '/clinics/${clinic.clinicId}/update/',
@@ -69,7 +85,7 @@ class DrfClinicRepository {
       );
 
       print('Response Status Code: ${response.statusCode}');
-      print('Response Data: ${response.data}');  // 서버로부터 받은 데이터 출력
+      print('Response Data: ${response.data}');
 
       return response.statusCode == 200;
     } catch (e) {
@@ -81,7 +97,7 @@ class DrfClinicRepository {
   // 클리닉 삭제하기
   Future<bool> deleteClinic(int clinicId) async {
     try {
-      print('Deleting clinic with ID: $clinicId');  // 삭제 요청 전 클리닉 ID 출력
+      print('Deleting clinic with ID: $clinicId');
 
       final response = await _dio.delete('/clinics/$clinicId/delete/');
 
@@ -93,50 +109,58 @@ class DrfClinicRepository {
     }
   }
 
-  // 가장 최근에 작성된 클리닉의 약물 리스트 불러오기
-  Future<List<DrfDrug>> getDrugsFromLatestClinic() async {
+  // 약물 아카이브 리스트 불러오기
+  Future<List<DrfDrugArchive>> getDrugArchives() async {
     try {
-      // 모든 클리닉을 불러오기
-      List<DrfClinic> clinics = await getClinics();
-
-      if (clinics.isEmpty) {
-        print('No clinics available');
-        return [];
-      }
-
-      // 가장 최근에 작성된 클리닉을 선택
-      DrfClinic latestClinic = clinics.first;
-
-      // 선택된 클리닉의 약물 리스트를 불러오기
-      final response = await _dio.get('/clinics/${latestClinic.clinicId}/drugs/');
-      print('Response Data: ${response.data}');  // 서버로부터 받은 데이터 출력
-
-      List<DrfDrug> drugs = response.data
-          .map<DrfDrug>((item) => DrfDrug.fromJson(item))
+      final response = await _dio.get('/clinics/drugs/archives/');
+      List<DrfDrugArchive> archives = response.data
+          .map<DrfDrugArchive>((item) => DrfDrugArchive.fromJson(item))
           .toList();
-      return drugs;
+      return archives;
     } catch (e) {
-      print('Failed to load drugs: $e');
+      print('Failed to load drug archives: $e');
       rethrow;
     }
   }
 
+  // 약물 리스트 불러오기 (최신 클리닉)
+  Future<List<DrfDrug>> getDrugsFromLatestClinic() async {
+    try {
+      List<DrfClinic> clinics = await getClinics();
+      if (clinics.isEmpty) {
+        return [];
+      }
+      DrfClinic latestClinic = clinics.first;
+      final response = await _dio.get('/clinics/${latestClinic.clinicId}/drugs/');
+
+      // drugArchive는 JSON 객체이므로, 이를 DrfDrugArchive 객체로 변환
+      List<DrfDrug> drugs = (response.data as List<dynamic>).map<DrfDrug>((item) {
+        return DrfDrug(
+          drugId: item['drugId'],
+          drugArchive: DrfDrugArchive.fromJson(item['drugArchive']), // 여기서 변환
+          number: item['number'],
+          initialNumber: item['initialNumber'],
+          time: item['time'],
+          allow: item['allow'],
+        );
+      }).toList();
+
+      return drugs;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
   // 선택된 약물 소모 상태로 전송
   Future<bool> consumeSelectedDrugs(List<int> drugIds) async {
     try {
-      print('Request Data: drug_ids = $drugIds');  // 서버에 보낼 데이터 출력
-
       final response = await _dio.post(
         '/clinics/drugs/consume/',
         data: {'drug_ids': drugIds},
       );
-
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Data: ${response.data}');  // 서버로부터 받은 데이터 출력
-
       return response.statusCode == 200;
     } catch (e) {
-      print('Failed to consume selected drugs: $e');
       return false;
     }
   }

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:nero_app/drf/calendar/page/drf_calendar_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
-import 'package:nero_app/drf/mymypage/page/drf_my_page.dart';
 import 'package:nero_app/drf/mypage/page/drf_monthly_matrix_view.dart';
 import 'package:nero_app/drf/product/home/page/drf_home_page.dart';
 

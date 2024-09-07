@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
+import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 
 class DrfClinicWriteController extends GetxController {
@@ -30,8 +31,11 @@ class DrfClinicWriteController extends GetxController {
   final Rxn<double> clinicLatitude = Rxn<double>();
   final Rxn<double> clinicLongitude = Rxn<double>();
 
-  // Drug 관리
+  // Drug 관리 (단일 drugArchive 사용)
   var drugs = <DrfDrug>[].obs;
+
+  // 약물 아카이브 관리
+  var drugArchives = <DrfDrugArchive>[].obs;
 
   // 수정 모드 여부
   bool isEditMode = false;
@@ -47,6 +51,7 @@ class DrfClinicWriteController extends GetxController {
     clinic.stream.listen((event) {
       _isValidSubmitPossible();
     });
+    _loadDrugArchives();
   }
 
   Future<void> _loadClinicDetail(int clinicId) async {
@@ -59,6 +64,15 @@ class DrfClinicWriteController extends GetxController {
         clinicLatitude.value = clinicData.clinicLatitude;
         clinicLongitude.value = clinicData.clinicLongitude;
       }
+    }
+  }
+
+  Future<void> _loadDrugArchives() async {
+    try {
+      final archives = await _clinicRepository.getDrugArchives();
+      drugArchives.assignAll(archives);
+    } catch (e) {
+      print('Failed to load drug archives: $e');
     }
   }
 
@@ -117,6 +131,7 @@ class DrfClinicWriteController extends GetxController {
     });
   }
 
+  // 클리닉 생성
   Future<void> createClinic() async {
     try {
       DrfClinic newClinic = clinic.value.copyWith(
@@ -143,6 +158,7 @@ class DrfClinicWriteController extends GetxController {
     }
   }
 
+  // 클리닉 업데이트
   Future<void> updateClinic(DrfClinic clinicData) async {
     try {
       DrfClinic updatedClinic = clinicData.copyWith(
@@ -170,6 +186,7 @@ class DrfClinicWriteController extends GetxController {
     }
   }
 
+  // 클리닉 삭제
   Future<void> deleteClinic(int clinicId) async {
     try {
       bool success = await _clinicRepository.deleteClinic(clinicId);

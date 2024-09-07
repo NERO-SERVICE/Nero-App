@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
+import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
 import 'package:nero_app/drf/clinic/write/controller/drf_clinic_write_controller.dart';
 import 'package:nero_app/drf/common/time_selection_button_bar.dart';
 import 'package:nero_app/drf/drf_calendar_widget.dart';
@@ -272,7 +273,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
             ),
             child: ListTile(
               title: Text(
-                '${drug.status} · ${drug.number}정 (${drug.time})',
+                '${drug.drugArchive.drugName} · ${drug.number}정 (${drug.time})',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               trailing: IconButton(
@@ -290,18 +291,10 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
 
   void _addDrugDialog(BuildContext context) {
     final drugNumberController = TextEditingController();
+    final controller = Get.find<DrfClinicWriteController>();
 
-    List<String> statuses = [
-      '콘서타 18mg',
-      '콘서타 27mg',
-      '콘서타 36mg',
-      '폭세틴 20mg',
-      '메디카넷 18mg',
-      '페로스핀 18mg',
-    ];
-    List<String> times = ['morning', 'lunch', 'dinner'];
-
-    RxString selectedStatus = statuses[0].obs;
+    Rxn<DrfDrugArchive> selectedArchive = Rxn<DrfDrugArchive>();
+    List<String> times = ['아침', '점심', '저녁'];
     RxString selectedTime = times[0].obs;
 
     showDialog(
@@ -333,7 +326,10 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        _buildDropdown(statuses, selectedStatus),
+                        DrugArchiveDropdown(
+                          selectedArchive: selectedArchive,
+                          controller: controller,
+                        ),
                         const SizedBox(height: 27),
                         _dialogDivider,
                         const SizedBox(height: 18),
@@ -359,8 +355,8 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               final drug = DrfDrug(
-                                drugId: 1,
-                                status: selectedStatus.value,
+                                drugId: 0,
+                                drugArchive: selectedArchive.value!,
                                 number: int.parse(drugNumberController.text),
                                 initialNumber: int.parse(drugNumberController.text),
                                 time: selectedTime.value,
@@ -414,48 +410,6 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
         );
       },
     );
-  }
-
-  Widget _buildDropdown(List<String> options, RxString selectedOption) {
-    return Obx(() {
-      return DropdownButtonFormField<String>(
-        menuMaxHeight: 200,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Color(0xffD9D9D9),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
-          ),
-        ),
-        value: selectedOption.value,
-        items: options.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: (value) {
-          selectedOption.value = value!;
-        },
-      );
-    });
   }
 
   Widget _buildTextField(String label, TextEditingController controller) {
@@ -543,7 +497,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       onTap: () async {
         var result = await Get.to<Map<String, dynamic>?>(
           TradeLocationMap(
-            lable: controller.clinic.value.locationLabel ?? '',
+            lable: controller.clinic.value.locationLabel ?? "",
             location: controller.clinicLatitude.value != null &&
                 controller.clinicLongitude.value != null
                 ? LatLng(
@@ -648,5 +602,58 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
         ],
       ),
     );
+  }
+}
+
+class DrugArchiveDropdown extends StatelessWidget {
+  final Rxn<DrfDrugArchive> selectedArchive;
+  final DrfClinicWriteController controller;
+
+  DrugArchiveDropdown({
+    required this.selectedArchive,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return DropdownButtonFormField<DrfDrugArchive>(
+        menuMaxHeight: 200,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Color(0xffD9D9D9),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          ),
+        ),
+        value: selectedArchive.value,
+        items: controller.drugArchives.map((archive) {
+          return DropdownMenuItem<DrfDrugArchive>(
+            value: archive,
+            child: Text(
+              '${archive.drugName} (${archive.capacity}mg)',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 20,
+                color: Color(0xff1C1B1B),
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          selectedArchive.value = value;
+        },
+      );
+    });
   }
 }
