@@ -397,13 +397,13 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
           ],
           stops: [0, 0.8],
         ),
-        borderRadius: BorderRadius.circular(15), // Rounded corners
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Card(
-        color: Colors.transparent, // Transparent to show gradient
+        color: Colors.transparent,
         elevation: 0, // No shadow
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15), // Rounded corners
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Padding(
           padding: const EdgeInsets.all(30),
@@ -537,16 +537,13 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
 
         return LayoutBuilder(
           builder: (context, constraints) {
-            double cellWidth = (constraints.maxWidth - 32) / 7; // 7열 기반의 너비 계산
-            double cellHeight = cellWidth; // 셀의 가로와 세로 비율 동일하게 설정
-
             return GridView.count(
               crossAxisCount: 7, // 7열 고정
               childAspectRatio: 1, // 셀의 가로 세로 비율 동일하게 유지
               children: dayWidgets,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(8), // 외부 패딩 적용
+              padding: const EdgeInsets.all(8),
             );
           },
         );
@@ -651,31 +648,6 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
         ],
       ),
     );
-  }
-
-  Widget _buildDateSelector(String label, Rx<DateTime> date) {
-    return Obx(() {
-      return GestureDetector(
-        onTap: () => _selectDate(context, date),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                DateFormat('yyyy년 MM월 dd일').format(date.value),
-                style: TextStyle(color: Colors.white),
-              ),
-              Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-            ],
-          ),
-        ),
-      );
-    });
   }
 
 // 날짜 선택 기능

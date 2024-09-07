@@ -63,6 +63,15 @@ class DrfUserSideEffectLogPage extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
 
+            if (controller.sideEffectResponses.isEmpty) {
+              return Center(
+                child: Text(
+                  '해당 날짜에 기록된 내용이 없습니다.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
+
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: Column(
