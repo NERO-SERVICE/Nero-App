@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:nero_app/drf/mypage/model/drf_montly_check.dart';
 import 'package:nero_app/drf/mypage/repository/drf_montly_check_repository.dart';
+import 'package:nero_app/drf/todaylog/model/drf_self_record.dart';
 import 'package:nero_app/drf/todaylog/model/drf_side_effect_response.dart';
 import 'package:nero_app/drf/todaylog/model/drf_survey_response.dart';
 
@@ -11,6 +12,7 @@ class DrfMonthlyCheckController extends GetxController {
   var isLoading = true.obs;
   var surveyResponses = <DrfSurveyResponse>[].obs;
   var sideEffectResponses = <DrfSideEffectResponse>[].obs;
+  var selfRecordResponses = <DrfSelfRecord>[].obs;
 
   Map<String, DrfMonthlyCheck> monthlyCheckCache = {};
 
@@ -94,6 +96,18 @@ class DrfMonthlyCheckController extends GetxController {
       sideEffectResponses.value = response.map((data) => DrfSideEffectResponse.fromJson(data)).toList();
     } catch (e) {
       print("Error fetching side effect answers: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> fetchPreviousSelfRecordAnswers(DateTime date) async {
+    try {
+      isLoading(true);
+      List<dynamic> response = await _monthlyCheckRepository.getSelfRecordResponsesByDate(date);
+      selfRecordResponses.value = response.map((data) => DrfSelfRecord.fromJson(data)).toList();
+    } catch (e) {
+      print("Error fetching self-record answers: $e");
     } finally {
       isLoading(false);
     }

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/drf/drf_calendar_widget.dart';
 import 'package:nero_app/drf/mypage/controller/drf_montly_check_controller.dart';
+import 'package:nero_app/drf/mypage/page/drf_user_self_record_page.dart';
 import 'package:nero_app/drf/mypage/page/drf_user_side_effect_log_page.dart';
 import 'package:nero_app/drf/mypage/page/drf_user_survey_log_page.dart';
 import 'package:nero_app/drf/todaylog/page/drf_today_log_page.dart';
@@ -212,6 +213,25 @@ class _MonthlyMatrixViewState extends State<DrfMonthlyMatrixView>
               ),
             ),
             SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: _buildCustomButton(
+                context,
+                labelTop: '추가적으로 더 쓰고싶은 내용은',
+                labelBottom: '셀프 기록',
+                onPressed: () async {
+                  await _selectDate(context, selectedDate);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DrfUserSelfRecordPage(
+                        selectedDate: selectedDate.value,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

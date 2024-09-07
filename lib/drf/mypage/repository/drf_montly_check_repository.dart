@@ -57,4 +57,16 @@ class DrfMonthlyCheckRepository {
       return [];
     }
   }
+
+  Future<List<dynamic>> getSelfRecordResponsesByDate(DateTime date) async {
+    try {
+      final String url = '/todaylogs/self_record/date/?year=${date.year}&month=${date.month}&day=${date.day}';
+      final response = await _dio.get(url);
+      print('SelfRecord Response data: ${response.data}');
+      return response.data;
+    } catch (e) {
+      print('Failed to load self-record responses: $e');
+      return [];
+    }
+  }
 }
