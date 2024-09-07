@@ -3,6 +3,7 @@ import 'package:nero_app/drf/clinic/controller/drf_clinic_controller.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
+import 'package:nero_app/drf/clinic/model/drf_my_drug_archive.dart';  // DrfMyDrugArchive 모델 임포트
 import 'package:nero_app/drf/clinic/repository/drf_clinic_repository.dart';
 
 class DrfClinicWriteController extends GetxController {
@@ -31,7 +32,7 @@ class DrfClinicWriteController extends GetxController {
   final Rxn<double> clinicLatitude = Rxn<double>();
   final Rxn<double> clinicLongitude = Rxn<double>();
 
-  // Drug 관리 (단일 drugArchive 사용)
+  // Drug 관리
   var drugs = <DrfDrug>[].obs;
 
   // 약물 아카이브 관리
@@ -131,9 +132,34 @@ class DrfClinicWriteController extends GetxController {
     });
   }
 
+  // DrfDrugArchive 정보를 직접 사용하여 DrfMyDrugArchive에 저장
+  void addDrugToClinic(DrfDrugArchive drugArchive, int number, String time) {
+    // DrfDrug에 DrfMyDrugArchive 생성하여 약물 추가
+    final myDrugArchive = DrfMyDrugArchive(
+      myArchiveId: drugArchive.archiveId, // archiveId를 myArchiveId로 설정
+      owner: clinic.value.owner,
+      archiveId: drugArchive.archiveId,
+      drugName: drugArchive.drugName,
+      target: drugArchive.target,
+      capacity: drugArchive.capacity,
+    );
+
+    final drug = DrfDrug(
+      drugId: 0,
+      myDrugArchive: myDrugArchive, // DrfMyDrugArchive 사용
+      number: number,
+      initialNumber: number,
+      time: time,
+      allow: true,
+    );
+
+    addDrug(drug);
+  }
+
   // 클리닉 생성
   Future<void> createClinic() async {
     try {
+      // 추가된 약물들은 DrfMyDrugArchive로 변환되어 있음
       DrfClinic newClinic = clinic.value.copyWith(
         clinicLatitude: clinicLatitude.value,
         clinicLongitude: clinicLongitude.value,

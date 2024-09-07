@@ -296,7 +296,7 @@ class _DrfTodayPageState extends State<DrfTodayPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Text(
-                                drug.drugArchive.drugName,
+                                drug.myDrugArchive.drugName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

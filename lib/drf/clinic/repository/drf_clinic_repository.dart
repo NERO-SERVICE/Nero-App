@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nero_app/drf/clinic/model/drf_clinic.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
+import 'package:nero_app/drf/clinic/model/drf_my_drug_archive.dart'; // 추가
 import 'package:nero_app/drf/dio_service.dart';
 
 class DrfClinicRepository {
@@ -42,10 +43,14 @@ class DrfClinicRepository {
       final data = clinic.toJson();
       print('Request Data: $data');
 
+      // DrfMyDrugArchive 사용
       data['drugs'] = clinic.drugs.map((drfDrug) {
         return {
-          ...drfDrug.toJson(),
-          'drugArchive': drfDrug.drugArchive.id,
+          'myDrugArchive': drfDrug.myDrugArchive.toJson(),
+          'number': drfDrug.number,
+          'initialNumber': drfDrug.initialNumber,
+          'time': drfDrug.time,
+          'allow': drfDrug.allow,
         };
       }).toList();
 
@@ -65,17 +70,18 @@ class DrfClinicRepository {
     }
   }
 
+
   // 클리닉 수정하기
   Future<bool> updateClinic(DrfClinic clinic) async {
     try {
       final data = clinic.toJson();
       print('Request Data: $data');
 
-      // drugArchive는 단일 객체로 처리
+      // DrfMyDrugArchive 사용
       data['drugs'] = clinic.drugs.map((drfDrug) {
         return {
           ...drfDrug.toJson(),
-          'drugArchive': drfDrug.drugArchive.id,
+          'myDrugArchive': drfDrug.myDrugArchive.myArchiveId, // DrfMyDrugArchive로 변환
         };
       }).toList();
 
@@ -109,7 +115,7 @@ class DrfClinicRepository {
     }
   }
 
-  // 약물 아카이브 리스트 불러오기
+  // 약물 아카이브 리스트 불러오기 (DrfDrugArchive)
   Future<List<DrfDrugArchive>> getDrugArchives() async {
     try {
       final response = await _dio.get('/clinics/drugs/archives/');
@@ -123,7 +129,7 @@ class DrfClinicRepository {
     }
   }
 
-  // 약물 리스트 불러오기 (최신 클리닉)
+  // 약물 리스트 불러오기 (최신 클리닉) (DrfMyDrugArchive 사용)
   Future<List<DrfDrug>> getDrugsFromLatestClinic() async {
     try {
       List<DrfClinic> clinics = await getClinics();
@@ -133,11 +139,11 @@ class DrfClinicRepository {
       DrfClinic latestClinic = clinics.first;
       final response = await _dio.get('/clinics/${latestClinic.clinicId}/drugs/');
 
-      // drugArchive는 JSON 객체이므로, 이를 DrfDrugArchive 객체로 변환
+      // 여기서 DrfMyDrugArchive로 변환
       List<DrfDrug> drugs = (response.data as List<dynamic>).map<DrfDrug>((item) {
         return DrfDrug(
           drugId: item['drugId'],
-          drugArchive: DrfDrugArchive.fromJson(item['drugArchive']), // 여기서 변환
+          myDrugArchive: DrfMyDrugArchive.fromJson(item['myDrugArchive']),
           number: item['number'],
           initialNumber: item['initialNumber'],
           time: item['time'],
@@ -151,7 +157,6 @@ class DrfClinicRepository {
     }
   }
 
-
   // 선택된 약물 소모 상태로 전송
   Future<bool> consumeSelectedDrugs(List<int> drugIds) async {
     try {
@@ -164,4 +169,5 @@ class DrfClinicRepository {
       return false;
     }
   }
+
 }

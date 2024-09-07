@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'drf_drug_archive.dart';
+import 'drf_my_drug_archive.dart';
 
 class DrfDrug extends Equatable {
   final int drugId;
-  final DrfDrugArchive drugArchive;
+  final DrfMyDrugArchive myDrugArchive;
   final int number;
   final int initialNumber;
   final String time;
@@ -11,7 +11,7 @@ class DrfDrug extends Equatable {
 
   DrfDrug({
     required this.drugId,
-    required this.drugArchive,
+    required this.myDrugArchive,
     required this.number,
     required this.initialNumber,
     required this.time,
@@ -20,7 +20,7 @@ class DrfDrug extends Equatable {
 
   DrfDrug.empty()
       : drugId = 1,
-        drugArchive = DrfDrugArchive.empty(),
+        myDrugArchive = DrfMyDrugArchive.empty(),
         number = 0,
         initialNumber = 0,
         time = '',
@@ -29,7 +29,7 @@ class DrfDrug extends Equatable {
   factory DrfDrug.fromJson(Map<String, dynamic> json) {
     return DrfDrug(
       drugId: json['drugId'] ?? 1,
-      drugArchive: DrfDrugArchive.fromJson(json['drugArchive']),
+      myDrugArchive: DrfMyDrugArchive.fromJson(json['myDrugArchive']),
       number: json['number'] ?? 0,
       initialNumber: json['initialNumber'] ?? 0,
       time: json['time'] ?? '',
@@ -37,10 +37,9 @@ class DrfDrug extends Equatable {
     );
   }
 
-
   Map<String, dynamic> toJson() {
     return {
-      'drugArchive': drugArchive.id,
+      'myDrugArchive': myDrugArchive.toJson(),
       'number': number,
       'initialNumber': initialNumber,
       'time': time,
@@ -50,7 +49,7 @@ class DrfDrug extends Equatable {
 
   DrfDrug copyWith({
     int? drugId,
-    DrfDrugArchive? drugArchive,
+    DrfMyDrugArchive? myDrugArchive,
     int? number,
     int? initialNumber,
     String? time,
@@ -58,7 +57,7 @@ class DrfDrug extends Equatable {
   }) {
     return DrfDrug(
       drugId: drugId ?? this.drugId,
-      drugArchive: drugArchive ?? this.drugArchive,
+      myDrugArchive: myDrugArchive ?? this.myDrugArchive,
       number: number ?? this.number,
       initialNumber: initialNumber ?? this.initialNumber,
       time: time ?? this.time,
@@ -68,5 +67,5 @@ class DrfDrug extends Equatable {
 
   @override
   List<Object?> get props =>
-      [drugId, drugArchive, number, initialNumber, time, allow];
+      [drugId, myDrugArchive, number, initialNumber, time, allow];
 }

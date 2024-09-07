@@ -222,7 +222,7 @@ class _DrfClinicDetailPageState extends State<DrfClinicDetailPage> {
                 children: [
                   const SizedBox(height: 10),
                   Text(
-                    drug.drugArchive.drugName,
+                    drug.myDrugArchive.drugName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

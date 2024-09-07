@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug.dart';
 import 'package:nero_app/drf/clinic/model/drf_drug_archive.dart';
+import 'package:nero_app/drf/clinic/model/drf_my_drug_archive.dart';
 import 'package:nero_app/drf/clinic/write/controller/drf_clinic_write_controller.dart';
 import 'package:nero_app/drf/common/time_selection_button_bar.dart';
 import 'package:nero_app/drf/drf_calendar_widget.dart';
@@ -273,7 +274,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
             ),
             child: ListTile(
               title: Text(
-                '${drug.drugArchive.drugName} · ${drug.number}정 (${drug.time})',
+                '${drug.myDrugArchive.drugName} · ${drug.number}정 (${drug.time})',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               trailing: IconButton(
@@ -354,16 +355,32 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
                         Center(
                           child: ElevatedButton(
                             onPressed: () async {
-                              final drug = DrfDrug(
-                                drugId: 0,
-                                drugArchive: selectedArchive.value!,
-                                number: int.parse(drugNumberController.text),
-                                initialNumber: int.parse(drugNumberController.text),
-                                time: selectedTime.value,
-                                allow: true,
-                              );
-                              controller.addDrug(drug);
-                              Get.back();
+                              if (selectedArchive.value != null &&
+                                  drugNumberController.text.isNotEmpty) {
+                                final myDrugArchive = DrfMyDrugArchive(
+                                  myArchiveId: 0,
+                                  owner: controller.clinic.value.owner,
+                                  archiveId: selectedArchive.value!.archiveId,
+                                  drugName: selectedArchive.value!.drugName,
+                                  target: selectedArchive.value!.target,
+                                  capacity: selectedArchive.value!.capacity,
+                                );
+
+                                // DrfDrug 생성
+                                final drug = DrfDrug(
+                                  drugId: 0, // 새로 생성되므로 0으로 설정
+                                  myDrugArchive: myDrugArchive, // 생성된 MyDrugArchive 사용
+                                  number: int.parse(drugNumberController.text),
+                                  initialNumber: int.parse(drugNumberController.text),
+                                  time: selectedTime.value,
+                                  allow: true,
+                                );
+
+                                controller.addDrug(drug);
+                                Get.back();
+                              } else {
+                                Get.snackbar('Error', '모든 필드를 채워주세요.');
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff323232),
@@ -411,6 +428,7 @@ class _DrfClinicWritePageState extends State<DrfClinicWritePage> {
       },
     );
   }
+
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(

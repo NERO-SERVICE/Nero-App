@@ -67,7 +67,7 @@ class DrfClinic extends Equatable {
       clinicLongitude: json['clinicLongitude'] != null
           ? json['clinicLongitude'].toDouble()
           : null,
-      locationLabel: json['locationLabel'] ?? "",
+      locationLabel: json['locationLabel'],
     );
   }
 
@@ -81,8 +81,8 @@ class DrfClinic extends Equatable {
       'title': title,
       'description': description,
       'drugs': drugs.map((e) => e.toJson()).toList(),
-      'clinicLatitude': clinicLatitude ?? 0,
-      'clinicLongitude': clinicLongitude ?? 0,
+      'clinicLatitude': clinicLatitude,
+      'clinicLongitude': clinicLongitude,
       'locationLabel': locationLabel ?? '',
     };
   }
