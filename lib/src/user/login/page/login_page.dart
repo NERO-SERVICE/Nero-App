@@ -80,21 +80,26 @@ class LoginPage extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Btn(
-            color: Color(0xffFEE500),
+            color: const Color(0xffFEE500),
             onTap: () => Get.find<LoginController>().kakaoLogin(),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   width: 24,
                   height: 24,
-                  child: SvgPicture.asset('assets/images/kakao.svg')
+                  child: SvgPicture.asset('assets/images/kakao.svg'),
                 ),
                 const SizedBox(
-                  width: 40,
+                  width: 10,
                 ),
-                const AppFont(
-                  '카카오로 계속하기',
-                  color: Colors.black,
+                Expanded(
+                  child: Center(
+                    child: const AppFont(
+                      '카카오로 계속하기',
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -103,6 +108,7 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
