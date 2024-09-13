@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nero_app/src/common/components/app_font.dart';
 import 'package:nero_app/src/common/components/btn.dart';
 import 'package:nero_app/src/user/login/controller/login_controller.dart';
@@ -12,21 +13,16 @@ class LoginPage extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const SizedBox(height: 35),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Container(
-            height: 136,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Image.asset(
-                'assets/images/nero_init.png',
-              ),
-            ),
+        AspectRatio(
+          aspectRatio: 1,
+          child: Lottie.asset(
+            'assets/lottie/nero_splash.json',
+            fit: BoxFit.contain,
+            repeat: false, // 한 번만 실행
+            onLoaded: (composition) {
+              // 애니메이션이 끝난 후에도 마지막 프레임에서 멈춤
+            },
           ),
-        ),
-        const SizedBox(
-          height: 200,
         ),
         const AppFont(
           '당신 곁의 네로',
@@ -109,18 +105,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/login_background.png',
-              fit: BoxFit.cover,
-            ),
-          ),
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
