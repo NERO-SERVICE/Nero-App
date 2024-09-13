@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +19,7 @@ import 'package:nero_app/drf/product/repository/drf_product_repository.dart';
 import 'package:nero_app/drf/user/model/drf_user_model.dart';
 import 'package:nero_app/drf/user/repository/drf_authentication_repository.dart';
 import 'package:nero_app/drf/user/repository/drf_user_repository.dart';
+import 'package:nero_app/push_notification.dart';
 import 'package:nero_app/route/drf_routes.dart';
 import 'package:nero_app/route/firebase_routes.dart';
 import 'package:nero_app/src/app.dart';
@@ -38,6 +42,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 late SharedPreferences prefs;
+final navigatorKey = GlobalKey<NavigatorState>();
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message.notification != null) {
+    print("Notification Received!");
+  }
+}
+
+Future<void> setupInteractedMessage() async {
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
+  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+}
+
+void _handleMessage(RemoteMessage message) {
+  Future.delayed(const Duration(seconds: 1), () {
+    navigatorKey.currentState!.pushNamed("/message", arguments: message);
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +72,23 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  PushNotification.init();
+  PushNotification.localNotiInit();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // 포그라운드 알림 수신 리스너
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    String payloadData = jsonEncode(message.data);
+    print('Got a message in foreground');
+    if (message.notification != null) {
+      PushNotification.showSimpleNotification(
+        title: message.notification!.title!,
+        body: message.notification!.body!,
+        payload: payloadData);
+    }
+  });
+  setupInteractedMessage();
+
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
