@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/signup/page/sign_up_page.dart';
 import 'package:nero_app/drf/calendar/page/drf_calendar_page.dart';
 import 'package:nero_app/drf/clinic/page/drf_clinic_page.dart';
 import 'package:nero_app/drf/common/controller/drf_bottom_nav_controller.dart';
@@ -25,17 +26,10 @@ class DrfRoot extends GetView<DrfBottomNavController> {
                   controller: controller.tabController,
                   children: [
                     DrfHomePage(),
-                    DrfClinicPage(),
+                    // DrfClinicPage(),
+                    SignUpPage(),
                     DrfTodayPage(),
                     DrfCalendarPage(),
-                    // Center(
-                    //   child: GestureDetector(
-                    //     onTap: () {
-                    //       Get.find<DrfAuthenticationRepository>().logout();
-                    //     },
-                    //     child: const AppFont('로그아웃'),
-                    //   ),
-                    // ),
                     DrfMonthlyMatrixView(),
                   ],
                 ),
@@ -63,7 +57,7 @@ class DrfRoot extends GetView<DrfBottomNavController> {
                       ),
                     ),
                     BottomNavigationBarItem(
-                      label: '진료기록',
+                      label: '테스트',
                       icon: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SvgPicture.asset('assets/svg/icons/arround-life-off.svg'),

@@ -27,7 +27,6 @@ class DrfClinicController extends GetxController {
     fetchClinics();
   }
 
-
   List<DrfDrug> getDrugsForClinic(int clinicId) {
     return clinics.firstWhere((clinic) => clinic.clinicId == clinicId).drugs;
   }
