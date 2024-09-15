@@ -20,7 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final FocusNode _focusNodeBirth = FocusNode();
   final SignUpController controller = Get.put(SignUpController());
 
-  final List<String> sexOptions = ['여성', '남성', '기타']; // 성별 옵션 리스트
+  final List<String> sexOptions = ['여성', '남성', '기타'];
 
   @override
   void initState() {
@@ -139,7 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
       child: TextField(
         onChanged: (value) {
           if (value.length == 6) {
-            controller.birth.value = value;  // birth를 String으로 저장
+            controller.birth.value = value;
           }
         },
         keyboardType: TextInputType.number,
@@ -280,8 +280,6 @@ class _SignUpPageState extends State<SignUpPage> {
     return ElevatedButton(
       onPressed: () async {
         try {
-          print("선택된 성별: ${controller.selectedSex.value}");
-
           DateTime? parsedBirth = _parseBirth(controller.birth.value);
           if (parsedBirth == null) {
             print('유효하지 않은 생년월일입니다.');
@@ -297,9 +295,9 @@ class _SignUpPageState extends State<SignUpPage> {
             birth: parsedBirth,
             sex: controller.selectedSex.value,
           );
-          print("서버로보내기전: ${currentUser}");
-
           await controller.updateUserInfo(currentUser);
+
+          Get.offNamed('/memories');
         } catch (e) {
           print('유저 정보 업데이트 중 오류 발생: $e');
         }
@@ -394,7 +392,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   const SizedBox(height: 16),
                   _signUpBirth(),
                   const SizedBox(height: 16),
-                  _sexDropdown(),  // 성별 선택 드롭다운을 직접 추가
+                  _sexDropdown(),
                 ],
               ),
             ),
