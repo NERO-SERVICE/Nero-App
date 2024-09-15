@@ -32,6 +32,8 @@ class _MemoriesPageState extends State<MemoriesPage> {
     if (selectedThings.isNotEmpty) {
       await _memoriesController.sendMemories(selectedThings);
     }
+
+    Get.offNamed('/tutorial');
   }
 
   Widget _titleBox() {
@@ -121,7 +123,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   Widget _nextButton() {
     return ElevatedButton(
       onPressed: () {
-
+        Get.offNamed('/tutorial');
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xff3C3C3C),
