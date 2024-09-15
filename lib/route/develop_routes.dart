@@ -4,6 +4,7 @@ import 'package:nero_app/develop/login/page/login_page.dart';
 import 'package:nero_app/develop/memories/page/memories_page.dart';
 import 'package:nero_app/develop/signup/controller/sign_up_controller.dart';
 import 'package:nero_app/develop/signup/page/sign_up_page.dart';
+import 'package:nero_app/develop/tutorial/page/tutorial_page.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 
 class DevelopRoutes {
@@ -30,6 +31,10 @@ class DevelopRoutes {
     GetPage(
       name: '/memories',
       page: () => const MemoriesPage(),
+    ),
+    GetPage(
+      name: '/tutorial',
+      page: () => TutorialPage(),
     ),
   ];
 }
