@@ -254,6 +254,8 @@ class _SignUpPageState extends State<SignUpPage> {
         print("Email: ${controller.email.value}");
         print("Birth: ${controller.birth.value}");
         print("Selected Sex: ${controller.selectedSex.value}");
+
+        Get.offNamed('/memories');
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xff3C3C3C),
