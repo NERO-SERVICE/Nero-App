@@ -47,14 +47,12 @@ class _TutorialPageState extends State<TutorialPage> {
       _currentPage = page;
       if (_currentPage == tutorialImages.length - 1) {
         _isButtonActive = true;
-        print("Button activated!"); // 버튼 활성화 확인용 출력
       }
     });
   }
 
   Future<void> _onNextPressed() async {
-    print("Navigating to home");
-    Get.offNamed('/home');
+    Get.offNamed('/root');
   }
 
   Widget _buildIndicator() {
