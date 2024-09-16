@@ -169,4 +169,18 @@ class ClinicRepository {
       return false;
     }
   }
+
+  // 약물 소비 내역 롤백
+  Future<bool> rollbackConsumedDrugs(String date) async {
+    try {
+      final response = await _dio.post(
+        '/clinics/drugs/consume/rollback/',
+        data: {'date': date},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Failed to rollback drugs: $e');
+      return false;
+    }
+  }
 }

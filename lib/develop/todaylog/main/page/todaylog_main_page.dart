@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
 
 import '../../clinic/controller/clinic_controller.dart';
 import '../../clinic/write/page/clinic_write_page.dart';
@@ -43,6 +44,10 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
                   '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: DailyDrugWidget(recentDay: clinicController.clinics.first.recentDay),
+            ),
             SizedBox(height: 48),
             CustomDivider(),
             SizedBox(height: 32),
