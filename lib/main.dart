@@ -138,7 +138,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             color: Colors.white,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xFF1C1B1B),
+        scaffoldBackgroundColor: const Color(0xFF202020),
       ),
       initialBinding: BindingsBuilder(() {
         Get.put(SplashController());

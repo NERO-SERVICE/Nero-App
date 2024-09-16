@@ -7,7 +7,7 @@ class BackgroundLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xff1C1B1B),
+      color: const Color(0xff202020),
       child: child,
     );
   }
