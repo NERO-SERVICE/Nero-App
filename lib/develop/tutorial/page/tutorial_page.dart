@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TutorialPage extends StatefulWidget {
   @override
@@ -50,8 +51,8 @@ class _TutorialPageState extends State<TutorialPage> {
     });
   }
 
-  void _onNextPressed() {
-    // Next button logic here
+  Future<void> _onNextPressed() async {
+    Get.offNamed('/root');
   }
 
   Widget _buildIndicator() {
@@ -132,7 +133,9 @@ class _TutorialPageState extends State<TutorialPage> {
               height: 60,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isButtonActive ? _onNextPressed : null,
+                onPressed: _isButtonActive
+                    ? () async {await _onNextPressed();}
+                    : null,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),

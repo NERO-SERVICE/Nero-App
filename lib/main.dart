@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:nero_app/background_layout.dart';
+import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/common/controller/common_layout_controller.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
@@ -138,7 +139,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             color: Colors.white,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xFF1C1B1B),
+        scaffoldBackgroundColor: const Color(0xFF202020),
       ),
       initialBinding: BindingsBuilder(() {
         Get.put(SplashController());
@@ -151,6 +152,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ));
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
+        Get.put(BottomNavController());
       }),
       getPages: [
         GetPage(
