@@ -27,20 +27,27 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   }
 
   Widget subInfo(NotificationModel notification) {
-    return Row(
-      children: [
-        Text(
-          "${notification.nickname}",
-          style: TextStyle(
+    return Positioned(
+      bottom: 36,
+      left: 24,
+      right: 24,
+      child: Container(
+        child: Text(
+          notification.title,
+          style: const TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,
-            fontSize: 25,
+            fontSize: 20,
             color: Colors.white,
           ),
+          maxLines: null, // 무제한 줄 수 허용
+          softWrap: true, // 줄바꿈 가능
+          overflow: TextOverflow.visible,
         ),
-      ],
+      ),
     );
   }
+
 
   Widget _notificationOne(NotificationModel notification) {
     return GestureDetector(
@@ -84,9 +91,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             ),
           ),
           Positioned(
-            bottom: 45,
+            bottom: 36,
             left: 24,
-            right: 0,
+            right: 24,
             child: subInfo(notification),
           ),
         ],
