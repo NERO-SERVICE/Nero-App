@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/home/magazine/model/magazine.dart';
+import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
+import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/main/page/home_news_page.dart';
 import 'package:nero_app/develop/home/news/model/news.dart';
 import 'package:nero_app/develop/home/news/repository/news_repository.dart';
@@ -20,13 +23,16 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
       Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.7);
   final NewsRepository _newsRepository = NewsRepository();
+  final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<News>> _latestNewsFuture;
+  late Future<List<Magazine>> _latestMagazinesFuture;
 
   @override
   void initState() {
     super.initState();
     _loadNotifications();
     _latestNewsFuture = _newsRepository.getLatestNews();
+    _latestMagazinesFuture = _magazineRepository.getLatestMagazine();
   }
 
   Future<void> _loadNotifications() async {
@@ -154,6 +160,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               ),
               const SizedBox(height: 40),
               const CustomDivider(),
+              const SizedBox(height: 30),
+              HomeMagazinePage(latestMagazinesFuture: _latestMagazinesFuture)
             ],
           ),
         );

@@ -33,7 +33,7 @@ class HomeNewsPage extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w600,
-                  fontSize: 24,
+                  fontSize: 18,
                   color: Colors.white,
                 ),
               ),
