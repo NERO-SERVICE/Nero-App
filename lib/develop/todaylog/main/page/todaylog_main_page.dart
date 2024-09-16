@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 
+import '../../clinic/controller/clinic_controller.dart';
 import '../../clinic/write/page/clinic_write_page.dart';
 import '../../recall/page/self_record_page.dart';
 import '../../recall/page/side_effect_page.dart';
 import '../../recall/page/survey_page.dart';
+import '../enum/month_image.dart';
 
 class TodaylogMainPage extends StatefulWidget {
   @override
@@ -14,10 +17,12 @@ class TodaylogMainPage extends StatefulWidget {
 }
 
 class _TodayLogMainPageState extends State<TodaylogMainPage> {
+  final ClinicController clinicController = Get.put(ClinicController());
 
   @override
   void initState() {
     super.initState();
+    clinicController.fetchClinics();
   }
 
   @override
@@ -34,7 +39,8 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             SizedBox(height: 18),
             _todaylogTitle(
               title: '데일리 복용관리',
-              content: '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+              content:
+                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
             SizedBox(height: 48),
@@ -88,7 +94,10 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
+            _clinicListWidget(),
+            SizedBox(height: 32),
             _clinicWriteWidget(context),
+            SizedBox(height: 36),
           ],
         ),
       ),
@@ -126,13 +135,13 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _buildCustomButton(
-      BuildContext context, {
-        required String labelTop,
-        required String labelBottom,
-        required VoidCallback onPressed,
-        EdgeInsetsGeometry padding =
+    BuildContext context, {
+    required String labelTop,
+    required String labelBottom,
+    required VoidCallback onPressed,
+    EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      }) {
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: ElevatedButton(
@@ -207,6 +216,85 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _clinicListWidget() {
+    final double containerHeight = 150;
+    final double itemSpacing = 16;
+
+    return Container(
+      height: containerHeight,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: clinicController.clinics.length,
+        padding: EdgeInsets.only(left: 32),
+        itemBuilder: (context, index) {
+          final clinic = clinicController.clinics[index];
+          final clinicDate = clinic.recentDay;
+          final monthImage = MonthImage.fromDateTime(clinicDate);
+
+          final formattedDate = DateFormat('yyyy-MM-dd').format(clinicDate);
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: itemSpacing,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: containerHeight,
+                  decoration: BoxDecoration(
+                    color: Color(0xff323232),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        monthImage.assetPath,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          formattedDate,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        Text(
+                          '진료기록',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Color(0xffD9D9D9),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

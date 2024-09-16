@@ -107,6 +107,7 @@ flutter:
     - assets/data/
     - assets/lottie/
     - assets/develop/
+    - assets/develop/month/
     - .env
 
   fonts:
