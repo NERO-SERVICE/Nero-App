@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
@@ -113,6 +114,122 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     );
   }
 
+  Widget _copyrightInfo() {
+    return Container(
+      height: 118,
+      color: Color(0xff1C1C1C),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '© 2024 NERO All rights reserved.',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: Color(0xff959595),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(
+                            'assets/develop/instagram-icon.svg',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Center(
+                          child: Text(
+                            'Instagram',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: Color(0xff959595),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(
+                            'assets/develop/twitter-icon.svg',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Center(
+                          child: Text(
+                            'X(twitter)',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: Color(0xff959595),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(
+                            'assets/develop/tiktok-icon.svg',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Center(
+                          child: Text(
+                            'TikTok',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: Color(0xff959595),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,7 +278,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               const SizedBox(height: 40),
               const CustomDivider(),
               const SizedBox(height: 30),
-              HomeMagazinePage(latestMagazinesFuture: _latestMagazinesFuture)
+              HomeMagazinePage(latestMagazinesFuture: _latestMagazinesFuture),
+              const SizedBox(height: 40),
+              _copyrightInfo(),
             ],
           ),
         );
