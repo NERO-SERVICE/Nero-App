@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,11 +10,11 @@ import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/common/controller/common_layout_controller.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
+import 'package:nero_app/develop/todaylog/clinic/controller/clinic_controller.dart';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
-import 'package:nero_app/push_notification.dart';
 import 'package:nero_app/route/develop_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,51 +24,12 @@ import 'firebase_options.dart';
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (message.notification != null) {
-    print("Notification Received!");
-  }
-}
-
-Future<void> setupInteractedMessage() async {
-  RemoteMessage? initialMessage =
-      await FirebaseMessaging.instance.getInitialMessage();
-
-  if (initialMessage != null) {
-    _handleMessage(initialMessage);
-  }
-  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-}
-
-void _handleMessage(RemoteMessage message) {
-  Future.delayed(const Duration(seconds: 1), () {
-    navigatorKey.currentState!.pushNamed("/message", arguments: message);
-  });
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  PushNotification.init();
-  PushNotification.localNotiInit();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // 포그라운드 알림 수신 리스너
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    String payloadData = jsonEncode(message.data);
-    print('Got a message in foreground');
-    if (message.notification != null) {
-      PushNotification.showSimpleNotification(
-          title: message.notification!.title!,
-          body: message.notification!.body!,
-          payload: payloadData);
-    }
-  });
-  setupInteractedMessage();
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
@@ -145,14 +103,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(SplashController());
         Get.put(DataLoadController());
         var kakaoAuthRepo = Get.put(AuthenticationRepository());
-        var kakaoUserRepo =Get.put(UserRepository(authenticationRepository: kakaoAuthRepo));
+        var kakaoUserRepo =
+            Get.put(UserRepository(authenticationRepository: kakaoAuthRepo));
         Get.put(AuthenticationController(
-          kakaoAuthRepo ,
+          kakaoAuthRepo,
           kakaoUserRepo,
         ));
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
         Get.put(BottomNavController());
+        Get.put(ClinicController());
       }),
       getPages: [
         GetPage(

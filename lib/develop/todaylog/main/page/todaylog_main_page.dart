@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 
+import '../../clinic/write/page/clinic_write_page.dart';
 import '../../recall/page/self_record_page.dart';
 import '../../recall/page/side_effect_page.dart';
 import '../../recall/page/survey_page.dart';
@@ -86,6 +88,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
+            _clinicWriteWidget(context),
           ],
         ),
       ),
@@ -174,6 +177,35 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               color: Color(0xffD0EE17),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _clinicWriteWidget(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 75.0),
+      child: ElevatedButton(
+        onPressed: () {
+          Get.to(() => ClinicWritePage());
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xff323232),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Text(
+            '작성하기',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              color: Color(0xffD0EE17),
+              fontSize: 16,
+            ),
+          ),
         ),
       ),
     );
