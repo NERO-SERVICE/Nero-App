@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/home/news/model/news.dart';
 import 'package:nero_app/develop/home/news/page/news_web_view_page.dart';
 import 'package:nero_app/develop/home/news/repository/news_repository.dart';
@@ -77,26 +78,7 @@ class _NewsListPageState extends State<NewsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        // 앱바 scroll 색상 오류 해결
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: Container(
-              color: Colors.transparent,
-            ),
-          ),
-        ),
-      ),
+      appBar: CustomDetailAppBar(title: '뉴스 모음'),
       body: _newsList.isEmpty && _isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
