@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/home/main/page/home_news_page.dart';
+import 'package:nero_app/develop/home/news/model/news.dart';
+import 'package:nero_app/develop/home/news/repository/news_repository.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
@@ -13,13 +17,16 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-  Get.put(NotificationController(), permanent: true);
+      Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.7);
+  final NewsRepository _newsRepository = NewsRepository();
+  late Future<List<News>> _latestNewsFuture;
 
   @override
   void initState() {
     super.initState();
     _loadNotifications();
+    _latestNewsFuture = _newsRepository.getLatestNews();
   }
 
   Future<void> _loadNotifications() async {
@@ -48,7 +55,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     );
   }
 
-
   Widget _notificationOne(NotificationModel notification) {
     return GestureDetector(
       onTap: () async {
@@ -65,13 +71,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               height: 400,
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                notification.imageUrls.first,
-                fit: BoxFit.cover,
-              )
+                      notification.imageUrls.first,
+                      fit: BoxFit.cover,
+                    )
                   : Image.asset(
-                'assets/images/default.png',
-                fit: BoxFit.cover,
-              ),
+                      'assets/images/default.png',
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Positioned.fill(
@@ -117,7 +123,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 height: 400,
                 child: PageView.builder(
@@ -129,7 +135,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: index == 0 ? 25.0 : 10.0,
-                          right: index == _notificationController.notifications.length - 1
+                          right: index ==
+                                  _notificationController.notifications.length -
+                                      1
                               ? 25.0
                               : 10.0,
                         ),
@@ -140,7 +148,12 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   },
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 30),
+              HomeNewsPage(
+                latestNewsFuture: _latestNewsFuture,
+              ),
+              const SizedBox(height: 40),
+              const CustomDivider(),
             ],
           ),
         );
