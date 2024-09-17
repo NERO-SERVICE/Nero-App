@@ -23,23 +23,23 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           '복용시간',
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 16,
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 20),
         Obx(() {
           return AnimatedButtonBar(
             controller: _controller,
             radius: 16.0,
-            backgroundColor: Color(0xffD9D9D9).withOpacity(0.5),
+            backgroundColor: Color(0xff3C3C3C),
             foregroundColor: Color(0xffD0EE17),
             innerVerticalPadding: 16,
             children: [
@@ -54,7 +54,7 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: widget.selectedTime.value == '아침'
                         ? Colors.black
                         : Colors.white,
@@ -72,7 +72,7 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: widget.selectedTime.value == '점심'
                         ? Colors.black
                         : Colors.white,
@@ -90,7 +90,7 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: widget.selectedTime.value == '저녁'
                         ? Colors.black
                         : Colors.white,

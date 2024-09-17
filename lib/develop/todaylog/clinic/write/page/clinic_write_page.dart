@@ -44,7 +44,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      await controller.createClinic(); // 서버로 데이터 전송
+      await controller.createClinic();
     }
   }
 
@@ -189,34 +189,45 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
     endIndent: 0,
   );
 
-  Widget get _dialogDivider => const Divider(
-    color: Color(0xffD9D9D9),
+  Widget get _dialogDivider => Divider(
+    color: Color(0xffD8D8D8).withOpacity(0.3),
     indent: 0,
     endIndent: 0,
   );
 
   Widget _buildDateSelector(String label, Rx<DateTime> date) {
+    final RxBool isSelected = false.obs;
+
     return Obx(() {
       return GestureDetector(
-        onTap: () => _selectDate(context, date),
+        onTap: () async {
+          isSelected.value = true;
+          await _selectDate(context, date);
+          isSelected.value = false;
+        },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
+            border: Border.all(
+              color: isSelected.value ? Color(0xffD0EE17) : Color(0xffD9D9D9), // 상태에 따라 border 색상 변경
+            ),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormat('yyyy년 MM월 dd일').format(date.value),
-                  style: TextStyle(color: Colors.white)),
-              Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+              Text(
+                DateFormat('yyyy년 MM월 dd일').format(date.value),
+                style: TextStyle(color: Colors.white),
+              ),
+              Icon(Icons.calendar_today, size: 16, color: Color(0xffD9D9D9)),
             ],
           ),
         ),
       );
     });
   }
+
 
   Widget _buildDrugsList() {
     return Obx(() {
@@ -271,104 +282,122 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            backgroundColor: Color(0xffD8D8D8).withOpacity(0.5),
+            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
             child: Stack(
               children: [
                 SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '종류',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-                        DrugArchiveDropdown(
-                          selectedArchive: selectedArchive,
-                          controller: controller,
-                        ),
-                        const SizedBox(height: 27),
-                        _dialogDivider,
-                        const SizedBox(height: 18),
-                        Text(
-                          '개수',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-                        _buildTextField('개수', drugNumberController),
-                        const SizedBox(height: 27),
-                        _dialogDivider,
-                        const SizedBox(height: 18),
-                        TimeSelectionWidget(selectedTime: selectedTime),
-                        const SizedBox(height: 27),
-                        _dialogDivider,
-                        const SizedBox(height: 18),
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (selectedArchive.value != null &&
-                                  drugNumberController.text.isNotEmpty) {
-                                final myDrugArchive = MyDrugArchive(
-                                  myArchiveId: 0,
-                                  owner: controller.clinic.value.owner,
-                                  archiveId: selectedArchive.value!.archiveId,
-                                  drugName: selectedArchive.value!.drugName,
-                                  target: selectedArchive.value!.target,
-                                  capacity: selectedArchive.value!.capacity,
-                                );
-
-                                // Drug 생성
-                                final drug = Drug(
-                                  drugId: 0, // 새로 생성되므로 0으로 설정
-                                  myDrugArchive: myDrugArchive, // 생성된 MyDrugArchive 사용
-                                  number: int.parse(drugNumberController.text),
-                                  initialNumber: int.parse(drugNumberController.text),
-                                  time: selectedTime.value,
-                                  allow: true,
-                                );
-
-                                controller.addDrug(drug);
-                                Get.back();
-                              } else {
-                                Get.snackbar('Error', '모든 필드를 채워주세요.');
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff323232),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: 12.0,
-                                horizontal: 66.0,
-                              ),
-                            ),
-                            child: Text(
-                              '등록하기',
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 40),
+                            Text(
+                              '종류',
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20,
-                                color: Color(0xffD0EE17),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.white,
                               ),
+                            ),
+                            const SizedBox(height: 20),
+                            DrugArchiveDropdown(
+                              selectedArchive: selectedArchive,
+                              controller: controller,
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                      _dialogDivider,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            Text(
+                              '개수',
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTextField('개수', drugNumberController),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                      _dialogDivider,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            TimeSelectionWidget(selectedTime: selectedTime),
+                            const SizedBox(height: 30),
+                          ],
+                        ),
+                      ),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (selectedArchive.value != null &&
+                                drugNumberController.text.isNotEmpty) {
+                              final myDrugArchive = MyDrugArchive(
+                                myArchiveId: 0,
+                                owner: controller.clinic.value.owner,
+                                archiveId: selectedArchive.value!.archiveId,
+                                drugName: selectedArchive.value!.drugName,
+                                target: selectedArchive.value!.target,
+                                capacity: selectedArchive.value!.capacity,
+                              );
+
+                              // Drug 생성
+                              final drug = Drug(
+                                drugId: 0, // 새로 생성되므로 0으로 설정
+                                myDrugArchive: myDrugArchive, // 생성된 MyDrugArchive 사용
+                                number: int.parse(drugNumberController.text),
+                                initialNumber: int.parse(drugNumberController.text),
+                                time: selectedTime.value,
+                                allow: true,
+                              );
+
+                              controller.addDrug(drug);
+                              Get.back();
+                            } else {
+                              Get.snackbar('Error', '모든 필드를 채워주세요.');
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff323232),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 66.0,
+                            ),
+                          ),
+                          child: Text(
+                            '등록하기',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Color(0xffD0EE17),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
                   ),
                 ),
                 Positioned(
@@ -398,28 +427,35 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
     return TextFormField(
       controller: controller,
       style: TextStyle(
-        fontSize: 15,
-        color: Colors.black,
+        fontSize: 14,
+        color: Color(0xffFFFFFF),
         fontFamily: 'Pretendard',
         fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xffD9D9D9).withOpacity(0.5),
+        fillColor: Color(0xff3C3C3C),
+        hintText: '숫자로 입력해주세요',
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Color(0xff959595),
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+          borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
         ),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0),
+            horizontal: 13),
       ),
     );
   }
@@ -500,20 +536,21 @@ class DrugArchiveDropdown extends StatelessWidget {
     return Obx(() {
       return DropdownButtonFormField<DrugArchive>(
         menuMaxHeight: 200,
+        dropdownColor: Color(0xff3C3C3C),
         decoration: InputDecoration(
           filled: true,
-          fillColor: Color(0xffD9D9D9),
+          fillColor: Color(0xff3C3C3C),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 2),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
         ),
         value: selectedArchive.value,
@@ -525,8 +562,8 @@ class DrugArchiveDropdown extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w500,
-                fontSize: 20,
-                color: Color(0xff1C1B1B),
+                fontSize: 14,
+                color: Color(0xff959595),
               ),
             ),
           );
