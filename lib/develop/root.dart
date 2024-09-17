@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/home/main/page/home_main_page.dart';
+import 'package:nero_app/develop/todaylog/main/page/todaylog_main_page.dart';
 
 class Root extends GetView<BottomNavController> {
   const Root({super.key});
@@ -20,6 +21,7 @@ class Root extends GetView<BottomNavController> {
                   controller: controller.tabController,
                   children: [
                     HomeMainPage(),
+                    TodaylogMainPage(),
                   ],
                 ),
               ),

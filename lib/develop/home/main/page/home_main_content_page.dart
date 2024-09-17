@@ -72,7 +72,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
       child: Stack(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: BorderRadius.circular(16),
             child: SizedBox(
               width: 300,
               height: 400,
@@ -90,7 +90,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
