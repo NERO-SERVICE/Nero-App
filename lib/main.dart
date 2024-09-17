@@ -9,6 +9,7 @@ import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/common/controller/common_layout_controller.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
+import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/controller/clinic_controller.dart';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
@@ -113,6 +114,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(CommonLayoutController());
         Get.put(BottomNavController());
         Get.put(ClinicController());
+        Get.put(FastmemoRepository());
       }),
       getPages: [
         GetPage(
