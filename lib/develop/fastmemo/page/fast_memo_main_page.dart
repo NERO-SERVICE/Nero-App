@@ -144,14 +144,20 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              '해당 날짜에 기록된 메모가 없습니다.',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Color(0xffFFFFFF),
-              ),
+            child: Column(
+              children: [
+                Text(
+                  '해당 날짜에 기록된 메모가 없습니다.',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Color(0xffFFFFFF),
+                  ),
+                ),
+                SizedBox(height: 20),
+                _emptyNextButton(),
+              ],
             ),
           ),
         );
@@ -287,6 +293,27 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         child: Center(
           child: Text(
             "선택하기",
+            style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Color(0xffD0EE17)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyNextButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 105),
+      child: GestureDetector(
+        onTap: () {
+          Get.to(() => FastMemoDetailPage());
+        },
+        child: Center(
+          child: Text(
+            "작성하기",
             style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w500,
