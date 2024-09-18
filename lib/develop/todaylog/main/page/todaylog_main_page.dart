@@ -29,6 +29,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
         title: '하루기록',
       ),
@@ -36,6 +37,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(height: kToolbarHeight + 56),
             CustomDivider(),
             SizedBox(height: 18),
             _todaylogTitle(

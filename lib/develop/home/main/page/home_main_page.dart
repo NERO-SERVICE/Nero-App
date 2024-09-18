@@ -10,7 +10,8 @@ class HomeMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonLayout(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,

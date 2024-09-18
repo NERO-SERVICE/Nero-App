@@ -79,11 +79,13 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: CustomAppBar(title: '마이페이지'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: kToolbarHeight + 56),
             CustomDivider(),
             SizedBox(height: 32),
             _mypageTitle(

@@ -246,26 +246,17 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: kToolbarHeight + 56),
               SizedBox(
                 height: 400,
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: _notificationController.notifications.length,
                   itemBuilder: (context, index) {
-                    return FractionallySizedBox(
-                      widthFactor: 1.0,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: index == 0 ? 25.0 : 10.0,
-                          right: index ==
-                                  _notificationController.notifications.length -
-                                      1
-                              ? 25.0
-                              : 10.0,
-                        ),
-                        child: _notificationOne(
-                            _notificationController.notifications[index]),
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: _notificationOne(
+                        _notificationController.notifications[index],
                       ),
                     );
                   },
