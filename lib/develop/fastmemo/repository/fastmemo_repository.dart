@@ -31,6 +31,28 @@ class FastmemoRepository extends GetxController {
         'month': date.month.toString().padLeft(2, '0'),
         'day': date.day.toString().padLeft(2, '0'),
       });
+      print('Fastmemo Response: ${response.data}');
+      fastmemo.assignAll(
+          (response.data as List).map((e) => Fastmemo.fromJson(e)).toList());
+    } catch (e) {
+      print('Failed to load fast logs: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUncheckedFastmemo(DateTime date) async {
+    isLoading.value = true;
+
+    try {
+      final response = await _dioService.get('/fastlogs/unchecked/', params: {
+        'year': date.year.toString(),
+        'month': date.month.toString().padLeft(2, '0'),
+        'day': date.day.toString().padLeft(2, '0'),
+      });
+
+      // 응답 데이터 출력
+      print('Unchecked Fastmemo Response: ${response.data}');
 
       fastmemo.assignAll(
           (response.data as List).map((e) => Fastmemo.fromJson(e)).toList());

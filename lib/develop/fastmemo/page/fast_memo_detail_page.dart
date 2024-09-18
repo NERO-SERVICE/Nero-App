@@ -184,7 +184,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       );
     } else {
       _controller.reverse();
-      return SizedBox.shrink(); // 아무것도 렌더링하지 않음
+      return SizedBox.shrink();
     }
   }
 
@@ -206,7 +206,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
 
   Future<void> _bulkUpdateIsChecked() async {
     List<int> selectedIds = _selectedMap.entries
-        .where((entry) => entry.value) // 선택된 것만 필터링
+        .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
     if (selectedIds.isNotEmpty) {
@@ -216,10 +216,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
         Color(0xff69ACF5).withOpacity(0.8),
       );
       if (confirmed) {
-        await repository.bulkUpdateIsChecked(
-            true, selectedIds); // 선택된 아이템의 체크 상태를 서버에 전송
+        await repository.bulkUpdateIsChecked(true, selectedIds);
         setState(() {
-          _selectedMap.clear(); // 선택 해제
+          _selectedMap.clear();
         });
       }
     }
@@ -227,7 +226,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
 
   Future<void> _bulkDeleteFastmemo() async {
     List<int> selectedIds = _selectedMap.entries
-        .where((entry) => entry.value) // 선택된 것만 필터링
+        .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
     if (selectedIds.isNotEmpty) {
