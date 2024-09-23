@@ -112,4 +112,22 @@ class MypageController extends GetxController {
     }
     return false;
   }
+
+  // 생리 주기 생성 메서드 추가
+  Future<void> createMenstruationCycle(MenstruationCycle cycle) async {
+    try {
+      bool success = await _mypageRepository.createMenstruationCycle(cycle);
+      if (success) {
+        // 생리 주기 리스트를 다시 불러옵니다.
+        fetchMenstruationCycles(cycle.startDate.year);
+        Get.back(); // 다이얼로그 닫기
+        Get.snackbar('성공', '생리 주기가 추가되었습니다.');
+      } else {
+        Get.snackbar('실패', '생리 주기를 추가하지 못했습니다.');
+      }
+    } catch (e) {
+      print('Failed to create menstruation cycle: $e');
+      Get.snackbar('에러', '생리 주기를 추가하지 못했습니다.');
+    }
+  }
 }

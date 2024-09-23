@@ -25,10 +25,8 @@ class MenstruationCycle {
 
   Map<String, dynamic> toJson() {
     return {
-      'owner': owner,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
-      'cycleLength': cycleLength,
       'notes': notes,
     };
   }

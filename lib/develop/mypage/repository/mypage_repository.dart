@@ -94,4 +94,14 @@ class MypageRepository {
       return [];
     }
   }
+
+  Future<bool> createMenstruationCycle(MenstruationCycle cycle) async {
+    try {
+      final response = await _dio.post('/menstruation/', data: cycle.toJson());
+      return response.statusCode == 201;
+    } catch (e) {
+      print('Failed to create menstruation cycle: $e');
+      return false;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/calandar_widget.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
@@ -14,6 +15,7 @@ import 'package:nero_app/develop/mypage/page/user_side_effect_log_page.dart';
 import 'package:nero_app/develop/mypage/page/user_survey_log_page.dart';
 
 import '../../memories/controller/memories_controller.dart';
+import '../model/menstruation_cycle.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -89,8 +91,8 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
       menstruationCurrentIndex = index;
       menstruationCurrentMonth.value = index + 1;
     });
-    _monthlyCheckController.fetchMenstruationCycles(
-        menstruationCurrentYear.value);
+    _monthlyCheckController
+        .fetchMenstruationCycles(menstruationCurrentYear.value);
 
     _animationController.reset();
     _animationController.forward();
@@ -145,7 +147,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                   padding: const EdgeInsets.only(right: 32),
                   child: GestureDetector(
                     onTap: () {
-
+                      _showMenstruationInputDialog();
                     },
                     child: Text(
                       '입력하기',
@@ -464,7 +466,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildMenstruationDayCell(int day, bool isMenstruationDay) {
-    Color backgroundColor = isMenstruationDay ? Color(0xffFFADC6): Colors.grey;
+    Color backgroundColor = isMenstruationDay ? Color(0xffFFADC6) : Colors.grey;
 
     return Container(
       margin: EdgeInsets.all(4),
@@ -475,6 +477,178 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
       child: Center(
         child: Text('$day', style: TextStyle(color: Colors.white)),
       ),
+    );
+  }
+
+  void _showMenstruationInputDialog() {
+    Rx<DateTime> startDate = DateTime.now().obs;
+    Rx<DateTime> endDate = DateTime.now().obs;
+    TextEditingController notesController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 40),
+                        Text(
+                          '생리 주기 입력',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        _buildDateSelector('시작일', startDate),
+                        SizedBox(height: 20),
+                        _buildDateSelector('종료일', endDate),
+                        SizedBox(height: 20),
+                        _buildNotesField(notesController),
+                        SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (endDate.value.isBefore(startDate.value)) {
+                              Get.snackbar('오류', '종료일은 시작일보다 빠를 수 없습니다.');
+                              return;
+                            }
+                            MenstruationCycle cycle = MenstruationCycle(
+                              owner: 1, // 실제 사용자 ID로 교체해야 합니다.
+                              startDate: startDate.value,
+                              endDate: endDate.value,
+                              notes: notesController.text,
+                            );
+                            await _monthlyCheckController
+                                .createMenstruationCycle(cycle);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff323232),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 66.0,
+                            ),
+                          ),
+                          child: Text(
+                            '입력하기',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Color(0xffFFADC6),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 24,
+                  right: 24,
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDateSelector(String label, Rx<DateTime> date) {
+    final RxBool isSelected = false.obs;
+
+    return Obx(() {
+      return GestureDetector(
+        onTap: () async {
+          isSelected.value = true;
+          await _selectDate(context, date);
+          isSelected.value = false;
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected.value ? Color(0xffFFADC6) : Color(0xffD9D9D9),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat('yyyy년 MM월 dd일').format(date.value),
+                style: TextStyle(color: Colors.white),
+              ),
+              Icon(Icons.calendar_today, size: 16, color: Color(0xffD9D9D9)),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildNotesField(TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(
+        fontSize: 14,
+        color: Color(0xffFFFFFF),
+        fontFamily: 'Pretendard',
+        fontWeight: FontWeight.w500,
+      ),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xff3C3C3C),
+        hintText: '메모를 입력해주세요',
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Color(0xff959595),
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Color(0xffFFADC6), width: 1),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 13),
+      ),
+      maxLines: null,
     );
   }
 
@@ -1219,7 +1393,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
     );
   }
 
-// 날짜 선택 기능
   Future<void> _selectDate(BuildContext context, Rx<DateTime> date) async {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
@@ -1239,9 +1412,9 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                 ),
               ),
               child: CalendarWidget(
-                selectedDate: date,
-                focusedDate: date,
-              ),
+                  selectedDate: date,
+                  focusedDate: date,
+                  selectedColor: Color(0xffFFADC6)),
             ),
           ),
         );
