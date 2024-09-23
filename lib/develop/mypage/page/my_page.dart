@@ -21,15 +21,28 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
+  // 기존 컨트롤러들
   final MypageController _monthlyCheckController = Get.put(MypageController());
+  final MemoriesController _memoriesController = Get.put(MemoriesController());
+  final TextEditingController _textController = TextEditingController();
+
+  // 약 복용 및 부작용 관련 변수들
   final PageController _pageController =
       PageController(initialPage: DateTime.now().month - 1);
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
-  int currentIndex = -1, previousIndex = 0;
+  int currentIndex = DateTime.now().month - 1;
+  int previousIndex = DateTime.now().month - 1;
+
+  // 생리 주기 관련 변수들
+  final PageController _menstruationPageController =
+      PageController(initialPage: DateTime.now().month - 1);
+  final RxInt menstruationCurrentMonth = DateTime.now().month.obs;
+  final RxInt menstruationCurrentYear = DateTime.now().year.obs;
+  int menstruationCurrentIndex = DateTime.now().month - 1;
+  int menstruationPreviousIndex = DateTime.now().month - 1;
+
   final Rx<DateTime> selectedDate = DateTime.now().obs;
-  final MemoriesController _memoriesController = Get.put(MemoriesController());
-  final TextEditingController _textController = TextEditingController();
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -38,9 +51,8 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _monthlyCheckController.setSelectedType('all');
-
-    _monthlyCheckController.preloadMonthlyData(
-        currentYear.value, currentMonth.value);
+    _monthlyCheckController.fetchYearlyChecks(currentYear.value);
+    _monthlyCheckController.fetchMenstruationCycles(currentYear.value);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
@@ -54,20 +66,31 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _pageController.dispose();
+    _menstruationPageController.dispose();
     _animationController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
   void onPageChanged(int index) {
     setState(() {
-      if (currentIndex != -1) {
-        previousIndex = currentIndex;
-      }
+      previousIndex = currentIndex;
       currentIndex = index;
       currentMonth.value = index + 1;
     });
-    _monthlyCheckController.preloadMonthlyData(
-        currentYear.value, currentMonth.value);
+
+    _animationController.reset();
+    _animationController.forward();
+  }
+
+  void onMenstruationPageChanged(int index) {
+    setState(() {
+      menstruationPreviousIndex = menstruationCurrentIndex;
+      menstruationCurrentIndex = index;
+      menstruationCurrentMonth.value = index + 1;
+    });
+    _monthlyCheckController.fetchMenstruationCycles(
+        menstruationCurrentYear.value);
 
     _animationController.reset();
     _animationController.forward();
@@ -108,44 +131,37 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                '월간 레포트',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: Color(0xffFFFFFF),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/to_be_continued.png',
-                    fit: BoxFit.cover,
+            // 생리 주기 섹션 추가
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: _mypageTitle(
+                    title: '생리 주기',
+                    content: '생리 시작일과 종료일을\n기록하고 관리해보세요',
                   ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '추후 공개됩니다',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 32),
+                  child: GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Text(
+                      '입력하기',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffFFADC6),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            SizedBox(height: 20),
+            _buildMenstruationPageView(),
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
@@ -205,6 +221,218 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
             SizedBox(height: 40),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMenstruationPageView() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          height: constraints.maxWidth,
+          child: PageView.builder(
+            controller: _menstruationPageController,
+            itemCount: 12,
+            onPageChanged: onMenstruationPageChanged,
+            itemBuilder: (context, index) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 20),
+                  tween: Tween<double>(
+                    begin: getAnimationValue(menstruationCurrentIndex, index,
+                        menstruationPreviousIndex),
+                    end: getAnimationValue(menstruationCurrentIndex, index,
+                        menstruationPreviousIndex,
+                        begin: false),
+                  ),
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 37),
+                        child: _buildMenstruationCardContent(),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMenstruationCardContent() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF181818).withOpacity(0.1),
+            Color(0xFFFEFCFC).withOpacity(0.3),
+          ],
+          stops: [0, 0.8],
+        ),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0, // No shadow
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              _buildMenstruationMonthYearText(),
+              const SizedBox(height: 16),
+              _buildDayLabels(),
+              const SizedBox(height: 10),
+              _buildMenstruationMonthlyMatrix(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenstruationMonthYearText() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        menstruationCurrentIndex > 0
+            ? FloatingActionButton(
+                mini: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                onPressed: () {
+                  _menstruationPageController.previousPage(
+                    duration: Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: Icon(Icons.arrow_back_ios, color: Colors.white),
+              )
+            : SizedBox(width: 32),
+        Text(
+          '${menstruationCurrentYear.value}년 ${menstruationCurrentMonth.value}월',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        menstruationCurrentIndex < 11
+            ? FloatingActionButton(
+                mini: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                onPressed: () {
+                  _menstruationPageController.nextPage(
+                    duration: Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+              )
+            : SizedBox(width: 32),
+      ],
+    );
+  }
+
+  Widget _buildMenstruationMonthlyMatrix() {
+    return GetBuilder<MypageController>(
+      builder: (_) {
+        int year = menstruationCurrentYear.value;
+        int month = menstruationCurrentMonth.value;
+        // 생리 주기 데이터 가져오기
+        var cycles = _monthlyCheckController.menstruationCycles;
+
+        // 월의 첫 번째 날과 마지막 날 계산
+        DateTime firstDayOfMonth = DateTime(year, month, 1);
+        DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+        int totalDays = lastDayOfMonth.day;
+
+        // 달력의 시작 요일 계산 (일요일을 0으로 설정)
+        int monthStartIndex = (firstDayOfMonth.weekday % 7);
+
+        // 날짜별 생리 여부 확인
+        Set<int> menstruationDays = Set();
+
+        for (var cycle in cycles) {
+          DateTime startDate = cycle.startDate;
+          DateTime endDate = cycle.endDate;
+
+          // 해당 월과 겹치는 날짜 계산
+          DateTime cycleStart = DateTime(year, month, 1);
+          DateTime cycleEnd = DateTime(year, month, totalDays);
+
+          DateTime overlapStart =
+              startDate.isAfter(cycleStart) ? startDate : cycleStart;
+          DateTime overlapEnd = endDate.isBefore(cycleEnd) ? endDate : cycleEnd;
+
+          if (!overlapStart.isAfter(overlapEnd)) {
+            for (DateTime date = overlapStart;
+                !date.isAfter(overlapEnd);
+                date = date.add(Duration(days: 1))) {
+              menstruationDays.add(date.day);
+            }
+          }
+        }
+
+        List<Widget> dayWidgets = [];
+
+        // 6x7 매트릭스를 미리 구성
+        int totalCells = 6 * 7; // 6줄, 7일씩 42개의 셀
+
+        for (int i = 0; i < totalCells; i++) {
+          int day = i - monthStartIndex + 1;
+
+          if (i < monthStartIndex || day > totalDays) {
+            // 달력의 빈 칸 (transparent 처리)
+            dayWidgets.add(Container(
+              margin: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.transparent, // 빈 칸은 투명하게 처리
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ));
+          } else {
+            bool isMenstruationDay = menstruationDays.contains(day);
+            dayWidgets.add(_buildMenstruationDayCell(day, isMenstruationDay));
+          }
+        }
+
+        return AspectRatio(
+          aspectRatio: 7 / 6, // 가로 7, 세로 6의 비율로 고정
+          child: GridView.count(
+            crossAxisCount: 7,
+            childAspectRatio: 1,
+            children: dayWidgets,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMenstruationDayCell(int day, bool isMenstruationDay) {
+    Color backgroundColor = isMenstruationDay ? Color(0xffFFADC6): Colors.grey;
+
+    return Container(
+      margin: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text('$day', style: TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -589,8 +817,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               ButtonBarEntry(
                 onTap: () {
                   _monthlyCheckController.setSelectedType('all');
-                  _monthlyCheckController.preloadMonthlyData(
-                      currentYear.value, currentMonth.value);
                   _monthlyCheckController.update();
                 },
                 child: Text(
@@ -608,8 +834,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               ButtonBarEntry(
                 onTap: () {
                   _monthlyCheckController.setSelectedType('dose');
-                  _monthlyCheckController.preloadMonthlyData(
-                      currentYear.value, currentMonth.value);
                   _monthlyCheckController.update();
                 },
                 child: Text(
@@ -627,8 +851,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               ButtonBarEntry(
                 onTap: () {
                   _monthlyCheckController.setSelectedType('side_effect');
-                  _monthlyCheckController.preloadMonthlyData(
-                      currentYear.value, currentMonth.value);
                   _monthlyCheckController.update();
                 },
                 child: Text(
@@ -676,10 +898,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                       scale: value,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 37),
-                        child: IntrinsicHeight(
-                          // 자식 높이 유동적으로 조절
-                          child: _buildCardContent(),
-                        ),
+                        child: _buildCardContent(),
                       ),
                     );
                   },
@@ -843,19 +1062,16 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
           }
         }
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return GridView.count(
-              crossAxisCount: 7,
-              // 7열 고정
-              childAspectRatio: 1,
-              // 셀의 가로 세로 비율 동일하게 유지
-              children: dayWidgets,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(8),
-            );
-          },
+        return AspectRatio(
+          aspectRatio: 7 / 6, // 가로 7, 세로 6의 비율로 고정
+          child: GridView.count(
+            crossAxisCount: 7,
+            childAspectRatio: 1,
+            children: dayWidgets,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8),
+          ),
         );
       },
     );

@@ -1,23 +1,34 @@
 import '../../dio_service.dart';
+import '../model/menstruation_cycle.dart';
 import '../model/monthly_check.dart';
 
 class MypageRepository {
   final DioService _dio = DioService();
 
-  Future<MonthlyCheck?> getMonthlyCheck(
-      int year, int month, String type) async {
+  Future<Map<int, MonthlyCheck>?> getYearlyCheck(int year, String type) async {
     try {
-      final String url = '/mypage/yearly-log/$year/$month/?type=$type';
-      print('Requesting data from URL: $url');
+      final String url = '/mypage/yearly-log/$year/?type=$type';
+      print('Requesting yearly data from URL: $url');
 
       final response = await _dio.get(url);
 
       print('Response status: ${response.statusCode}');
       print('Response data: ${response.data}');
 
-      return MonthlyCheck.fromJson(response.data);
+      Map<int, MonthlyCheck> yearlyData = {};
+
+      // 서버에서 반환한 데이터 파싱
+      Map<String, dynamic> data = response.data;
+
+      data.forEach((monthStr, monthData) {
+        int month = int.parse(monthStr);
+        MonthlyCheck monthlyCheck = MonthlyCheck.fromJson(monthData);
+        yearlyData[month] = monthlyCheck;
+      });
+
+      return yearlyData;
     } catch (e) {
-      print('Failed to load monthly check: $e');
+      print('Failed to load yearly check: $e');
       return null;
     }
   }
@@ -67,6 +78,19 @@ class MypageRepository {
       return response.data;
     } catch (e) {
       print('Failed to load self-record responses: $e');
+      return [];
+    }
+  }
+
+  Future<List<MenstruationCycle>> getMenstruationCycles(int year) async {
+    try {
+      final String url = '/menstruation/cycles/?year=$year';
+      final response = await _dio.get(url);
+
+      List<dynamic> data = response.data;
+      return data.map((json) => MenstruationCycle.fromJson(json)).toList();
+    } catch (e) {
+      print('Failed to load menstruation cycles: $e');
       return [];
     }
   }
