@@ -40,6 +40,20 @@ class SurveyPage extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 }
 
+                if (controller.surveyQuestions.isEmpty) {
+                  return Center(
+                    child: Text(
+                      '설문이 현재 없습니다.',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Color(0xffD9D9D9),
+                      ),
+                    ),
+                  );
+                }
+
                 return SingleChildScrollView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -57,7 +71,6 @@ class SurveyPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 60),
-
                       Column(
                         children: List.generate(
                             controller.surveyQuestions.length, (index) {
@@ -94,13 +107,14 @@ class SurveyPage extends StatelessWidget {
                               duration: Duration(seconds: 1),
                             );
 
-                            final snackBarController = ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            final snackBarController =
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
 
                             // 스낵바가 닫힌 후에 페이지 pop
                             await snackBarController.closed;
                             Navigator.pop(context);
                           },
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.withOpacity(0.3),
                             shape: RoundedRectangleBorder(

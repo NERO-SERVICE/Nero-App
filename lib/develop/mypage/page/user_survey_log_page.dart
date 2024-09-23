@@ -68,7 +68,12 @@ class UserSurveyLogPage extends StatelessWidget {
               return Center(
                 child: Text(
                   '해당 날짜에 기록된 내용이 없습니다.',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Color(0xffD9D9D9),
+                  ),
                 ),
               );
             }

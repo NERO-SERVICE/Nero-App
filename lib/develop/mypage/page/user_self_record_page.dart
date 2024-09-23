@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
@@ -42,7 +41,7 @@ class UserSelfRecordPage extends StatelessWidget {
           Positioned.fill(
             child: Image.asset(
               'assets/images/selflog_background.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.cover, // 이미지를 꽉 차게 표시
             ),
           ),
           Positioned.fill(
@@ -68,62 +67,71 @@ class UserSelfRecordPage extends StatelessWidget {
               return Center(
                 child: Text(
                   '해당 날짜에 기록된 내용이 없습니다.',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Color(0xffD9D9D9),
+                  ),
                 ),
               );
             }
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: kToolbarHeight + 29),
-                  Text(
-                    '셀프 기록',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25,
-                      color: Colors.white,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: kToolbarHeight + 29),
+                    Text(
+                      '셀프 기록',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 13),
-                  Text(
-                    '${selectedDate.year}년 ${selectedDate.month}월 ${selectedDate.day}일의 기록입니다',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xffD9D9D9),
+                    SizedBox(height: 13),
+                    Text(
+                      '${selectedDate.year}년 ${selectedDate.month}월 ${selectedDate.day}일의 기록입니다',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        color: Color(0xffD9D9D9),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: controller.selfRecordResponses.length,
-                    itemBuilder: (context, index) {
-                      final SelfRecord log =
-                          controller.selfRecordResponses[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            log.content,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            log.createdAt.toString(),
-                            style: TextStyle(color: Colors.white54),
-                          ),
-                          SizedBox(height: 20),
-                        ],
-                      );
-                    },
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: controller.selfRecordResponses.length,
+                      itemBuilder: (context, index) {
+                        final SelfRecord log = controller.selfRecordResponses[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              log.content,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              log.createdAt.toString(),
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           }),

@@ -40,6 +40,20 @@ class SideEffectPage extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 }
 
+                if (controller.sideEffectQuestions.isEmpty) {
+                  return Center(
+                    child: Text(
+                      '설문이 현재 없습니다.',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Color(0xffD9D9D9),
+                      ),
+                    ),
+                  );
+                }
+
                 return SingleChildScrollView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
