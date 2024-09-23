@@ -9,7 +9,6 @@ import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../common/components/custom_divider.dart';
-import '../../common/layout/common_layout.dart';
 import 'fast_memo_detail_page.dart';
 
 class FastMemoMainPage extends StatefulWidget {
@@ -29,6 +28,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       appBar: CustomAppBar(title: '빠른 메모'),
       body: BackgroundLayout(
         child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(), // 기본적으로 수직 스크롤
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,11 +62,12 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   Widget _fastCalendar() {
     return Obx(
-      () => TableCalendar(
+          () => TableCalendar(
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: controller.focusedDay.value,
         locale: 'ko_KR',
+        availableGestures: AvailableGestures.horizontalSwipe, // 수평 스크롤만 허용
         selectedDayPredicate: (day) {
           return isSameDay(controller.selectedDay.value, day);
         },
@@ -212,20 +213,20 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                   String iconPath = isSelected
                       ? 'assets/develop/is-checked.svg'
                       : memo.isChecked
-                          ? 'assets/develop/is-already-checked.svg'
-                          : 'assets/develop/is-not-checked.svg';
+                      ? 'assets/develop/is-already-checked.svg'
+                      : 'assets/develop/is-not-checked.svg';
 
                   Color containerColor = isSelected
                       ? Color(0xff1C1B1B).withOpacity(0.5)
                       : memo.isChecked
-                          ? Color(0xff1C1B1B).withOpacity(0.1)
-                          : Color(0xff1C1B1B).withOpacity(0.3);
+                      ? Color(0xff1C1B1B).withOpacity(0.1)
+                      : Color(0xff1C1B1B).withOpacity(0.3);
 
                   Color textColor = isSelected
                       ? Color(0xffFFFFFF)
                       : memo.isChecked
-                          ? Color(0xffFFFFFF).withOpacity(0.1)
-                          : Color(0xffFFFFFF);
+                      ? Color(0xffFFFFFF).withOpacity(0.1)
+                      : Color(0xffFFFFFF);
 
                   BorderSide borderSide = isSelected
                       ? BorderSide(color: Color(0xffD0EE17), width: 1)
