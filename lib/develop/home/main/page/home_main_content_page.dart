@@ -21,7 +21,7 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-      Get.put(NotificationController(), permanent: true);
+  Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.7);
   final NewsRepository _newsRepository = NewsRepository();
   final MagazineRepository _magazineRepository = MagazineRepository();
@@ -39,25 +39,20 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Future<void> _loadNotifications() async {
     await _notificationController.fetchNotifications();
   }
-
+  
   Widget subInfo(NotificationModel notification) {
-    return Positioned(
-      bottom: 36,
-      left: 24,
-      right: 24,
-      child: Container(
-        child: Text(
-          notification.title,
-          style: const TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-          maxLines: null, // 무제한 줄 수 허용
-          softWrap: true, // 줄바꿈 가능
-          overflow: TextOverflow.visible,
+    return Container(
+      child: Text(
+        notification.title,
+        style: const TextStyle(
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w600,
+          fontSize: 20,
+          color: Colors.white,
         ),
+        maxLines: null, // 무제한 줄 수 허용
+        softWrap: true, // 줄바꿈 가능
+        overflow: TextOverflow.visible,
       ),
     );
   }
@@ -78,13 +73,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               height: 400,
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                      notification.imageUrls.first,
-                      fit: BoxFit.cover,
-                    )
+                notification.imageUrls.first,
+                fit: BoxFit.cover,
+              )
                   : Image.asset(
-                      'assets/images/default.png',
-                      fit: BoxFit.cover,
-                    ),
+                'assets/images/default.png',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Positioned.fill(
@@ -138,7 +133,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 Expanded(
                   child: Container(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 24,
@@ -167,7 +162,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 Expanded(
                   child: Container(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 24,
@@ -196,7 +191,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 Expanded(
                   child: Container(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 24,

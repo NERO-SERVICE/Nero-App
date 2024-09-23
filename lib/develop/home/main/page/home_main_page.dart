@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nero_app/develop/common/layout/common_layout.dart';
 import 'package:nero_app/develop/home/main/page/home_main_content_page.dart';
 
 class HomeMainPage extends StatelessWidget {

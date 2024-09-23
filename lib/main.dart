@@ -114,11 +114,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(DataLoadController());
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
-        Get.put(BottomNavController());
         Get.put(ClinicController());
         Get.put(FastmemoRepository());
         Get.put(LoginController(kakaoAuth));
-        Get.put(ClinicController());
+        Get.put(BottomNavController());
       }),
       getPages: [
         GetPage(
