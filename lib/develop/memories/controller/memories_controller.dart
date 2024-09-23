@@ -17,12 +17,13 @@ class MemoriesController extends GetxController {
   Future<void> sendMemories(List<String> items) async {
     try {
       await _repository.sendMemories(items);
+      // 서버로부터 새로운 데이터를 받아 업데이트
+      await loadMemories();
     } catch (e) {
       print('챙길거리 controller 에러: $e');
     }
   }
 
-  // 서버에서 Memories 리스트를 불러오는 함수
   Future<void> loadMemories() async {
     List<Memories>? loadedMemories = await _repository.fetchMemories();
     if (loadedMemories != null) {
@@ -33,45 +34,31 @@ class MemoriesController extends GetxController {
     }
   }
 
-  // 아이템 추가 함수 (첫번째 메모리 아이템에 추가)
-  void addItem(String newItem) {
+  // 수정된 부분: 반환 타입을 Future<void>로 변경하고 async 추가
+  Future<void> addItem(String newItem) async {
     if (memoriesList.isNotEmpty) {
       final updatedItems = List<String>.from(memoriesList[0].items ?? []);
       updatedItems.add(newItem);
 
       // 서버에 업데이트된 리스트 전송
-      _repository.sendMemories(updatedItems);
-
-      // UI 업데이트
-      memoriesList[0] = memoriesList[0].copyWith(items: updatedItems);
+      await sendMemories(updatedItems);
     }
   }
 
-  // 특정 인덱스의 아이템 삭제 (첫번째 메모리에서 삭제)
-  void removeItemAt(int index) {
-    if (memoriesList.isNotEmpty && index >= 0 && index < memoriesList[0].items!.length) {
+  // 수정된 부분: 반환 타입을 Future<void>로 변경하고 async 추가
+  Future<void> removeItemsAtIndices(List<int> indicesToRemove) async {
+    if (memoriesList.isNotEmpty) {
       final updatedItems = List<String>.from(memoriesList[0].items ?? []);
-      updatedItems.removeAt(index);
+      // 인덱스가 큰 순서대로 제거
+      indicesToRemove.sort((a, b) => b.compareTo(a));
+      for (int index in indicesToRemove) {
+        if (index >= 0 && index < updatedItems.length) {
+          updatedItems.removeAt(index);
+        }
+      }
 
       // 서버에 업데이트된 리스트 전송
-      _repository.sendMemories(updatedItems);
-
-      // UI 업데이트
-      memoriesList[0] = memoriesList[0].copyWith(items: updatedItems);
+      await sendMemories(updatedItems);
     }
-  }
-
-  // 여러 아이템 삭제
-  void removeItems(List<String> itemsToRemove) {
-    final updatedItems = List<String>.from(memories.value.items ?? []);
-    updatedItems.removeWhere((item) => itemsToRemove.contains(item));
-
-    // 서버에 업데이트된 items를 보내는 로직
-    sendMemories(updatedItems);
-
-    // UI 업데이트
-    memories.update((val) {
-      val?.items = updatedItems;
-    });
   }
 }
