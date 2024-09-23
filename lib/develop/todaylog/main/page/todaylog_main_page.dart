@@ -21,12 +21,6 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   final ClinicController clinicController = Get.put(ClinicController());
 
   @override
-  void initState() {
-    super.initState();
-    clinicController.fetchClinics();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -43,13 +37,49 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             _todaylogTitle(
               title: '데일리 복용관리',
               content:
-                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+              '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: DailyDrugWidget(recentDay: clinicController.clinics.first.recentDay),
-            ),
+            // DailyDrugWidget 부분을 Obx로 감싸 상태에 따라 UI 변경
+            Obx(() {
+              if (clinicController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (clinicController.errorMessage.isNotEmpty) {
+                return Center(
+                  child: Text(
+                    '데일리 복용관리 데이터를 불러오는 중 오류가 발생했습니다.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+
+              if (clinicController.clinics.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    '복용할 약물이 없습니다.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: DailyDrugWidget(
+                  recentDay: clinicController.clinics.first.recentDay,
+                ),
+              );
+            }),
             SizedBox(height: 48),
             CustomDivider(),
             SizedBox(height: 32),
@@ -101,7 +131,41 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
-            _clinicListWidget(),
+            // ClinicListWidget 부분을 Obx로 감싸 상태에 따라 UI 변경
+            Obx(() {
+              if (clinicController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (clinicController.errorMessage.isNotEmpty) {
+                return Center(
+                  child: Text(
+                    '과거 진료기록 데이터를 불러오는 중 오류가 발생했습니다.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+
+              if (clinicController.clinics.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    '진료 기록이 없습니다.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+
+              return _clinicListWidget();
+            }),
             SizedBox(height: 32),
             _clinicWriteWidget(context),
             SizedBox(height: 36),
@@ -142,13 +206,13 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _buildCustomButton(
-    BuildContext context, {
-    required String labelTop,
-    required String labelBottom,
-    required VoidCallback onPressed,
-    EdgeInsetsGeometry padding =
+      BuildContext context, {
+        required String labelTop,
+        required String labelBottom,
+        required VoidCallback onPressed,
+        EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-  }) {
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: ElevatedButton(

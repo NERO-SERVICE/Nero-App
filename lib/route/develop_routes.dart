@@ -28,16 +28,7 @@ class DevelopRoutes {
         },
       ),
     ),
-    GetPage(
-      name: '/login',
-      page: () => const LoginPage(),
-      binding: BindingsBuilder(
-        () {
-          Get.lazyPut<LoginController>(
-              () => LoginController(Get.find<AuthenticationRepository>()));
-        },
-      ),
-    ),
+    GetPage(name: '/login', page: () => LoginPage()),
     GetPage(
       name: '/memories',
       page: () => const MemoriesPage(),
@@ -45,6 +36,10 @@ class DevelopRoutes {
     GetPage(
       name: '/tutorial',
       page: () => TutorialPage(),
+    ),
+    GetPage(
+      name: '/home',
+      page: () => HomeMainPage(),
     ),
   ];
 }

@@ -20,6 +20,8 @@ import 'package:nero_app/route/develop_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'develop/app.dart';
+import 'develop/dio_service.dart';
+import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
 
 late SharedPreferences prefs;
@@ -101,20 +103,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         scaffoldBackgroundColor: const Color(0xFF202020),
       ),
       initialBinding: BindingsBuilder(() {
+        Get.put<DioService>(DioService());
+        var kakaoAuth = Get.put(AuthenticationRepository());
+        Get.put(UserRepository(authenticationRepository: Get.find()));
+        Get.put(AuthenticationController(
+          Get.find(),
+          Get.find(),
+        ));
         Get.put(SplashController());
         Get.put(DataLoadController());
-        var kakaoAuthRepo = Get.put(AuthenticationRepository());
-        var kakaoUserRepo =
-            Get.put(UserRepository(authenticationRepository: kakaoAuthRepo));
-        Get.put(AuthenticationController(
-          kakaoAuthRepo,
-          kakaoUserRepo,
-        ));
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
         Get.put(BottomNavController());
         Get.put(ClinicController());
         Get.put(FastmemoRepository());
+        Get.put(LoginController(kakaoAuth));
+        Get.put(ClinicController());
       }),
       getPages: [
         GetPage(
