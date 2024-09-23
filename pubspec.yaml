@@ -68,6 +68,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   flutter_local_notifications: ^17.2.2
   lottie: ^3.1.2
+  google_nav_bar: ^5.0.6
 
 dev_dependencies:
   flutter_test:
