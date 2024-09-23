@@ -40,20 +40,30 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
-            // DailyDrugWidget 부분을 Obx로 감싸 상태에 따라 UI 변경
             Obx(() {
               if (clinicController.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {
-                return Center(
-                  child: Text(
-                    '데일리 복용관리 데이터를 불러오는 중 오류가 발생했습니다.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.red,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
                     ),
                   ),
                 );
@@ -62,13 +72,23 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               if (clinicController.clinics.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Text(
-                    '복용할 약물이 없습니다.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    textAlign: TextAlign.center,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
                   ),
                 );
               }
@@ -131,20 +151,30 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
-            // ClinicListWidget 부분을 Obx로 감싸 상태에 따라 UI 변경
             Obx(() {
               if (clinicController.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {
-                return Center(
-                  child: Text(
-                    '과거 진료기록 데이터를 불러오는 중 오류가 발생했습니다.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.red,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
                     ),
                   ),
                 );
@@ -153,13 +183,23 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               if (clinicController.clinics.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Text(
-                    '진료 기록이 없습니다.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    textAlign: TextAlign.center,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
                   ),
                 );
               }
