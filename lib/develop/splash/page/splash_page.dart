@@ -1,3 +1,5 @@
+// lib/develop/splash/page/splash_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/getx_listener.dart';
@@ -21,17 +23,16 @@ class SplashPage extends GetView<SplashController> {
               listen: (AuthenticationStatus status) async {
                 switch (status) {
                   case AuthenticationStatus.authentication:
-                    Get.offNamed('/signup');
+                    Future.microtask(() => Get.offNamed('/home'));
                     break;
                   case AuthenticationStatus.unAuthenticated:
-                    await Get.offNamed('/signup');
-                    Get.find<AuthenticationController>().reload();
+                    Future.microtask(() => Get.offNamed('/signup'));
                     break;
                   case AuthenticationStatus.unknown:
-                    Get.offNamed('/login');
+                    Future.microtask(() => Get.offNamed('/login'));
                     break;
                   case AuthenticationStatus.init:
-                    Get.offNamed('/login');
+                  // 초기 상태에서는 아무 동작 안함
                     break;
                 }
               },
@@ -39,18 +40,19 @@ class SplashPage extends GetView<SplashController> {
               child: GetxListener<bool>(
                 listen: (bool value) {
                   if (value) {
-                    controller.loadStep(StepType.authCheck);
+                    Future.microtask(() => controller.changeStep(StepType.authCheck));
                   }
                 },
                 stream: Get.find<DataLoadController>().isDataLoad,
                 child: GetxListener<StepType>(
                   initCall: () {
-                    controller.loadStep(StepType.dataload);
+                    Future.microtask(() => controller.changeStep(StepType.dataload));
                   },
                   listen: (StepType? value) {
                     if (value == null) return;
                     switch (value) {
                       case StepType.init:
+                        break;
                       case StepType.dataload:
                         Get.find<DataLoadController>().loadData();
                         break;
@@ -168,7 +170,7 @@ class _ProgressView extends GetView<SplashController> {
         Obx(
               () {
             return Text(
-              '${controller.loadStep.value.name}중 입니다.',
+              '${controller.loadStep.value.name} 중입니다.',
               style: const TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w600,

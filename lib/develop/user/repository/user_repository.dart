@@ -13,11 +13,13 @@ class UserRepository extends GetxService {
       final String? accessToken = tokens['accessToken'];
       if (accessToken != null) {
         final response =
-            await authenticationRepository.getUserInfoWithTokens(accessToken);
-        return NeroUser.fromJson(response!);
+        await authenticationRepository.getUserInfoWithTokens(accessToken);
+        if (response != null) {
+          return NeroUser.fromJson(response);
+        }
       }
     } catch (e) {
-      print('Error finding user: $e');
+      print('유저 찾기 오류: $e');
     }
     return null;
   }

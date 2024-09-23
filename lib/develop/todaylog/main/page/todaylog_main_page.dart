@@ -21,14 +21,9 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   final ClinicController clinicController = Get.put(ClinicController());
 
   @override
-  void initState() {
-    super.initState();
-    clinicController.fetchClinics();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
         title: '하루기록',
       ),
@@ -36,18 +31,75 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(height: kToolbarHeight + 56),
             CustomDivider(),
             SizedBox(height: 18),
             _todaylogTitle(
               title: '데일리 복용관리',
               content:
-                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+              '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: DailyDrugWidget(recentDay: clinicController.clinics.first.recentDay),
-            ),
+            Obx(() {
+              if (clinicController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (clinicController.errorMessage.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              if (clinicController.clinics.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: DailyDrugWidget(
+                  recentDay: clinicController.clinics.first.recentDay,
+                ),
+              );
+            }),
             SizedBox(height: 48),
             CustomDivider(),
             SizedBox(height: 32),
@@ -99,7 +151,61 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
               content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
-            _clinicListWidget(),
+            Obx(() {
+              if (clinicController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (clinicController.errorMessage.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              if (clinicController.clinics.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '기록이 비어있습니다.\n진료기록을 입력해주세요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9).withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return _clinicListWidget();
+            }),
             SizedBox(height: 32),
             _clinicWriteWidget(context),
             SizedBox(height: 36),
@@ -140,13 +246,13 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _buildCustomButton(
-    BuildContext context, {
-    required String labelTop,
-    required String labelBottom,
-    required VoidCallback onPressed,
-    EdgeInsetsGeometry padding =
+      BuildContext context, {
+        required String labelTop,
+        required String labelBottom,
+        required VoidCallback onPressed,
+        EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-  }) {
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: ElevatedButton(

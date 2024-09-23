@@ -72,6 +72,7 @@ class HomeNewsPage extends StatelessWidget {
             } else {
               return ListView.builder(
                 shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {

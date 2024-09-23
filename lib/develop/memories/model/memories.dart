@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class Memories extends Equatable {
   final int? memoryId;
   final int? userId;
-  final List<String>? items;
+  late final List<String>? items;
 
   Memories({
     this.memoryId,

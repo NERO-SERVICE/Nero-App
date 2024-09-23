@@ -24,13 +24,15 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonLayout(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: CustomAppBar(title: '빠른 메모'),
       body: BackgroundLayout(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: kToolbarHeight + 56),
               SizedBox(height: 18),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),

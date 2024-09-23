@@ -1,16 +1,16 @@
+// lib/develop/user/model/nero_user.dart
+
 import 'package:equatable/equatable.dart';
 
 class NeroUser extends Equatable {
-  // 유저 클래스 정의
   final int? userId;
   final int? kakaoId;
   final DateTime? createdAt;
   final String? nickname;
   final String? email;
-  final DateTime? birth;  // birth를 DateTime으로 변경
+  final DateTime? birth;
   final String? sex;
 
-  // 생성자
   NeroUser({
     this.userId,
     this.kakaoId,
@@ -21,7 +21,6 @@ class NeroUser extends Equatable {
     this.sex,
   });
 
-  // 빈 상태의 생성자
   NeroUser.empty()
       : userId = 1,
         kakaoId = 1,
@@ -32,14 +31,39 @@ class NeroUser extends Equatable {
         sex = null;
 
   factory NeroUser.fromJson(Map<String, dynamic> json) {
+    print("Parsing NeroUser from JSON: $json"); // 로깅 추가
+
+    int? parsedUserId;
+    int? parsedKakaoId;
+
+    if (json['userId'] != null) {
+      if (json['userId'] is int) {
+        parsedUserId = json['userId'];
+      } else if (json['userId'] is String) {
+        parsedUserId = int.tryParse(json['userId']);
+      }
+    }
+
+    if (json['kakaoId'] != null) {
+      if (json['kakaoId'] is int) {
+        parsedKakaoId = json['kakaoId'];
+      } else if (json['kakaoId'] is String) {
+        parsedKakaoId = int.tryParse(json['kakaoId']);
+      }
+    }
+
     return NeroUser(
-      userId: json['userId'] ?? 1,
-      kakaoId: json['kakaoId'] ?? 1,
-      createdAt: DateTime.parse(json['createdAt']),
-      nickname: json['nickName'] ?? null,
-      email: json['email'] ?? null,
-      birth: json['birth'] != null ? DateTime.parse(json['birth']) : null,
-      sex: json['sex'] ?? null,
+      userId: parsedUserId ?? 1,
+      kakaoId: parsedKakaoId ?? 1,
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : null,
+      nickname: json['nickname'],
+      email: json['email'],
+      birth: json['birth'] != null
+          ? DateTime.tryParse(json['birth'].toString())
+          : null,
+      sex: json['sex'],
     );
   }
 
@@ -48,14 +72,13 @@ class NeroUser extends Equatable {
       'userId': userId,
       'kakaoId': kakaoId,
       'createdAt': createdAt?.toIso8601String(),
-      'nickName': nickname,
+      'nickname': nickname,
       'email': email,
       'birth': birth?.toIso8601String(),
       'sex': sex,
     };
   }
 
-  // User 객체를 복사, 특정 필드만 변경 가능하도록 만드는 메서드
   NeroUser copyWith({
     int? userId,
     int? kakaoId,
@@ -76,7 +99,6 @@ class NeroUser extends Equatable {
     );
   }
 
-  // 객체간 비교 시 어떤 필드 사용할지 결정
   @override
   List<Object?> get props => [
     userId,

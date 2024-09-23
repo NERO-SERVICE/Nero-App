@@ -5,10 +5,12 @@ import 'package:table_calendar/table_calendar.dart';
 class CalendarWidget extends StatelessWidget {
   final Rx<DateTime> selectedDate;
   final Rx<DateTime> focusedDate;
+  final Color selectedColor;
 
   CalendarWidget({
     required this.selectedDate,
     required this.focusedDate,
+    this.selectedColor = const Color(0xffD0EE17), // 기본값 설정
   });
 
   @override
@@ -61,7 +63,7 @@ class CalendarWidget extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   selectedDecoration: BoxDecoration(
-                    color: Color(0xffD0EE17),
+                    color: selectedColor,
                     shape: BoxShape.circle,
                   ),
                   outsideDaysVisible: false,
