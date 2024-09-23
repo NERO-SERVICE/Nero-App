@@ -364,9 +364,10 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
         Text(
           '${menstruationCurrentYear.value}년 ${menstruationCurrentMonth.value}월',
           style: TextStyle(
-            fontSize: 24,
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
         menstruationCurrentIndex < 11
@@ -1183,9 +1184,10 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
         Text(
           '${currentYear.value}년 ${currentMonth.value}월',
           style: TextStyle(
-            fontSize: 24,
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
         currentIndex < 11
