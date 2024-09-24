@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nero_app/develop/home/main/page/home_main_content_page.dart';
+import 'package:nero_app/develop/settings/page/setting_page.dart';
 
 class HomeMainPage extends StatefulWidget {
   const HomeMainPage({super.key});
@@ -201,10 +202,18 @@ class _HomeMainPageState extends State<HomeMainPage> {
                     ),
                   ),
                   SizedBox(width: 40),
-                  SvgPicture.asset(
-                    'assets/develop/setting.svg',
-                    width: 24,
-                    height: 24,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      'assets/develop/setting.svg',
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
                   SizedBox(width: 24),
                 ],
