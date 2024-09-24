@@ -47,24 +47,6 @@ class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget 
               ],
             ),
           ),
-          Container(
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/develop/letter.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                SizedBox(width: 40),
-                SvgPicture.asset(
-                  'assets/develop/setting.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                SizedBox(width: 24),
-              ],
-            ),
-          ),
         ],
       ),
     );
