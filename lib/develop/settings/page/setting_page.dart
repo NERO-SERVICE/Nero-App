@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_list_page.dart';
 import 'package:nero_app/develop/settings/page/setting_policy_webview.dart';
 import 'package:nero_app/develop/settings/page/setting_service_webview.dart';
+import 'package:nero_app/develop/user/controller/authentication_controller.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthenticationController authController = Get.find<AuthenticationController>();
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomDetailAppBar(title: '설정'),
@@ -59,11 +63,8 @@ class SettingPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MagazineListPage()),
-                );
+              onTap: () async  {
+                await authController.logout();
               },
               child: Text(
                 '로그아웃',
