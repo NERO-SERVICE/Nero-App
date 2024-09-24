@@ -51,7 +51,7 @@ class _TutorialPageState extends State<TutorialPage> {
   }
 
   Future<void> _onNextPressed() async {
-    Get.offNamed('/root');
+    Get.offNamed('/home');
   }
 
   Widget _buildIndicator() {
