@@ -14,9 +14,7 @@ class Root extends GetView<BottomNavController> {
   Widget get _divider => const Divider(
         color: Color(0xff3C3C3E),
         thickness: 1,
-        // Adjust the thickness as needed
         height: 1,
-        // Ensure the height matches the thickness for a thin line
         indent: 0,
         endIndent: 0,
       );

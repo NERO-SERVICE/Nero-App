@@ -209,7 +209,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
           padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
           decoration: BoxDecoration(
             border: Border.all(
-              color: isSelected.value ? Color(0xffD0EE17) : Color(0xffD9D9D9), // 상태에 따라 border 색상 변경
+              color: isSelected.value ? Color(0xffD0EE17) : Color(0xffD9D9D9),
             ),
             borderRadius: BorderRadius.circular(16),
           ),

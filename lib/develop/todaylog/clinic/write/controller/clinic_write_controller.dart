@@ -88,11 +88,9 @@ class ClinicWriteController extends GetxController {
     drugs.removeAt(index);
   }
 
-  // DrfDrugArchive 정보를 직접 사용하여 DrfMyDrugArchive에 저장
   void addDrugToClinic(DrugArchive drugArchive, int number, String time) {
-    // DrfDrug에 DrfMyDrugArchive 생성하여 약물 추가
     final myDrugArchive = MyDrugArchive(
-      myArchiveId: drugArchive.archiveId, // archiveId를 myArchiveId로 설정
+      myArchiveId: drugArchive.archiveId,
       owner: clinic.value.owner,
       archiveId: drugArchive.archiveId,
       drugName: drugArchive.drugName,
@@ -102,7 +100,7 @@ class ClinicWriteController extends GetxController {
 
     final drug = Drug(
       drugId: 0,
-      myDrugArchive: myDrugArchive, // DrfMyDrugArchive 사용
+      myDrugArchive: myDrugArchive,
       number: number,
       initialNumber: number,
       time: time,
@@ -115,7 +113,6 @@ class ClinicWriteController extends GetxController {
   // 클리닉 생성
   Future<void> createClinic() async {
     try {
-      // 추가된 약물들은 DrfMyDrugArchive로 변환되어 있음
       Clinic newClinic = clinic.value.copyWith(
         recentDay: recentDay.value,
         nextDay: nextDay.value,

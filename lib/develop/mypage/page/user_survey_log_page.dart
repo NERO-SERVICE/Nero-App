@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
@@ -139,9 +140,9 @@ class UserSurveyLogPage extends StatelessWidget {
   }
 
   Widget _buildCircularButtons(
-      BuildContext context, {
-        required Survey response,
-      }) {
+    BuildContext context, {
+    required Survey response,
+  }) {
     final options = ['매우나쁨', '나쁨', '보통', '좋음', '매우좋음'];
     final int selectedOptionIndex = int.parse(response.answer) - 1;
 
@@ -157,7 +158,8 @@ class UserSurveyLogPage extends StatelessWidget {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: isSelected ? Color(0xff1C1B1B) : Colors.grey.withOpacity(0.3),
+              color:
+                  isSelected ? Color(0xff1C1B1B) : Colors.grey.withOpacity(0.3),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,

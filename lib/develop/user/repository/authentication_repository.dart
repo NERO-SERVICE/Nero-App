@@ -1,6 +1,5 @@
-// lib/develop/user/repository/authentication_repository.dart
-
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -13,7 +12,7 @@ class AuthenticationRepository extends GetxService {
   String baseUrl = "https://www.neromakebrain.site/api/v1";
   var user = Rxn<NeroUser>();
   var isLoading = false.obs;
-  DioService dioService = Get.find<DioService>(); // 의존성 주입을 통해 가져옵니다.
+  DioService dioService = Get.find<DioService>();
 
   // Refresh Token 요청 메서드
   Future<void> _refreshTokenRequest() async {
@@ -25,7 +24,8 @@ class AuthenticationRepository extends GetxService {
         throw Exception('리프레시 토큰이 없습니다.');
       }
 
-      final response = await dioService.post('/accounts/auth/token/refresh/', data: {
+      final response =
+          await dioService.post('/accounts/auth/token/refresh/', data: {
         'refresh': refreshToken,
       });
 
@@ -77,7 +77,8 @@ class AuthenticationRepository extends GetxService {
   }
 
   // 토큰을 사용해 유저 정보 가져오기
-  Future<Map<String, dynamic>?> getUserInfoWithTokens(String accessToken) async {
+  Future<Map<String, dynamic>?> getUserInfoWithTokens(
+      String accessToken) async {
     final response = await dioService.get('/accounts/userinfo/', params: {
       'access_token': accessToken,
     });
@@ -113,7 +114,8 @@ class AuthenticationRepository extends GetxService {
 
       var kakaoAccessToken = token.accessToken;
       // 카카오 회원가입 진행
-      final signUpResponse = await signUp(kakaoAccessToken, kakaoId, kakaoNickname);
+      final signUpResponse =
+          await signUp(kakaoAccessToken, kakaoId, kakaoNickname);
 
       print("카카오 회원가입 완료");
 
@@ -166,7 +168,8 @@ class AuthenticationRepository extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('accessToken');
     String? refreshToken = prefs.getString('refreshToken');
-    print("getDrfToken | accessToken: $accessToken, refreshToken: $refreshToken");
+    print(
+        "getDrfToken | accessToken: $accessToken, refreshToken: $refreshToken");
     return {'accessToken': accessToken, 'refreshToken': refreshToken};
   }
 

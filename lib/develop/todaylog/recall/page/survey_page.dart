@@ -111,7 +111,6 @@ class SurveyPage extends StatelessWidget {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackBar);
 
-                            // 스낵바가 닫힌 후에 페이지 pop
                             await snackBarController.closed;
                             Navigator.pop(context);
                           },
@@ -180,7 +179,7 @@ class SurveyPage extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w500,
-                fontSize: 12, // 텍스트 크기 조정
+                fontSize: 12,
                 color: isSelected
                     ? Color(0xffFFFFFF)
                     : Color(0xffFFFFFF).withOpacity(0.8),

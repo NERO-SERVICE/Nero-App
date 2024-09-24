@@ -1,21 +1,19 @@
-// lib/develop/user/controller/authentication_controller.dart
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/user/enum/authentication_status.dart';
+import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
-import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationController extends GetxController {
   final AuthenticationRepository kakaoAuthRepo;
   final UserRepository kakaoUserRepo;
 
   AuthenticationController(
-      this.kakaoAuthRepo,
-      this.kakaoUserRepo,
-      );
+    this.kakaoAuthRepo,
+    this.kakaoUserRepo,
+  );
 
   Rx<AuthenticationStatus> status = AuthenticationStatus.init.obs;
   Rx<NeroUser> userModel = NeroUser().obs;

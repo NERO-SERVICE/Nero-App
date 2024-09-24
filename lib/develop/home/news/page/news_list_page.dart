@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
@@ -33,7 +31,7 @@ class _NewsListPageState extends State<NewsListPage> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoading &&
         _hasMore) {
       _fetchNewsPage(_currentPage + 1);
@@ -82,70 +80,70 @@ class _NewsListPageState extends State<NewsListPage> {
       body: _newsList.isEmpty && _isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-        controller: _scrollController,
-        itemCount: _newsList.length + (_hasMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == _newsList.length) {
-            return Center(child: CircularProgressIndicator());
-          }
-          final news = _newsList[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NewsWebViewPage(
-                    url: news.link,
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
-              padding: EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: Color(0xff3C3C3C),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 100,
-                    height: 60,
-                    child: SvgPicture.asset(
-                      'assets/develop/nero-small-logo.svg',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  // Expanded를 사용하여 텍스트가 남은 공간을 차지하도록 함
-                  Expanded(
-                    child: Text(
-                      _shortenTitle(news.title),
-                      textAlign: TextAlign.start,
-                      softWrap: true,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                        color: Color(0xffD9D9D9),
+              controller: _scrollController,
+              itemCount: _newsList.length + (_hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == _newsList.length) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final news = _newsList[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewsWebViewPage(
+                          url: news.link,
+                        ),
                       ),
+                    );
+                  },
+                  child: Container(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Color(0xff3C3C3C),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          height: 60,
+                          child: SvgPicture.asset(
+                            'assets/develop/nero-small-logo.svg',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _shortenTitle(news.title),
+                            textAlign: TextAlign.start,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17,
+                              color: Color(0xffD9D9D9),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        SvgPicture.asset(
+                          'assets/develop/arrow-right.svg',
+                          width: 24,
+                          height: 24,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(width: 5),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 10),
-                  SvgPicture.asset(
-                    'assets/develop/arrow-right.svg',
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 5),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 

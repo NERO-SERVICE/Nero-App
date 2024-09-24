@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -64,7 +63,8 @@ class _TutorialPageState extends State<TutorialPage> {
           curve: Curves.fastOutSlowIn,
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           width: _currentPage == index ? 32 : 8.0,
-          height: 8.0, // 높이는 동일
+          height: 8.0,
+          // 높이는 동일
           decoration: BoxDecoration(
             color: _currentPage == index
                 ? Color(0xffD0EE17)
@@ -134,7 +134,9 @@ class _TutorialPageState extends State<TutorialPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isButtonActive
-                    ? () async {await _onNextPressed();}
+                    ? () async {
+                        await _onNextPressed();
+                      }
                     : null,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -143,13 +145,14 @@ class _TutorialPageState extends State<TutorialPage> {
                   backgroundColor: _isButtonActive
                       ? Color(0xffD0EE17).withOpacity(0.5)
                       : Color(0xff3C3C3C),
-                  foregroundColor: _isButtonActive
-                      ? Color(0xffFFFFFF)
-                      : Color(0xffD9D9D9),
+                  foregroundColor:
+                      _isButtonActive ? Color(0xffFFFFFF) : Color(0xffD9D9D9),
                   disabledBackgroundColor: Color(0xff3C3C3C),
                   disabledForegroundColor: Color(0xffD9D9D9),
                   side: BorderSide(
-                    color: _isButtonActive ? Color(0xffD0EE17) : Colors.transparent,
+                    color: _isButtonActive
+                        ? Color(0xffD0EE17)
+                        : Colors.transparent,
                     width: 1,
                   ),
                 ),

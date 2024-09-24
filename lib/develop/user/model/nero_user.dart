@@ -1,5 +1,3 @@
-// lib/develop/user/model/nero_user.dart
-
 import 'package:equatable/equatable.dart';
 
 class NeroUser extends Equatable {
@@ -101,12 +99,12 @@ class NeroUser extends Equatable {
 
   @override
   List<Object?> get props => [
-    userId,
-    kakaoId,
-    createdAt,
-    nickname,
-    email,
-    birth,
-    sex,
-  ];
+        userId,
+        kakaoId,
+        createdAt,
+        nickname,
+        email,
+        birth,
+        sex,
+      ];
 }

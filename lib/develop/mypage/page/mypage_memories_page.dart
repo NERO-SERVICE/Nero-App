@@ -144,35 +144,6 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
     );
   }
 
-  Widget _memoriesList() {
-    return Obx(() {
-      if (_memoriesController.memoriesList.isEmpty ||
-          _memoriesController.memoriesList[0].items == null ||
-          _memoriesController.memoriesList[0].items!.isEmpty) {
-        return Center(
-          child: Text(
-            '등록된 챙길거리가 없습니다',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Color(0xffD9D9D9),
-            ),
-          ),
-        );
-      }
-      final items = _memoriesController.memoriesList[0].items!;
-      return ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final itemContent = items[index];
-          bool isSelected = _selectedMap[index] ?? false;
-          return _memoryListItem(itemContent, isSelected, index);
-        },
-      );
-    });
-  }
-
   Widget _memoryListItem(String itemContent, bool isSelected, int index) {
     Color containerColor = isSelected
         ? Color(0xffD8D8D8).withOpacity(0.5)

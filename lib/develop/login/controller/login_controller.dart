@@ -1,5 +1,3 @@
-// lib/develop/login/controller/login_controller.dart
-
 import 'package:get/get.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';

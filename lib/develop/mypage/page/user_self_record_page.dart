@@ -41,7 +41,7 @@ class UserSelfRecordPage extends StatelessWidget {
           Positioned.fill(
             child: Image.asset(
               'assets/images/selflog_background.png',
-              fit: BoxFit.cover, // 이미지를 꽉 차게 표시
+              fit: BoxFit.cover,
             ),
           ),
           Positioned.fill(
