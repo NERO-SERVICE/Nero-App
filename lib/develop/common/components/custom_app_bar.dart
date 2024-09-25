@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:nero_app/develop/mail/controller/mail_controller.dart';
 import 'package:nero_app/develop/settings/page/setting_page.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -18,6 +20,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   final TextEditingController _suggestionController = TextEditingController();
+  final MailController _mailController = Get.put(MailController());
 
   void _showMailToDeveloperDialog() {
     showDialog(
@@ -68,7 +71,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ],
                         ),
                       ),
-                      // 다중 줄 입력이 가능
                       TextField(
                         controller: _suggestionController,
                         style: TextStyle(
@@ -107,13 +109,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         ),
                         maxLength: 200,
                         maxLines: null,
-                        // 줄바꿈 가능
-                        minLines: 5, // 최소 5줄
+                        minLines: 5,
                       ),
                       const SizedBox(height: 20),
                       Center(
                         child: ElevatedButton(
-                          onPressed: null,
+                          onPressed: () {
+                            _mailController.suggestion.value =
+                                _suggestionController.text;
+                            _mailController
+                                .sendMail();
+                            Navigator.of(context).pop();
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff323232),
                             shape: RoundedRectangleBorder(

@@ -1,10 +1,10 @@
 class Mail {
-  final int owner;
+  final int? owner;
   final DateTime createdAt;
   final String suggestion;
 
   Mail({
-    required this.owner,
+    this.owner,
     required this.createdAt,
     required this.suggestion,
   });
@@ -19,7 +19,6 @@ class Mail {
 
   Map<String, dynamic> toJson() {
     return {
-      'owner': owner,
       'createdAt': createdAt.toIso8601String(),
       'suggestion': suggestion,
     };
