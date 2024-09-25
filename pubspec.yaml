@@ -69,6 +69,7 @@ dependencies:
   flutter_local_notifications: ^17.2.2
   lottie: ^3.1.2
   google_nav_bar: ^5.0.6
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:

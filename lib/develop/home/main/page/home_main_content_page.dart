@@ -11,6 +11,7 @@ import 'package:nero_app/develop/home/news/repository/news_repository.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeMainContentPage extends StatefulWidget {
   const HomeMainContentPage({super.key});
@@ -27,6 +28,32 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<News>> _latestNewsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
+
+  final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
+  final String _tiktokUrl = 'https://www.tiktok.com/@nero_official';
+
+  Future<void> _launchUrl(String url, String appUrlScheme) async {
+    final Uri appUri = Uri.parse(appUrlScheme);
+    final Uri webUri = Uri.parse(url);
+
+    // 앱 URL로 연결 시도
+    if (await canLaunchUrl(appUri)) {
+      await launchUrl(appUri);
+    } else if (await canLaunchUrl(webUri)) {
+      // 앱이 설치되어 있지 않다면 웹 브라우저로 연결
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void _openInstagram() {
+    _launchUrl(_instagramUrl, 'instagram://user?username=nero.cat_official');
+  }
+
+  void _openTikTok() {
+    _launchUrl(_tiktokUrl, 'snssdk1233://user/profile/7038378919538274309');
+  }
 
   @override
   void initState() {
@@ -112,13 +139,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Widget _copyrightInfo() {
     return Container(
       height: 118,
-      color: Color(0xff1C1C1C),
+      color: const Color(0xff1C1C1C),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               '© 2024 NERO All rights reserved.',
               style: TextStyle(
                 fontFamily: 'Pretendard',
@@ -127,11 +154,12 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 color: Color(0xff959595),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: Container(
+                  child: GestureDetector(
+                    onTap: _openInstagram,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -143,8 +171,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        SizedBox(width: 5),
-                        Center(
+                        const SizedBox(width: 5),
+                        const Center(
                           child: Text(
                             'Instagram',
                             style: TextStyle(
@@ -160,7 +188,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
+                  child: GestureDetector(
+                    onTap: () => print("X(Twitter) icon clicked"),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -172,8 +201,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        SizedBox(width: 5),
-                        Center(
+                        const SizedBox(width: 5),
+                        const Center(
                           child: Text(
                             'X(twitter)',
                             style: TextStyle(
@@ -189,7 +218,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
+                  child: GestureDetector(
+                    onTap: _openTikTok,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -201,8 +231,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        SizedBox(width: 5),
-                        Center(
+                        const SizedBox(width: 5),
+                        const Center(
                           child: Text(
                             'TikTok',
                             style: TextStyle(
