@@ -29,7 +29,8 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   void initState() {
     super.initState();
     controller = Get.put(ClinicWriteController());
-    _descriptionController = TextEditingController(text: controller.clinic.value.description);
+    _descriptionController =
+        TextEditingController(text: controller.clinic.value.description);
     _descriptionController.addListener(() {
       controller.changeDescription(_descriptionController.text);
     });
@@ -163,7 +164,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   padding:
-                  EdgeInsets.symmetric(vertical: 17.0, horizontal: 73.0),
+                      EdgeInsets.symmetric(vertical: 17.0, horizontal: 73.0),
                 ),
                 child: Text(
                   '제출하기',
@@ -184,16 +185,16 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   }
 
   Widget get _divider => const Divider(
-    color: Color(0xff3C3C3E),
-    indent: 0,
-    endIndent: 0,
-  );
+        color: Color(0xff3C3C3E),
+        indent: 0,
+        endIndent: 0,
+      );
 
   Widget get _dialogDivider => Divider(
-    color: Color(0xffD8D8D8).withOpacity(0.3),
-    indent: 0,
-    endIndent: 0,
-  );
+        color: Color(0xffD8D8D8).withOpacity(0.3),
+        indent: 0,
+        endIndent: 0,
+      );
 
   Widget _buildDateSelector(String label, Rx<DateTime> date) {
     final RxBool isSelected = false.obs;
@@ -227,7 +228,6 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       );
     });
   }
-
 
   Widget _buildDrugsList() {
     return Obx(() {
@@ -361,10 +361,13 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
 
                               // Drug 생성
                               final drug = Drug(
-                                drugId: 0, // 새로 생성되므로 0으로 설정
-                                myDrugArchive: myDrugArchive, // 생성된 MyDrugArchive 사용
+                                drugId: 0,
+                                // 새로 생성되므로 0으로 설정
+                                myDrugArchive: myDrugArchive,
+                                // 생성된 MyDrugArchive 사용
                                 number: int.parse(drugNumberController.text),
-                                initialNumber: int.parse(drugNumberController.text),
+                                initialNumber:
+                                    int.parse(drugNumberController.text),
                                 time: selectedTime.value,
                                 allow: true,
                               );
@@ -422,9 +425,10 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
     );
   }
 
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
+      keyboardType: TextInputType.number,
+      maxLength: 3,
       controller: controller,
       style: TextStyle(
         fontSize: 14,
@@ -454,8 +458,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
         ),
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: 13),
+        contentPadding: EdgeInsets.symmetric(horizontal: 13),
       ),
     );
   }
@@ -546,11 +549,13 @@ class DrugArchiveDropdown extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            borderSide:
+                BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            borderSide:
+                BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
         ),
         value: selectedArchive.value,
