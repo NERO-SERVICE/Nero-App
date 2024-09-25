@@ -267,7 +267,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => FastMemoDetailPage());
+                        Get.to(() => FastMemoDetailPage(), arguments: repository.selectedDate.value);
                       },
                       child: Text(
                         '더보기',
@@ -388,7 +388,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       padding: const EdgeInsets.symmetric(horizontal: 105),
       child: GestureDetector(
         onTap: () {
-          Get.to(() => FastMemoDetailPage());
+          Get.to(() => FastMemoDetailPage(), arguments: repository.selectedDate.value);
         },
         child: Center(
           child: Text(

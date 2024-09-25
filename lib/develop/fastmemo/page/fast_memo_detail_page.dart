@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 
 import '../../common/components/custom_detail_app_bar.dart';
@@ -20,6 +21,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
   final Map<int, bool> _selectedMap = {}; // 선택 상태를 저장할 Map
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
+  late DateTime selectedDate;
 
   @override
   void initState() {
@@ -32,6 +34,16 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
         Tween<Offset>(begin: Offset(1, 0), end: Offset(0, 0)).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = Get.arguments;
+      if (args != null && args is DateTime) {
+        selectedDate = args;
+      } else {
+        selectedDate = DateTime.now();
+      }
+      repository.setSelectedDate(selectedDate);
+      setState(() {}); // 날짜 변경을 UI에 반영
+    });
   }
 
   @override
@@ -44,6 +56,8 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = DateFormat('MM월 dd일').format(selectedDate);
+
     return GestureDetector(
       onTap: () {
         // TextField가 아닌 다른 곳을 터치하면 포커스 삭제
@@ -53,7 +67,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: CustomDetailAppBar(title: '빠른 메모'),
+        appBar: CustomDetailAppBar(title: '$formattedDate 빠른 메모'),
         body: Stack(
           children: [
             Positioned.fill(
@@ -478,7 +492,6 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
             ),
             backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
             child: SingleChildScrollView(
-              // 다이얼로그가 키보드의 영향을 받지 않도록
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -506,6 +519,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                         filled: true,
                         fillColor: Color(0xff3C3C3C),
                         border: OutlineInputBorder(),
+
                       ),
                     ),
                     const SizedBox(height: 20),
