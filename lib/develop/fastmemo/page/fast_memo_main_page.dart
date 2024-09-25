@@ -67,7 +67,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: controller.focusedDay.value,
         locale: 'ko_KR',
-        availableGestures: AvailableGestures.horizontalSwipe, // 수평 스크롤만 허용
+        availableGestures: AvailableGestures.horizontalSwipe,
         selectedDayPredicate: (day) {
           return isSameDay(controller.selectedDay.value, day);
         },
@@ -77,6 +77,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         },
         onPageChanged: (focusedDay) {
           controller.onPageChanged(focusedDay);
+          repository.fetchMemoDates(focusedDay.year);
         },
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
@@ -134,7 +135,82 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
             color: Color(0xff6D7179),
           ),
         ),
+        calendarBuilders: CalendarBuilders(
+          // 기본 날짜 빌더
+          defaultBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date);
+          },
+          // 선택된 날짜 빌더
+          selectedBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date, isSelected: true);
+          },
+          // 오늘 날짜 빌더
+          todayBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date, isToday: true);
+          },
+          // 외부 날짜 빌더 (월 외 날짜)
+          outsideBuilder: (context, date, focusedDay) {
+            return Container(); // 빈 컨테이너로 표시
+          },
+        ),
       ),
+    );
+  }
+
+  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
+    bool hasMemo = repository.memoDates.contains(DateTime(date.year, date.month, date.day));
+
+    // 기본 텍스트 스타일
+    TextStyle textStyle = TextStyle(
+      color: isSelected
+          ? Colors.white
+          : isToday
+          ? Colors.white
+          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
+          ? Color(0xff6D7179)
+          : Colors.grey,
+      fontWeight: FontWeight.w500,
+    );
+
+    // 날짜 숫자 위젯
+    Widget dayText = Text(
+      '${date.day}',
+      style: textStyle,
+    );
+
+    // 메모가 있는 날짜인 경우 숫자를 원으로 감싸기
+    if (hasMemo) {
+      dayText = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isSelected || isToday ? Colors.transparent : Colors.black.withOpacity(0.1),
+        ),
+        child: Center(
+          child: dayText,
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      decoration: isSelected
+          ? BoxDecoration(
+        color: Color(0xffD0EE17),
+        shape: BoxShape.circle,
+      )
+          : isToday
+          ? BoxDecoration(
+        color: Colors.grey,
+        shape: BoxShape.circle,
+      )
+          : hasMemo
+          ? BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Color(0xffD0EE17), width: 1),
+      )
+          : null,
+      alignment: Alignment.center,
+      child: dayText,
     );
   }
 

@@ -8,6 +8,8 @@ class FastmemoRepository extends GetxController {
   var isLoading = false.obs;
   var selectedDate = DateTime.now().obs;
   var selectedIds = <int>[].obs;
+  var memoDates = <DateTime>{}.obs;
+  var loadedYears = <int>{}.obs;
 
   final DioService _dioService = DioService();
 
@@ -15,11 +17,15 @@ class FastmemoRepository extends GetxController {
   void onInit() {
     super.onInit();
     fetchFastmemo(selectedDate.value);
+    fetchMemoDates(selectedDate.value.year);
   }
 
   void setSelectedDate(DateTime date) {
     selectedDate.value = date;
     fetchFastmemo(date);
+    if (!loadedYears.contains(date.year)) {
+      fetchMemoDates(date.year);
+    }
   }
 
   Future<void> fetchFastmemo(DateTime date) async {
@@ -32,8 +38,15 @@ class FastmemoRepository extends GetxController {
         'day': date.day.toString().padLeft(2, '0'),
       });
       print('Fastmemo Response: ${response.data}');
-      fastmemo.assignAll(
-          (response.data as List).map((e) => Fastmemo.fromJson(e)).toList());
+      var fetchedMemos =
+          (response.data as List).map((e) => Fastmemo.fromJson(e)).toList();
+      fastmemo.assignAll(fetchedMemos);
+
+      if (fetchedMemos.isNotEmpty) {
+        memoDates.add(DateTime(date.year, date.month, date.day));
+      } else {
+        memoDates.remove(DateTime(date.year, date.month, date.day));
+      }
     } catch (e) {
       print('Failed to load fast logs: $e');
     } finally {
@@ -54,12 +67,39 @@ class FastmemoRepository extends GetxController {
       // 응답 데이터 출력
       print('Unchecked Fastmemo Response: ${response.data}');
 
-      fastmemo.assignAll(
-          (response.data as List).map((e) => Fastmemo.fromJson(e)).toList());
+      var fetchedMemos =
+          (response.data as List).map((e) => Fastmemo.fromJson(e)).toList();
+      fastmemo.assignAll(fetchedMemos);
+
+      // 메모가 있는 날짜 업데이트
+      if (fetchedMemos.isNotEmpty) {
+        memoDates.add(DateTime(date.year, date.month, date.day));
+      } else {
+        memoDates.remove(DateTime(date.year, date.month, date.day));
+      }
     } catch (e) {
-      print('Failed to load fast logs: $e');
+      print('Failed to load unchecked fast logs: $e');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchMemoDates(int year) async {
+    if (loadedYears.contains(year)) {
+      return;
+    }
+
+    try {
+      final response = await _dioService.get('/fastlogs/dates/', params: {
+        'year': year.toString(),
+      });
+      List<dynamic> dates = response.data;
+      Set<DateTime> fetchedDates =
+          dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
+      memoDates.addAll(fetchedDates);
+      loadedYears.add(year);
+    } catch (e) {
+      print('Failed to fetch memo dates: $e');
     }
   }
 
@@ -77,6 +117,8 @@ class FastmemoRepository extends GetxController {
 
       final newMemo = Fastmemo.fromJson(response.data);
       fastmemo.add(newMemo);
+      memoDates.add(
+          DateTime(newMemo.date.year, newMemo.date.month, newMemo.date.day));
     } catch (e) {
       print('Failed to submit fast log: $e');
     } finally {
@@ -112,6 +154,7 @@ class FastmemoRepository extends GetxController {
         'is_checked': isChecked,
       });
       await fetchFastmemo(selectedDate.value);
+      await fetchMemoDates(selectedDate.value.year); // 체크 상태 변경 후 날짜 목록을 갱신합니다.
     } catch (e) {
       print('Failed to bulk update is_checked: $e');
     }
@@ -124,6 +167,7 @@ class FastmemoRepository extends GetxController {
         'ids': ids, // 선택한 ID 리스트
       });
       await fetchFastmemo(selectedDate.value);
+      await fetchMemoDates(selectedDate.value.year); // 삭제 후 날짜 목록을 갱신합니다.
     } catch (e) {
       print('Failed to bulk delete fast logs: $e');
     }
