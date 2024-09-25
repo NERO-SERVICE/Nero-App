@@ -15,6 +15,7 @@ class FastMemoDetailPage extends StatefulWidget {
 class _FastMemoDetailPageState extends State<FastMemoDetailPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
+  final FocusNode _textFieldFocusNode = FocusNode(); // FocusNode 생성
   final FastmemoRepository repository = Get.find<FastmemoRepository>();
   final Map<int, bool> _selectedMap = {}; // 선택 상태를 저장할 Map
   late AnimationController _controller;
@@ -36,114 +37,127 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
   @override
   void dispose() {
     _controller.dispose();
+    _textController.dispose();
+    _textFieldFocusNode.dispose(); // FocusNode 해제
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: CustomDetailAppBar(title: '빠른 메모'),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/develop/fast-memo-background.png',
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        // TextField가 아닌 다른 곳을 터치하면 포커스 삭제
+        if (_textFieldFocusNode.hasFocus) {
+          _textFieldFocusNode.unfocus();
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: CustomDetailAppBar(title: '빠른 메모'),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/develop/fast-memo-background.png',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.center,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.9),
-                  ],
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.center,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.9),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: _memoList()),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 50,
-                          maxHeight: 50,
-                        ),
-                        child: TextField(
-                          controller: _textController,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                            color: Color(0xffFFFFFF),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: _memoList()),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: 50,
+                            maxHeight: 50,
                           ),
-                          cursorColor: Color(0xffD9D9D9),
-                          decoration: InputDecoration(
-                            hintText: '기록을 입력해주세요',
-                            hintStyle: TextStyle(
+                          child: TextField(
+                            controller: _textController,
+                            focusNode: _textFieldFocusNode,
+                            // FocusNode 설정
+                            style: TextStyle(
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color: Color(0xffD9D9D9),
+                              color: Color(0xffFFFFFF),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(28),
+                            cursorColor: Color(0xffD9D9D9),
+                            decoration: InputDecoration(
+                              hintText: '기록을 입력해주세요',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Color(0xffD9D9D9),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              filled: true,
+                              fillColor: Color(0xffD8D8D8).withOpacity(0.4),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 21),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                            filled: true,
-                            fillColor: Color(0xffD8D8D8).withOpacity(0.4),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 21),
                           ),
                         ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_textController.text.isNotEmpty) {
-                          await repository.submitFastmemo(_textController.text);
-                          _textController.clear();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
-                        shape: CircleBorder(),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/develop/send.svg',
-                          width: 24,
-                          height: 24,
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (_textController.text.isNotEmpty) {
+                            await repository
+                                .submitFastmemo(_textController.text);
+                            _textController.clear();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/develop/send.svg',
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          _actionButtons(),
-        ],
+              ],
+            ),
+            _actionButtons(),
+          ],
+        ),
+        resizeToAvoidBottomInset: true,
       ),
-      resizeToAvoidBottomInset: true,
     );
   }
 
@@ -245,6 +259,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       String content, String confirm, Color dialogColor) async {
     return await showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (context) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -253,83 +268,85 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               borderRadius: BorderRadius.circular(16),
             ),
             backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Text(
-                      content,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Color(0xffFFFFFF),
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        content,
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Color(0xffFFFFFF),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xffD8D8D8).withOpacity(0.3),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(16),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xffD8D8D8).withOpacity(0.3),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(16),
+                              ),
                             ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                            child: Center(
-                              child: Text(
-                                "취소",
-                                style: TextStyle(
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                              child: Center(
+                                child: Text(
+                                  "취소",
+                                  style: TextStyle(
+                                    fontFamily: 'Pretendard',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: dialogColor,
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(16),
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: dialogColor,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(16),
+                              ),
                             ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: Center(
-                              child: Text(
-                                confirm,
-                                style: TextStyle(
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              child: Center(
+                                child: Text(
+                                  confirm,
+                                  style: TextStyle(
+                                    fontFamily: 'Pretendard',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -451,32 +468,79 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
     _textController.text = log.content;
     showDialog(
       context: context,
+      barrierDismissible: true, // 키보드가 나타나도 다이얼로그 위치를 고정
       builder: (context) {
-        return AlertDialog(
-          title: Text("메모 수정"),
-          content: TextField(
-            controller: _textController,
-            decoration: InputDecoration(
-              hintText: "메모 내용을 입력하세요",
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
+            child: SingleChildScrollView(
+              // 다이얼로그가 키보드의 영향을 받지 않도록
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "메모 수정",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _textController,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: "메모 내용을 입력하세요",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Color(0xff3C3C3C),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            if (_textController.text.isNotEmpty) {
+                              await repository.updateFastmemo(
+                                  log.id, _textController.text);
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Text(
+                            "저장",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "취소",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                if (_textController.text.isNotEmpty) {
-                  await repository.updateFastmemo(log.id, _textController.text);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text("저장"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("취소"),
-            ),
-          ],
         );
       },
     );
