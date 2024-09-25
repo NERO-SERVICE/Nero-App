@@ -67,9 +67,6 @@ class NeroUser extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'kakaoId': kakaoId,
-      'createdAt': createdAt?.toIso8601String(),
       'nickname': nickname,
       'email': email,
       'birth': birth?.toIso8601String(),
