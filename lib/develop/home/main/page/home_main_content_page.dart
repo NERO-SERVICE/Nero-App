@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart'; // Import Shimmer
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
@@ -66,7 +67,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Future<void> _loadNotifications() async {
     await _notificationController.fetchNotifications();
   }
-  
+
   Widget subInfo(NotificationModel notification) {
     return Container(
       child: Text(
@@ -132,6 +133,63 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             child: subInfo(notification),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _skeletonNotification() {
+    return Shimmer.fromColors(
+      baseColor: Color(0xff323232).withOpacity(0.5),
+      highlightColor: Color(0xff323232).withOpacity(0.8),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Color(0xff323232).withOpacity(0.5),
+        ),
+        width: 300,
+        height: 400,
+      ),
+    );
+  }
+
+  Widget _skeletonNews() {
+    return Shimmer.fromColors(
+      baseColor: Color(0xff323232).withOpacity(0.5),
+      highlightColor: Color(0xff323232).withOpacity(0.8),
+      child: Column(
+        children: List.generate(4, (index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
+            child: Container(
+              height: 22,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Color(0xff323232).withOpacity(0.5),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _skeletonMagazines() {
+    return Shimmer.fromColors(
+      baseColor: Color(0xff323232).withOpacity(0.5),
+      highlightColor: Color(0xff323232).withOpacity(0.8),
+      child: Column(
+        children: List.generate(3, (index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
+            child: Container(
+              height: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Color(0xff323232).withOpacity(0.5),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -260,7 +318,102 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     return Scaffold(
       body: Obx(() {
         if (_notificationController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: kToolbarHeight + 56),
+                SizedBox(
+                  height: 400,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: 3, // Number of skeletons
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: _skeletonNotification(),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        '최신 뉴스 모음',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: GestureDetector(
+                        onTap: () {
+                        },
+                        child: Text(
+                          '더보기',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xffD9D9D9),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                _skeletonNews(),
+                const SizedBox(height: 40),
+                const CustomDivider(),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        '매거진',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: GestureDetector(
+                        onTap: () {
+                        },
+                        child: Text(
+                          '더보기',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xffD9D9D9),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _skeletonMagazines(),
+                const SizedBox(height: 40),
+                _copyrightInfo(),
+              ],
+            ),
+          );
         }
 
         if (_notificationController.notifications.isEmpty) {
@@ -279,7 +432,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   itemCount: _notificationController.notifications.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: _notificationOne(
                         _notificationController.notifications[index],
                       ),
