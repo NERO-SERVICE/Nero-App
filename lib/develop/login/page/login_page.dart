@@ -71,7 +71,7 @@ class LoginPage extends StatelessWidget {
 
   Widget _snsLoginBtn() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 80),
+      padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         children: [
           const SizedBox(height: 10),
@@ -86,18 +86,23 @@ class LoginPage extends StatelessWidget {
                   height: 24,
                   child: SvgPicture.asset('assets/images/kakao.svg'),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
                 Expanded(
                   child: Center(
-                    child: const AppFont(
-                      '카카오로 계속하기',
-                      color: Colors.black,
+                    child: const Text(
+                      '카카오 로그인',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff000000),
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
               ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ],
