@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/information/controller/information_controller.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
 import '../model/information.dart';
 
 class InformationDetailPage extends StatefulWidget {
@@ -77,17 +78,7 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
                                     return child;
                                   }
                                   return Center(
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                    ),
+                                    child: CustomLoadingIndicator(),
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {

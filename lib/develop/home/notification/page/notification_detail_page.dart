@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
+
 class NotificationDetailPage extends StatefulWidget {
   NotificationDetailPage({super.key});
 
@@ -33,7 +35,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         final notification = controller.currentNotification.value;
@@ -68,17 +70,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                                     return child;
                                   }
                                   return Center(
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                    ),
+                                    child: CustomLoadingIndicator()
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {

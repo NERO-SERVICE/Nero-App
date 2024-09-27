@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
 import 'package:nero_app/develop/todaylog/recall/model/side_effect.dart';
 
+import '../../common/components/custom_loading_indicator.dart';
+
 class UserSideEffectLogPage extends StatelessWidget {
   final DateTime selectedDate;
 
@@ -61,7 +63,7 @@ class UserSideEffectLogPage extends StatelessWidget {
           ),
           Obx(() {
             if (controller.isLoading.value) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoadingIndicator());
             }
 
             if (controller.sideEffectResponses.isEmpty) {

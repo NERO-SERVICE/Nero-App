@@ -1,10 +1,13 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/magazine/controller/magazine_controller.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
+
+import '../../../common/components/custom_loading_indicator.dart';
 
 class MagazineDetailPage extends StatefulWidget {
   MagazineDetailPage({super.key});
@@ -33,7 +36,7 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         final magazine = controller.currentMagazine.value;
@@ -68,17 +71,7 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
                                     return child;
                                   }
                                   return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress
-                                          .expectedTotalBytes !=
-                                          null
-                                          ? loadingProgress
-                                          .cumulativeBytesLoaded /
-                                          (loadingProgress
-                                              .expectedTotalBytes ??
-                                              1)
-                                          : null,
-                                    ),
+                                    child: CustomLoadingIndicator()
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {

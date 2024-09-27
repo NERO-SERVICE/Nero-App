@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
 
+import '../../common/components/custom_loading_indicator.dart';
 import '../../todaylog/recall/model/survey.dart';
 
 class UserSurveyLogPage extends StatelessWidget {
@@ -62,7 +63,7 @@ class UserSurveyLogPage extends StatelessWidget {
           ),
           Obx(() {
             if (controller.isLoading.value) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoadingIndicator());
             }
 
             if (controller.surveyResponses.isEmpty) {

@@ -5,6 +5,7 @@ import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
 import '../../clinic/controller/clinic_controller.dart';
 import '../../clinic/write/page/clinic_write_page.dart';
 import '../../recall/page/self_record_page.dart';
@@ -37,12 +38,12 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             _todaylogTitle(
               title: '데일리 복용관리',
               content:
-              '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
             Obx(() {
               if (clinicController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomLoadingIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {
@@ -246,13 +247,13 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _buildCustomButton(
-      BuildContext context, {
-        required String labelTop,
-        required String labelBottom,
-        required VoidCallback onPressed,
-        EdgeInsetsGeometry padding =
+    BuildContext context, {
+    required String labelTop,
+    required String labelBottom,
+    required VoidCallback onPressed,
+    EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      }) {
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: ElevatedButton(

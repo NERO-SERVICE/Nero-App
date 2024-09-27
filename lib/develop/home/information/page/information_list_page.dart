@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/home/information/controller/information_controller.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
 import 'information_detail_page.dart';
 
 class InformationListPage extends StatelessWidget {
@@ -17,7 +18,7 @@ class InformationListPage extends StatelessWidget {
       body: Obx(
         () {
           if (_informationController.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CustomLoadingIndicator());
           }
 
           if (_informationController.informations.isEmpty) {

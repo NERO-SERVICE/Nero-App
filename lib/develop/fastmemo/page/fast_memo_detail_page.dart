@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 
 import '../../common/components/custom_detail_app_bar.dart';
+import '../../common/components/custom_loading_indicator.dart';
 
 class FastMemoDetailPage extends StatefulWidget {
   @override
@@ -378,7 +379,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
   Widget _memoList() {
     return Obx(() {
       if (repository.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return Center(child: CustomLoadingIndicator());
       }
       if (repository.fastmemo.isEmpty) {
         return Center(
@@ -519,7 +520,6 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                         filled: true,
                         fillColor: Color(0xff3C3C3C),
                         border: OutlineInputBorder(),
-
                       ),
                     ),
                     const SizedBox(height: 20),

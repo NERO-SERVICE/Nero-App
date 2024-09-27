@@ -5,6 +5,8 @@ import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/home/magazine/controller/magazine_controller.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_detail_page.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
+
 class MagazineListPage extends StatelessWidget {
   final MagazineController _magazineController = Get.put(MagazineController());
 
@@ -15,7 +17,7 @@ class MagazineListPage extends StatelessWidget {
       body: Obx(
         () {
           if (_magazineController.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CustomLoadingIndicator());
           }
 
           if (_magazineController.magazines.isEmpty) {

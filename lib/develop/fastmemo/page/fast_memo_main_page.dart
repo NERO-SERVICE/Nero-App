@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -62,7 +63,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   Widget _fastCalendar() {
     return Obx(
-          () => TableCalendar(
+      () => TableCalendar(
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: controller.focusedDay.value,
@@ -157,18 +158,21 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
     );
   }
 
-  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
-    bool hasMemo = repository.memoDates.contains(DateTime(date.year, date.month, date.day));
+  Widget _buildDayCell(DateTime date,
+      {bool isSelected = false, bool isToday = false}) {
+    bool hasMemo = repository.memoDates
+        .contains(DateTime(date.year, date.month, date.day));
 
     // 기본 텍스트 스타일
     TextStyle textStyle = TextStyle(
       color: isSelected
           ? Colors.white
           : isToday
-          ? Colors.white
-          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
-          ? Color(0xff6D7179)
-          : Colors.grey,
+              ? Colors.white
+              : (date.weekday == DateTime.saturday ||
+                      date.weekday == DateTime.sunday)
+                  ? Color(0xff6D7179)
+                  : Colors.grey,
       fontWeight: FontWeight.w500,
     );
 
@@ -183,7 +187,9 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       dayText = Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected || isToday ? Colors.transparent : Colors.black.withOpacity(0.1),
+          color: isSelected || isToday
+              ? Colors.transparent
+              : Colors.black.withOpacity(0.1),
         ),
         child: Center(
           child: dayText,
@@ -195,20 +201,20 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       margin: const EdgeInsets.all(6.0),
       decoration: isSelected
           ? BoxDecoration(
-        color: Color(0xffD0EE17),
-        shape: BoxShape.circle,
-      )
+              color: Color(0xffD0EE17),
+              shape: BoxShape.circle,
+            )
           : isToday
-          ? BoxDecoration(
-        color: Colors.grey,
-        shape: BoxShape.circle,
-      )
-          : hasMemo
-          ? BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Color(0xffD0EE17), width: 1),
-      )
-          : null,
+              ? BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                )
+              : hasMemo
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Color(0xffD0EE17), width: 1),
+                    )
+                  : null,
       alignment: Alignment.center,
       child: dayText,
     );
@@ -217,7 +223,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
   Widget _uncheckedMemo() {
     return Obx(() {
       if (repository.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return Center(child: CustomLoadingIndicator());
       }
       if (repository.fastmemo.isEmpty) {
         return Center(
@@ -267,7 +273,8 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => FastMemoDetailPage(), arguments: repository.selectedDate.value);
+                        Get.to(() => FastMemoDetailPage(),
+                            arguments: repository.selectedDate.value);
                       },
                       child: Text(
                         '더보기',
@@ -289,20 +296,20 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                   String iconPath = isSelected
                       ? 'assets/develop/is-checked.svg'
                       : memo.isChecked
-                      ? 'assets/develop/is-already-checked.svg'
-                      : 'assets/develop/is-not-checked.svg';
+                          ? 'assets/develop/is-already-checked.svg'
+                          : 'assets/develop/is-not-checked.svg';
 
                   Color containerColor = isSelected
                       ? Color(0xff1C1B1B).withOpacity(0.5)
                       : memo.isChecked
-                      ? Color(0xff1C1B1B).withOpacity(0.1)
-                      : Color(0xff1C1B1B).withOpacity(0.3);
+                          ? Color(0xff1C1B1B).withOpacity(0.1)
+                          : Color(0xff1C1B1B).withOpacity(0.3);
 
                   Color textColor = isSelected
                       ? Color(0xffFFFFFF)
                       : memo.isChecked
-                      ? Color(0xffFFFFFF).withOpacity(0.1)
-                      : Color(0xffFFFFFF);
+                          ? Color(0xffFFFFFF).withOpacity(0.1)
+                          : Color(0xffFFFFFF);
 
                   BorderSide borderSide = isSelected
                       ? BorderSide(color: Color(0xffD0EE17), width: 1)
@@ -388,7 +395,8 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       padding: const EdgeInsets.symmetric(horizontal: 105),
       child: GestureDetector(
         onTap: () {
-          Get.to(() => FastMemoDetailPage(), arguments: repository.selectedDate.value);
+          Get.to(() => FastMemoDetailPage(),
+              arguments: repository.selectedDate.value);
         },
         child: Center(
           child: Text(
