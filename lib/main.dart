@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'develop/app.dart';
 import 'develop/dio_service.dart';
+import 'develop/home/information/controller/information_controller.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
 
@@ -118,6 +119,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(FastmemoRepository());
         Get.put(LoginController(kakaoAuth));
         Get.put(BottomNavController());
+        Get.put(InformationController());
       }),
       getPages: [
         GetPage(

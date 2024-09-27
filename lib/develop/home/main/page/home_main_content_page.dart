@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart'; // Import Shimmer
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/home/information/model/information.dart';
+import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
+import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/main/page/home_news_page.dart';
 import 'package:nero_app/develop/home/news/model/news.dart';
@@ -12,6 +14,7 @@ import 'package:nero_app/develop/home/news/repository/news_repository.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
+import 'package:shimmer/shimmer.dart'; // Import Shimmer
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeMainContentPage extends StatefulWidget {
@@ -23,11 +26,13 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-  Get.put(NotificationController(), permanent: true);
+      Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.7);
   final NewsRepository _newsRepository = NewsRepository();
+  final InformationRepository _informationRepository = InformationRepository();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<News>> _latestNewsFuture;
+  late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
 
   final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
@@ -60,6 +65,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   void initState() {
     super.initState();
     _loadNotifications();
+    _latestInformationsFuture = _informationRepository.getLatestInformation();
     _latestNewsFuture = _newsRepository.getLatestNews();
     _latestMagazinesFuture = _magazineRepository.getLatestMagazine();
   }
@@ -101,13 +107,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               height: 400,
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                notification.imageUrls.first,
-                fit: BoxFit.cover,
-              )
+                      notification.imageUrls.first,
+                      fit: BoxFit.cover,
+                    )
                   : Image.asset(
-                'assets/images/default.png',
-                fit: BoxFit.cover,
-              ),
+                      'assets/images/default.png',
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Positioned.fill(
@@ -343,7 +349,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
-                        '최신 뉴스 모음',
+                        '개발자 공지사항',
                         style: TextStyle(
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w600,
@@ -355,8 +361,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: Text(
                           '더보기',
                           style: TextStyle(
@@ -392,8 +397,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: Text(
                           '더보기',
                           style: TextStyle(
@@ -444,6 +448,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               HomeNewsPage(
                 latestNewsFuture: _latestNewsFuture,
               ),
+              HomeInformationPage(
+                  latestInformationFuture: _latestInformationsFuture),
               const SizedBox(height: 40),
               const CustomDivider(),
               const SizedBox(height: 30),
