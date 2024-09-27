@@ -67,45 +67,49 @@ class _HomeMainPageState extends State<HomeMainPage> {
                           ],
                         ),
                       ),
-                      TextField(
-                        controller: _suggestionController,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xffFFFFFF),
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: 120, minHeight: 120),
+                        child: Scrollbar(
+                          child: TextField(
+                            controller: _suggestionController,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xffFFFFFF),
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xff3C3C3C),
+                              hintText: '제안을 입력해주세요 (최대 200자)',
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xff959595),
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w500,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+                            ),
+                            maxLength: 200,
+                            maxLines: null,
+                            minLines: 5,
+                            expands: false,
+                            scrollPadding: EdgeInsets.zero,
+                            keyboardType: TextInputType.multiline,
+                          ),
                         ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color(0xff3C3C3C),
-                          hintText: '제안을 입력해주세요 (최대 200자)',
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xff959595),
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(0), width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(0), width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide:
-                                BorderSide(color: Color(0xffD0EE17), width: 1),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 13, vertical: 10),
-                        ),
-                        maxLength: 200,
-                        maxLines: null,
-                        minLines: 5,
                       ),
                       const SizedBox(height: 20),
                       Center(
@@ -113,8 +117,8 @@ class _HomeMainPageState extends State<HomeMainPage> {
                           onPressed: () {
                             _mailController.suggestion.value =
                                 _suggestionController.text;
-                            _mailController
-                                .sendMail(); // Owner ID를 실제 유저 ID로 변경
+                            _mailController.sendMail();
+                            _suggestionController.clear();
                             Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
