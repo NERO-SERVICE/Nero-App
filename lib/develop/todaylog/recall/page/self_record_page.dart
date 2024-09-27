@@ -103,7 +103,7 @@ class SelfRecordPage extends StatelessWidget {
                                               maxWidth: 280,
                                             ),
                                             child: Container(
-                                              margin: const EdgeInsets.only(bottom: 20),
+                                              margin: const EdgeInsets.only(bottom: 12),
                                               padding: const EdgeInsets.symmetric(horizontal: 26),
                                               decoration: BoxDecoration(
                                                 color: Color(0xffD8D8D8).withOpacity(0.3),
@@ -112,7 +112,7 @@ class SelfRecordPage extends StatelessWidget {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(height: 20),
+                                                  SizedBox(height: 16),
                                                   Text(
                                                     log.content,
                                                     style: TextStyle(
@@ -124,14 +124,14 @@ class SelfRecordPage extends StatelessWidget {
                                                     softWrap: true,
                                                     overflow: TextOverflow.visible,
                                                   ),
-                                                  SizedBox(height: 20),
+                                                  SizedBox(height: 16),
                                                 ],
                                               ),
                                             ),
                                           ),
                                           if (showTime)
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 12, bottom: 20),
+                                              padding: const EdgeInsets.only(left: 12, bottom: 12),
                                               child: Text(
                                                 formattedTime,
                                                 style: TextStyle(
