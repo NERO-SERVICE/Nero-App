@@ -10,6 +10,7 @@ class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       scrolledUnderElevation: 0,
       backgroundColor: Colors.transparent,
       elevation: 0,

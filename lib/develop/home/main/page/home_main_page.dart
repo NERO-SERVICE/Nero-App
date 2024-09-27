@@ -168,6 +168,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         elevation: 0,

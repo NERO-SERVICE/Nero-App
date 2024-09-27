@@ -174,6 +174,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   Widget build(BuildContext context) {
     return CommonLayout(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -184,12 +185,6 @@ class _MemoriesPageState extends State<MemoriesPage> {
               color: Colors.transparent,
             ),
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
         ),
       ),
       body: SingleChildScrollView(

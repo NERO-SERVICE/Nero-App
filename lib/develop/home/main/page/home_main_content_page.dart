@@ -448,6 +448,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               HomeNewsPage(
                 latestNewsFuture: _latestNewsFuture,
               ),
+              const SizedBox(height: 40),
               HomeInformationPage(
                   latestInformationFuture: _latestInformationsFuture),
               const SizedBox(height: 40),

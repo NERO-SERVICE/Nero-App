@@ -170,6 +170,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       scrolledUnderElevation: 0,
       backgroundColor: Colors.transparent,
       elevation: 0,
