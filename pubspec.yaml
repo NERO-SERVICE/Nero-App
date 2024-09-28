@@ -94,7 +94,7 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: "assets/launcher/icon.png"
+  image_path: "assets/launcher/nero-icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
