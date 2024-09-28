@@ -68,8 +68,8 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ),
               ),
               child: CalendarWidget(
-                selectedDate: date,
-                focusedDate: date,
+                initialSelectedDate: date.value,
+                initialFocusedDate: date.value,
               ),
             ),
           ),

@@ -18,6 +18,9 @@ class MypageController extends GetxController {
   var menstruationCycles = <MenstruationCycle>[].obs;
 
   Map<String, MonthlyCheck> monthlyCheckCache = {};
+  var surveyRecordedDates = <DateTime>{}.obs;
+  var sideEffectRecordedDates = <DateTime>{}.obs;
+  var selfRecordRecordedDates = <DateTime>{}.obs;
 
   void fetchYearlyChecks(int year) async {
     try {
@@ -128,6 +131,33 @@ class MypageController extends GetxController {
     } catch (e) {
       print('Failed to create menstruation cycle: $e');
       Get.snackbar('에러', '생리 주기를 추가하지 못했습니다.');
+    }
+  }
+
+  Future<void> fetchSurveyRecordedDates(int year) async {
+    try {
+      var dates = await _mypageRepository.getSurveyRecordedDates(year);
+      surveyRecordedDates.addAll(dates);
+    } catch (e) {
+      print("Error fetching survey recorded dates: $e");
+    }
+  }
+
+  Future<void> fetchSideEffectRecordedDates(int year) async {
+    try {
+      var dates = await _mypageRepository.getSideEffectRecordedDates(year);
+      sideEffectRecordedDates.addAll(dates);
+    } catch (e) {
+      print("Error fetching side effect recorded dates: $e");
+    }
+  }
+
+  Future<void> fetchSelfRecordRecordedDates(int year) async {
+    try {
+      var dates = await _mypageRepository.getSelfRecordRecordedDates(year);
+      selfRecordRecordedDates.addAll(dates);
+    } catch (e) {
+      print("Error fetching self-record recorded dates: $e");
     }
   }
 }

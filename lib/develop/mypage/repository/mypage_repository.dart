@@ -104,4 +104,41 @@ class MypageRepository {
       return false;
     }
   }
+
+  Future<Set<DateTime>> getSurveyRecordedDates(int year) async {
+    try {
+      final String url = '/todaylogs/survey/dates/?year=$year';
+      final response = await _dio.get(url);
+      List<dynamic> dates = response.data;
+      return dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
+    } catch (e) {
+      print('Failed to fetch survey recorded dates: $e');
+      return {};
+    }
+  }
+
+  Future<Set<DateTime>> getSideEffectRecordedDates(int year) async {
+    try {
+      final String url = '/todaylogs/side_effect/dates/?year=$year';
+      final response = await _dio.get(url);
+      List<dynamic> dates = response.data;
+      return dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
+    } catch (e) {
+      print('Failed to fetch side effect recorded dates: $e');
+      return {};
+    }
+  }
+
+  Future<Set<DateTime>> getSelfRecordRecordedDates(int year) async {
+    try {
+      final String url = '/todaylogs/self_record/dates/?year=$year';
+      final response = await _dio.get(url);
+      List<dynamic> dates = response.data;
+      return dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
+    } catch (e) {
+      print('Failed to fetch self-record recorded dates: $e');
+      return {};
+    }
+  }
+
 }

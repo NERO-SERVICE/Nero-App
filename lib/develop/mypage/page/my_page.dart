@@ -30,7 +30,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
 
   // 약 복용 및 부작용 관련 변수들
   final PageController _pageController =
-      PageController(initialPage: DateTime.now().month - 1);
+  PageController(initialPage: DateTime.now().month - 1);
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
   int currentIndex = DateTime.now().month - 1;
@@ -38,7 +38,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
 
   // 생리 주기 관련 변수들
   final PageController _menstruationPageController =
-      PageController(initialPage: DateTime.now().month - 1);
+  PageController(initialPage: DateTime.now().month - 1);
   final RxInt menstruationCurrentMonth = DateTime.now().month.obs;
   final RxInt menstruationCurrentYear = DateTime.now().year.obs;
   int menstruationCurrentIndex = DateTime.now().month - 1;
@@ -133,7 +133,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
-            // 생리 주기 섹션 추가
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -216,15 +215,20 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               labelTop: '하루 설문',
               labelBottom: '오늘 하루는 어땠어요?',
               onPressed: () async {
-                await _selectDate(context, selectedDate);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserSurveyLogPage(
-                      selectedDate: selectedDate.value,
+                await _monthlyCheckController
+                    .fetchSurveyRecordedDates(selectedDate.value.year);
+                await _selectDate(context, selectedDate,
+                    _monthlyCheckController.surveyRecordedDates);
+                if (selectedDate.value != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserSurveyLogPage(
+                        selectedDate: selectedDate.value,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
             ),
             SizedBox(height: 16),
@@ -233,15 +237,20 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               labelTop: '부작용 설문',
               labelBottom: '평소와 다른 증상이 나타났나요?',
               onPressed: () async {
-                await _selectDate(context, selectedDate);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserSideEffectLogPage(
-                      selectedDate: selectedDate.value,
+                await _monthlyCheckController
+                    .fetchSideEffectRecordedDates(selectedDate.value.year);
+                await _selectDate(context, selectedDate,
+                    _monthlyCheckController.sideEffectRecordedDates);
+                if (selectedDate.value != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserSideEffectLogPage(
+                        selectedDate: selectedDate.value,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
             ),
             SizedBox(height: 16),
@@ -250,15 +259,20 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
               labelTop: '셀프 기록',
               labelBottom: '오늘 추가로 더 남기고 싶은 말이 있나요?',
               onPressed: () async {
-                await _selectDate(context, selectedDate);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserSelfRecordPage(
-                      selectedDate: selectedDate.value,
+                await _monthlyCheckController
+                    .fetchSelfRecordRecordedDates(selectedDate.value.year);
+                await _selectDate(context, selectedDate,
+                    _monthlyCheckController.selfRecordRecordedDates);
+                if (selectedDate.value != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserSelfRecordPage(
+                        selectedDate: selectedDate.value,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
             ),
             SizedBox(height: 40),
@@ -590,7 +604,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
       return GestureDetector(
         onTap: () async {
           isSelected.value = true;
-          await _selectDate(context, date);
+          await _selectDate(context, date, {}); // 빈 Set 전달
           isSelected.value = false;
         },
         child: Container(
@@ -1395,7 +1409,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Rx<DateTime> date) async {
+  Future<void> _selectDate(BuildContext context, Rx<DateTime> date, Set<DateTime> recordedDates) async {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1414,9 +1428,10 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                 ),
               ),
               child: CalendarWidget(
-                  selectedDate: date,
-                  focusedDate: date,
-                  selectedColor: Color(0xffFFADC6)),
+                initialSelectedDate: date.value,
+                initialFocusedDate: date.value,
+                markedDates: recordedDates,
+              ),
             ),
           ),
         );
