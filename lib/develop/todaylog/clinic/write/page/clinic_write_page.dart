@@ -352,7 +352,6 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                                 drugNumberController.text.isNotEmpty) {
                               final myDrugArchive = MyDrugArchive(
                                 myArchiveId: 0,
-                                owner: controller.clinic.value.owner,
                                 archiveId: selectedArchive.value!.archiveId,
                                 drugName: selectedArchive.value!.drugName,
                                 target: selectedArchive.value!.target,

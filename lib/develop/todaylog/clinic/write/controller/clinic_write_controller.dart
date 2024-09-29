@@ -91,7 +91,6 @@ class ClinicWriteController extends GetxController {
   void addDrugToClinic(DrugArchive drugArchive, int number, String time) {
     final myDrugArchive = MyDrugArchive(
       myArchiveId: drugArchive.archiveId,
-      owner: clinic.value.owner,
       archiveId: drugArchive.archiveId,
       drugName: drugArchive.drugName,
       target: drugArchive.target,
