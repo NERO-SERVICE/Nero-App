@@ -3,9 +3,6 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/page/information_detail_page.dart';
 import 'package:nero_app/develop/home/information/page/information_list_page.dart';
-import 'package:nero_app/develop/home/news/model/news.dart';
-import 'package:nero_app/develop/home/news/page/news_list_page.dart';
-import 'package:nero_app/develop/home/news/page/news_web_view_page.dart';
 
 class HomeInformationPage extends StatelessWidget {
   final Future<List<Information>> latestInformationFuture;

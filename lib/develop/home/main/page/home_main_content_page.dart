@@ -8,9 +8,6 @@ import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
 import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
-import 'package:nero_app/develop/home/main/page/home_news_page.dart';
-import 'package:nero_app/develop/home/news/model/news.dart';
-import 'package:nero_app/develop/home/news/repository/news_repository.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
@@ -28,10 +25,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
       Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.7);
-  final NewsRepository _newsRepository = NewsRepository();
   final InformationRepository _informationRepository = InformationRepository();
   final MagazineRepository _magazineRepository = MagazineRepository();
-  late Future<List<News>> _latestNewsFuture;
   late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
 
@@ -66,7 +61,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     super.initState();
     _loadNotifications();
     _latestInformationsFuture = _informationRepository.getLatestInformation();
-    _latestNewsFuture = _newsRepository.getLatestNews();
     _latestMagazinesFuture = _magazineRepository.getLatestMagazine();
   }
 
@@ -455,10 +449,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              HomeNewsPage(
-                latestNewsFuture: _latestNewsFuture,
-              ),
-              const SizedBox(height: 40),
               HomeInformationPage(
                   latestInformationFuture: _latestInformationsFuture),
               const SizedBox(height: 40),
