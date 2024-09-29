@@ -93,7 +93,7 @@ class AuthenticationRepository extends GetxService {
   }
 
   // 카카오 회원가입
-  Future<void> signUpWithKakao() async {
+  Future<Map<String, dynamic>> signUpWithKakao() async {
     isLoading.value = true;
     try {
       OAuthToken token;
@@ -113,15 +113,11 @@ class AuthenticationRepository extends GetxService {
       print("Kakao Nickname: $kakaoNickname");
 
       var kakaoAccessToken = token.accessToken;
-      // 카카오 회원가입 진행
-      final signUpResponse =
-          await signUp(kakaoAccessToken, kakaoId, kakaoNickname);
+      final signUpResponse = await signUp(kakaoAccessToken);
 
       print("카카오 회원가입 완료");
 
-      // signUp 메서드에서 이미 토큰을 저장했으므로 추가적인 login 호출 제거
-
-      // 이제 AuthenticationController에서 authCheck를 호출하여 인증 상태를 확인하고 라우팅하도록 합니다.
+      return signUpResponse;
     } catch (e) {
       print('Kakao signup 실패: $e');
       rethrow; // 예외를 다시 던져서 상위에서 처리하도록 함
@@ -131,25 +127,30 @@ class AuthenticationRepository extends GetxService {
   }
 
   // DRF 회원가입 함수
-  Future<Map<String, dynamic>> signUp(
-      String kakaoAccessToken, String? kakaoId, String? nickname) async {
+  Future<Map<String, dynamic>> signUp(String kakaoAccessToken) async {
     final response = await http.post(
       Uri.parse('${baseUrl}/accounts/auth/kakao/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'accessToken': kakaoAccessToken,
-        'kakaoId': kakaoId,
-        'nickname': nickname,
       }),
     );
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       final refreshToken = parsed['tokens']['refreshToken'];
       final accessToken = parsed['tokens']['accessToken'];
+      final needsSignup = parsed['needsSignup'] ?? false;
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('refreshToken', refreshToken);
       await prefs.setString('accessToken', accessToken);
-      return parsed;
+      await prefs.setBool('needsSignup', needsSignup);
+
+      return {
+        'refreshToken': refreshToken,
+        'accessToken': accessToken,
+        'needsSignup': needsSignup,
+      };
     } else {
       String responseBody = utf8.decode(response.bodyBytes);
       throw Exception('카카오 인증 실패: $responseBody');
@@ -185,5 +186,26 @@ class AuthenticationRepository extends GetxService {
     user.value = null;
     await clearDrfTokens(); // 로그아웃 시 토큰 삭제
     Future.microtask(() => Get.offAllNamed('/login')); // 빌드 후 라우팅
+  }
+
+  Future<void> updateUserInfo(Map<String, dynamic> updatedInfo) async {
+    try {
+      final tokens = await getDrfTokens();
+      final String? accessToken = tokens['accessToken'];
+      if (accessToken == null) {
+        throw Exception('Access token is missing');
+      }
+
+      final response = await dioService.patch('/userinfo/', data: updatedInfo);
+      if (response.statusCode == 200) {
+        final updatedUser = NeroUser.fromJson(response.data);
+        user.value = updatedUser;
+      } else {
+        throw Exception('사용자 정보 업데이트 실패');
+      }
+    } catch (e) {
+      print('사용자 정보 업데이트 실패: $e');
+      throw e;
+    }
   }
 }

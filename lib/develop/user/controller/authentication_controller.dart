@@ -110,10 +110,23 @@ class AuthenticationController extends GetxController {
     status(AuthenticationStatus.unknown);
   }
 
-  // 카카오 로그인 처리 메서드 추가
+  // 카카오 로그인 처리 메서드 수정
   Future<void> handleKakaoLogin() async {
-    await kakaoAuthRepo.signUpWithKakao();
-    // 회원가입이 완료되었으므로, 인증 상태를 확인하고 홈 페이지로 이동
-    await authCheck();
+    try {
+      final response = await kakaoAuthRepo.signUpWithKakao();
+      bool needsSignup = response['needsSignup'] ?? false;
+
+      if (needsSignup) {
+        // 신규 사용자
+        Get.offNamed('/signup');
+      } else {
+        // 기존 사용자
+        Get.offNamed('/home');
+      }
+    } catch (e) {
+      print("handleKakaoLogin 중 오류 발생: $e");
+      // 오류 발생 시 로그인 페이지로 이동
+      Get.offNamed('/login');
+    }
   }
 }

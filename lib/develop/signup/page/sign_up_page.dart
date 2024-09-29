@@ -289,9 +289,6 @@ class _SignUpPageState extends State<SignUpPage> {
           }
 
           final currentUser = NeroUser(
-            userId: 1,
-            kakaoId: 1,
-            createdAt: DateTime.now(),
             nickname: controller.nickname.value,
             email: controller.email.value,
             birth: parsedBirth,
