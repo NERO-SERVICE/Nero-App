@@ -50,6 +50,11 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   await initializeDateFormatting();
 
+  Get.put<DioService>(DioService());
+  Get.put(AuthenticationRepository());
+  Get.put(UserRepository(authenticationRepository: Get.find()));
+  Get.put(AuthenticationController(Get.find(), Get.find()));
+
   FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
