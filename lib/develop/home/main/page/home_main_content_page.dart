@@ -421,7 +421,17 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
         }
 
         if (_notificationController.notifications.isEmpty) {
-          return Center(child: Text('No notifications available'));
+          return Center(
+            child: Text(
+              '현재 네로의 공지가 없습니다',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: Color(0xff3C3C3C),
+              ),
+            ),
+          );
         }
 
         return SingleChildScrollView(
