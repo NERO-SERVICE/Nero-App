@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -25,12 +24,14 @@ import 'develop/dio_service.dart';
 import 'develop/home/information/controller/information_controller.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -48,6 +49,8 @@ void main() async {
   KakaoSdk.init(nativeAppKey: dotenv.env['kakaoAppKey']);
   prefs = await SharedPreferences.getInstance();
   await initializeDateFormatting();
+
+  FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
 
