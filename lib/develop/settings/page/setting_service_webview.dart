@@ -55,7 +55,7 @@ class _SettingServiceWebviewState extends State<SettingServiceWebview> {
         },
       )
       ..loadRequest(Uri.parse(
-          'https://lavish-flower-814.notion.site/Nero-821c0b5c2bb7428096ca6d4f10728297')); // www.naver.com으로 변경
+          'https://lavish-flower-814.notion.site/1105ebf864b28018866fcab5989847b9')); // www.naver.com으로 변경
   }
 
   @override

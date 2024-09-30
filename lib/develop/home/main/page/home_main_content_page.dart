@@ -32,6 +32,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
 
   final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
   final String _tiktokUrl = 'https://www.tiktok.com/@nero_official';
+  final String _twitterUrl = 'https://x.com/nerolaboratory';
 
   Future<void> _launchUrl(String url, String appUrlScheme) async {
     final Uri appUri = Uri.parse(appUrlScheme);
@@ -50,6 +51,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
 
   void _openInstagram() {
     _launchUrl(_instagramUrl, 'instagram://user?username=nero.cat_official');
+  }
+
+  void _openTwitter() {
+    _launchUrl(_twitterUrl, 'twitter://user?screen_name=nerolaboratory');
   }
 
   void _openTikTok() {
@@ -247,7 +252,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => print("X(Twitter) icon clicked"),
+                    onTap: _openTwitter,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
