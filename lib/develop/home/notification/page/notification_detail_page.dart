@@ -60,24 +60,33 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                                 _currentPage = page;
                               });
                             },
-                            itemCount: notification.imageUrls.length,
+                            itemCount: notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1,
                             itemBuilder: (context, index) {
-                              return Image.network(
-                                notification.imageUrls[index],
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: CustomLoadingIndicator()
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error);
-                                },
-                                fit: BoxFit.cover,
-                              );
+                              if (notification.imageUrls.isNotEmpty) {
+                                return Image.network(
+                                  notification.imageUrls[index],
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CustomLoadingIndicator(),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/develop/default.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return Image.asset(
+                                  'assets/develop/default.png',
+                                  fit: BoxFit.cover,
+                                );
+                              }
                             },
                           ),
                         ),

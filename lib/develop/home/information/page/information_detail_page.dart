@@ -50,30 +50,28 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
 
         return Stack(
           children: [
-            // 메인 콘텐츠
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (information.imageUrls.isNotEmpty)
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 400,
-                          width: double.infinity,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(() {
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: information.imageUrls.length,
-                            itemBuilder: (context, index) {
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          itemCount: information.imageUrls.isNotEmpty ? information.imageUrls.length : 1,
+                          itemBuilder: (context, index) {
+                            if (information.imageUrls.isNotEmpty) {
                               return Image.network(
                                 information.imageUrls[index],
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
+                                loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) {
                                     return child;
                                   }
@@ -82,25 +80,30 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error);
+                                  return Image.asset(
+                                    'assets/develop/default.png',
+                                    fit: BoxFit.cover,
+                                  );
                                 },
                                 fit: BoxFit.cover,
                               );
-                            },
-                          ),
+                            } else {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
                         ),
-                        Positioned(
-                          bottom: 24,
-                          left: 0,
-                          right: 0,
-                          child: _buildIndicator(information.imageUrls.length),
-                        ),
-                      ],
-                    )
-                  else
-                    const Center(
-                        child: Text('이미지가 없습니다.',
-                            style: TextStyle(color: Colors.white))),
+                      ),
+                      Positioned(
+                        bottom: 24,
+                        left: 0,
+                        right: 0,
+                        child: _buildIndicator(information.imageUrls.isNotEmpty ? information.imageUrls.length : 1),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
 
                   InformationTitleWidget(title: information.title),

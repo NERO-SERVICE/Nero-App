@@ -61,24 +61,33 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
                                 _currentPage = page;
                               });
                             },
-                            itemCount: magazine.imageUrls.length,
+                            itemCount: magazine.imageUrls.isNotEmpty ? magazine.imageUrls.length : 1,
                             itemBuilder: (context, index) {
-                              return Image.network(
-                                magazine.imageUrls[index],
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: CustomLoadingIndicator()
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error);
-                                },
-                                fit: BoxFit.cover,
-                              );
+                              if (magazine.imageUrls.isNotEmpty) {
+                                return Image.network(
+                                  magazine.imageUrls[index],
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CustomLoadingIndicator(),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/develop/default.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return Image.asset(
+                                  'assets/develop/default.png',
+                                  fit: BoxFit.cover,
+                                );
+                              }
                             },
                           ),
                         ),
