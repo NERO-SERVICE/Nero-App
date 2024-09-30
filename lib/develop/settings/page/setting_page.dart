@@ -105,10 +105,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MagazineListPage()),
-                );
+                _showDeleteAccountDialog(context, authController);
               },
               child: Text(
                 '회원탈퇴',
@@ -149,6 +146,33 @@ class _SettingPageState extends State<SettingPage> {
           ),
         ],
       ),
+    );
+  }
+  void _showDeleteAccountDialog(BuildContext context, AuthenticationController authController) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('회원 탈퇴'),
+          content: Text('정말로 계정을 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // 취소 버튼
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+                await authController.deleteAccount(); // 회원탈퇴 메서드 호출
+              },
+              child: Text(
+                '탈퇴',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

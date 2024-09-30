@@ -208,4 +208,28 @@ class AuthenticationRepository extends GetxService {
       throw e;
     }
   }
+
+  Future<bool> deleteAccount() async {
+    try {
+      final tokens = await getDrfTokens();
+      final String? accessToken = tokens['accessToken'];
+      print("회원탈퇴 accessToken: ${accessToken}");
+
+      if (accessToken == null) {
+        throw Exception('Access token is missing');
+      }
+
+      final response = await dioService.delete('/accounts/delete/');
+
+      if (response.statusCode == 204) {
+        await clearDrfTokens();
+        return true;
+      } else {
+        throw Exception('회원 탈퇴 실패: ${response.data}');
+      }
+    } catch (e) {
+      print('회원 탈퇴 실패: $e');
+      throw e;
+    }
+  }
 }

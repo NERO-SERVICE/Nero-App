@@ -8,6 +8,7 @@ class NeroUser extends Equatable {
   final String? email;
   final DateTime? birth;
   final String? sex;
+  final DateTime? deletedAt;
 
   NeroUser({
     this.userId,
@@ -17,6 +18,7 @@ class NeroUser extends Equatable {
     this.email,
     this.birth,
     this.sex,
+    this.deletedAt,
   });
 
   NeroUser.empty()
@@ -26,10 +28,11 @@ class NeroUser extends Equatable {
         nickname = null,
         email = null,
         birth = null,
-        sex = null;
+        sex = null,
+        deletedAt = null;
 
   factory NeroUser.fromJson(Map<String, dynamic> json) {
-    print("Parsing NeroUser from JSON: $json"); // 로깅 추가
+    print("Parsing NeroUser from JSON: $json");
 
     int? parsedUserId;
     int? parsedKakaoId;
@@ -62,6 +65,9 @@ class NeroUser extends Equatable {
           ? DateTime.tryParse(json['birth'].toString())
           : null,
       sex: json['sex'],
+      deletedAt: json['deletedAt'] != null
+          ? DateTime.tryParse(json['deletedAt'].toString())
+          : null,
     );
   }
 
@@ -71,6 +77,7 @@ class NeroUser extends Equatable {
       'email': email,
       'birth': birth?.toIso8601String(),
       'sex': sex,
+      'deletedAt': deletedAt?.toIso8601String(),
     };
   }
 
@@ -82,6 +89,7 @@ class NeroUser extends Equatable {
     String? email,
     DateTime? birth,
     String? sex,
+    DateTime? deletedAt,
   }) {
     return NeroUser(
       userId: userId ?? this.userId,
@@ -91,17 +99,19 @@ class NeroUser extends Equatable {
       email: email ?? this.email,
       birth: birth ?? this.birth,
       sex: sex ?? this.sex,
+      deletedAt: deletedAt ?? this.deletedAt,
     );
   }
 
   @override
   List<Object?> get props => [
-        userId,
-        kakaoId,
-        createdAt,
-        nickname,
-        email,
-        birth,
-        sex,
-      ];
+    userId,
+    kakaoId,
+    createdAt,
+    nickname,
+    email,
+    birth,
+    sex,
+    deletedAt,
+  ];
 }

@@ -110,6 +110,26 @@ class AuthenticationController extends GetxController {
     status(AuthenticationStatus.unknown);
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      final success = await kakaoAuthRepo.deleteAccount();
+      if (success) {
+        Get.offAllNamed('/login');
+        Get.snackbar(
+          '성공',
+          '회원 탈퇴가 완료되었습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        '오류',
+        '회원 탈퇴에 실패했습니다: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   // 카카오 로그인 처리 메서드 수정
   Future<void> handleKakaoLogin() async {
     try {

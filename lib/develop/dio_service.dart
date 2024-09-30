@@ -36,7 +36,7 @@ class DioService {
         if (_accessToken.isNotEmpty) {
           // 클라이언트에 accessToken이 존재할 경우 헤더에 추가
           options.headers['Authorization'] = 'Bearer $_accessToken';
-          print("accessToken: $_accessToken");
+          print("Authorization 헤더 추가: Bearer $_accessToken"); // 로그 추가
         }
         return handler.next(options);
       },
