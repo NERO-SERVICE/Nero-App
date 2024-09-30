@@ -34,8 +34,11 @@ class _MyPage extends State<MyPage> {
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context, Rx<DateTime> date,
-      Set<DateTime> recordedDates) async {
+  Future<DateTime?> _selectDate(
+      BuildContext context,
+      DateTime initialDate,
+      Set<DateTime> recordedDates,
+      ) async {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -54,8 +57,8 @@ class _MyPage extends State<MyPage> {
                 ),
               ),
               child: CalendarWidget(
-                initialSelectedDate: date.value,
-                initialFocusedDate: date.value,
+                initialSelectedDate: initialDate,
+                initialFocusedDate: initialDate,
                 markedDates: recordedDates,
               ),
             ),
@@ -63,10 +66,7 @@ class _MyPage extends State<MyPage> {
         );
       },
     );
-
-    if (selectedDate != null && selectedDate != date.value) {
-      date.value = selectedDate;
-    }
+    return selectedDate; // 모달이 닫힐 때 null 또는 선택된 날짜 반환
   }
 
   Widget _mypageTitle({required String title, required String content}) {
@@ -506,69 +506,66 @@ class _MyPage extends State<MyPage> {
               labelTop: '하루 설문',
               labelBottom: '오늘 하루는 어땠어요?',
               onPressed: () async {
-                await _monthlyCheckController
-                    .fetchSurveyRecordedDates(selectedDate.value.year);
-                await _selectDate(
+                final date = await _selectDate(
                   context,
-                  selectedDate,
+                  DateTime.now(),
                   _monthlyCheckController.surveyRecordedDates,
                 );
-                if (selectedDate.value != null) {
+                if (date != null) {
+                  await _monthlyCheckController.fetchSurveyRecordedDates(date.year);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserSurveyLogPage(
-                        selectedDate: selectedDate.value,
+                        selectedDate: date,
                       ),
                     ),
                   );
                 }
               },
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             _buildCustomButton(
               context,
               labelTop: '부작용 설문',
               labelBottom: '평소와 다른 증상이 나타났나요?',
               onPressed: () async {
-                await _monthlyCheckController
-                    .fetchSideEffectRecordedDates(selectedDate.value.year);
-                await _selectDate(
+                final date = await _selectDate(
                   context,
-                  selectedDate,
+                  DateTime.now(),
                   _monthlyCheckController.sideEffectRecordedDates,
                 );
-                if (selectedDate.value != null) {
+                if (date != null) {
+                  await _monthlyCheckController.fetchSideEffectRecordedDates(date.year);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserSideEffectLogPage(
-                        selectedDate: selectedDate.value,
+                        selectedDate: date,
                       ),
                     ),
                   );
                 }
               },
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             _buildCustomButton(
               context,
               labelTop: '셀프 기록',
               labelBottom: '오늘 추가로 더 남기고 싶은 말이 있나요?',
               onPressed: () async {
-                await _monthlyCheckController
-                    .fetchSelfRecordRecordedDates(selectedDate.value.year);
-                await _selectDate(
+                final date = await _selectDate(
                   context,
-                  selectedDate,
+                  DateTime.now(),
                   _monthlyCheckController.selfRecordRecordedDates,
                 );
-                if (selectedDate.value != null) {
+                if (date != null) {
+                  await _monthlyCheckController.fetchSelfRecordRecordedDates(date.year);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserSelfRecordPage(
-                        selectedDate: selectedDate.value,
+                        selectedDate: date,
                       ),
                     ),
                   );
