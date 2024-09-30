@@ -73,6 +73,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  blurhash:
+    dependency: "direct main"
+    description:
+      name: blurhash
+      sha256: "9606bcbb744e99f66e75eaf25227966dc59a9ab8ce9ad8e66faab0ffe6edbdea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
+  blurhash_dart:
+    dependency: transitive
+    description:
+      name: blurhash_dart
+      sha256: "43955b6c2e30a7d440028d1af0fa185852f3534b795cc6eb81fbf397b464409f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   boolean_selector:
     dependency: transitive
     description:

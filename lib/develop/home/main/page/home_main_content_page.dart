@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -24,11 +26,12 @@ class HomeMainContentPage extends StatefulWidget {
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
       Get.put(NotificationController(), permanent: true);
-  final PageController _pageController = PageController(viewportFraction: 0.7);
+  final PageController _pageController = PageController(viewportFraction: 0.6);
   final InformationRepository _informationRepository = InformationRepository();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
+  final RxInt _currentPage = 0.obs;
 
   final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
   final String _tiktokUrl = 'https://www.tiktok.com/@nero_official';
@@ -97,13 +100,11 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             arguments: {'noticeId': notification.noticeId});
       },
       behavior: HitTestBehavior.translucent,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: SizedBox(
-              width: 300,
-              height: 400,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            Positioned.fill(
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
                       notification.imageUrls.first,
@@ -114,30 +115,39 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       fit: BoxFit.cover,
                     ),
             ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.9),
-                  ],
-                  stops: [0.3, 1.0],
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.7),
+                    ],
+                    stops: [0.6, 1.0],
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 36,
-            left: 24,
-            right: 24,
-            child: subInfo(notification),
-          ),
-        ],
+            Positioned(
+              bottom: 36,
+              left: 24,
+              right: 24,
+              child: Text(
+                notification.title,
+                style: const TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -152,7 +162,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
           color: Color(0xff323232).withOpacity(0.5),
         ),
         width: 300,
-        height: 400,
+        height: 300,
       ),
     );
   }
@@ -321,151 +331,230 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (_notificationController.isLoading.value) {
+      body: Obx(
+        () {
+          if (_notificationController.isLoading.value) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: kToolbarHeight + 56),
+                  SizedBox(
+                    height: 300,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: 3, // Number of skeletons
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: _skeletonNotification(),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          '개발자 공지사항',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            '더보기',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _skeletonNews(),
+                  const SizedBox(height: 40),
+                  const CustomDivider(),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          '매거진',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            '더보기',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _skeletonMagazines(),
+                  const SizedBox(height: 40),
+                  _copyrightInfo(),
+                ],
+              ),
+            );
+          }
+
+          if (_notificationController.notifications.isEmpty) {
+            return Center(
+              child: Text(
+                '현재 네로의 공지가 없습니다',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Color(0xff3C3C3C),
+                ),
+              ),
+            );
+          }
+
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: kToolbarHeight + 56),
-                SizedBox(
-                  height: 400,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: 3, // Number of skeletons
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: _skeletonNotification(),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        '개발자 공지사항',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
+                    Container(
+                      child: Obx(() {
+                        int currentIndex = _currentPage.value;
+                        if (currentIndex >=
+                            _notificationController.notifications.length) {
+                          currentIndex = 0;
+                        }
+                        String imageUrl;
+                        if (_notificationController
+                            .notifications[currentIndex].imageUrls.isNotEmpty) {
+                          imageUrl = _notificationController
+                              .notifications[currentIndex].imageUrls.first;
+                          return Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          );
+                        } else {
+                          // imageUrls가 비어있으면 default.png를 표시
+                          return Image.asset(
+                            'assets/develop/default.png',
+                            fit: BoxFit.cover,
+                          );
+                        }
+                      }),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          '더보기',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Color(0xffD9D9D9),
+                    // 블러 효과
+                    Positioned.fill(
+                      child: Container(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: Container(
+                            color: Colors.black.withOpacity(0.5),
                           ),
                         ),
                       ),
                     ),
+                    // 그라데이션 효과
+                    Positioned.fill(
+                      child: Container(
+                        height: 300 + 60,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Theme.of(context).scaffoldBackgroundColor,
+                            ],
+                            stops: [
+                              0.5,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // PageView
+                    Column(
+                      children: [
+                        SizedBox(height: kToolbarHeight + 56),
+                        Container(
+                          height: 300,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount:
+                                _notificationController.notifications.length,
+                            onPageChanged: (index) {
+                              _currentPage.value = index;
+                            },
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: _notificationOne(
+                                  _notificationController.notifications[index],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ],
                 ),
-                _skeletonNews(),
+                // 나머지 콘텐츠
+                HomeInformationPage(
+                    latestInformationFuture: _latestInformationsFuture),
                 const SizedBox(height: 40),
                 const CustomDivider(),
                 const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        '매거진',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          '더보기',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Color(0xffD9D9D9),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _skeletonMagazines(),
+                HomeMagazinePage(latestMagazinesFuture: _latestMagazinesFuture),
                 const SizedBox(height: 40),
                 _copyrightInfo(),
               ],
             ),
           );
-        }
-
-        if (_notificationController.notifications.isEmpty) {
-          return Center(
-            child: Text(
-              '현재 네로의 공지가 없습니다',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-                color: Color(0xff3C3C3C),
-              ),
-            ),
-          );
-        }
-
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: kToolbarHeight + 56),
-              SizedBox(
-                height: 400,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _notificationController.notifications.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: _notificationOne(
-                        _notificationController.notifications[index],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 30),
-              HomeInformationPage(
-                  latestInformationFuture: _latestInformationsFuture),
-              const SizedBox(height: 40),
-              const CustomDivider(),
-              const SizedBox(height: 30),
-              HomeMagazinePage(latestMagazinesFuture: _latestMagazinesFuture),
-              const SizedBox(height: 40),
-              _copyrightInfo(),
-            ],
-          ),
-        );
-      }),
+        },
+      ),
     );
   }
 }
