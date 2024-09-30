@@ -385,20 +385,35 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     );
   }
 
-  Widget _buildMenstruationDayCell(int day, bool isMenstruationDay) {
-    Color backgroundColor = isMenstruationDay ? Color(0xffFFADC6) : Colors.grey;
+  Widget _buildMenstruationDayCell(int day, bool isMenstruationDay,
+      {double size = 40.0, ShapeBorder? shape, Color? color}) {
+    Color backgroundColor = color ?? (isMenstruationDay ? Color(0xffFFADC6) : Colors.grey);
+    ShapeBorder cellShape = shape ?? RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    );
 
     return Container(
-      margin: EdgeInsets.all(4),
-      decoration: BoxDecoration(
+      width: size,
+      height: size,
+      margin: EdgeInsets.all(2),
+      decoration: ShapeDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
+        shape: cellShape,
       ),
       child: Center(
-        child: Text('$day', style: TextStyle(color: Colors.white)),
+        child: Text(
+          '$day',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w300,
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
+
 
   void _showMenstruationInputDialog() {
     Rx<DateTime> startDate = DateTime.now().obs;

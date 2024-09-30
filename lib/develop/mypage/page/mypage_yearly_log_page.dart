@@ -410,7 +410,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
 
   Widget _buildDayCellWithShadow(int day, bool hasDose, bool hasSideEffect) {
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: hasDose ? Color(0xffD0EE17) : Colors.grey,
         borderRadius: BorderRadius.circular(8),
@@ -425,7 +425,12 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
             : [],
       ),
       child: Center(
-        child: Text('$day', style: TextStyle(color: Colors.white)),
+        child: Text('$day', style: TextStyle(
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w300,
+          fontSize: 12,
+          color: Colors.white,
+        ),),
       ),
     );
   }
@@ -441,13 +446,21 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
     }
 
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
-        child: Text('$day', style: TextStyle(color: Colors.white)),
+        child: Text(
+          '$day',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w300,
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
