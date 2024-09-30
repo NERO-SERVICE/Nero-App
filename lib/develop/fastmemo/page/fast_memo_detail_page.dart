@@ -449,7 +449,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SvgPicture.asset(
                 iconPath,
