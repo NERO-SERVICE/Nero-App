@@ -9,6 +9,7 @@ import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../common/components/custom_complete_button.dart';
 import '../../common/components/custom_divider.dart';
 import 'fast_memo_detail_page.dart';
 
@@ -365,30 +366,15 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
   }
 
   Widget _buildCompleteButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 105),
-      child: ElevatedButton(
-        onPressed: _completeSelectedMemos,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xff1C1B1B),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
-        child: Center(
-          child: Text(
-            "선택하기",
-            style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Color(0xffD0EE17)),
-          ),
-        ),
-      ),
+    bool isEnabled = _selectedMap.values.any((isSelected) => isSelected);
+
+    return CustomCompleteButton(
+      onPressed: isEnabled ? _completeSelectedMemos : null,
+      text: "선택하기",
+      isEnabled: isEnabled,
     );
   }
+
 
   Widget _emptyNextButton() {
     return Padding(

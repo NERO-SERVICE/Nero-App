@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_complete_button.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/layout/common_layout.dart';
 import 'package:nero_app/develop/memories/controller/memories_controller.dart';
@@ -268,7 +269,8 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
+
+                      CustomCompleteButton(
                         onPressed: () async {
                           if (_textController.text.isNotEmpty) {
                             await _memoriesController
@@ -277,25 +279,8 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
                             Navigator.of(context).pop();
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff323232),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 66.0,
-                          ),
-                        ),
-                        child: Text(
-                          '추가하기',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: Color(0xffD0EE17),
-                          ),
-                        ),
+                        text: '추가하기',
+                        isEnabled: true,
                       ),
                       const SizedBox(height: 30),
                     ],

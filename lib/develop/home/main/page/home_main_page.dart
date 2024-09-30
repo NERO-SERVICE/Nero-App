@@ -7,6 +7,8 @@ import 'package:nero_app/develop/home/main/page/home_main_content_page.dart';
 import 'package:nero_app/develop/mail/controller/mail_controller.dart';
 import 'package:nero_app/develop/settings/page/setting_page.dart';
 
+import '../../../common/components/custom_complete_button.dart';
+
 class HomeMainPage extends StatefulWidget {
   const HomeMainPage({super.key});
 
@@ -113,33 +115,15 @@ class _HomeMainPageState extends State<HomeMainPage> {
                       ),
                       const SizedBox(height: 20),
                       Center(
-                        child: ElevatedButton(
+                        child: CustomCompleteButton(
                           onPressed: () {
-                            _mailController.suggestion.value =
-                                _suggestionController.text;
+                            _mailController.suggestion.value = _suggestionController.text;
                             _mailController.sendMail();
                             _suggestionController.clear();
                             Navigator.of(context).pop();
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff323232),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 66.0,
-                            ),
-                          ),
-                          child: Text(
-                            '보내기',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Color(0xffD0EE17),
-                            ),
-                          ),
+                          text: '보내기',
+                          isEnabled: true,
                         ),
                       ),
                     ],

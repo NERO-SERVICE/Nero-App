@@ -14,6 +14,7 @@ import 'package:nero_app/develop/mypage/page/user_self_record_page.dart';
 import 'package:nero_app/develop/mypage/page/user_side_effect_log_page.dart';
 import 'package:nero_app/develop/mypage/page/user_survey_log_page.dart';
 
+import '../../common/components/custom_complete_button.dart';
 import '../../memories/controller/memories_controller.dart';
 import '../model/menstruation_cycle.dart';
 
@@ -30,7 +31,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
 
   // 약 복용 및 부작용 관련 변수들
   final PageController _pageController =
-  PageController(initialPage: DateTime.now().month - 1);
+      PageController(initialPage: DateTime.now().month - 1);
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
   int currentIndex = DateTime.now().month - 1;
@@ -38,7 +39,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
 
   // 생리 주기 관련 변수들
   final PageController _menstruationPageController =
-  PageController(initialPage: DateTime.now().month - 1);
+      PageController(initialPage: DateTime.now().month - 1);
   final RxInt menstruationCurrentMonth = DateTime.now().month.obs;
   final RxInt menstruationCurrentYear = DateTime.now().year.obs;
   int menstruationCurrentIndex = DateTime.now().month - 1;
@@ -553,10 +554,8 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 66.0,
-                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 33),
                           ),
                           child: Text(
                             '입력하기',
@@ -947,7 +946,7 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
+                      CustomCompleteButton(
                         onPressed: () {
                           if (_textController.text.isNotEmpty) {
                             _memoriesController.addItem(_textController.text);
@@ -955,25 +954,8 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
                             Navigator.of(context).pop();
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff323232),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 66.0,
-                          ),
-                        ),
-                        child: Text(
-                          '추가하기',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: Color(0xffD0EE17),
-                          ),
-                        ),
+                        text: '추가하기',
+                        isEnabled: true,
                       ),
                       const SizedBox(height: 30),
                     ],
@@ -1407,7 +1389,8 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Rx<DateTime> date, Set<DateTime> recordedDates) async {
+  Future<void> _selectDate(BuildContext context, Rx<DateTime> date,
+      Set<DateTime> recordedDates) async {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: Colors.transparent,

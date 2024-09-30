@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/components/custom_detail_app_bar.dart';
+import '../../../common/components/custom_submit_button.dart';
 import '../controller/recall_controller.dart';
 
 class SideEffectPage extends StatelessWidget {
@@ -100,39 +101,22 @@ class SideEffectPage extends StatelessWidget {
                         }),
                       ),
                       Center(
-                        child: ElevatedButton(
+                        child: CustomSubmitButton(
                           onPressed: () async {
                             await controller.submitSideEffectResponses();
                             final snackBar = SnackBar(
-                              content: Text('설문이 제출되었습니다.'),
+                              content: Text('부작용 설문이 제출되었습니다.'),
                               duration: Duration(seconds: 1),
                             );
 
                             final snackBarController =
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                            // 스낵바가 닫힌 후에 페이지 pop
                             await snackBarController.closed;
                             Navigator.pop(context);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.withOpacity(0.3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 17, horizontal: 72.0),
-                          ),
-                          child: Text(
-                            '제출하기',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Color(0xffFFFFFF),
-                            ),
-                          ),
+                          text: '제출하기',
+                          isEnabled: true,
                         ),
                       ),
                       SizedBox(height: 30),
@@ -165,9 +149,9 @@ class SideEffectPage extends StatelessWidget {
             controller.updateSideEffectAnswer(index, answer);
           },
           child: Container(
-            width: 70,
-            height: 30,
-            margin: const EdgeInsets.only(bottom: 5.0),
+            width: 100,
+            height: 40,
+            margin: const EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
               color: isSelected
                   ? Color(0xff1C1B1B)

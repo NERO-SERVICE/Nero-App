@@ -9,6 +9,7 @@ import 'package:nero_app/develop/common/components/custom_divider.dart';
 
 import '../../../../common/components/app_font.dart';
 import '../../../../common/components/calandar_widget.dart';
+import '../../../../common/components/custom_submit_button.dart';
 import '../../../../common/components/time_selection_widget.dart';
 import '../../model/drug.dart';
 import '../../model/drug_archive.dart';
@@ -148,33 +149,17 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ],
               ),
             ),
-            CustomDivider(),
             const SizedBox(height: 30),
             Center(
-              child: ElevatedButton(
+              child: CustomSubmitButton(
                 onPressed: () async {
                   await _submitForm();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('진료 기록이 제출되었습니다.')),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 17.0, horizontal: 73.0),
-                ),
-                child: Text(
-                  '제출하기',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Color(0xffFFFFFF),
-                  ),
-                ),
+                text: '제출하기',
+                isEnabled: true,
               ),
             ),
             const SizedBox(height: 30),

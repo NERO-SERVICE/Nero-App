@@ -303,8 +303,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _clinicWriteWidget(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 75.0),
+    return Center( // 가운데 정렬을 위해 Center 위젯 사용
       child: ElevatedButton(
         onPressed: () {
           Get.to(() => ClinicWritePage());
@@ -314,17 +313,15 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 33),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            '작성하기',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w600,
-              color: Color(0xffD0EE17),
-              fontSize: 16,
-            ),
+        child: Text(
+          '작성하기',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            color: Color(0xffD0EE17),
+            fontSize: 16,
           ),
         ),
       ),

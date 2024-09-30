@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
+import '../../../common/components/custom_complete_button.dart';
 import '../../clinic/model/drug.dart';
 import '../../clinic/repository/clinic_repository.dart';
 
@@ -268,26 +269,10 @@ class SubmitButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return CustomCompleteButton(
       onPressed: isEnabled ? onSubmit : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isEnabled ? Color(0xff1C1B1B) : Color(0xff3C3C3C),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 33),
-        child: Text(
-          '선택하기',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w500,
-            color: Color(0xffD0EE17),
-            fontSize: 16,
-          ),
-        ),
-      ),
+      isEnabled: isEnabled,
+      text: "선택하기",
     );
   }
 }
