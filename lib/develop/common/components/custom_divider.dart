@@ -8,7 +8,7 @@ class CustomDivider extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 8,
-      color: const Color(0xFF1C1C1C),
+      color: const Color(0xFF222222),
     );
   }
 }

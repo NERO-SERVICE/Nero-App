@@ -33,7 +33,6 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(height: kToolbarHeight + 56),
-            CustomDivider(),
             SizedBox(height: 18),
             _todaylogTitle(
               title: '데일리 복용관리',

@@ -117,8 +117,6 @@ class _MyPage extends State<MyPage> with SingleTickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: kToolbarHeight + 56),
-            CustomDivider(),
-            SizedBox(height: 52),
             _myMemoriesButton(),
             SizedBox(height: 40),
             CustomDivider(),
