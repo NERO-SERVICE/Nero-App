@@ -13,7 +13,7 @@ import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
-import 'package:shimmer/shimmer.dart'; // Import Shimmer
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeMainContentPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class HomeMainContentPage extends StatefulWidget {
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
       Get.put(NotificationController(), permanent: true);
-  final PageController _pageController = PageController(viewportFraction: 0.6);
+  final PageController _pageController = PageController(viewportFraction: 0.6, initialPage: 1000);
   final InformationRepository _informationRepository = InformationRepository();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<Information>> _latestInformationsFuture;
@@ -444,6 +444,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             );
           }
 
+          final notifications = _notificationController.notifications;
+
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,16 +454,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   children: [
                     Container(
                       child: Obx(() {
-                        int currentIndex = _currentPage.value;
-                        if (currentIndex >=
-                            _notificationController.notifications.length) {
-                          currentIndex = 0;
-                        }
+                        int currentIndex = _currentPage.value % notifications.length;
                         String imageUrl;
-                        if (_notificationController
-                            .notifications[currentIndex].imageUrls.isNotEmpty) {
-                          imageUrl = _notificationController
-                              .notifications[currentIndex].imageUrls.first;
+                        if (notifications[currentIndex].imageUrls.isNotEmpty) {
+                          imageUrl = notifications[currentIndex].imageUrls.first;
                           return Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
@@ -473,7 +469,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             },
                           );
                         } else {
-                          // imageUrls가 비어있으면 default.png를 표시
                           return Image.asset(
                             'assets/develop/default.png',
                             fit: BoxFit.cover,
@@ -520,17 +515,18 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                           height: 300,
                           child: PageView.builder(
                             controller: _pageController,
-                            itemCount:
-                                _notificationController.notifications.length,
                             onPageChanged: (index) {
+                              // 현재 페이지 인덱스를 업데이트할 때 모듈러 연산을 사용.
                               _currentPage.value = index;
                             },
                             itemBuilder: (context, index) {
+                              // 인덱스를 데이터 리스트의 길이로 나눈 나머지를 사용
+                              int dataIndex = index % notifications.length;
                               return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: _notificationOne(
-                                  _notificationController.notifications[index],
+                                  notifications[dataIndex],
                                 ),
                               );
                             },
@@ -541,7 +537,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ],
                 ),
-                // 나머지 콘텐츠
                 HomeInformationPage(
                     latestInformationFuture: _latestInformationsFuture),
                 const SizedBox(height: 40),
