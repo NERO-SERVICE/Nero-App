@@ -15,13 +15,6 @@ class MyDrugArchive extends Equatable {
     this.capacity,
   });
 
-  MyDrugArchive.empty()
-      : myArchiveId = 1,
-        archiveId = 1,
-        drugName = '',
-        target = null,
-        capacity = null;
-
   factory MyDrugArchive.fromJson(Map<String, dynamic> json) {
     return MyDrugArchive(
       myArchiveId: json['myArchiveId'] ?? 1,

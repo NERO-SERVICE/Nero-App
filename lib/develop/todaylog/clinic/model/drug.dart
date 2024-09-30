@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import 'my_drug_archive.dart';
 
 class Drug extends Equatable {
@@ -19,51 +18,26 @@ class Drug extends Equatable {
     required this.allow,
   });
 
-  Drug.empty()
-      : drugId = 1,
-        myDrugArchive = MyDrugArchive.empty(),
-        number = 0,
-        initialNumber = 0,
-        time = '',
-        allow = true;
-
   factory Drug.fromJson(Map<String, dynamic> json) {
     return Drug(
       drugId: json['drugId'] ?? 1,
       myDrugArchive: MyDrugArchive.fromJson(json['myDrugArchive']),
       number: json['number'] ?? 0,
       initialNumber: json['initialNumber'] ?? 0,
-      time: json['time'] ?? '',
+      time: json['time'] ?? '아침',
       allow: json['allow'] ?? true,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'drugId': drugId,
       'myDrugArchive': myDrugArchive.toJson(),
       'number': number,
       'initialNumber': initialNumber,
       'time': time,
       'allow': allow,
     };
-  }
-
-  Drug copyWith({
-    int? drugId,
-    MyDrugArchive? myDrugArchive,
-    int? number,
-    int? initialNumber,
-    String? time,
-    bool? allow,
-  }) {
-    return Drug(
-      drugId: drugId ?? this.drugId,
-      myDrugArchive: myDrugArchive ?? this.myDrugArchive,
-      number: number ?? this.number,
-      initialNumber: initialNumber ?? this.initialNumber,
-      time: time ?? this.time,
-      allow: allow ?? this.allow,
-    );
   }
 
   @override
