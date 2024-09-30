@@ -47,61 +47,56 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (notification.imageUrls.isNotEmpty)
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 400,
-                          width: double.infinity,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(() {
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1,
-                            itemBuilder: (context, index) {
-                              if (notification.imageUrls.isNotEmpty) {
-                                return Image.network(
-                                  notification.imageUrls[index],
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return Center(
-                                      child: CustomLoadingIndicator(),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/develop/default.png',
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return Image.asset(
-                                  'assets/develop/default.png',
-                                  fit: BoxFit.cover,
-                                );
-                              }
-                            },
-                          ),
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          itemCount: notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1,
+                          itemBuilder: (context, index) {
+                            if (notification.imageUrls.isNotEmpty) {
+                              return Image.network(
+                                notification.imageUrls[index],
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Center(
+                                    child: CustomLoadingIndicator(),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/develop/default.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
                         ),
-                        Positioned(
-                          bottom: 24,
-                          left: 0,
-                          right: 0,
-                          child: _buildIndicator(notification.imageUrls.length),
-                        ),
-                      ],
-                    )
-                  else
-                    const Center(
-                        child: Text('이미지가 없습니다.',
-                            style: TextStyle(color: Colors.white))),
+                      ),
+                      Positioned(
+                        bottom: 24,
+                        left: 0,
+                        right: 0,
+                        child: _buildIndicator(notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
 
                   // 공지사항 제목

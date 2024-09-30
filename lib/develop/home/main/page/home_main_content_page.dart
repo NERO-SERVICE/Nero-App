@@ -110,7 +110,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       fit: BoxFit.cover,
                     )
                   : Image.asset(
-                      'assets/images/default.png',
+                      'assets/develop/default.png',
                       fit: BoxFit.cover,
                     ),
             ),

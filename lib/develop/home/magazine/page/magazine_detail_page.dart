@@ -43,68 +43,65 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
 
         return Stack(
           children: [
-            // 메인 콘텐츠
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (magazine.imageUrls.isNotEmpty)
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 400,
-                          width: double.infinity,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(() {
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: magazine.imageUrls.isNotEmpty ? magazine.imageUrls.length : 1,
-                            itemBuilder: (context, index) {
-                              if (magazine.imageUrls.isNotEmpty) {
-                                return Image.network(
-                                  magazine.imageUrls[index],
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return Center(
-                                      child: CustomLoadingIndicator(),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/develop/default.png',
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return Image.asset(
-                                  'assets/develop/default.png',
-                                  fit: BoxFit.cover,
-                                );
-                              }
-                            },
-                          ),
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          itemCount: magazine.imageUrls.isNotEmpty
+                              ? magazine.imageUrls.length
+                              : 1,
+                          itemBuilder: (context, index) {
+                            if (magazine.imageUrls.isNotEmpty) {
+                              return Image.network(
+                                magazine.imageUrls[index],
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Center(
+                                    child: CustomLoadingIndicator(),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/develop/default.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
                         ),
-                        Positioned(
-                          bottom: 24,
-                          left: 0,
-                          right: 0,
-                          child: _buildIndicator(magazine.imageUrls.length),
-                        ),
-                      ],
-                    )
-                  else
-                    const Center(
-                        child: Text('이미지가 없습니다.',
-                            style: TextStyle(color: Colors.white))),
-                  const SizedBox(height: 30),
-
+                      ),
+                      Positioned(
+                        bottom: 24,
+                        left: 0,
+                        right: 0,
+                        child: _buildIndicator(magazine.imageUrls.isNotEmpty
+                            ? magazine.imageUrls.length
+                            : 1),
+                      ),
+                    ],
+                  ),
                   // 매거진 제목
                   MagazineTitleWidget(title: magazine.title),
                   const SizedBox(height: 30),
