@@ -92,6 +92,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
         key: _formKey,
         child: ListView(
           children: [
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(

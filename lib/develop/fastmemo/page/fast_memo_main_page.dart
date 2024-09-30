@@ -35,7 +35,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: kToolbarHeight + 56),
-              SizedBox(height: 18),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
