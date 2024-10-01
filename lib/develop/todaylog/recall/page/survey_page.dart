@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/components/custom_detail_app_bar.dart';
+import '../../../common/components/custom_loading_indicator.dart';
 import '../../../common/components/custom_submit_button.dart';
 import '../controller/recall_controller.dart';
 import '../model/question.dart';
@@ -63,7 +64,7 @@ class _SurveyPageState extends State<SurveyPage>
               Consumer<RecallController>(
                 builder: (context, controller, child) {
                   if (controller.isLoading && controller.subtypes.isEmpty) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CustomLoadingIndicator());
                   }
 
                   // TabController 초기화
@@ -77,7 +78,7 @@ class _SurveyPageState extends State<SurveyPage>
                     _tabController.addListener(() {
                       if (_tabController.indexIsChanging) {
                         final selectedSubtype =
-                        controller.subtypes[_tabController.index];
+                            controller.subtypes[_tabController.index];
                         if (selectedSubtype.isCompleted) {
                           // 비활성화된 탭 선택 시 이전 탭으로 되돌리고 메시지 표시
                           _tabController.index = _previousIndex;
@@ -98,15 +99,21 @@ class _SurveyPageState extends State<SurveyPage>
                     if (controller.selectedSubtype == null &&
                         controller.subtypes.isNotEmpty) {
                       int initialIndex =
-                      controller.subtypes.indexWhere((s) => !s.isCompleted);
+                          controller.subtypes.indexWhere((s) => !s.isCompleted);
                       if (initialIndex == -1) {
                         // 모든 탭이 완료된 경우
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('모든 설문조사가 완료되었습니다.')),
-                          );
-                        });
-                        return Container();
+                        return Center(
+                          child: Text(
+                            '모든 설문조사가 완료되었습니다.',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
                       }
                       _tabController.index = initialIndex;
                       controller.selectedSubtype =
@@ -169,54 +176,54 @@ class _SurveyPageState extends State<SurveyPage>
                       // 질문 및 답변
                       Expanded(
                         child: controller.isLoading &&
-                            controller.questions.isEmpty
+                                controller.questions.isEmpty
                             ? Center(child: CircularProgressIndicator())
                             : controller.questions.isEmpty
-                            ? Center(
-                          child: Text(
-                            '질문이 없습니다.',
-                            style:
-                            TextStyle(color: Color(0xffD9D9D9)),
-                          ),
-                        )
-                            : SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.center,
-                            children: List.generate(
-                                controller.questions.length, (index) {
-                              final question =
-                              controller.questions[index];
-                              return Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  // 질문 앞에 인덱스 추가
-                                  Text(
-                                    '${index + 1}. ${question.questionText}',
-                                    style: TextStyle(
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: Colors.white,
+                                ? Center(
+                                    child: Text(
+                                      '질문이 없습니다.',
+                                      style:
+                                          TextStyle(color: Color(0xffD9D9D9)),
                                     ),
-                                    textAlign: TextAlign.left,
+                                  )
+                                : SingleChildScrollView(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32, vertical: 16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: List.generate(
+                                          controller.questions.length, (index) {
+                                        final question =
+                                            controller.questions[index];
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            // 질문 앞에 인덱스 추가
+                                            Text(
+                                              '${index + 1}. ${question.questionText}',
+                                              style: TextStyle(
+                                                fontFamily: 'Pretendard',
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            SizedBox(height: 18),
+                                            _buildAnswerChoices(
+                                              context,
+                                              controller: controller,
+                                              index: index,
+                                              question: question,
+                                            ),
+                                            SizedBox(height: 60),
+                                          ],
+                                        );
+                                      }),
+                                    ),
                                   ),
-                                  SizedBox(height: 18),
-                                  _buildAnswerChoices(
-                                    context,
-                                    controller: controller,
-                                    index: index,
-                                    question: question,
-                                  ),
-                                  SizedBox(height: 60),
-                                ],
-                              );
-                            }),
-                          ),
-                        ),
                       ),
                       // 제출 버튼
                       if (controller.questions.isNotEmpty)
@@ -232,8 +239,8 @@ class _SurveyPageState extends State<SurveyPage>
                                 );
 
                                 final snackBarController =
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
 
                                 await snackBarController.closed;
                                 Navigator.pop(context);
@@ -255,11 +262,11 @@ class _SurveyPageState extends State<SurveyPage>
   }
 
   Widget _buildAnswerChoices(
-      BuildContext context, {
-        required RecallController controller,
-        required int index,
-        required Question question,
-      }) {
+    BuildContext context, {
+    required RecallController controller,
+    required int index,
+    required Question question,
+  }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: question.answerChoices.map((answerChoice) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/components/custom_detail_app_bar.dart';
@@ -61,7 +62,7 @@ class _SideEffectPageState extends State<SideEffectPage>
               Consumer<RecallController>(
                 builder: (context, controller, child) {
                   if (controller.isLoading && controller.subtypes.isEmpty) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CustomLoadingIndicator());
                   }
 
                   // TabController 초기화
@@ -77,8 +78,11 @@ class _SideEffectPageState extends State<SideEffectPage>
                         final selectedSubtype =
                             controller.subtypes[_tabController.index];
                         if (selectedSubtype.isCompleted) {
-                          // 이전 탭으로 되돌리고 중앙에 메시지 표시
-                          setState(() {}); // 상태 업데이트
+                          // 비활성화된 탭 선택 시 이전 탭으로 되돌리고 메시지 표시
+                          _tabController.index = _previousIndex;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('이미 완료된 설문입니다.')),
+                          );
                         } else {
                           // 정상적으로 탭 선택 시 이전 인덱스 업데이트
                           _previousIndex = _tabController.index;
@@ -95,7 +99,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                       int initialIndex =
                           controller.subtypes.indexWhere((s) => !s.isCompleted);
                       if (initialIndex == -1) {
-                        // 모든 서베스가 완료된 경우 중앙에 메시지 표시
+                        // 모든 탭이 완료된 경우
                         return Center(
                           child: Text(
                             '모든 설문조사가 완료되었습니다.',
@@ -117,23 +121,6 @@ class _SideEffectPageState extends State<SideEffectPage>
                     }
 
                     _isTabControllerInitialized = true;
-                  }
-
-                  // 모든 서베스가 완료된 경우 중앙에 메시지 표시
-                  if (controller.subtypes.isNotEmpty &&
-                      controller.subtypes.every((s) => s.isCompleted)) {
-                    return Center(
-                      child: Text(
-                        '모든 설문조사가 완료되었습니다.',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Color(0xffD9D9D9),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    );
                   }
 
                   return Column(
