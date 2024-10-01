@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class MonthlyCheck extends Equatable {
-  final int owner;
   final String month;
   final Map<int, bool> doseCheck;
   final Map<int, bool> sideEffectCheck;
@@ -9,7 +8,6 @@ class MonthlyCheck extends Equatable {
   final int monthEnd;
 
   MonthlyCheck({
-    required this.owner,
     required this.month,
     required this.doseCheck,
     required this.sideEffectCheck,
@@ -18,8 +16,7 @@ class MonthlyCheck extends Equatable {
   });
 
   MonthlyCheck.empty()
-      : owner = 0,
-        month = '',
+      : month = '',
         doseCheck = {},
         sideEffectCheck = {},
         monthStart = 0,
@@ -28,7 +25,6 @@ class MonthlyCheck extends Equatable {
   factory MonthlyCheck.fromJson(Map<String, dynamic> json) {
     // 데이터의 키를 int로 변환하여 저장
     return MonthlyCheck(
-      owner: json['owner'] ?? 0,
       month: json['month'] ?? '',
       doseCheck: (json['doseCheck'] as Map<String, dynamic>)
           .map((key, value) => MapEntry(int.parse(key), value)),
@@ -41,7 +37,6 @@ class MonthlyCheck extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'owner': owner,
       'month': month,
       'doseCheck': doseCheck,
       'sideEffectCheck': sideEffectCheck,
@@ -52,7 +47,6 @@ class MonthlyCheck extends Equatable {
 
   @override
   List<Object?> get props => [
-    owner,
     month,
     doseCheck,
     sideEffectCheck,
