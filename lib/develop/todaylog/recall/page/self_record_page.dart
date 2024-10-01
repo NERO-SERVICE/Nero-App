@@ -12,7 +12,7 @@ class SelfRecordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RecallController>(
-      create: (_) => RecallController()..fetchSelfLogs(),
+      create: (_) => RecallController(type: '')..fetchSelfLogs(),
       builder: (context, child) {
         return Scaffold(
           extendBodyBehindAppBar: true,
