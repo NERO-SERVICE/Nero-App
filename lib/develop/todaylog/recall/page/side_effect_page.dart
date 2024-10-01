@@ -15,6 +15,7 @@ class _SideEffectPageState extends State<SideEffectPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isTabControllerInitialized = false;
+  int _previousIndex = 0; // 이전 탭 인덱스 추적
 
   @override
   void dispose() {
@@ -73,22 +74,66 @@ class _SideEffectPageState extends State<SideEffectPage>
 
                     _tabController.addListener(() {
                       if (_tabController.indexIsChanging) {
-                        // 선택된 Subtype 업데이트 및 질문 가져오기
-                        controller.selectedSubtype = controller
-                            .subtypes[_tabController.index].subtypeCode;
-                        controller.fetchQuestions();
+                        final selectedSubtype =
+                            controller.subtypes[_tabController.index];
+                        if (selectedSubtype.isCompleted) {
+                          // 이전 탭으로 되돌리고 중앙에 메시지 표시
+                          setState(() {}); // 상태 업데이트
+                        } else {
+                          // 정상적으로 탭 선택 시 이전 인덱스 업데이트
+                          _previousIndex = _tabController.index;
+                          controller.selectedSubtype =
+                              selectedSubtype.subtypeCode;
+                          controller.fetchQuestions();
+                        }
                       }
                     });
 
                     // 초기 선택 설정
                     if (controller.selectedSubtype == null &&
                         controller.subtypes.isNotEmpty) {
+                      int initialIndex =
+                          controller.subtypes.indexWhere((s) => !s.isCompleted);
+                      if (initialIndex == -1) {
+                        // 모든 서베스가 완료된 경우 중앙에 메시지 표시
+                        return Center(
+                          child: Text(
+                            '모든 설문조사가 완료되었습니다.',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      _tabController.index = initialIndex;
                       controller.selectedSubtype =
-                          controller.subtypes[0].subtypeCode;
+                          controller.subtypes[initialIndex].subtypeCode;
                       controller.fetchQuestions();
+                      _previousIndex = initialIndex;
                     }
 
                     _isTabControllerInitialized = true;
+                  }
+
+                  // 모든 서베스가 완료된 경우 중앙에 메시지 표시
+                  if (controller.subtypes.isNotEmpty &&
+                      controller.subtypes.every((s) => s.isCompleted)) {
+                    return Center(
+                      child: Text(
+                        '모든 설문조사가 완료되었습니다.',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Color(0xffD9D9D9),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
                   }
 
                   return Column(
@@ -108,7 +153,6 @@ class _SideEffectPageState extends State<SideEffectPage>
                         ),
                       ),
                       SizedBox(height: 20),
-                      // Subtype 선택을 위한 TabBar
                       if (controller.subtypes.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -116,18 +160,25 @@ class _SideEffectPageState extends State<SideEffectPage>
                             controller: _tabController,
                             isScrollable: false,
                             indicator: UnderlineTabIndicator(
-                              borderSide:
-                              BorderSide(width: 2.0, color: Color(0xffD0EE17)),
-                              insets: EdgeInsets.symmetric(
-                                  horizontal: 50),
+                              borderSide: BorderSide(
+                                  width: 2.0, color: Color(0xffD0EE17)),
+                              insets: EdgeInsets.symmetric(horizontal: 50),
                             ),
                             labelColor: Colors.white,
                             unselectedLabelColor: Color(0xffD9D9D9),
-                            indicatorWeight: 1,
-                            tabs: controller.subtypes
-                                .map(
-                                    (subtype) => Tab(text: subtype.subtypeName))
-                                .toList(),
+                            tabs: controller.subtypes.map((subtype) {
+                              final isCompleted = subtype.isCompleted;
+                              return Tab(
+                                child: Text(
+                                  subtype.subtypeName,
+                                  style: TextStyle(
+                                    color: isCompleted
+                                        ? Color(0xff3C3C3C)
+                                        : Colors.white,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                             labelStyle: TextStyle(
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w600,
@@ -140,6 +191,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                             ),
                           ),
                         ),
+                      SizedBox(height: 20),
                       // 질문 및 답변
                       Expanded(
                         child: controller.isLoading &&
@@ -165,7 +217,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                                             controller.questions[index];
                                         return Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             // 질문 앞에 인덱스 추가
                                             Text(

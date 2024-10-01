@@ -4,13 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
+import 'package:nero_app/develop/todaylog/recall/page/self_record_page.dart';
+import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
+import 'package:nero_app/develop/todaylog/recall/page/survey_page.dart';
 
 import '../../../common/components/custom_loading_indicator.dart';
 import '../../clinic/controller/clinic_controller.dart';
 import '../../clinic/write/page/clinic_write_page.dart';
-import '../../recall/page/self_record_page.dart';
-import '../../recall/page/side_effect_page.dart';
-import '../../recall/page/survey_page.dart';
 import '../enum/month_image.dart';
 
 class TodaylogMainPage extends StatefulWidget {

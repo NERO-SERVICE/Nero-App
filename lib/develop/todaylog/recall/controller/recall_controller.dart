@@ -1,9 +1,10 @@
+// controller/recall_controller.dart
+
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/todaylog/recall/model/question_subtype.dart';
-
+import 'package:nero_app/develop/todaylog/recall/model/question.dart';
+import 'package:nero_app/develop/todaylog/recall/model/self_record.dart';
 import '../../../dio_service.dart';
-import '../model/question.dart';
-import '../model/self_record.dart';
 
 class RecallController with ChangeNotifier {
   final DioService _dioService = DioService();
@@ -16,6 +17,7 @@ class RecallController with ChangeNotifier {
   // Subtypes
   List<QuestionSubtype> subtypes = [];
   String? selectedSubtype;
+  Set<String> completedSubtypes = {};
 
   // Questions and Answers
   List<Question> questions = [];
@@ -26,17 +28,48 @@ class RecallController with ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  Future<void> fetchCompletedSubtypes() async {
+    try {
+      final response = await _dioService.get('/todaylogs/survey_completions/', params: {
+        'year': DateTime.now().year.toString(),
+        'month': DateTime.now().month.toString().padLeft(2, '0'),
+        'day': DateTime.now().day.toString().padLeft(2, '0'),
+        'response_type': type, // 'survey' 또는 'side_effect'
+      });
+
+      completedSubtypes = (response.data as List)
+          .map<String>((e) => e['question_subtype'])
+          .toSet();
+    } catch (e) {
+      print('Failed to fetch completed subtypes: $e');
+    }
+  }
+
   // 설문 Subtypes 가져오기
   Future<void> fetchSubtypes() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response =
-          await _dioService.get('/todaylogs/subtypes/', params: {'type': type});
+      await fetchCompletedSubtypes();
+
+      final response = await _dioService.get('/todaylogs/subtypes/', params: {
+        'type': type,
+        'response_type': type, // 'survey' 또는 'side_effect'
+      });
+
       subtypes = (response.data as List)
-          .map((e) => QuestionSubtype.fromJson(e))
+          .map<QuestionSubtype>((e) => QuestionSubtype.fromJson(e))
           .toList();
+
+      // Mark subtypes as completed based on fetched data
+      for (var subtype in subtypes) {
+        if (completedSubtypes.contains(subtype.subtypeCode)) {
+          subtype.isCompleted = true;
+        }
+      }
+    } catch (e) {
+      print('Failed to fetch subtypes: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -55,9 +88,10 @@ class RecallController with ChangeNotifier {
         'type': type,
         'subtype': selectedSubtype,
       });
-      questions =
-          (response.data as List).map((e) => Question.fromJson(e)).toList();
+      questions = (response.data as List).map((e) => Question.fromJson(e)).toList();
       answers = List<int?>.filled(questions.length, null);
+    } catch (e) {
+      print('Failed to fetch questions: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -71,14 +105,12 @@ class RecallController with ChangeNotifier {
 
     try {
       DateTime now = DateTime.now();
-      final response =
-          await _dioService.get('/todaylogs/self_records/', params: {
+      final response = await _dioService.get('/todaylogs/self_records/', params: {
         'year': now.year.toString(),
         'month': now.month.toString().padLeft(2, '0'),
         'day': now.day.toString().padLeft(2, '0'),
       });
-      selfLogs =
-          (response.data as List).map((e) => SelfRecord.fromJson(e)).toList();
+      selfLogs = (response.data as List).map((e) => SelfRecord.fromJson(e)).toList();
     } catch (e) {
       print('Failed to load self logs: $e');
     } finally {
@@ -130,11 +162,22 @@ class RecallController with ChangeNotifier {
       }
 
       if (responses.isNotEmpty) {
-        await _dioService.post('/todaylogs/response/', data: {
+        final response = await _dioService.post('/todaylogs/response/', data: {
           'response_type': type,
           'responses': responses,
         });
+
+        // 설문 완료 후, subtypes 다시 불러오기
+        await fetchSubtypes();
+
+        // 질문과 답변 초기화
+        questions = [];
+        answers = [];
+        selectedSubtype = null;
       }
+    } catch (e) {
+      print('Failed to submit responses: $e');
+      // 추가적인 에러 처리 가능
     } finally {
       _isLoading = false;
       notifyListeners();

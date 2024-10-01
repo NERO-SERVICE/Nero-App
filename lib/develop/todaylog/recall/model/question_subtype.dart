@@ -4,11 +4,13 @@ class QuestionSubtype extends Equatable {
   final int id;
   final String subtypeCode;
   final String subtypeName;
+  bool isCompleted;
 
   QuestionSubtype({
     required this.id,
     required this.subtypeCode,
     required this.subtypeName,
+    this.isCompleted = false,
   });
 
   factory QuestionSubtype.fromJson(Map<String, dynamic> json) {
@@ -16,6 +18,7 @@ class QuestionSubtype extends Equatable {
       id: json['id'] ?? 0,
       subtypeCode: json['subtype_code'] ?? '',
       subtypeName: json['subtype_name'] ?? '',
+      isCompleted: json['is_completed'] ?? false,
     );
   }
 
