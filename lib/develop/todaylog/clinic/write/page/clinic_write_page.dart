@@ -92,7 +92,6 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
         key: _formKey,
         child: ListView(
           children: [
-            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
@@ -171,16 +170,16 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   }
 
   Widget get _divider => const Divider(
-        color: Color(0xff3C3C3E),
-        indent: 0,
-        endIndent: 0,
-      );
+    color: Color(0xff3C3C3E),
+    indent: 0,
+    endIndent: 0,
+  );
 
   Widget get _dialogDivider => Divider(
-        color: Color(0xffD8D8D8).withOpacity(0.3),
-        indent: 0,
-        endIndent: 0,
-      );
+    color: Color(0xffD8D8D8).withOpacity(0.3),
+    indent: 0,
+    endIndent: 0,
+  );
 
   Widget _buildDateSelector(String label, Rx<DateTime> date) {
     final RxBool isSelected = false.obs;
@@ -337,7 +336,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                             if (selectedArchive.value != null &&
                                 drugNumberController.text.isNotEmpty) {
                               final myDrugArchive = MyDrugArchive(
-                                myArchiveId: 0,
+                                myArchiveId: 1,
                                 archiveId: selectedArchive.value!.archiveId,
                                 drugName: selectedArchive.value!.drugName,
                                 target: selectedArchive.value!.target,
@@ -346,13 +345,13 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
 
                               // Drug 생성
                               final drug = Drug(
-                                drugId: 0,
+                                drugId: 1,
                                 // 새로 생성되므로 0으로 설정
                                 myDrugArchive: myDrugArchive,
                                 // 생성된 MyDrugArchive 사용
                                 number: int.parse(drugNumberController.text),
                                 initialNumber:
-                                    int.parse(drugNumberController.text),
+                                int.parse(drugNumberController.text),
                                 time: selectedTime.value,
                                 allow: true,
                               );
@@ -535,12 +534,12 @@ class DrugArchiveDropdown extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide:
-                BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide:
-                BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
         ),
         value: selectedArchive.value,

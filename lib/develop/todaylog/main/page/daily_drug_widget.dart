@@ -50,7 +50,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
   Future<void> _submitSelectedDrugs() async {
     try {
       final success =
-          await _clinicRepository.consumeSelectedDrugs(_selectedDrugIds);
+      await _clinicRepository.consumeSelectedDrugs(_selectedDrugIds);
       if (success) {
         final updatedDrugs = await _loadDrugs();
         setState(() {
@@ -66,7 +66,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
   Future<void> _rollbackDrugs() async {
     if (_rollbackDate != null) {
       final success =
-          await _clinicRepository.rollbackConsumedDrugs(_rollbackDate!);
+      await _clinicRepository.rollbackConsumedDrugs(_rollbackDate!);
       if (success) {
         print('Drugs successfully rolled back.');
         setState(() {
@@ -175,7 +175,7 @@ class DrugListWidget extends StatelessWidget {
         final displayNumber = isSelected ? drug.number - 1 : drug.number;
 
         final displayNumberColor =
-            !drug.allow ? Color(0xff848481) : Colors.white;
+        !drug.allow ? Color(0xff848481) : Colors.white;
         final initialNumberColor = Color(0xff848481);
 
         final drugNameColor = !drug.allow ? Color(0xff848481) : Colors.white;
@@ -188,13 +188,13 @@ class DrugListWidget extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: drug.allow
                       ? () {
-                          onDrugSelection(drug.drugId);
-                        }
+                    onDrugSelection(drug.drugId);
+                  }
                       : null,
                   style: ElevatedButton.styleFrom(
                     side: BorderSide(
                       color:
-                          isSelected ? Color(0xffD0EE17) : Colors.transparent,
+                      isSelected ? Color(0xffD0EE17) : Colors.transparent,
                       width: 1.0,
                     ),
                     backgroundColor: isSelected
