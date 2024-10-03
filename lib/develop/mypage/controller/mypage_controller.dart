@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/repository/mypage_repository.dart';
+import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 
 import '../../todaylog/recall/model/self_record.dart';
 import '../../todaylog/recall/model/side_effect.dart';
@@ -12,8 +13,8 @@ class MypageController extends GetxController {
   var selectedType = 'all'.obs;
 
   var isLoading = true.obs;
-  var surveyResponses = <Survey>[].obs;
-  var sideEffectResponses = <SideEffect>[].obs;
+  var surveyResponses = <ResponseSubtype>[].obs;
+  var sideEffectResponses = <ResponseSubtype>[].obs;
   var selfRecordResponses = <SelfRecord>[].obs;
   var menstruationCycles = <MenstruationCycle>[].obs;
 
@@ -55,12 +56,11 @@ class MypageController extends GetxController {
   Future<void> fetchPreviousSurveyAnswers(DateTime date) async {
     try {
       isLoading(true);
-      List<dynamic> response =
+      List<ResponseSubtype> response =
       await _mypageRepository.getSurveyResponsesByDate(date);
-      surveyResponses.value =
-          response.map((data) => Survey.fromJson(data)).toList();
+      surveyResponses.value = response;
     } catch (e) {
-      print("Error fetching survey answers: $e");
+      print("Error fetching side effect answers: $e");
     } finally {
       isLoading(false);
     }
@@ -70,10 +70,9 @@ class MypageController extends GetxController {
   Future<void> fetchPreviousSideEffectAnswers(DateTime date) async {
     try {
       isLoading(true);
-      List<dynamic> response =
+      List<ResponseSubtype> response =
       await _mypageRepository.getSideEffectResponsesByDate(date);
-      sideEffectResponses.value =
-          response.map((data) => SideEffect.fromJson(data)).toList();
+      sideEffectResponses.value = response;
     } catch (e) {
       print("Error fetching side effect answers: $e");
     } finally {

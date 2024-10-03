@@ -1,49 +1,32 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
-
-import '../../common/components/custom_loading_indicator.dart';
-import '../../todaylog/recall/model/survey.dart';
 
 class UserSurveyLogPage extends StatelessWidget {
   final DateTime selectedDate;
 
   UserSurveyLogPage({required this.selectedDate});
 
+  final MypageController _controller = Get.find<MypageController>();
+
   @override
   Widget build(BuildContext context) {
-    final MypageController controller = Get.put(MypageController());
-
-    controller.fetchPreviousSurveyAnswers(selectedDate);
+    _controller.fetchPreviousSurveyAnswers(selectedDate);
+    String formattedDate = DateFormat('yy년 MM월 dd일').format(selectedDate);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: Container(
-              color: Colors.transparent,
-            ),
-          ),
-        ),
+      appBar: CustomDetailAppBar(
+        title: '$formattedDate 하루 설문',
       ),
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/today_background.png',
+              'assets/images/sideeffect_background.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -61,122 +44,125 @@ class UserSurveyLogPage extends StatelessWidget {
               ),
             ),
           ),
+          // 컨텐츠
           Obx(() {
-            if (controller.isLoading.value) {
+            if (_controller.isLoading.value) {
               return Center(child: CustomLoadingIndicator());
             }
 
-            if (controller.surveyResponses.isEmpty) {
+            if (_controller.surveyResponses.isEmpty) {
               return Center(
                 child: Text(
-                  '해당 날짜에 기록된 내용이 없습니다.',
+                  '하루 설문 기록이 없습니다.',
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Color(0xffD9D9D9),
                   ),
                 ),
               );
             }
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: kToolbarHeight + 29),
-                  Text(
-                    '하루 설문',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 13),
-                  Text(
-                    '이전에 제출한 설문 기록입니다',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xffD9D9D9),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: controller.surveyResponses.length,
-                    itemBuilder: (context, index) {
-                      final Survey response = controller.surveyResponses[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            response.question.questionText,
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w500,
-                              fontSize: 22,
-                              color: Colors.white,
-                            ),
+            return Column(
+              children: [
+                SizedBox(height: kToolbarHeight + 56),
+                Expanded(
+                  child: Theme(
+                    // Theme to remove divider color in ExpansionTile
+                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(16),
+                      itemCount: _controller.surveyResponses.length,
+                      itemBuilder: (context, index) {
+                        final subtype = _controller.surveyResponses[index];
+                        return Card(
+                          color: Color(0xff202020).withOpacity(0.2),
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          SizedBox(height: 40),
-                          _buildCircularButtons(context, response: response),
-                          SizedBox(height: 70),
-                        ],
-                      );
-                    },
+                          elevation: 0,
+                          child: ExpansionTile(
+                            iconColor: Colors.white,
+                            collapsedIconColor: Colors.white,
+                            title: Text(
+                              subtype.subtypeName,
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            backgroundColor: Colors.transparent,
+                            collapsedBackgroundColor: Colors.transparent,
+                            maintainState: true,
+                            children: subtype.questions.map((question) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // 질문 텍스트
+                                    Text(
+                                      'Q. ${question.questionText}',
+                                      style: TextStyle(
+                                        fontFamily: 'Pretendard',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: Color(0xffD9D9D9),
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            question.answerText == '답변이 없습니다.'
+                                                ? Icons.cancel
+                                                : Icons.check_circle,
+                                            color: question.answerText ==
+                                                '답변이 없습니다.'
+                                                ? Color(0xffD9D9D9)
+                                                .withOpacity(0.5)
+                                                : Colors.white,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            question.answerText,
+                                            style: TextStyle(
+                                              color: question.answerText ==
+                                                  '답변이 없습니다.'
+                                                  ? Color(0xffD9D9D9)
+                                                  .withOpacity(0.5)
+                                                  : Colors.white,
+                                              fontFamily: 'Pretendard',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }),
         ],
       ),
-    );
-  }
-
-  Widget _buildCircularButtons(
-    BuildContext context, {
-    required Survey response,
-  }) {
-    final options = ['매우나쁨', '나쁨', '보통', '좋음', '매우좋음'];
-    final int selectedOptionIndex = int.parse(response.answer) - 1;
-
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 8.0,
-      alignment: WrapAlignment.center,
-      children: List.generate(options.length, (optionIndex) {
-        final isSelected = optionIndex == selectedOptionIndex;
-        return GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color:
-                  isSelected ? Color(0xff1C1B1B) : Colors.grey.withOpacity(0.3),
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              options[optionIndex],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        );
-      }),
     );
   }
 }
