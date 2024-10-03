@@ -27,7 +27,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
 
     // 데이터를 로드한 후 렌더링
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.currentNotification.value.noticeId != noticeId) {
+      if (controller.currentNotification.value.id != noticeId) {
         controller.fetchNotification(noticeId);
       }
     });

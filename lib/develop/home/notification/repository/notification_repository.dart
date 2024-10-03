@@ -11,8 +11,9 @@ class NotificationRepository {
       final response = await _dio.get('/notification/');
       print(response.data);
 
-      List<NotificationModel> products = response.data
-          .map<NotificationModel>((item) => NotificationModel.fromJson(item))
+      // 서버에서 받아온 데이터 리스트를 NotificationModel로 변환
+      List<NotificationModel> products = (response.data as List<dynamic>)
+          .map((item) => NotificationModel.fromJson(item))
           .toList();
       return products;
     } catch (e) {
@@ -52,7 +53,7 @@ class NotificationRepository {
   Future<bool> updateNotification(NotificationModel notification) async {
     try {
       final response = await _dio.put(
-        '/notification/${notification.noticeId}/update/',
+        '/notification/${notification.id}/update/',
         data: notification.toJson(),
       );
       return response.statusCode == 200;

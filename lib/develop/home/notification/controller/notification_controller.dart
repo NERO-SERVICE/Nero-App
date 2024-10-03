@@ -64,7 +64,7 @@ class NotificationController extends GetxController {
     try {
       final success = await _notificationRepository.updateNotification(notification);
       if (success) {
-        int index = notifications.indexWhere((n) => n.noticeId == notification.noticeId);
+        int index = notifications.indexWhere((n) => n.id == notification.id);
         if (index != -1) {
           notifications[index] = notification;
           Get.snackbar('성공', '공지사항이 성공적으로 수정되었습니다.');
@@ -83,7 +83,7 @@ class NotificationController extends GetxController {
     try {
       final success = await _notificationRepository.deleteNotification(noticeId);
       if (success) {
-        notifications.removeWhere((n) => n.noticeId == noticeId);
+        notifications.removeWhere((n) => n.id == noticeId);
         Get.snackbar('성공', '공지사항이 성공적으로 삭제되었습니다.');
       }
     } catch (e) {

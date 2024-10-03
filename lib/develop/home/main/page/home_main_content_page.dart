@@ -97,7 +97,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     return GestureDetector(
       onTap: () async {
         await Get.to(() => NotificationDetailPage(),
-            arguments: {'noticeId': notification.noticeId});
+            arguments: {'noticeId': notification.id});
       },
       behavior: HitTestBehavior.translucent,
       child: ClipRRect(
