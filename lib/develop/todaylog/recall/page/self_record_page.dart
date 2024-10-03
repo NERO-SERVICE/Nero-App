@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/recall_controller.dart';
@@ -69,7 +70,7 @@ class SelfRecordPage extends StatelessWidget {
                             builder: (context, controller, child) {
                               if (controller.isLoading) {
                                 return Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CustomLoadingIndicator(),
                                 );
                               }
                               return ListView.builder(

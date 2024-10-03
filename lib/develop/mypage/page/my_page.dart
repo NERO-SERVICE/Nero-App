@@ -287,7 +287,7 @@ class _MyPage extends State<MyPage> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color(0xff3C3C3C),
-                          hintText: '준비물을 입력해주세요(10자이내)',
+                          hintText: '챙길거리를 입력해주세요',
                           hintStyle: TextStyle(
                             fontSize: 14,
                             color: Color(0xff959595),

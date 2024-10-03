@@ -1,6 +1,7 @@
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 
 import '../../common/components/custom_matrix_pageview_widget.dart';
 import '../controller/mypage_controller.dart';
@@ -342,7 +343,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
         final data = _monthlyCheckController.monthlyCheckCache[currentMonthKey];
 
         if (data == null) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         int totalDays = data.monthEnd;

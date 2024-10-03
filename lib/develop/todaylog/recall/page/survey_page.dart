@@ -177,7 +177,7 @@ class _SurveyPageState extends State<SurveyPage>
                       Expanded(
                         child: controller.isLoading &&
                                 controller.questions.isEmpty
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(child: CustomLoadingIndicator())
                             : controller.questions.isEmpty
                                 ? Center(
                                     child: Text(

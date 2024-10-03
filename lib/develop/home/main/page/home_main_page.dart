@@ -73,6 +73,7 @@ class _HomeMainPageState extends State<HomeMainPage> {
                         constraints: BoxConstraints(maxHeight: 120, minHeight: 120),
                         child: Scrollbar(
                           child: TextField(
+                            cursorColor: Color(0xffD9D9D9),
                             controller: _suggestionController,
                             style: TextStyle(
                               fontSize: 14,
@@ -103,6 +104,12 @@ class _HomeMainPageState extends State<HomeMainPage> {
                                 borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
                               ),
                               contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+                              counterStyle: TextStyle( // maxLength 스타일
+                                fontSize: 12, 
+                                color: Color(0xffD9D9D9).withOpacity(0.3),
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             maxLength: 200,
                             maxLines: null,

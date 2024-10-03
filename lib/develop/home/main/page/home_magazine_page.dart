@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_detail_page.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_list_page.dart';
@@ -59,7 +60,7 @@ class HomeMagazinePage extends StatelessWidget {
           future: latestMagazinesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoadingIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Failed to load magazines'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

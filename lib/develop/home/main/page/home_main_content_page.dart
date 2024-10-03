@@ -359,7 +359,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Text(
-                          '개발자 공지사항',
+                          '공지사항',
                           style: TextStyle(
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w600,

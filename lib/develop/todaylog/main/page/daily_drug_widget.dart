@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 
 import '../../../common/components/custom_complete_button.dart';
 import '../../clinic/model/drug.dart';
@@ -86,7 +87,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
       future: _drugsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Failed to load drugs'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

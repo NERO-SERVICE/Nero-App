@@ -234,14 +234,18 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
             ),
             child: ListTile(
               title: Text(
-                '${drug.myDrugArchive.drugName} · ${drug.number}정 (${drug.time})',
+                '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg · ${drug.number}정 (${drug.time})',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-              trailing: IconButton(
-                icon: Icon(Icons.close, color: Colors.white),
-                onPressed: () {
+              trailing: GestureDetector(
+                onTap: () {
                   controller.removeDrug(index);
                 },
+                child: SvgPicture.asset(
+                  'assets/develop/exit.svg',
+                  width: 24,  // 원하는 사이즈로 설정
+                  height: 24, // 원하는 사이즈로 설정
+                ),
               ),
             ),
           );
@@ -249,6 +253,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       );
     });
   }
+
 
   void _addDrugDialog(BuildContext context) {
     final drugNumberController = TextEditingController();
@@ -367,17 +372,14 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 66.0,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
                           ),
                           child: Text(
                             '등록하기',
                             style: TextStyle(
                               fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
                               color: Color(0xffD0EE17),
                             ),
                           ),
@@ -411,6 +413,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
+      cursorColor: Color(0xffD9D9D9),
       keyboardType: TextInputType.number,
       maxLength: 3,
       controller: controller,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/page/information_detail_page.dart';
 import 'package:nero_app/develop/home/information/page/information_list_page.dart';
@@ -30,7 +31,7 @@ class HomeInformationPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                '개발자 공지사항 모음',
+                '공지사항',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w600,
@@ -65,7 +66,7 @@ class HomeInformationPage extends StatelessWidget {
           future: latestInformationFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoadingIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Failed to load informations'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

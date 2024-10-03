@@ -43,7 +43,7 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         final information = controller.currentInformation.value;

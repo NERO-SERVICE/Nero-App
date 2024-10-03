@@ -76,6 +76,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         child: Scrollbar(
                           child: TextField(
                             controller: _suggestionController,
+                            cursorColor: Color(0xffD9D9D9),
                             style: TextStyle(
                               fontSize: 14,
                               color: Color(0xffFFFFFF),

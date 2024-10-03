@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/getx_listener.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
@@ -180,7 +181,7 @@ class _ProgressView extends GetView<SplashController> {
           },
         ),
         const SizedBox(height: 20),
-        const CircularProgressIndicator(strokeWidth: 1, color: Colors.white),
+        CustomLoadingIndicator(),
       ],
     );
   }

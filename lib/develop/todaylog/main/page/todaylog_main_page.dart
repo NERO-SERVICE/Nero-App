@@ -153,7 +153,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             SizedBox(height: 32),
             Obx(() {
               if (clinicController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomLoadingIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {

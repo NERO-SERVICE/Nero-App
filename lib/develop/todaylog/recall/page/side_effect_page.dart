@@ -183,7 +183,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                       Expanded(
                         child: controller.isLoading &&
                                 controller.questions.isEmpty
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(child: CustomLoadingIndicator())
                             : controller.questions.isEmpty
                                 ? Center(
                                     child: Text(
