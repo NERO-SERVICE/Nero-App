@@ -53,7 +53,7 @@ class UserSideEffectLogPage extends StatelessWidget {
             if (_controller.sideEffectResponses.isEmpty) {
               return Center(
                 child: Text(
-                  '부작용 기록이 없습니다.',
+                  '해당 날짜에 기록된 내용이 없습니다.',
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
@@ -70,7 +70,8 @@ class UserSideEffectLogPage extends StatelessWidget {
                 Expanded(
                   child: Theme(
                     // Theme to remove divider color in ExpansionTile
-                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
                     child: ListView.builder(
                       padding: EdgeInsets.all(16),
                       itemCount: _controller.sideEffectResponses.length,
@@ -126,9 +127,9 @@ class UserSideEffectLogPage extends StatelessWidget {
                                                 ? Icons.cancel
                                                 : Icons.check_circle,
                                             color: question.answerText ==
-                                                '답변이 없습니다.'
+                                                    '답변이 없습니다.'
                                                 ? Color(0xffD9D9D9)
-                                                .withOpacity(0.5)
+                                                    .withOpacity(0.5)
                                                 : Colors.white,
                                           ),
                                           SizedBox(width: 8),
@@ -136,9 +137,9 @@ class UserSideEffectLogPage extends StatelessWidget {
                                             question.answerText,
                                             style: TextStyle(
                                               color: question.answerText ==
-                                                  '답변이 없습니다.'
+                                                      '답변이 없습니다.'
                                                   ? Color(0xffD9D9D9)
-                                                  .withOpacity(0.5)
+                                                      .withOpacity(0.5)
                                                   : Colors.white,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w400,
