@@ -68,6 +68,14 @@ dependencies:
   googleapis_auth: ^1.6.0
   flutter_local_notifications: ^17.2.2
   lottie: ^3.1.2
+  google_nav_bar: ^5.0.6
+  url_launcher: ^6.3.0
+  shimmer: ^3.0.0
+  loading_indicator: ^3.1.1
+  flutter_spinkit: ^5.2.1
+  flutter_native_splash: ^2.4.1
+  package_info_plus: ^8.0.2
+  blurhash: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -89,7 +97,7 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: "assets/launcher/icon.png"
+  image_path: "assets/launcher/nero-icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -102,11 +110,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/svg/
-    - assets/svg/icons/
     - assets/data/
     - assets/lottie/
     - assets/develop/
+    - assets/develop/month/
     - .env
 
   fonts:
