@@ -1,10 +1,13 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/magazine/controller/magazine_controller.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
+
+import '../../../common/components/custom_loading_indicator.dart';
 
 class MagazineDetailPage extends StatefulWidget {
   MagazineDetailPage({super.key});
@@ -33,33 +36,34 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         final magazine = controller.currentMagazine.value;
 
         return Stack(
           children: [
-            // 메인 콘텐츠
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (magazine.imageUrls.isNotEmpty)
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 400,
-                          width: double.infinity,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(() {
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: magazine.imageUrls.length,
-                            itemBuilder: (context, index) {
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          itemCount: magazine.imageUrls.isNotEmpty
+                              ? magazine.imageUrls.length
+                              : 1,
+                          itemBuilder: (context, index) {
+                            if (magazine.imageUrls.isNotEmpty) {
                               return Image.network(
                                 magazine.imageUrls[index],
                                 loadingBuilder:
@@ -68,41 +72,38 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
                                     return child;
                                   }
                                   return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress
-                                          .expectedTotalBytes !=
-                                          null
-                                          ? loadingProgress
-                                          .cumulativeBytesLoaded /
-                                          (loadingProgress
-                                              .expectedTotalBytes ??
-                                              1)
-                                          : null,
-                                    ),
+                                    child: CustomLoadingIndicator(),
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error);
+                                  return Image.asset(
+                                    'assets/develop/default.png',
+                                    fit: BoxFit.cover,
+                                  );
                                 },
                                 fit: BoxFit.cover,
                               );
-                            },
-                          ),
+                            } else {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
                         ),
-                        Positioned(
-                          bottom: 24,
-                          left: 0,
-                          right: 0,
-                          child: _buildIndicator(magazine.imageUrls.length),
-                        ),
-                      ],
-                    )
-                  else
-                    const Center(
-                        child: Text('이미지가 없습니다.',
-                            style: TextStyle(color: Colors.white))),
+                      ),
+                      Positioned(
+                        bottom: 24,
+                        left: 0,
+                        right: 0,
+                        child: _buildIndicator(magazine.imageUrls.isNotEmpty
+                            ? magazine.imageUrls.length
+                            : 1),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
-
+                  
                   // 매거진 제목
                   MagazineTitleWidget(title: magazine.title),
                   const SizedBox(height: 30),

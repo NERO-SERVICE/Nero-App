@@ -4,12 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
+import 'package:nero_app/develop/todaylog/recall/page/self_record_page.dart';
+import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
+import 'package:nero_app/develop/todaylog/recall/page/survey_page.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
 import '../../clinic/controller/clinic_controller.dart';
 import '../../clinic/write/page/clinic_write_page.dart';
-import '../../recall/page/self_record_page.dart';
-import '../../recall/page/side_effect_page.dart';
-import '../../recall/page/survey_page.dart';
 import '../enum/month_image.dart';
 
 class TodaylogMainPage extends StatefulWidget {
@@ -32,17 +33,16 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(height: kToolbarHeight + 56),
-            CustomDivider(),
             SizedBox(height: 18),
             _todaylogTitle(
               title: '데일리 복용관리',
               content:
-              '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
             Obx(() {
               if (clinicController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomLoadingIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {
@@ -153,7 +153,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             SizedBox(height: 32),
             Obx(() {
               if (clinicController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomLoadingIndicator());
               }
 
               if (clinicController.errorMessage.isNotEmpty) {
@@ -246,13 +246,13 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _buildCustomButton(
-      BuildContext context, {
-        required String labelTop,
-        required String labelBottom,
-        required VoidCallback onPressed,
-        EdgeInsetsGeometry padding =
+    BuildContext context, {
+    required String labelTop,
+    required String labelBottom,
+    required VoidCallback onPressed,
+    EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      }) {
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: ElevatedButton(
@@ -303,8 +303,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _clinicWriteWidget(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 75.0),
+    return Center( // 가운데 정렬을 위해 Center 위젯 사용
       child: ElevatedButton(
         onPressed: () {
           Get.to(() => ClinicWritePage());
@@ -314,17 +313,15 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 33),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            '작성하기',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w600,
-              color: Color(0xffD0EE17),
-              fontSize: 16,
-            ),
+        child: Text(
+          '작성하기',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            color: Color(0xffD0EE17),
+            fontSize: 16,
           ),
         ),
       ),

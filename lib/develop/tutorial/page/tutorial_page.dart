@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,7 +51,7 @@ class _TutorialPageState extends State<TutorialPage> {
   }
 
   Future<void> _onNextPressed() async {
-    Get.offNamed('/root');
+    Get.offNamed('/home');
   }
 
   Widget _buildIndicator() {
@@ -64,7 +63,7 @@ class _TutorialPageState extends State<TutorialPage> {
           curve: Curves.fastOutSlowIn,
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           width: _currentPage == index ? 32 : 8.0,
-          height: 8.0, // 높이는 동일
+          height: 8.0,
           decoration: BoxDecoration(
             color: _currentPage == index
                 ? Color(0xffD0EE17)
@@ -79,62 +78,73 @@ class _TutorialPageState extends State<TutorialPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          SizedBox(height: 137),
-          SizedBox(
-            height: 420,
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              itemCount: tutorialImages.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    Image.asset(
-                      tutorialImages[index],
-                      width: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(height: 45),
-                    Text(
-                      tutorialTitles[index],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 28,
-                        color: Color(0xffFFFFFF),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      tutorialContents[index],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Color(0xffFFFFFF),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+          Column(
+            children: [
+              SizedBox(height: 137),
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: _onPageChanged,
+                  itemCount: tutorialImages.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 40),
+                        Image.asset(
+                          tutorialImages[index],
+                          width: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 45),
+                        Text(
+                          tutorialTitles[index],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 28,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Text(
+                          tutorialContents[index],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          _buildIndicator(),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+          Positioned(
+            bottom: 187,
+            left: 0,
+            right: 0,
+            child: _buildIndicator(),
+          ),
+          Positioned(
+            bottom: 54,
+            left: 32,
+            right: 32,
             child: SizedBox(
               height: 60,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isButtonActive
-                    ? () async {await _onNextPressed();}
+                    ? () async {
+                  await _onNextPressed();
+                }
                     : null,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -143,13 +153,14 @@ class _TutorialPageState extends State<TutorialPage> {
                   backgroundColor: _isButtonActive
                       ? Color(0xffD0EE17).withOpacity(0.5)
                       : Color(0xff3C3C3C),
-                  foregroundColor: _isButtonActive
-                      ? Color(0xffFFFFFF)
-                      : Color(0xffD9D9D9),
+                  foregroundColor:
+                  _isButtonActive ? Color(0xffFFFFFF) : Color(0xffD9D9D9),
                   disabledBackgroundColor: Color(0xff3C3C3C),
                   disabledForegroundColor: Color(0xffD9D9D9),
                   side: BorderSide(
-                    color: _isButtonActive ? Color(0xffD0EE17) : Colors.transparent,
+                    color: _isButtonActive
+                        ? Color(0xffD0EE17)
+                        : Colors.transparent,
                     width: 1,
                   ),
                 ),
@@ -164,7 +175,6 @@ class _TutorialPageState extends State<TutorialPage> {
               ),
             ),
           ),
-          const SizedBox(height: 54),
         ],
       ),
     );

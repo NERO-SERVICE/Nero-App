@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 
+import '../../../common/components/custom_loading_indicator.dart';
+
 class NotificationDetailPage extends StatefulWidget {
   NotificationDetailPage({super.key});
 
@@ -25,7 +27,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
 
     // 데이터를 로드한 후 렌더링
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.currentNotification.value.noticeId != noticeId) {
+      if (controller.currentNotification.value.id != noticeId) {
         controller.fetchNotification(noticeId);
       }
     });
@@ -33,7 +35,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         }
 
         final notification = controller.currentNotification.value;
@@ -45,62 +47,56 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (notification.imageUrls.isNotEmpty)
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 400,
-                          width: double.infinity,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(() {
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: notification.imageUrls.length,
-                            itemBuilder: (context, index) {
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          itemCount: notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1,
+                          itemBuilder: (context, index) {
+                            if (notification.imageUrls.isNotEmpty) {
                               return Image.network(
                                 notification.imageUrls[index],
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
+                                loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) {
                                     return child;
                                   }
                                   return Center(
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                    ),
+                                    child: CustomLoadingIndicator(),
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error);
+                                  return Image.asset(
+                                    'assets/develop/default.png',
+                                    fit: BoxFit.cover,
+                                  );
                                 },
                                 fit: BoxFit.cover,
                               );
-                            },
-                          ),
+                            } else {
+                              return Image.asset(
+                                'assets/develop/default.png',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
                         ),
-                        Positioned(
-                          bottom: 24,
-                          left: 0,
-                          right: 0,
-                          child: _buildIndicator(notification.imageUrls.length),
-                        ),
-                      ],
-                    )
-                  else
-                    const Center(
-                        child: Text('이미지가 없습니다.',
-                            style: TextStyle(color: Colors.white))),
+                      ),
+                      Positioned(
+                        bottom: 24,
+                        left: 0,
+                        right: 0,
+                        child: _buildIndicator(notification.imageUrls.isNotEmpty ? notification.imageUrls.length : 1),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
 
                   // 공지사항 제목

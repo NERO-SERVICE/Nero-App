@@ -1,21 +1,20 @@
-// lib/develop/user/controller/authentication_controller.dart
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/user/enum/authentication_status.dart';
+import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
-import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationController extends GetxController {
   final AuthenticationRepository kakaoAuthRepo;
   final UserRepository kakaoUserRepo;
 
   AuthenticationController(
-      this.kakaoAuthRepo,
-      this.kakaoUserRepo,
-      );
+    this.kakaoAuthRepo,
+    this.kakaoUserRepo,
+  );
 
   Rx<AuthenticationStatus> status = AuthenticationStatus.init.obs;
   Rx<NeroUser> userModel = NeroUser().obs;
@@ -112,10 +111,43 @@ class AuthenticationController extends GetxController {
     status(AuthenticationStatus.unknown);
   }
 
-  // 카카오 로그인 처리 메서드 추가
+  Future<void> deleteAccount() async {
+    try {
+      final success = await kakaoAuthRepo.deleteAccount();
+      if (success) {
+        Get.offAllNamed('/login');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '회원 탈퇴가 완료되었습니다.',
+          isSuccess: true,
+        );
+      }
+    } catch (e) {
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '회원 탈퇴를 실패했습니다.',
+        isSuccess: false,
+      );
+    }
+  }
+
+  // 카카오 로그인 처리 메서드 수정
   Future<void> handleKakaoLogin() async {
-    await kakaoAuthRepo.signUpWithKakao();
-    // 회원가입이 완료되었으므로, 인증 상태를 확인하고 홈 페이지로 이동
-    await authCheck();
+    try {
+      final response = await kakaoAuthRepo.signUpWithKakao();
+      bool needsSignup = response['needsSignup'] ?? false;
+
+      if (needsSignup) {
+        // 신규 사용자
+        Get.offNamed('/signup');
+      } else {
+        // 기존 사용자
+        Get.offNamed('/home');
+      }
+    } catch (e) {
+      print("handleKakaoLogin 중 오류 발생: $e");
+      // 오류 발생 시 로그인 페이지로 이동
+      Get.offNamed('/login');
+    }
   }
 }

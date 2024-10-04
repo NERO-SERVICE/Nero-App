@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/recall_controller.dart';
@@ -12,7 +13,7 @@ class SelfRecordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RecallController>(
-      create: (_) => RecallController()..fetchSelfLogs(),
+      create: (_) => RecallController(type: '')..fetchSelfLogs(),
       builder: (context, child) {
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -69,7 +70,7 @@ class SelfRecordPage extends StatelessWidget {
                             builder: (context, controller, child) {
                               if (controller.isLoading) {
                                 return Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CustomLoadingIndicator(),
                                 );
                               }
                               return ListView.builder(
@@ -103,7 +104,7 @@ class SelfRecordPage extends StatelessWidget {
                                               maxWidth: 280,
                                             ),
                                             child: Container(
-                                              margin: const EdgeInsets.only(bottom: 20),
+                                              margin: const EdgeInsets.only(bottom: 12),
                                               padding: const EdgeInsets.symmetric(horizontal: 26),
                                               decoration: BoxDecoration(
                                                 color: Color(0xffD8D8D8).withOpacity(0.3),
@@ -112,7 +113,7 @@ class SelfRecordPage extends StatelessWidget {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(height: 20),
+                                                  SizedBox(height: 16),
                                                   Text(
                                                     log.content,
                                                     style: TextStyle(
@@ -124,14 +125,14 @@ class SelfRecordPage extends StatelessWidget {
                                                     softWrap: true,
                                                     overflow: TextOverflow.visible,
                                                   ),
-                                                  SizedBox(height: 20),
+                                                  SizedBox(height: 16),
                                                 ],
                                               ),
                                             ),
                                           ),
                                           if (showTime)
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 12, bottom: 20),
+                                              padding: const EdgeInsets.only(left: 12, bottom: 12),
                                               child: Text(
                                                 formattedTime,
                                                 style: TextStyle(

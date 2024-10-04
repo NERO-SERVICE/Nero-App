@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class NotificationModel extends Equatable {
-  final int noticeId;
+  final int id;
   final String title;
   final String? description;
   final List<String> imageUrls;
@@ -11,7 +11,7 @@ class NotificationModel extends Equatable {
   final DateTime updatedAt;
 
   NotificationModel({
-    this.noticeId = 0,
+    this.id = 0,
     this.title = '',
     this.description,
     this.imageUrls = const [],
@@ -22,7 +22,7 @@ class NotificationModel extends Equatable {
   });
 
   NotificationModel.empty()
-      : noticeId = 0,
+      : id = 0,
         title = '',
         description = null,
         imageUrls = [],
@@ -33,22 +33,22 @@ class NotificationModel extends Equatable {
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
-      noticeId: json['noticeId'] ?? 0,
+      id: json['id'] ?? 0,
       title: json['title'] ?? '',
       description: json['description'],
-      imageUrls: (json['imageUrls'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+      imageUrls: (json['imageUrls'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ?? [], // 서버에서 제공하는 이미지 URL 리스트
       writer: json['writer'] ?? 0,
-      nickname: json['nickname'] ?? '',
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      nickname: json['nickname'] ?? '', // 서버에서 nickname 필드 제공
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'noticeId': noticeId,
+      'id': id,
       'title': title,
       'description': description,
       'imageUrls': imageUrls,
@@ -68,7 +68,7 @@ class NotificationModel extends Equatable {
     DateTime? updatedAt,
   }) {
     return NotificationModel(
-      noticeId: noticeId,
+      id: id,
       title: title ?? this.title,
       writer: writer ?? this.writer,
       description: description ?? this.description,
@@ -81,7 +81,7 @@ class NotificationModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    noticeId,
+    id,
     title,
     description,
     imageUrls,

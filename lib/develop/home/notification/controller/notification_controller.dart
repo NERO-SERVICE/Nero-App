@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/repository/notification_repository.dart';
 
@@ -49,10 +50,18 @@ class NotificationController extends GetxController {
       final newNotification = await _notificationRepository.createNotification(notification);
       if (newNotification != null) {
         notifications.add(newNotification);
-        Get.snackbar('성공', '공지사항이 성공적으로 생성되었습니다.');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '공지사항이 생성되었습니다.',
+          isSuccess: true,
+        );
       }
     } catch (e) {
-      Get.snackbar('실패', '공지사항 생성에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '공지사항 생성을 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -64,14 +73,22 @@ class NotificationController extends GetxController {
     try {
       final success = await _notificationRepository.updateNotification(notification);
       if (success) {
-        int index = notifications.indexWhere((n) => n.noticeId == notification.noticeId);
+        int index = notifications.indexWhere((n) => n.id == notification.id);
         if (index != -1) {
           notifications[index] = notification;
-          Get.snackbar('성공', '공지사항이 성공적으로 수정되었습니다.');
+          CustomSnackbar.show(
+            context: Get.context!,
+            message: '공지사항이 수정되었습니다.',
+            isSuccess: true,
+          );
         }
       }
     } catch (e) {
-      Get.snackbar('실패', '공지사항 수정에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '공지사항 수정을 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -83,11 +100,19 @@ class NotificationController extends GetxController {
     try {
       final success = await _notificationRepository.deleteNotification(noticeId);
       if (success) {
-        notifications.removeWhere((n) => n.noticeId == noticeId);
-        Get.snackbar('성공', '공지사항이 성공적으로 삭제되었습니다.');
+        notifications.removeWhere((n) => n.id == noticeId);
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '공지사항이 삭제되었습니다.',
+          isSuccess: true,
+        );
       }
     } catch (e) {
-      Get.snackbar('실패', '공지사항 삭제에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '공지사항 삭제를 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }

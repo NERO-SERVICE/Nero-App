@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../controller/clinic_controller.dart';
 import '../../model/clinic.dart';
@@ -88,12 +89,9 @@ class ClinicWriteController extends GetxController {
     drugs.removeAt(index);
   }
 
-  // DrfDrugArchive 정보를 직접 사용하여 DrfMyDrugArchive에 저장
   void addDrugToClinic(DrugArchive drugArchive, int number, String time) {
-    // DrfDrug에 DrfMyDrugArchive 생성하여 약물 추가
     final myDrugArchive = MyDrugArchive(
-      myArchiveId: drugArchive.archiveId, // archiveId를 myArchiveId로 설정
-      owner: clinic.value.owner,
+      myArchiveId: drugArchive.archiveId,
       archiveId: drugArchive.archiveId,
       drugName: drugArchive.drugName,
       target: drugArchive.target,
@@ -102,7 +100,7 @@ class ClinicWriteController extends GetxController {
 
     final drug = Drug(
       drugId: 0,
-      myDrugArchive: myDrugArchive, // DrfMyDrugArchive 사용
+      myDrugArchive: myDrugArchive,
       number: number,
       initialNumber: number,
       time: time,
@@ -115,7 +113,6 @@ class ClinicWriteController extends GetxController {
   // 클리닉 생성
   Future<void> createClinic() async {
     try {
-      // 추가된 약물들은 DrfMyDrugArchive로 변환되어 있음
       Clinic newClinic = clinic.value.copyWith(
         recentDay: recentDay.value,
         nextDay: nextDay.value,
@@ -130,11 +127,18 @@ class ClinicWriteController extends GetxController {
 
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to create clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 생성을 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to create clinic: $e');
-      Get.snackbar('Error', 'Failed to create clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 생성을 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 
@@ -154,11 +158,18 @@ class ClinicWriteController extends GetxController {
         clinicController.fetchClinics();
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to update clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 수정을 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to update clinic: $e');
-      Get.snackbar('Error', 'Failed to update clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 수정을 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 
@@ -171,11 +182,18 @@ class ClinicWriteController extends GetxController {
         clinicController.fetchClinics();
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to delete clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 삭제를 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to delete clinic: $e');
-      Get.snackbar('Error', 'Failed to delete clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 삭제를 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 }

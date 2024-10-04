@@ -1,5 +1,3 @@
-// lib/develop/dio_service.dart
-
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
@@ -33,15 +31,17 @@ class DioService {
 
   void _initializeInterceptors() {
     _dio.interceptors.add(dio.InterceptorsWrapper(
-      onRequest: (dio.RequestOptions options, dio.RequestInterceptorHandler handler) async {
+      onRequest: (dio.RequestOptions options,
+          dio.RequestInterceptorHandler handler) async {
         if (_accessToken.isNotEmpty) {
           // 클라이언트에 accessToken이 존재할 경우 헤더에 추가
           options.headers['Authorization'] = 'Bearer $_accessToken';
-          print("accessToken: $_accessToken");
+          print("Authorization 헤더 추가: Bearer $_accessToken"); // 로그 추가
         }
         return handler.next(options);
       },
-      onResponse: (dio.Response response, dio.ResponseInterceptorHandler handler) {
+      onResponse:
+          (dio.Response response, dio.ResponseInterceptorHandler handler) {
         return handler.next(response);
       },
       onError: (dio.DioException e, dio.ErrorInterceptorHandler handler) async {
@@ -131,7 +131,8 @@ class DioService {
     final prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('accessToken');
     String? refreshToken = prefs.getString('refreshToken');
-    print("getDrfToken | accessToken: $accessToken, refreshToken: $refreshToken");
+    print(
+        "getDrfToken | accessToken: $accessToken, refreshToken: $refreshToken");
     return {'accessToken': accessToken, 'refreshToken': refreshToken};
   }
 
@@ -142,7 +143,8 @@ class DioService {
   }
 
   // FormData를 사용하는 POST 요청
-  Future<dio.Response<dynamic>> postFormData(String url, {dio.FormData? formData}) async {
+  Future<dio.Response<dynamic>> postFormData(String url,
+      {dio.FormData? formData}) async {
     return _dio.post(
       url,
       data: formData,
@@ -155,7 +157,8 @@ class DioService {
   }
 
   // FormData를 사용하는 PUT 요청
-  Future<dio.Response<dynamic>> putFormData(String url, {dio.FormData? formData}) async {
+  Future<dio.Response<dynamic>> putFormData(String url,
+      {dio.FormData? formData}) async {
     return _dio.put(
       url,
       data: formData,
@@ -168,7 +171,8 @@ class DioService {
   }
 
   // FormData를 사용하는 DELETE 요청
-  Future<dio.Response<dynamic>> deleteFormData(String url, {dio.FormData? formData}) async {
+  Future<dio.Response<dynamic>> deleteFormData(String url,
+      {dio.FormData? formData}) async {
     return _dio.delete(
       url,
       data: formData,
@@ -181,23 +185,28 @@ class DioService {
   }
 
   // 기타 HTTP 메서드 (get, post, put, patch, delete)
-  Future<dio.Response<dynamic>> get(String url, {Map<String, dynamic>? params}) async {
+  Future<dio.Response<dynamic>> get(String url,
+      {Map<String, dynamic>? params}) async {
     return _dio.get(url, queryParameters: params);
   }
 
-  Future<dio.Response<dynamic>> post(String url, {Map<String, dynamic>? data}) async {
+  Future<dio.Response<dynamic>> post(String url,
+      {Map<String, dynamic>? data}) async {
     return _dio.post(url, data: data);
   }
 
-  Future<dio.Response<dynamic>> put(String url, {Map<String, dynamic>? data}) async {
+  Future<dio.Response<dynamic>> put(String url,
+      {Map<String, dynamic>? data}) async {
     return _dio.put(url, data: data);
   }
 
-  Future<dio.Response<dynamic>> patch(String url, {Map<String, dynamic>? data}) async {
+  Future<dio.Response<dynamic>> patch(String url,
+      {Map<String, dynamic>? data}) async {
     return _dio.patch(url, data: data);
   }
 
-  Future<dio.Response<dynamic>> delete(String url, {Map<String, dynamic>? data}) async {
+  Future<dio.Response<dynamic>> delete(String url,
+      {Map<String, dynamic>? data}) async {
     return _dio.delete(url, data: data);
   }
 }

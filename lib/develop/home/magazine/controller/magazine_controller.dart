@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
 
@@ -49,10 +50,18 @@ class MagazineController extends GetxController {
       final newMagazine = await _magazineRepository.createMagazine(magazine);
       if (newMagazine != null) {
         magazines.add(newMagazine);
-        Get.snackbar('성공', '매거진이 성공적으로 생성되었습니다.');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '매거진이 생성되었습니다.',
+          isSuccess: true,
+        );
       }
     } catch (e) {
-      Get.snackbar('실패', '매거진 생성에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '매거진 생성을 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -68,11 +77,19 @@ class MagazineController extends GetxController {
             magazines.indexWhere((n) => n.magazineId == magazine.magazineId);
         if (index != -1) {
           magazines[index] = magazine;
-          Get.snackbar('성공', '매거진이 성공적으로 수정되었습니다.');
+          CustomSnackbar.show(
+            context: Get.context!,
+            message: '매거진이 수정되었습니다.',
+            isSuccess: true,
+          );
         }
       }
     } catch (e) {
-      Get.snackbar('실패', '매거진 수정에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '매거진 수정을 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -85,10 +102,18 @@ class MagazineController extends GetxController {
       final success = await _magazineRepository.deleteMagazine(magazineId);
       if (success) {
         magazines.removeWhere((n) => n.magazineId == magazineId);
-        Get.snackbar('성공', '매거진이 성공적으로 삭제되었습니다.');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '매거진을 삭제했습니다.',
+          isSuccess: true,
+        );
       }
     } catch (e) {
-      Get.snackbar('실패', '매거진 삭제에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '매거진 삭제를 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }

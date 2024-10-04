@@ -49,6 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Focus(
       focusNode: _focusNodeNickName,
       child: TextField(
+        cursorColor: Color(0xffD9D9D9),
         onChanged: (value) => controller.nickname.value = value,
         style: const TextStyle(
           fontFamily: 'Pretendard',
@@ -93,6 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Focus(
       focusNode: _focusNodeEmail,
       child: TextField(
+        cursorColor: Color(0xffD9D9D9),
         onChanged: (value) => controller.email.value = value,
         style: const TextStyle(
           fontFamily: 'Pretendard',
@@ -137,6 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Focus(
       focusNode: _focusNodeBirth,
       child: TextField(
+        cursorColor: Color(0xffD9D9D9),
         onChanged: (value) {
           if (value.length == 6) {
             controller.birth.value = value;
@@ -178,6 +181,12 @@ class _SignUpPageState extends State<SignUpPage> {
               ? const Color(0xffD0EE17).withOpacity(0.1)
               : const Color(0xff3B3B3B),
           contentPadding: const EdgeInsets.all(20),
+          counterStyle: TextStyle( // maxLength 스타일
+            fontSize: 12,
+            color: Color(0xffD9D9D9).withOpacity(0.3),
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
     );
@@ -289,9 +298,6 @@ class _SignUpPageState extends State<SignUpPage> {
           }
 
           final currentUser = NeroUser(
-            userId: 1,
-            kakaoId: 1,
-            createdAt: DateTime.now(),
             nickname: controller.nickname.value,
             email: controller.email.value,
             birth: parsedBirth,
@@ -343,6 +349,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return CommonLayout(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -353,12 +360,6 @@ class _SignUpPageState extends State<SignUpPage> {
               color: Colors.transparent,
             ),
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
         ),
         title: const Text(
           '프로필 설정',

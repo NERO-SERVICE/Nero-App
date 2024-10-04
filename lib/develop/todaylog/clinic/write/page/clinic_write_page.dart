@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../../../common/components/app_font.dart';
 import '../../../../common/components/calandar_widget.dart';
+import '../../../../common/components/custom_submit_button.dart';
 import '../../../../common/components/time_selection_widget.dart';
 import '../../model/drug.dart';
 import '../../model/drug_archive.dart';
@@ -29,7 +31,8 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   void initState() {
     super.initState();
     controller = Get.put(ClinicWriteController());
-    _descriptionController = TextEditingController(text: controller.clinic.value.description);
+    _descriptionController =
+        TextEditingController(text: controller.clinic.value.description);
     _descriptionController.addListener(() {
       controller.changeDescription(_descriptionController.text);
     });
@@ -67,8 +70,8 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ),
               ),
               child: CalendarWidget(
-                selectedDate: date,
-                focusedDate: date,
+                initialSelectedDate: date.value,
+                initialFocusedDate: date.value,
               ),
             ),
           ),
@@ -90,6 +93,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
         key: _formKey,
         child: ListView(
           children: [
+            const SizedBox(height: 21),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
@@ -102,9 +106,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 21),
-            CustomDivider(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 42),
               child: Column(
@@ -147,33 +149,17 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ],
               ),
             ),
-            CustomDivider(),
             const SizedBox(height: 30),
             Center(
-              child: ElevatedButton(
+              child: CustomSubmitButton(
                 onPressed: () async {
                   await _submitForm();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('진료 기록이 제출되었습니다.')),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding:
-                  EdgeInsets.symmetric(vertical: 17.0, horizontal: 73.0),
-                ),
-                child: Text(
-                  '제출하기',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Color(0xffFFFFFF),
-                  ),
-                ),
+                text: '제출하기',
+                isEnabled: true,
               ),
             ),
             const SizedBox(height: 30),
@@ -209,7 +195,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
           padding: EdgeInsets.symmetric(vertical: 13, horizontal: 15),
           decoration: BoxDecoration(
             border: Border.all(
-              color: isSelected.value ? Color(0xffD0EE17) : Color(0xffD9D9D9), // 상태에 따라 border 색상 변경
+              color: isSelected.value ? Color(0xffD0EE17) : Color(0xffD9D9D9),
             ),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -227,7 +213,6 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       );
     });
   }
-
 
   Widget _buildDrugsList() {
     return Obx(() {
@@ -249,14 +234,18 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
             ),
             child: ListTile(
               title: Text(
-                '${drug.myDrugArchive.drugName} · ${drug.number}정 (${drug.time})',
+                '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg · ${drug.number}정 (${drug.time})',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-              trailing: IconButton(
-                icon: Icon(Icons.close, color: Colors.white),
-                onPressed: () {
+              trailing: GestureDetector(
+                onTap: () {
                   controller.removeDrug(index);
                 },
+                child: SvgPicture.asset(
+                  'assets/develop/exit.svg',
+                  width: 24,  // 원하는 사이즈로 설정
+                  height: 24, // 원하는 사이즈로 설정
+                ),
               ),
             ),
           );
@@ -264,6 +253,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       );
     });
   }
+
 
   void _addDrugDialog(BuildContext context) {
     final drugNumberController = TextEditingController();
@@ -351,8 +341,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                             if (selectedArchive.value != null &&
                                 drugNumberController.text.isNotEmpty) {
                               final myDrugArchive = MyDrugArchive(
-                                myArchiveId: 0,
-                                owner: controller.clinic.value.owner,
+                                myArchiveId: 1,
                                 archiveId: selectedArchive.value!.archiveId,
                                 drugName: selectedArchive.value!.drugName,
                                 target: selectedArchive.value!.target,
@@ -361,10 +350,13 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
 
                               // Drug 생성
                               final drug = Drug(
-                                drugId: 0, // 새로 생성되므로 0으로 설정
-                                myDrugArchive: myDrugArchive, // 생성된 MyDrugArchive 사용
+                                drugId: 1,
+                                // 새로 생성되므로 0으로 설정
+                                myDrugArchive: myDrugArchive,
+                                // 생성된 MyDrugArchive 사용
                                 number: int.parse(drugNumberController.text),
-                                initialNumber: int.parse(drugNumberController.text),
+                                initialNumber:
+                                int.parse(drugNumberController.text),
                                 time: selectedTime.value,
                                 allow: true,
                               );
@@ -372,7 +364,11 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                               controller.addDrug(drug);
                               Get.back();
                             } else {
-                              Get.snackbar('Error', '모든 필드를 채워주세요.');
+                              CustomSnackbar.show(
+                                context: Get.context!,
+                                message: '모든 필드를 채워주세요.',
+                                isSuccess: false,
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -380,17 +376,14 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 66.0,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
                           ),
                           child: Text(
                             '등록하기',
                             style: TextStyle(
                               fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
                               color: Color(0xffD0EE17),
                             ),
                           ),
@@ -422,9 +415,11 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
     );
   }
 
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
+      cursorColor: Color(0xffD9D9D9),
+      keyboardType: TextInputType.number,
+      maxLength: 3,
       controller: controller,
       style: TextStyle(
         fontSize: 14,
@@ -454,8 +449,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
         ),
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: 13),
+        contentPadding: EdgeInsets.symmetric(horizontal: 13),
       ),
     );
   }
@@ -546,11 +540,13 @@ class DrugArchiveDropdown extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            borderSide:
+            BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0), width: 1),
+            borderSide:
+            BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
         ),
         value: selectedArchive.value,

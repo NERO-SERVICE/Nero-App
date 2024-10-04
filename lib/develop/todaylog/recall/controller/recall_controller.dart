@@ -1,55 +1,104 @@
-import 'package:flutter/material.dart';
+// controller/recall_controller.dart
 
+import 'package:flutter/material.dart';
+import 'package:nero_app/develop/todaylog/recall/model/question_subtype.dart';
+import 'package:nero_app/develop/todaylog/recall/model/question.dart';
+import 'package:nero_app/develop/todaylog/recall/model/self_record.dart';
 import '../../../dio_service.dart';
-import '../model/question.dart';
-import '../model/self_record.dart';
 
 class RecallController with ChangeNotifier {
   final DioService _dioService = DioService();
+  final String? type;
+
+  RecallController({required this.type});
+
   bool _isLoading = false;
 
-  List<Question> surveyQuestions = [];
-  List<String> surveyAnswers = [];
+  // Subtypes
+  List<QuestionSubtype> subtypes = [];
+  String? selectedSubtype;
+  Set<String> completedSubtypes = {};
 
-  List<Question> sideEffectQuestions = [];
-  List<String> sideEffectAnswers = [];
+  // Questions and Answers
+  List<Question> questions = [];
+  List<int?> answers = []; // 선택된 answer_id를 저장
 
+  // Self Logs (필요한 경우)
   List<SelfRecord> selfLogs = [];
 
   bool get isLoading => _isLoading;
 
-  Future<void> fetchSurveyQuestions() async {
+  Future<void> fetchCompletedSubtypes() async {
+    try {
+      final response = await _dioService.get('/todaylogs/survey_completions/', params: {
+        'year': DateTime.now().year.toString(),
+        'month': DateTime.now().month.toString().padLeft(2, '0'),
+        'day': DateTime.now().day.toString().padLeft(2, '0'),
+        'response_type': type, // 'survey' 또는 'side_effect'
+      });
+
+      completedSubtypes = (response.data as List)
+          .map<String>((e) => e['question_subtype'])
+          .toSet();
+    } catch (e) {
+      print('Failed to fetch completed subtypes: $e');
+    }
+  }
+
+  // 설문 Subtypes 가져오기
+  Future<void> fetchSubtypes() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response = await _dioService.get('/todaylogs/questions/', params: {'type': 'survey'});
-      surveyQuestions = (response.data as List)
-          .map((e) => Question.fromJson(e))
+      await fetchCompletedSubtypes();
+
+      final response = await _dioService.get('/todaylogs/subtypes/', params: {
+        'type': type,
+        'response_type': type, // 'survey' 또는 'side_effect'
+      });
+
+      subtypes = (response.data as List)
+          .map<QuestionSubtype>((e) => QuestionSubtype.fromJson(e))
           .toList();
-      surveyAnswers = List<String>.filled(surveyQuestions.length, '');
+
+      // Mark subtypes as completed based on fetched data
+      for (var subtype in subtypes) {
+        if (completedSubtypes.contains(subtype.subtypeCode)) {
+          subtype.isCompleted = true;
+        }
+      }
+    } catch (e) {
+      print('Failed to fetch subtypes: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> fetchSideEffectQuestions() async {
+  // 질문 가져오기
+  Future<void> fetchQuestions() async {
+    if (selectedSubtype == null) return;
+
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response = await _dioService.get('/todaylogs/questions/', params: {'type': 'side_effect'});
-      sideEffectQuestions = (response.data as List)
-          .map((e) => Question.fromJson(e))
-          .toList();
-      sideEffectAnswers = List<String>.filled(sideEffectQuestions.length, '');
+      final response = await _dioService.get('/todaylogs/questions/', params: {
+        'type': type,
+        'subtype': selectedSubtype,
+      });
+      questions = (response.data as List).map((e) => Question.fromJson(e)).toList();
+      answers = List<int?>.filled(questions.length, null);
+    } catch (e) {
+      print('Failed to fetch questions: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
+  // 자기 기록 가져오기
   Future<void> fetchSelfLogs() async {
     _isLoading = true;
     notifyListeners();
@@ -61,9 +110,7 @@ class RecallController with ChangeNotifier {
         'month': now.month.toString().padLeft(2, '0'),
         'day': now.day.toString().padLeft(2, '0'),
       });
-      selfLogs = (response.data as List)
-          .map((e) => SelfRecord.fromJson(e))
-          .toList();
+      selfLogs = (response.data as List).map((e) => SelfRecord.fromJson(e)).toList();
     } catch (e) {
       print('Failed to load self logs: $e');
     } finally {
@@ -72,6 +119,7 @@ class RecallController with ChangeNotifier {
     }
   }
 
+  // 자기 기록 제출하기
   Future<void> submitSelfLog(String content) async {
     _isLoading = true;
     notifyListeners();
@@ -89,48 +137,47 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  void updateSurveyAnswer(int index, String answer) {
-    surveyAnswers[index] = answer;
+  // 답변 업데이트
+  void updateAnswer(int index, int? answerId) {
+    answers[index] = answerId;
     notifyListeners();
   }
 
-  void updateSideEffectAnswer(int index, String answer) {
-    sideEffectAnswers[index] = answer;
-    notifyListeners();
-  }
+  // 응답 제출하기
+  Future<void> submitResponses() async {
+    if (questions.isEmpty) return;
 
-  Future<void> submitSurveyResponses() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      for (int i = 0; i < surveyQuestions.length; i++) {
-        if (surveyAnswers[i].isNotEmpty) {
-          await _dioService.post('/todaylogs/survey/', data: {
-            'question_id': surveyQuestions[i].id,
-            'answer': surveyAnswers[i],
+      List<Map<String, dynamic>> responses = [];
+      for (int i = 0; i < questions.length; i++) {
+        if (answers[i] != null) {
+          responses.add({
+            'question_id': questions[i].id,
+            'answer_id': answers[i],
           });
         }
       }
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
 
-  Future<void> submitSideEffectResponses() async {
-    _isLoading = true;
-    notifyListeners();
+      if (responses.isNotEmpty) {
+        final response = await _dioService.post('/todaylogs/response/', data: {
+          'response_type': type,
+          'responses': responses,
+        });
 
-    try {
-      for (int i = 0; i < sideEffectQuestions.length; i++) {
-        if (sideEffectAnswers[i].isNotEmpty) {
-          await _dioService.post('/todaylogs/side_effect/', data: {
-            'question_id': sideEffectQuestions[i].id,
-            'answer': sideEffectAnswers[i],
-          });
-        }
+        // 설문 완료 후, subtypes 다시 불러오기
+        await fetchSubtypes();
+
+        // 질문과 답변 초기화
+        questions = [];
+        answers = [];
+        selectedSubtype = null;
       }
+    } catch (e) {
+      print('Failed to submit responses: $e');
+      // 추가적인 에러 처리 가능
     } finally {
       _isLoading = false;
       notifyListeners();

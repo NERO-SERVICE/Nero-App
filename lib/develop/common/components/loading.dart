@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/app_font.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 
 class Loading extends StatelessWidget {
   const Loading({super.key});
@@ -8,11 +9,11 @@ class Loading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black.withOpacity(0.8),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(strokeWidth: 1),
+            CustomLoadingIndicator(),
             SizedBox(height: 20),
             AppFont(
               '로딩 중...',

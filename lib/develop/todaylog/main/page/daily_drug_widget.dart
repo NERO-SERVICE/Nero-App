@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 
+import '../../../common/components/custom_complete_button.dart';
 import '../../clinic/model/drug.dart';
 import '../../clinic/repository/clinic_repository.dart';
 
@@ -49,7 +51,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
   Future<void> _submitSelectedDrugs() async {
     try {
       final success =
-          await _clinicRepository.consumeSelectedDrugs(_selectedDrugIds);
+      await _clinicRepository.consumeSelectedDrugs(_selectedDrugIds);
       if (success) {
         final updatedDrugs = await _loadDrugs();
         setState(() {
@@ -65,7 +67,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
   Future<void> _rollbackDrugs() async {
     if (_rollbackDate != null) {
       final success =
-          await _clinicRepository.rollbackConsumedDrugs(_rollbackDate!);
+      await _clinicRepository.rollbackConsumedDrugs(_rollbackDate!);
       if (success) {
         print('Drugs successfully rolled back.');
         setState(() {
@@ -85,7 +87,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
       future: _drugsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Failed to load drugs'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -174,7 +176,7 @@ class DrugListWidget extends StatelessWidget {
         final displayNumber = isSelected ? drug.number - 1 : drug.number;
 
         final displayNumberColor =
-            !drug.allow ? Color(0xff848481) : Colors.white;
+        !drug.allow ? Color(0xff848481) : Colors.white;
         final initialNumberColor = Color(0xff848481);
 
         final drugNameColor = !drug.allow ? Color(0xff848481) : Colors.white;
@@ -187,13 +189,13 @@ class DrugListWidget extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: drug.allow
                       ? () {
-                          onDrugSelection(drug.drugId);
-                        }
+                    onDrugSelection(drug.drugId);
+                  }
                       : null,
                   style: ElevatedButton.styleFrom(
                     side: BorderSide(
                       color:
-                          isSelected ? Color(0xffD0EE17) : Colors.transparent,
+                      isSelected ? Color(0xffD0EE17) : Colors.transparent,
                       width: 1.0,
                     ),
                     backgroundColor: isSelected
@@ -268,26 +270,10 @@ class SubmitButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return CustomCompleteButton(
       onPressed: isEnabled ? onSubmit : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isEnabled ? Color(0xff1C1B1B) : Color(0xff3C3C3C),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 33),
-        child: Text(
-          '선택하기',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w500,
-            color: Color(0xffD0EE17),
-            fontSize: 16,
-          ),
-        ),
-      ),
+      isEnabled: isEnabled,
+      text: "선택하기",
     );
   }
 }

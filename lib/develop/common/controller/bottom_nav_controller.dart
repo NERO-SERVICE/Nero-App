@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 
 class BottomNavController extends GetxController
     with GetTickerProviderStateMixin {

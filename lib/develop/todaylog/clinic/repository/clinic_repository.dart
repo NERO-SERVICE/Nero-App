@@ -17,7 +17,7 @@ class ClinicRepository {
       print('Response Data: ${response.data}');
 
       List<Clinic> clinics =
-          response.data.map<Clinic>((item) => Clinic.fromJson(item)).toList();
+      response.data.map<Clinic>((item) => Clinic.fromJson(item)).toList();
       return clinics;
     } catch (e) {
       print('클리닉 리스트를 불러오지 못했습니다: $e');
@@ -137,7 +137,7 @@ class ClinicRepository {
       }
       Clinic latestClinic = clinics.first;
       final response =
-          await _dio.get('/clinics/${latestClinic.clinicId}/drugs/');
+      await _dio.get('/clinics/${latestClinic.clinicId}/drugs/');
 
       // 여기서 DrfMyDrugArchive로 변환
       List<Drug> drugs = (response.data as List<dynamic>).map<Drug>((item) {

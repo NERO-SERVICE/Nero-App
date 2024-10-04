@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -21,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'develop/app.dart';
 import 'develop/dio_service.dart';
+import 'develop/home/information/controller/information_controller.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
 
@@ -28,8 +30,13 @@ late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -42,6 +49,8 @@ void main() async {
   KakaoSdk.init(nativeAppKey: dotenv.env['kakaoAppKey']);
   prefs = await SharedPreferences.getInstance();
   await initializeDateFormatting();
+
+  FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
 
@@ -114,11 +123,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(DataLoadController());
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
+        Get.put(LoginController(kakaoAuth));
         Get.put(BottomNavController());
+        Get.put(InformationController());
         Get.put(ClinicController());
         Get.put(FastmemoRepository());
-        Get.put(LoginController(kakaoAuth));
-        Get.put(ClinicController());
       }),
       getPages: [
         GetPage(

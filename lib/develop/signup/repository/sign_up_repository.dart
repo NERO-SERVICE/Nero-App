@@ -7,7 +7,8 @@ class SignUpRepository {
   Future<bool> settingUserInfo(NeroUser user) async {
     try {
       final response = await _dio.patch(
-        '/accounts/${user.userId}/update/',
+        '/accounts/update/',
+        data: user.toJson(),
       );
 
       return response.statusCode == 200;

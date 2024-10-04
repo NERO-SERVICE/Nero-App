@@ -1,9 +1,6 @@
-// lib/develop/login/controller/login_controller.dart
-
 import 'package:get/get.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../user/controller/authentication_controller.dart';
 
 class LoginController extends GetxController {
@@ -24,10 +21,14 @@ class LoginController extends GetxController {
 
     if (accessToken != null && refreshToken != null) {
       try {
-        final user = await authenticationRepository.fetchAndSaveUserInfo();
-        if (user != null) {
-          // 유저 정보가 있으면 홈 화면으로 이동
-          Get.offAllNamed('/home');
+        final userInfo = await authenticationRepository.getUserInfoWithTokens(accessToken);
+        if (userInfo != null) {
+          final needsSignup = userInfo['nickname'] == null || (userInfo['nickname'] as String).isEmpty;
+          if (needsSignup) {
+            Get.offAllNamed('/signup');
+          } else {
+            Get.offAllNamed('/home');
+          }
         } else {
           // 유저 정보를 불러오지 못하면 로그인 화면으로 이동
           Get.offAllNamed('/login');

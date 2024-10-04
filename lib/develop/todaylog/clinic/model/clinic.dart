@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-
 import 'drug.dart';
+import 'drug_archive.dart';
+import 'my_drug_archive.dart';
 
 class Clinic extends Equatable {
   final int clinicId;
@@ -25,17 +26,6 @@ class Clinic extends Equatable {
     required this.drugs,
   });
 
-  Clinic.empty()
-      : clinicId = 0,
-        owner = 1,
-        nickname = '',
-        recentDay = DateTime.now(),
-        nextDay = DateTime.now(),
-        createdAt = DateTime.now(),
-        updatedAt = DateTime.now(),
-        description = '',
-        drugs = [];
-
   factory Clinic.fromJson(Map<String, dynamic> json) {
     return Clinic(
       clinicId: json['clinicId'] ?? 1,
@@ -46,15 +36,18 @@ class Clinic extends Equatable {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       description: json['description'],
-      drugs: (json['drugs'] as List<dynamic>)
-          .map<Drug>((item) => Drug.fromJson(item))
-          .toList(),
+      drugs: (json['drugs'] as List<dynamic>?)
+          ?.map<Drug>((item) => Drug.fromJson(item))
+          .toList() ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'clinicId': clinicId,
       'owner': owner,
+      'nickname': nickname,
       'recentDay': recentDay.toIso8601String(),
       'nextDay': nextDay.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),

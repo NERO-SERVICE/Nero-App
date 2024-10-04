@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../common/components/custom_complete_button.dart';
 import '../../common/components/custom_divider.dart';
-import '../../common/layout/common_layout.dart';
 import 'fast_memo_detail_page.dart';
 
 class FastMemoMainPage extends StatefulWidget {
@@ -18,9 +19,14 @@ class FastMemoMainPage extends StatefulWidget {
 }
 
 class _FastMemoMainPageState extends State<FastMemoMainPage> {
-  final FastmemoController controller = Get.put(FastmemoController());
-  final FastmemoRepository repository = Get.find<FastmemoRepository>();
+  final FastmemoController controller = Get.put(FastmemoController(repository: Get.find<FastmemoRepository>()));
   final Map<int, bool> _selectedMap = {}; // 메모 선택 상태 관리
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchMemoDates(DateTime.now().year);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +35,12 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       appBar: CustomAppBar(title: '빠른 메모'),
       body: BackgroundLayout(
         child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(), // 기본적으로 수직 스크롤
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: kToolbarHeight + 56),
-              SizedBox(height: 18),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
@@ -62,27 +69,28 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   Widget _fastCalendar() {
     return Obx(
-      () => TableCalendar(
+          () => TableCalendar(
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
-        focusedDay: controller.focusedDay.value,
+        focusedDay: controller.selectedDate.value,
         locale: 'ko_KR',
+        availableGestures: AvailableGestures.horizontalSwipe,
         selectedDayPredicate: (day) {
-          return isSameDay(controller.selectedDay.value, day);
+          return isSameDay(controller.selectedDate.value, day);
         },
         onDaySelected: (selectedDay, focusedDay) {
-          controller.onDaySelected(selectedDay, focusedDay);
-          repository.setSelectedDate(selectedDay);
+          controller.setSelectedDate(selectedDay);
         },
         onPageChanged: (focusedDay) {
-          controller.onPageChanged(focusedDay);
+          int focusedYear = focusedDay.year;
+          // focusedYear가 loadedYears에 없으면 호출
+          if (!controller.loadedYears.contains(focusedYear)) {
+            controller.fetchMemoDates(focusedYear);  // 해당 연도에 대한 메모 날짜 호출
+          }
         },
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -133,16 +141,86 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
             color: Color(0xff6D7179),
           ),
         ),
+        calendarBuilders: CalendarBuilders(
+          defaultBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date);
+          },
+          selectedBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date, isSelected: true);
+          },
+          todayBuilder: (context, date, focusedDay) {
+            return _buildDayCell(date, isToday: true);
+          },
+          outsideBuilder: (context, date, focusedDay) {
+            return Container();
+          },
+        ),
       ),
     );
   }
 
+
+  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
+    bool hasMemo = controller.memoDates.contains(DateTime(date.year, date.month, date.day)); // 메모 데이터가 있는지 확인
+
+    TextStyle textStyle = TextStyle(
+      color: isSelected
+          ? Colors.white
+          : isToday
+          ? Colors.white
+          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
+          ? Color(0xff6D7179)
+          : Colors.grey,
+      fontWeight: FontWeight.w500,
+    );
+
+    Widget dayText = Text(
+      '${date.day}',
+      style: textStyle,
+    );
+
+    if (hasMemo) {
+      dayText = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isSelected || isToday ? Colors.transparent : Colors.black.withOpacity(0.1),
+        ),
+        child: Center(
+          child: dayText,
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      decoration: isSelected
+          ? BoxDecoration(
+        color: Color(0xffD0EE17),
+        shape: BoxShape.circle,
+      )
+          : isToday
+          ? BoxDecoration(
+        color: Colors.grey,
+        shape: BoxShape.circle,
+      )
+          : hasMemo
+          ? BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Color(0xffD0EE17), width: 1),
+      )
+          : null,
+      alignment: Alignment.center,
+      child: dayText,
+    );
+  }
+
+
   Widget _uncheckedMemo() {
     return Obx(() {
-      if (repository.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+      if (controller.isLoading.value) {
+        return Center(child: CustomLoadingIndicator());
       }
-      if (repository.fastmemo.isEmpty) {
+      if (controller.fastmemo.isEmpty) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -180,7 +258,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${DateFormat('MM월 dd일').format(repository.fastmemo.first.date)} 빠른 메모',
+                      '${DateFormat('MM월 dd일').format(controller.fastmemo.first.date)} 빠른 메모',
                       style: TextStyle(
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -190,7 +268,8 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => FastMemoDetailPage());
+                        Get.to(() => FastMemoDetailPage(),
+                            arguments: controller.selectedDate.value);
                       },
                       child: Text(
                         '더보기',
@@ -206,7 +285,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                 ),
               ),
               Column(
-                children: repository.fastmemo.map((memo) {
+                children: controller.fastmemo.map((memo) {
                   bool isSelected = _selectedMap[memo.id] ?? false;
 
                   String iconPath = isSelected
@@ -281,37 +360,23 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
   }
 
   Widget _buildCompleteButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 105),
-      child: ElevatedButton(
-        onPressed: _completeSelectedMemos,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xff1C1B1B),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
-        child: Center(
-          child: Text(
-            "선택하기",
-            style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Color(0xffD0EE17)),
-          ),
-        ),
-      ),
+    bool isEnabled = _selectedMap.values.any((isSelected) => isSelected);
+
+    return CustomCompleteButton(
+      onPressed: isEnabled ? _completeSelectedMemos : null,
+      text: "선택하기",
+      isEnabled: isEnabled,
     );
   }
+
 
   Widget _emptyNextButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 105),
       child: GestureDetector(
         onTap: () {
-          Get.to(() => FastMemoDetailPage());
+          Get.to(() => FastMemoDetailPage(),
+              arguments: controller.selectedDate.value);
         },
         child: Center(
           child: Text(
@@ -334,7 +399,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         .toList();
 
     if (selectedIds.isNotEmpty) {
-      await repository.bulkUpdateIsChecked(true, selectedIds);
+      await controller.bulkUpdateIsChecked(true, selectedIds);
       setState(() {
         _selectedMap.clear();
       });

@@ -1,7 +1,6 @@
-// lib/develop/splash/page/splash_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/getx_listener.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
@@ -32,7 +31,6 @@ class SplashPage extends GetView<SplashController> {
                     Future.microtask(() => Get.offNamed('/login'));
                     break;
                   case AuthenticationStatus.init:
-                  // 초기 상태에서는 아무 동작 안함
                     break;
                 }
               },
@@ -40,13 +38,15 @@ class SplashPage extends GetView<SplashController> {
               child: GetxListener<bool>(
                 listen: (bool value) {
                   if (value) {
-                    Future.microtask(() => controller.changeStep(StepType.authCheck));
+                    Future.microtask(
+                        () => controller.changeStep(StepType.authCheck));
                   }
                 },
                 stream: Get.find<DataLoadController>().isDataLoad,
                 child: GetxListener<StepType>(
                   initCall: () {
-                    Future.microtask(() => controller.changeStep(StepType.dataload));
+                    Future.microtask(
+                        () => controller.changeStep(StepType.dataload));
                   },
                   listen: (StepType? value) {
                     if (value == null) return;
@@ -168,7 +168,7 @@ class _ProgressView extends GetView<SplashController> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Obx(
-              () {
+          () {
             return Text(
               '${controller.loadStep.value.name} 중입니다.',
               style: const TextStyle(
@@ -181,8 +181,7 @@ class _ProgressView extends GetView<SplashController> {
           },
         ),
         const SizedBox(height: 20),
-        const CircularProgressIndicator(
-            strokeWidth: 1, color: Colors.white),
+        CustomLoadingIndicator(),
       ],
     );
   }
