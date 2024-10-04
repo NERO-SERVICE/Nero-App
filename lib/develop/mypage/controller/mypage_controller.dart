@@ -4,8 +4,6 @@ import 'package:nero_app/develop/mypage/repository/mypage_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 
 import '../../todaylog/recall/model/self_record.dart';
-import '../../todaylog/recall/model/side_effect.dart';
-import '../../todaylog/recall/model/survey.dart';
 import '../model/menstruation_cycle.dart';
 import '../model/monthly_check.dart';
 

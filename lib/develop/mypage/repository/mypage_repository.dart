@@ -166,9 +166,10 @@ class MypageRepository {
     }
   }
 
+  // Fetch recorded dates for surveys
   Future<Set<DateTime>> getSurveyRecordedDates(int year) async {
     try {
-      final String url = '/todaylogs/survey/dates/?year=$year';
+      final String url = '/todaylogs/response/dates/?year=$year&type=survey';
       final response = await _dio.get(url);
       List<dynamic> dates = response.data;
       return dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
@@ -178,9 +179,10 @@ class MypageRepository {
     }
   }
 
+  // Fetch recorded dates for side effects
   Future<Set<DateTime>> getSideEffectRecordedDates(int year) async {
     try {
-      final String url = '/todaylogs/side_effect/dates/?year=$year';
+      final String url = '/todaylogs/response/dates/?year=$year&type=side_effect';
       final response = await _dio.get(url);
       List<dynamic> dates = response.data;
       return dates.map((dateStr) => DateTime.parse(dateStr)).toSet();
@@ -190,6 +192,7 @@ class MypageRepository {
     }
   }
 
+  // Fetch recorded dates for self-records
   Future<Set<DateTime>> getSelfRecordRecordedDates(int year) async {
     try {
       final String url = '/todaylogs/self_record/dates/?year=$year';
@@ -201,5 +204,4 @@ class MypageRepository {
       return {};
     }
   }
-
 }

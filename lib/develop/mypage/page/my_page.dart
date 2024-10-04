@@ -547,13 +547,15 @@ class _MyPage extends State<MyPage> {
               labelTop: '하루 설문',
               labelBottom: '오늘 하루는 어땠어요?',
               onPressed: () async {
+                // Fetch the recorded dates
+                await _monthlyCheckController.fetchSurveyRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
-                  DateTime.now(),
-                  _monthlyCheckController.surveyRecordedDates,
+                  selectedDate.value,
+                  _monthlyCheckController.surveyRecordedDates, // Highlight recorded dates
                 );
                 if (date != null) {
-                  await _monthlyCheckController.fetchSurveyRecordedDates(date.year);
+                  // Navigate to the survey log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -571,13 +573,15 @@ class _MyPage extends State<MyPage> {
               labelTop: '부작용 설문',
               labelBottom: '평소와 다른 증상이 나타났나요?',
               onPressed: () async {
+                // Fetch the recorded dates
+                await _monthlyCheckController.fetchSideEffectRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
-                  DateTime.now(),
-                  _monthlyCheckController.sideEffectRecordedDates,
+                  selectedDate.value,
+                  _monthlyCheckController.sideEffectRecordedDates, // Highlight recorded dates
                 );
                 if (date != null) {
-                  await _monthlyCheckController.fetchSideEffectRecordedDates(date.year);
+                  // Navigate to the side effect log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -595,13 +599,15 @@ class _MyPage extends State<MyPage> {
               labelTop: '셀프 기록',
               labelBottom: '오늘 추가로 더 남기고 싶은 말이 있나요?',
               onPressed: () async {
+                // Fetch the recorded dates
+                await _monthlyCheckController.fetchSelfRecordRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
-                  DateTime.now(),
-                  _monthlyCheckController.selfRecordRecordedDates,
+                  selectedDate.value,
+                  _monthlyCheckController.selfRecordRecordedDates, // Highlight recorded dates
                 );
                 if (date != null) {
-                  await _monthlyCheckController.fetchSelfRecordRecordedDates(date.year);
+                  // Navigate to the self record log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(
