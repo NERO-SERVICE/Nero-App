@@ -1,10 +1,8 @@
-// controller/recall_controller.dart
-
 import 'package:flutter/material.dart';
+import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/todaylog/recall/model/question_subtype.dart';
 import 'package:nero_app/develop/todaylog/recall/model/question.dart';
 import 'package:nero_app/develop/todaylog/recall/model/self_record.dart';
-import '../../../dio_service.dart';
 
 class RecallController with ChangeNotifier {
   final DioService _dioService = DioService();
@@ -19,13 +17,9 @@ class RecallController with ChangeNotifier {
   String? selectedSubtype;
   Set<String> completedSubtypes = {};
 
-  // Questions and Answers
   List<Question> questions = [];
-  List<int?> answers = []; // 선택된 answer_id를 저장
-
-  // Self Logs (필요한 경우)
+  List<int?> answers = [];
   List<SelfRecord> selfLogs = [];
-
   bool get isLoading => _isLoading;
 
   Future<void> fetchCompletedSubtypes() async {
@@ -34,7 +28,7 @@ class RecallController with ChangeNotifier {
         'year': DateTime.now().year.toString(),
         'month': DateTime.now().month.toString().padLeft(2, '0'),
         'day': DateTime.now().day.toString().padLeft(2, '0'),
-        'response_type': type, // 'survey' 또는 'side_effect'
+        'response_type': type,
       });
 
       completedSubtypes = (response.data as List)
@@ -45,7 +39,7 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  // 설문 Subtypes 가져오기
+
   Future<void> fetchSubtypes() async {
     _isLoading = true;
     notifyListeners();
@@ -55,14 +49,13 @@ class RecallController with ChangeNotifier {
 
       final response = await _dioService.get('/todaylogs/subtypes/', params: {
         'type': type,
-        'response_type': type, // 'survey' 또는 'side_effect'
+        'response_type': type,
       });
 
       subtypes = (response.data as List)
           .map<QuestionSubtype>((e) => QuestionSubtype.fromJson(e))
           .toList();
 
-      // Mark subtypes as completed based on fetched data
       for (var subtype in subtypes) {
         if (completedSubtypes.contains(subtype.subtypeCode)) {
           subtype.isCompleted = true;
@@ -76,7 +69,7 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  // 질문 가져오기
+
   Future<void> fetchQuestions() async {
     if (selectedSubtype == null) return;
 
@@ -98,7 +91,7 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  // 자기 기록 가져오기
+
   Future<void> fetchSelfLogs() async {
     _isLoading = true;
     notifyListeners();
@@ -119,7 +112,7 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  // 자기 기록 제출하기
+
   Future<void> submitSelfLog(String content) async {
     _isLoading = true;
     notifyListeners();
@@ -137,13 +130,13 @@ class RecallController with ChangeNotifier {
     }
   }
 
-  // 답변 업데이트
+
   void updateAnswer(int index, int? answerId) {
     answers[index] = answerId;
     notifyListeners();
   }
 
-  // 응답 제출하기
+
   Future<void> submitResponses() async {
     if (questions.isEmpty) return;
 
@@ -166,18 +159,14 @@ class RecallController with ChangeNotifier {
           'response_type': type,
           'responses': responses,
         });
-
-        // 설문 완료 후, subtypes 다시 불러오기
         await fetchSubtypes();
 
-        // 질문과 답변 초기화
         questions = [];
         answers = [];
         selectedSubtype = null;
       }
     } catch (e) {
       print('Failed to submit responses: $e');
-      // 추가적인 에러 처리 가능
     } finally {
       _isLoading = false;
       notifyListeners();

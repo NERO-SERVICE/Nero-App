@@ -34,9 +34,7 @@ class DioService {
       onRequest: (dio.RequestOptions options,
           dio.RequestInterceptorHandler handler) async {
         if (_accessToken.isNotEmpty) {
-          // 클라이언트에 accessToken이 존재할 경우 헤더에 추가
           options.headers['Authorization'] = 'Bearer $_accessToken';
-          print("Authorization 헤더 추가: Bearer $_accessToken"); // 로그 추가
         }
         return handler.next(options);
       },
@@ -47,22 +45,13 @@ class DioService {
       onError: (dio.DioException e, dio.ErrorInterceptorHandler handler) async {
         if (e.response?.statusCode == 401 && _refreshToken.isNotEmpty) {
           dio.RequestOptions options = e.requestOptions;
-
-          // 요청의 retryCount를 추적
           int retryCount = options.extra["retryCount"] ?? 0;
 
           if (retryCount < 2) {
             try {
-              // 토큰 갱신 시도
               await _refreshTokenRequest();
-
-              // 갱신된 토큰으로 헤더 업데이트
               options.headers['Authorization'] = 'Bearer $_accessToken';
-
-              // retryCount 증가
               options.extra["retryCount"] = retryCount + 1;
-
-              // 원래의 요청을 재시도
               final response = await _dio.request(
                 options.path,
                 options: dio.Options(
@@ -76,14 +65,10 @@ class DioService {
 
               return handler.resolve(response);
             } catch (error) {
-              print('토큰 갱신 실패: $error');
-              // 토큰 갱신 실패 시 로그아웃 및 로그인 페이지로 라우팅
               Get.find<AuthenticationController>().logout();
               return handler.reject(e);
             }
           } else {
-            print('토큰 갱신 시도 횟수 초과');
-            // 최대 시도 횟수 초과 시 로그아웃 및 로그인 페이지로 라우팅
             Get.find<AuthenticationController>().logout();
           }
         }
@@ -108,13 +93,10 @@ class DioService {
       if (response.statusCode == 200) {
         _accessToken = response.data['access'];
         prefs.setString('accessToken', _accessToken);
-        print('토큰이 성공적으로 갱신되었습니다.');
       } else {
-        print('토큰 갱신 실패: ${response.data}');
         throw Exception('토큰 갱신 실패');
       }
     } catch (e) {
-      print('토큰 갱신 실패: $e');
       throw Exception('토큰 갱신 실패');
     }
   }
@@ -142,7 +124,6 @@ class DioService {
     await prefs.remove('refreshToken');
   }
 
-  // FormData를 사용하는 POST 요청
   Future<dio.Response<dynamic>> postFormData(String url,
       {dio.FormData? formData}) async {
     return _dio.post(
@@ -156,7 +137,6 @@ class DioService {
     );
   }
 
-  // FormData를 사용하는 PUT 요청
   Future<dio.Response<dynamic>> putFormData(String url,
       {dio.FormData? formData}) async {
     return _dio.put(
@@ -170,7 +150,6 @@ class DioService {
     );
   }
 
-  // FormData를 사용하는 DELETE 요청
   Future<dio.Response<dynamic>> deleteFormData(String url,
       {dio.FormData? formData}) async {
     return _dio.delete(
@@ -184,7 +163,6 @@ class DioService {
     );
   }
 
-  // 기타 HTTP 메서드 (get, post, put, patch, delete)
   Future<dio.Response<dynamic>> get(String url,
       {Map<String, dynamic>? params}) async {
     return _dio.get(url, queryParameters: params);

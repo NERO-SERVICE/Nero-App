@@ -13,7 +13,6 @@ class SignUpController extends GetxController {
 
   Future<void> updateUserInfo(NeroUser currentUser) async {
     try {
-      // birth 값을 String에서 DateTime으로 변환
       DateTime? birthDate = _parseBirth(birth.value);
 
       final updatedUser = currentUser.copyWith(
@@ -22,7 +21,6 @@ class SignUpController extends GetxController {
         birth: birthDate,
         sex: selectedSex.value.isNotEmpty ? selectedSex.value : currentUser.sex,
       );
-
       bool success = await _signUpRepository.settingUserInfo(updatedUser);
 
       if (success) {
@@ -35,7 +33,6 @@ class SignUpController extends GetxController {
     }
   }
 
-  // 'YYMMDD' 형식을 'DateTime'으로 변환
   DateTime? _parseBirth(String birthInput) {
     if (birthInput.length == 6) {
       try {

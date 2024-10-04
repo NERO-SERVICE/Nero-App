@@ -17,28 +17,22 @@ class InformationController extends GetxController {
 
   Future<void> fetchInformations() async {
     isLoading.value = true;
-    try {
-      final result = await _informationRepository.getInformations();
-      informations.assignAll(result);
-    } catch (e) {
-      print('공지사항을 불러오는 데 실패했습니다: $e');
-    } finally {
-      isLoading.value = false;
-    }
+
+    final result = await _informationRepository.getInformations();
+    informations.assignAll(result);
+
+    isLoading.value = false;
   }
 
   Future<void> fetchInformation(int infoId) async {
     isLoading.value = true;
-    try {
-      final information = await _informationRepository.getInformation(infoId);
-      if (information != null) {
-        currentInformation.value = information;
-      }
-    } catch (e) {
-      print('특정 공지사항을 불러오는 데 실패했습니다: $e');
-    } finally {
-      isLoading.value = false;
+
+    final information = await _informationRepository.getInformation(infoId);
+    if (information != null) {
+      currentInformation.value = information;
     }
+
+    isLoading.value = false;
   }
 
   Future<void> createInformation(Information information) async {

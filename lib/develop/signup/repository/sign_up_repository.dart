@@ -13,7 +13,6 @@ class SignUpRepository {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('유저 프로필 설정을 실패했습니다: $e');
       return false;
     }
   }

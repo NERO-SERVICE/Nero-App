@@ -13,7 +13,6 @@ class MailRepository {
       );
       return response.statusCode == 201;
     } catch (e) {
-      print('Failed to send mail: $e');
       return false;
     }
   }

@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
-import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../../../common/components/app_font.dart';
@@ -170,16 +169,16 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   }
 
   Widget get _divider => const Divider(
-    color: Color(0xff3C3C3E),
-    indent: 0,
-    endIndent: 0,
-  );
+        color: Color(0xff3C3C3E),
+        indent: 0,
+        endIndent: 0,
+      );
 
   Widget get _dialogDivider => Divider(
-    color: Color(0xffD8D8D8).withOpacity(0.3),
-    indent: 0,
-    endIndent: 0,
-  );
+        color: Color(0xffD8D8D8).withOpacity(0.3),
+        indent: 0,
+        endIndent: 0,
+      );
 
   Widget _buildDateSelector(String label, Rx<DateTime> date) {
     final RxBool isSelected = false.obs;
@@ -243,7 +242,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 },
                 child: SvgPicture.asset(
                   'assets/develop/exit.svg',
-                  width: 24,  // 원하는 사이즈로 설정
+                  width: 24, // 원하는 사이즈로 설정
                   height: 24, // 원하는 사이즈로 설정
                 ),
               ),
@@ -253,7 +252,6 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       );
     });
   }
-
 
   void _addDrugDialog(BuildContext context) {
     final drugNumberController = TextEditingController();
@@ -356,7 +354,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                                 // 생성된 MyDrugArchive 사용
                                 number: int.parse(drugNumberController.text),
                                 initialNumber:
-                                int.parse(drugNumberController.text),
+                                    int.parse(drugNumberController.text),
                                 time: selectedTime.value,
                                 allow: true,
                               );
@@ -376,7 +374,8 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 33),
                           ),
                           child: Text(
                             '등록하기',
@@ -541,12 +540,12 @@ class DrugArchiveDropdown extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide:
-            BorderSide(color: Colors.white.withOpacity(0), width: 1),
+                BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide:
-            BorderSide(color: Colors.white.withOpacity(0), width: 1),
+                BorderSide(color: Colors.white.withOpacity(0), width: 1),
           ),
         ),
         value: selectedArchive.value,

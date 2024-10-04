@@ -36,7 +36,7 @@ class Root extends GetView<BottomNavController> {
       bottomNavigationBar: Container(
         color: Color(0xff202020),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Column을 wrap
+          mainAxisSize: MainAxisSize.min,
           children: [
             _divider,
             Padding(

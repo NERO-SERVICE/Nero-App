@@ -11,7 +11,6 @@ import '../../repository/clinic_repository.dart';
 class ClinicWriteController extends GetxController {
   final ClinicRepository _clinicRepository = ClinicRepository();
 
-  // 클리닉 정보
   final Rx<Clinic> clinic = Clinic(
     clinicId: 1,
     owner: 1,
@@ -24,18 +23,11 @@ class ClinicWriteController extends GetxController {
     drugs: [],
   ).obs;
 
-  // 상태 관리
   RxBool isPossibleSubmit = false.obs;
   final recentDay = DateTime.now().obs;
   final nextDay = DateTime.now().obs;
-
-  // Drug 관리
   var drugs = <Drug>[].obs;
-
-  // 약물 아카이브 관리
   var drugArchives = <DrugArchive>[].obs;
-
-  // 수정 모드 여부
   bool isEditMode = false;
 
   @override
@@ -110,7 +102,7 @@ class ClinicWriteController extends GetxController {
     addDrug(drug);
   }
 
-  // 클리닉 생성
+
   Future<void> createClinic() async {
     try {
       Clinic newClinic = clinic.value.copyWith(
@@ -142,7 +134,7 @@ class ClinicWriteController extends GetxController {
     }
   }
 
-  // 클리닉 업데이트
+
   Future<void> updateClinic(Clinic clinicData) async {
     try {
       Clinic updatedClinic = clinicData.copyWith(
@@ -173,7 +165,7 @@ class ClinicWriteController extends GetxController {
     }
   }
 
-  // 클리닉 삭제
+
   Future<void> deleteClinic(int clinicId) async {
     try {
       bool success = await _clinicRepository.deleteClinic(clinicId);

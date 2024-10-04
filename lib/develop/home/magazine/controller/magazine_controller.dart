@@ -15,35 +15,27 @@ class MagazineController extends GetxController {
     fetchMagazines();
   }
 
-  // 매거진 리스트 가져오기
   Future<void> fetchMagazines() async {
     isLoading.value = true;
-    try {
-      final result = await _magazineRepository.getMagazines();
-      magazines.assignAll(result);
-    } catch (e) {
-      print('매거진을 불러오는 데 실패했습니다: $e');
-    } finally {
-      isLoading.value = false;
-    }
+
+    final result = await _magazineRepository.getMagazines();
+    magazines.assignAll(result);
+
+    isLoading.value = false;
   }
 
-  // 특정 매거진 가져오기
+
   Future<void> fetchMagazine(int magazineId) async {
     isLoading.value = true;
-    try {
-      final magazine = await _magazineRepository.getMagazine(magazineId);
-      if (magazine != null) {
-        currentMagazine.value = magazine;
-      }
-    } catch (e) {
-      print('특정 매거진을 불러오는 데 실패했습니다: $e');
-    } finally {
-      isLoading.value = false;
+
+    final magazine = await _magazineRepository.getMagazine(magazineId);
+    if (magazine != null) {
+      currentMagazine.value = magazine;
     }
+
+    isLoading.value = false;
   }
 
-  // 매거진 생성 (로그인한 유저가 writer로 설정됨)
   Future<void> createMagazine(Magazine magazine) async {
     isLoading.value = true;
     try {
@@ -67,7 +59,7 @@ class MagazineController extends GetxController {
     }
   }
 
-  // 매거진 수정
+
   Future<void> updateMagazine(Magazine magazine) async {
     isLoading.value = true;
     try {
@@ -95,7 +87,7 @@ class MagazineController extends GetxController {
     }
   }
 
-  // 매거진 삭제
+
   Future<void> deleteMagazine(int magazineId) async {
     isLoading.value = true;
     try {

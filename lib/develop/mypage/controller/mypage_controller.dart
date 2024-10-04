@@ -24,18 +24,13 @@ class MypageController extends GetxController {
 
   void fetchYearlyChecks(int year) async {
     try {
-      print('Fetching yearly checks for year: $year, type: ${selectedType.value}');
-
       var fetchedYearlyCheck = await _mypageRepository.getYearlyCheck(year, selectedType.value);
-
       if (fetchedYearlyCheck != null) {
-        // 캐시에 월별 데이터 저장
         fetchedYearlyCheck.forEach((month, data) {
           final currentMonthKey = '$year-$month';
           monthlyCheckCache[currentMonthKey] = data;
         });
         update();
-        print('Fetched and cached yearly check data for $year');
       } else {
         print('No data fetched for this year.');
       }
@@ -45,13 +40,11 @@ class MypageController extends GetxController {
   }
 
 
-  // Set the selected type and print the change
   void setSelectedType(String type) {
     selectedType.value = type;
-    print('Selected type updated: $type');
   }
 
-  // 서버에서 설문 데이터를 가져오는 메서드
+
   Future<void> fetchPreviousSurveyAnswers(DateTime date) async {
     try {
       isLoading(true);
@@ -65,7 +58,7 @@ class MypageController extends GetxController {
     }
   }
 
-  // 서버에서 이전 부작용 응답을 가져오는 메서드
+
   Future<void> fetchPreviousSideEffectAnswers(DateTime date) async {
     try {
       isLoading(true);
@@ -78,6 +71,7 @@ class MypageController extends GetxController {
       isLoading(false);
     }
   }
+
 
   Future<void> fetchPreviousSelfRecordAnswers(DateTime date) async {
     try {
@@ -93,7 +87,7 @@ class MypageController extends GetxController {
     }
   }
 
-  // 생리 주기 데이터 가져오기 (연간 데이터로 수정)
+
   void fetchMenstruationCycles(int year) async {
     try {
       var cycles = await _mypageRepository.getMenstruationCycles(year);
@@ -104,7 +98,7 @@ class MypageController extends GetxController {
     }
   }
 
-  // 특정 날짜가 생리 기간인지 확인
+
   bool isMenstruationDay(DateTime date) {
     for (var cycle in menstruationCycles) {
       if (!date.isBefore(cycle.startDate) && !date.isAfter(cycle.endDate)) {
@@ -114,22 +108,17 @@ class MypageController extends GetxController {
     return false;
   }
 
-  // 생리 주기 생성 메서드 추가
+
   Future<void> createMenstruationCycle(MenstruationCycle cycle) async {
     try {
       bool success = await _mypageRepository.createMenstruationCycle(cycle);
       if (success) {
-        // 생리 주기 리스트를 다시 불러옵니다.
         fetchMenstruationCycles(cycle.startDate.year);
-
-        // 성공 스낵바 먼저 호출
         CustomSnackbar.show(
           context: Get.context!,
           message: '생리 주기가 추가되었습니다.',
           isSuccess: true,
         );
-
-        // 이후 다이얼로그 닫기
         Get.back();
       } else {
         CustomSnackbar.show(
@@ -147,6 +136,7 @@ class MypageController extends GetxController {
     }
   }
 
+
   Future<void> fetchSurveyRecordedDates(int year) async {
     try {
       var dates = await _mypageRepository.getSurveyRecordedDates(year);
@@ -156,6 +146,7 @@ class MypageController extends GetxController {
     }
   }
 
+
   Future<void> fetchSideEffectRecordedDates(int year) async {
     try {
       var dates = await _mypageRepository.getSideEffectRecordedDates(year);
@@ -164,6 +155,7 @@ class MypageController extends GetxController {
       print("Error fetching side effect recorded dates: $e");
     }
   }
+
 
   Future<void> fetchSelfRecordRecordedDates(int year) async {
     try {
