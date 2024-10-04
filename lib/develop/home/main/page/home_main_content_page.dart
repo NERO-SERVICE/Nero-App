@@ -34,7 +34,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final RxInt _currentPage = 0.obs;
 
   final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
-  final String _tiktokUrl = 'https://www.tiktok.com/@nero_official';
+  final String _threadUrl = 'https://www.threads.net/@nero.cat_official';
   final String _twitterUrl = 'https://x.com/nerolaboratory';
 
   Future<void> _launchUrl(String url, String appUrlScheme) async {
@@ -60,8 +60,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     _launchUrl(_twitterUrl, 'twitter://user?screen_name=nerolaboratory');
   }
 
-  void _openTikTok() {
-    _launchUrl(_tiktokUrl, 'snssdk1233://user/profile/7038378919538274309');
+  void _openThreads() {  // 변경된 부분
+    _launchUrl(_threadUrl, 'threads://user?username=nero.cat_official');
   }
 
   @override
@@ -292,7 +292,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: _openTikTok,
+                    onTap: _openThreads,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -300,14 +300,14 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                           width: 24,
                           height: 24,
                           child: SvgPicture.asset(
-                            'assets/develop/tiktok-icon.svg',
+                            'assets/develop/threads-icon.svg',
                             fit: BoxFit.contain,
                           ),
                         ),
                         const SizedBox(width: 5),
                         const Center(
                           child: Text(
-                            'TikTok',
+                            'Threads',
                             style: TextStyle(
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w400,
