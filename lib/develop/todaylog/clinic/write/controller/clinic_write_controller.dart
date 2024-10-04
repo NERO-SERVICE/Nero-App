@@ -26,8 +26,11 @@ class ClinicWriteController extends GetxController {
   RxBool isPossibleSubmit = false.obs;
   final recentDay = DateTime.now().obs;
   final nextDay = DateTime.now().obs;
+
   var drugs = <Drug>[].obs;
+
   var drugArchives = <DrugArchive>[].obs;
+
   bool isEditMode = false;
 
   @override

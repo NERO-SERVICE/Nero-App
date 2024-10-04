@@ -15,29 +15,35 @@ class NotificationController extends GetxController {
     fetchNotifications();
   }
 
-
+  // 공지사항 리스트 가져오기
   Future<void> fetchNotifications() async {
     isLoading.value = true;
-
-    final result = await _notificationRepository.getNotifications();
-    notifications.assignAll(result);
-
-    isLoading.value = false;
+    try {
+      final result = await _notificationRepository.getNotifications();
+      notifications.assignAll(result);
+    } catch (e) {
+      print('공지사항을 불러오는 데 실패했습니다: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-
+  // 특정 공지사항 가져오기
   Future<void> fetchNotification(int noticeId) async {
     isLoading.value = true;
-
-    final notification = await _notificationRepository.getNotification(noticeId);
-    if (notification != null) {
-      currentNotification.value = notification;
+    try {
+      final notification = await _notificationRepository.getNotification(noticeId);
+      if (notification != null) {
+        currentNotification.value = notification;
+      }
+    } catch (e) {
+      print('특정 공지를 불러오는 데 실패했습니다: $e');
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
   }
 
-
+  // 공지사항 생성 (로그인한 유저가 writer로 설정됨)
   Future<void> createNotification(NotificationModel notification) async {
     isLoading.value = true;
     try {
@@ -61,7 +67,7 @@ class NotificationController extends GetxController {
     }
   }
 
-
+  // 공지사항 수정
   Future<void> updateNotification(NotificationModel notification) async {
     isLoading.value = true;
     try {
@@ -88,7 +94,7 @@ class NotificationController extends GetxController {
     }
   }
 
-
+  // 공지사항 삭제
   Future<void> deleteNotification(int noticeId) async {
     isLoading.value = true;
     try {

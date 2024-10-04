@@ -20,6 +20,7 @@ class AuthenticationController extends GetxController {
   Rx<NeroUser> userModel = NeroUser().obs;
   RxBool isUsingKakaoAuth = true.obs;
 
+
   Future<void> authCheck() async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
@@ -94,12 +95,10 @@ class AuthenticationController extends GetxController {
     }
   }
 
-
   Future<void> logout() async {
     await kakaoAuthRepo.logout();
     status(AuthenticationStatus.unknown);
   }
-
 
   Future<void> deleteAccount() async {
     try {
@@ -133,7 +132,6 @@ class AuthenticationController extends GetxController {
         Get.offNamed('/home');
       }
     } catch (e) {
-      print("handleKakaoLogin 중 오류 발생: $e");
       Get.offNamed('/login');
     }
   }

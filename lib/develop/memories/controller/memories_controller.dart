@@ -14,7 +14,6 @@ class MemoriesController extends GetxController {
     loadMemories();
   }
 
-
   Future<void> sendMemories(List<String> items) async {
     try {
       await _repository.sendMemories(items);
@@ -24,7 +23,6 @@ class MemoriesController extends GetxController {
     }
   }
 
-
   Future<void> loadMemories() async {
     List<Memories>? loadedMemories = await _repository.fetchMemories();
     if (loadedMemories != null) {
@@ -33,7 +31,6 @@ class MemoriesController extends GetxController {
       print('No memories loaded');
     }
   }
-
 
   Future<void> addItem(String newItem) async {
     if (memoriesList.isNotEmpty) {
@@ -48,7 +45,6 @@ class MemoriesController extends GetxController {
     if (memoriesList.isNotEmpty) {
       final updatedItems = List<String>.from(memoriesList[0].items ?? []);
       indicesToRemove.sort((a, b) => b.compareTo(a));
-
       for (int index in indicesToRemove) {
         if (index >= 0 && index < updatedItems.length) {
           updatedItems.removeAt(index);

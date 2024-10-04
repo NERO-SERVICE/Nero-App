@@ -29,54 +29,80 @@ class FastmemoController extends GetxController {
 
   Future<void> fetchFastmemo(DateTime date) async {
     isLoading.value = true;
-
-    var fetchedMemos = await repository.getFastmemo(date);
-    fastmemo.assignAll(fetchedMemos);
-    if (fetchedMemos.isNotEmpty) {
-      memoDates.add(DateTime(date.year, date.month, date.day));
-    } else {
-      memoDates.remove(DateTime(date.year, date.month, date.day));
+    try {
+      var fetchedMemos = await repository.getFastmemo(date);
+      fastmemo.assignAll(fetchedMemos);
+      if (fetchedMemos.isNotEmpty) {
+        memoDates.add(DateTime(date.year, date.month, date.day));
+      } else {
+        memoDates.remove(DateTime(date.year, date.month, date.day));
+      }
+    } catch (e) {
+      print('Failed to load fast logs: $e');
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
   }
 
   Future<void> fetchMemoDates(int year) async {
-    var fetchedDates = await repository.getMemoDates(year);
-    memoDates.addAll(fetchedDates);
-    loadedYears.add(year);
+    try {
+      var fetchedDates = await repository.getMemoDates(year);
+      memoDates.addAll(fetchedDates);
+      loadedYears.add(year);
+    } catch (e) {
+      print('Failed to fetch memo dates: $e');
+    }
   }
 
   Future<void> submitFastmemo(String content) async {
     isLoading.value = true;
-
-    String formattedDate = selectedDate.value.toIso8601String().substring(0, 10);
-    var newMemo = await repository.createFastmemo(content, formattedDate);
-    fastmemo.add(newMemo);
-    memoDates.add(DateTime(newMemo.date.year, newMemo.date.month, newMemo.date.day));
-
-    isLoading.value = false;
+    try {
+      String formattedDate = selectedDate.value.toIso8601String().substring(0, 10);
+      var newMemo = await repository.createFastmemo(content, formattedDate);
+      fastmemo.add(newMemo);
+      memoDates.add(DateTime(newMemo.date.year, newMemo.date.month, newMemo.date.day));
+    } catch (e) {
+      print('Failed to submit fast log: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> updateFastmemo(int id, String content) async {
-    await repository.updateFastmemo(id, content);
-    await fetchFastmemo(selectedDate.value);
+    try {
+      await repository.updateFastmemo(id, content);
+      await fetchFastmemo(selectedDate.value);
+    } catch (e) {
+      print('Failed to update fast log: $e');
+    }
   }
 
   Future<void> deleteFastmemo(int id) async {
-    await repository.deleteFastmemo(id);
-    await fetchFastmemo(selectedDate.value);
+    try {
+      await repository.deleteFastmemo(id);
+      await fetchFastmemo(selectedDate.value);
+    } catch (e) {
+      print('Failed to delete fast log: $e');
+    }
   }
 
   Future<void> bulkUpdateIsChecked(bool isChecked, List<int> ids) async {
-    await repository.bulkUpdateIsChecked(isChecked, ids);
-    await fetchFastmemo(selectedDate.value);
-    await fetchMemoDates(selectedDate.value.year);
+    try {
+      await repository.bulkUpdateIsChecked(isChecked, ids);
+      await fetchFastmemo(selectedDate.value);
+      await fetchMemoDates(selectedDate.value.year);
+    } catch (e) {
+      print('Failed to bulk update is_checked: $e');
+    }
   }
 
   Future<void> bulkDeleteFastmemo(List<int> ids) async {
-    await repository.bulkDeleteFastmemo(ids);
-    await fetchFastmemo(selectedDate.value);
-    await fetchMemoDates(selectedDate.value.year);
+    try {
+      await repository.bulkDeleteFastmemo(ids);
+      await fetchFastmemo(selectedDate.value);
+      await fetchMemoDates(selectedDate.value.year);
+    } catch (e) {
+      print('Failed to bulk delete fast logs: $e');
+    }
   }
 }

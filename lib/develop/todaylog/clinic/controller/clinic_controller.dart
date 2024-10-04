@@ -20,7 +20,6 @@ class ClinicController extends GetxController {
     try {
       isLoading(true);
       errorMessage('');
-
       await Future.delayed(Duration(seconds: 2));
 
       var fetchedClinics = await _clinicRepository.getClinics();

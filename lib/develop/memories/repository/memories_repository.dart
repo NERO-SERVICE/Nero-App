@@ -10,8 +10,7 @@ class MemoriesRepository {
 
       if (response.statusCode == 200) {
         List<dynamic> data = response.data;
-        List<Memories> memoriesList =
-            data.map((memory) => Memories.fromJson(memory)).toList();
+        List<Memories> memoriesList = data.map((memory) => Memories.fromJson(memory)).toList();
         return memoriesList;
       } else {
         return null;
@@ -21,12 +20,22 @@ class MemoriesRepository {
     }
   }
 
+
   Future<void> sendMemories(List<String> items) async {
-    await _dio.post(
-      '/accounts/memories/',
-      data: {
-        'items': items,
-      },
-    );
+    try {
+      final response = await _dio.post(
+        '/accounts/memories/',
+        data: {
+          'items': items,
+        },
+      );
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print('Successfully updated memories: $items');
+      } else {
+        print('Failed to update memories. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating memories: $e');
+    }
   }
 }

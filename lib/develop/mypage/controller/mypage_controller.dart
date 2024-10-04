@@ -24,8 +24,11 @@ class MypageController extends GetxController {
 
   void fetchYearlyChecks(int year) async {
     try {
+
       var fetchedYearlyCheck = await _mypageRepository.getYearlyCheck(year, selectedType.value);
+
       if (fetchedYearlyCheck != null) {
+
         fetchedYearlyCheck.forEach((month, data) {
           final currentMonthKey = '$year-$month';
           monthlyCheckCache[currentMonthKey] = data;
@@ -38,6 +41,7 @@ class MypageController extends GetxController {
       print('Failed to fetch yearly checks: $e');
     }
   }
+
 
 
   void setSelectedType(String type) {
@@ -71,7 +75,6 @@ class MypageController extends GetxController {
       isLoading(false);
     }
   }
-
 
   Future<void> fetchPreviousSelfRecordAnswers(DateTime date) async {
     try {
@@ -136,7 +139,6 @@ class MypageController extends GetxController {
     }
   }
 
-
   Future<void> fetchSurveyRecordedDates(int year) async {
     try {
       var dates = await _mypageRepository.getSurveyRecordedDates(year);
@@ -146,7 +148,6 @@ class MypageController extends GetxController {
     }
   }
 
-
   Future<void> fetchSideEffectRecordedDates(int year) async {
     try {
       var dates = await _mypageRepository.getSideEffectRecordedDates(year);
@@ -155,7 +156,6 @@ class MypageController extends GetxController {
       print("Error fetching side effect recorded dates: $e");
     }
   }
-
 
   Future<void> fetchSelfRecordRecordedDates(int year) async {
     try {

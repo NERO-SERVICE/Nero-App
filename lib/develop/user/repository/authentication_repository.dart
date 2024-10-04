@@ -63,7 +63,6 @@ class AuthenticationRepository extends GetxService {
         }
       }
     } on UserNotFoundException catch (e) {
-      print("사용자 없음: $e");
       rethrow;
     } catch (e) {
       print("자동 로그인 실패: $e");
@@ -96,10 +95,7 @@ class AuthenticationRepository extends GetxService {
       } else {
         token = await UserApi.instance.loginWithKakaoAccount();
       }
-
       User kakaoUser = await UserApi.instance.me();
-      String kakaoId = kakaoUser.id.toString();
-      String kakaoNickname = kakaoUser.kakaoAccount?.profile?.nickname ?? '';
 
       var kakaoAccessToken = token.accessToken;
       final signUpResponse = await signUp(kakaoAccessToken);
@@ -174,7 +170,6 @@ class AuthenticationRepository extends GetxService {
     Future.microtask(() => Get.offAllNamed('/login'));
   }
 
-
   Future<void> updateUserInfo(Map<String, dynamic> updatedInfo) async {
     try {
       final tokens = await getDrfTokens();
@@ -191,11 +186,9 @@ class AuthenticationRepository extends GetxService {
         throw Exception('사용자 정보 업데이트 실패');
       }
     } catch (e) {
-      print('사용자 정보 업데이트 실패: $e');
       throw e;
     }
   }
-
 
   Future<bool> deleteAccount() async {
     try {
@@ -215,7 +208,6 @@ class AuthenticationRepository extends GetxService {
         throw Exception('회원 탈퇴 실패: ${response.data}');
       }
     } catch (e) {
-      print('회원 탈퇴 실패: $e');
       throw e;
     }
   }
