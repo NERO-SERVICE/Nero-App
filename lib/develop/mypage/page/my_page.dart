@@ -496,6 +496,47 @@ class _MyPage extends State<MyPage> {
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                '월간 레포트',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Color(0xffFFFFFF),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/to_be_continued.png',
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '추후 공개됩니다',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
+            CustomDivider(),
+            SizedBox(height: 32),
             _mypageTitle(
               title: '지난 하루기록',
               content: '그동안 기록한 하루하루의 몸상태를\n다시 돌아볼 수 있어요',
