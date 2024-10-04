@@ -19,9 +19,14 @@ class FastMemoMainPage extends StatefulWidget {
 }
 
 class _FastMemoMainPageState extends State<FastMemoMainPage> {
-  final FastmemoController controller = Get.put(FastmemoController());
-  final FastmemoRepository repository = Get.find<FastmemoRepository>();
+  final FastmemoController controller = Get.put(FastmemoController(repository: Get.find<FastmemoRepository>()));
   final Map<int, bool> _selectedMap = {}; // 메모 선택 상태 관리
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchMemoDates(DateTime.now().year);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,29 +69,28 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   Widget _fastCalendar() {
     return Obx(
-      () => TableCalendar(
+          () => TableCalendar(
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
-        focusedDay: controller.focusedDay.value,
+        focusedDay: controller.selectedDate.value,
         locale: 'ko_KR',
         availableGestures: AvailableGestures.horizontalSwipe,
         selectedDayPredicate: (day) {
-          return isSameDay(controller.selectedDay.value, day);
+          return isSameDay(controller.selectedDate.value, day);
         },
         onDaySelected: (selectedDay, focusedDay) {
-          controller.onDaySelected(selectedDay, focusedDay);
-          repository.setSelectedDate(selectedDay);
+          controller.setSelectedDate(selectedDay);
         },
         onPageChanged: (focusedDay) {
-          controller.onPageChanged(focusedDay);
-          repository.fetchMemoDates(focusedDay.year);
+          int focusedYear = focusedDay.year;
+          // focusedYear가 loadedYears에 없으면 호출
+          if (!controller.loadedYears.contains(focusedYear)) {
+            controller.fetchMemoDates(focusedYear);  // 해당 연도에 대한 메모 날짜 호출
+          }
         },
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -138,59 +142,48 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
           ),
         ),
         calendarBuilders: CalendarBuilders(
-          // 기본 날짜 빌더
           defaultBuilder: (context, date, focusedDay) {
             return _buildDayCell(date);
           },
-          // 선택된 날짜 빌더
           selectedBuilder: (context, date, focusedDay) {
             return _buildDayCell(date, isSelected: true);
           },
-          // 오늘 날짜 빌더
           todayBuilder: (context, date, focusedDay) {
             return _buildDayCell(date, isToday: true);
           },
-          // 외부 날짜 빌더 (월 외 날짜)
           outsideBuilder: (context, date, focusedDay) {
-            return Container(); // 빈 컨테이너로 표시
+            return Container();
           },
         ),
       ),
     );
   }
 
-  Widget _buildDayCell(DateTime date,
-      {bool isSelected = false, bool isToday = false}) {
-    bool hasMemo = repository.memoDates
-        .contains(DateTime(date.year, date.month, date.day));
 
-    // 기본 텍스트 스타일
+  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
+    bool hasMemo = controller.memoDates.contains(DateTime(date.year, date.month, date.day)); // 메모 데이터가 있는지 확인
+
     TextStyle textStyle = TextStyle(
       color: isSelected
           ? Colors.white
           : isToday
-              ? Colors.white
-              : (date.weekday == DateTime.saturday ||
-                      date.weekday == DateTime.sunday)
-                  ? Color(0xff6D7179)
-                  : Colors.grey,
+          ? Colors.white
+          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
+          ? Color(0xff6D7179)
+          : Colors.grey,
       fontWeight: FontWeight.w500,
     );
 
-    // 날짜 숫자 위젯
     Widget dayText = Text(
       '${date.day}',
       style: textStyle,
     );
 
-    // 메모가 있는 날짜인 경우 숫자를 원으로 감싸기
     if (hasMemo) {
       dayText = Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected || isToday
-              ? Colors.transparent
-              : Colors.black.withOpacity(0.1),
+          color: isSelected || isToday ? Colors.transparent : Colors.black.withOpacity(0.1),
         ),
         child: Center(
           child: dayText,
@@ -202,31 +195,32 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       margin: const EdgeInsets.all(6.0),
       decoration: isSelected
           ? BoxDecoration(
-              color: Color(0xffD0EE17),
-              shape: BoxShape.circle,
-            )
+        color: Color(0xffD0EE17),
+        shape: BoxShape.circle,
+      )
           : isToday
-              ? BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                )
-              : hasMemo
-                  ? BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xffD0EE17), width: 1),
-                    )
-                  : null,
+          ? BoxDecoration(
+        color: Colors.grey,
+        shape: BoxShape.circle,
+      )
+          : hasMemo
+          ? BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Color(0xffD0EE17), width: 1),
+      )
+          : null,
       alignment: Alignment.center,
       child: dayText,
     );
   }
 
+
   Widget _uncheckedMemo() {
     return Obx(() {
-      if (repository.isLoading.value) {
+      if (controller.isLoading.value) {
         return Center(child: CustomLoadingIndicator());
       }
-      if (repository.fastmemo.isEmpty) {
+      if (controller.fastmemo.isEmpty) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -264,7 +258,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${DateFormat('MM월 dd일').format(repository.fastmemo.first.date)} 빠른 메모',
+                      '${DateFormat('MM월 dd일').format(controller.fastmemo.first.date)} 빠른 메모',
                       style: TextStyle(
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -275,7 +269,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     GestureDetector(
                       onTap: () {
                         Get.to(() => FastMemoDetailPage(),
-                            arguments: repository.selectedDate.value);
+                            arguments: controller.selectedDate.value);
                       },
                       child: Text(
                         '더보기',
@@ -291,7 +285,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                 ),
               ),
               Column(
-                children: repository.fastmemo.map((memo) {
+                children: controller.fastmemo.map((memo) {
                   bool isSelected = _selectedMap[memo.id] ?? false;
 
                   String iconPath = isSelected
@@ -382,7 +376,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       child: GestureDetector(
         onTap: () {
           Get.to(() => FastMemoDetailPage(),
-              arguments: repository.selectedDate.value);
+              arguments: controller.selectedDate.value);
         },
         child: Center(
           child: Text(
@@ -405,7 +399,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         .toList();
 
     if (selectedIds.isNotEmpty) {
-      await repository.bulkUpdateIsChecked(true, selectedIds);
+      await controller.bulkUpdateIsChecked(true, selectedIds);
       setState(() {
         _selectedMap.clear();
       });

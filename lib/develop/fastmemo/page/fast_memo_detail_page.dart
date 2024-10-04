@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 
 import '../../common/components/custom_detail_app_bar.dart';
@@ -18,7 +19,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode(); // FocusNode 생성
-  final FastmemoRepository repository = Get.find<FastmemoRepository>();
+  final FastmemoController controller = Get.find<FastmemoController>();
   final Map<int, bool> _selectedMap = {}; // 선택 상태를 저장할 Map
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
@@ -42,7 +43,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       } else {
         selectedDate = DateTime.now();
       }
-      repository.setSelectedDate(selectedDate);
+      controller.setSelectedDate(selectedDate);
       setState(() {}); // 날짜 변경을 UI에 반영
     });
   }
@@ -144,7 +145,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                       ElevatedButton(
                         onPressed: () async {
                           if (_textController.text.isNotEmpty) {
-                            await repository
+                            await controller
                                 .submitFastmemo(_textController.text);
                             _textController.clear();
                           }
@@ -245,7 +246,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
         Color(0xff69ACF5).withOpacity(0.8),
       );
       if (confirmed) {
-        await repository.bulkUpdateIsChecked(true, selectedIds);
+        await controller.bulkUpdateIsChecked(true, selectedIds);
         setState(() {
           _selectedMap.clear();
         });
@@ -262,7 +263,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       bool confirmed = await _showConfirmationDialog(
           "선택한 메모를 삭제하시겠습니까?", "삭제하기", Color(0xffFF5A5A).withOpacity(0.4));
       if (confirmed) {
-        await repository.bulkDeleteFastmemo(selectedIds);
+        await controller.bulkDeleteFastmemo(selectedIds);
         setState(() {
           _selectedMap.clear(); // 선택 해제
         });
@@ -378,10 +379,10 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
 
   Widget _memoList() {
     return Obx(() {
-      if (repository.isLoading.value) {
+      if (controller.isLoading.value) {
         return Center(child: CustomLoadingIndicator());
       }
-      if (repository.fastmemo.isEmpty) {
+      if (controller.fastmemo.isEmpty) {
         return Center(
           child: Text(
             '해당 날짜에 메모가 없습니다',
@@ -396,9 +397,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       }
       return ListView.builder(
         reverse: true,
-        itemCount: repository.fastmemo.length,
+        itemCount: controller.fastmemo.length,
         itemBuilder: (context, index) {
-          final log = repository.fastmemo[index];
+          final log = controller.fastmemo[index];
           bool isSelected = _selectedMap[log.id] ?? false;
           return _memoListItem(log, isSelected, index);
         },
@@ -529,7 +530,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                         TextButton(
                           onPressed: () async {
                             if (_textController.text.isNotEmpty) {
-                              await repository.updateFastmemo(
+                              await controller.updateFastmemo(
                                   log.id, _textController.text);
                               Navigator.of(context).pop();
                             }

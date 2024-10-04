@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -24,7 +25,6 @@ import 'develop/dio_service.dart';
 import 'develop/home/information/controller/information_controller.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -123,11 +123,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(DataLoadController());
         Get.put(NeroUser());
         Get.put(CommonLayoutController());
-        Get.put(ClinicController());
-        Get.put(FastmemoRepository());
         Get.put(LoginController(kakaoAuth));
         Get.put(BottomNavController());
         Get.put(InformationController());
+        Get.put(ClinicController());
+        Get.put(FastmemoRepository());
       }),
       getPages: [
         GetPage(

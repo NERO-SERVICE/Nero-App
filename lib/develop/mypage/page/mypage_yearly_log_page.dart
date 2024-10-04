@@ -338,18 +338,24 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   Widget _buildMonthlyMatrix() {
     return GetBuilder<MypageController>(
       builder: (_) {
-        final String currentMonthKey =
-            '${currentYear.value}-${currentMonth.value}';
+        final String currentMonthKey = '${currentYear.value}-${currentMonth.value}';
         final data = _monthlyCheckController.monthlyCheckCache[currentMonthKey];
 
         if (data == null) {
           return Center(child: CustomLoadingIndicator());
         }
 
-        int totalDays = data.monthEnd;
-        int monthStartIndex = data.monthStart;
+        // 월의 첫 번째 날과 마지막 날 계산
+        DateTime firstDayOfMonth = DateTime(currentYear.value, currentMonth.value, 1);
+        DateTime lastDayOfMonth = DateTime(currentYear.value, currentMonth.value + 1, 0);
+        int totalDays = lastDayOfMonth.day;
+
+        // 월의 시작 요일 계산 (일요일을 0으로 설정)
+        int monthStartIndex = (firstDayOfMonth.weekday % 7);
+
         List<Widget> dayWidgets = [];
 
+        // 6x7 매트릭스 (총 42칸)
         int totalCells = 6 * 7;
 
         for (int i = 0; i < totalCells; i++) {
@@ -364,21 +370,15 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
               ),
             ));
           } else {
-            bool hasDose =
-                data.doseCheck.containsKey(day) && data.doseCheck[day]!;
-            bool hasSideEffect = data.sideEffectCheck.containsKey(day) &&
-                data.sideEffectCheck[day]!;
+            bool hasDose = data.doseCheck.containsKey(day) && data.doseCheck[day]!;
+            bool hasSideEffect = data.sideEffectCheck.containsKey(day) && data.sideEffectCheck[day]!;
 
-            if (_monthlyCheckController.selectedType.value == 'dose' &&
-                hasDose) {
+            if (_monthlyCheckController.selectedType.value == 'dose' && hasDose) {
               dayWidgets.add(_buildDayCell(day, hasDose, false));
-            } else if (_monthlyCheckController.selectedType.value ==
-                    'side_effect' &&
-                hasSideEffect) {
+            } else if (_monthlyCheckController.selectedType.value == 'side_effect' && hasSideEffect) {
               dayWidgets.add(_buildDayCell(day, false, hasSideEffect));
             } else if (_monthlyCheckController.selectedType.value == 'all') {
-              dayWidgets
-                  .add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
+              dayWidgets.add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
             } else {
               dayWidgets.add(_buildDayCell(day, false, false));
             }
@@ -388,9 +388,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
         return LayoutBuilder(
           builder: (context, constraints) {
             return ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: constraints.maxHeight,
-              ),
+              constraints: BoxConstraints(maxHeight: constraints.maxHeight),
               child: AspectRatio(
                 aspectRatio: 7 / 6,
                 child: GridView.count(
