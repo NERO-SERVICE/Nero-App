@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/components/custom_detail_app_bar.dart';
@@ -76,12 +77,14 @@ class _SideEffectPageState extends State<SideEffectPage>
                     _tabController.addListener(() {
                       if (_tabController.indexIsChanging) {
                         final selectedSubtype =
-                            controller.subtypes[_tabController.index];
+                        controller.subtypes[_tabController.index];
                         if (selectedSubtype.isCompleted) {
                           // 비활성화된 탭 선택 시 이전 탭으로 되돌리고 메시지 표시
                           _tabController.index = _previousIndex;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('이미 완료된 설문입니다.')),
+                          CustomSnackbar.show(
+                            context: context,
+                            message: '이미 완료된 설문입니다.',
+                            isSuccess: true,
                           );
                         } else {
                           // 정상적으로 탭 선택 시 이전 인덱스 업데이트
@@ -97,7 +100,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                     if (controller.selectedSubtype == null &&
                         controller.subtypes.isNotEmpty) {
                       int initialIndex =
-                          controller.subtypes.indexWhere((s) => !s.isCompleted);
+                      controller.subtypes.indexWhere((s) => !s.isCompleted);
                       if (initialIndex == -1) {
                         // 모든 탭이 완료된 경우
                         return Center(
@@ -182,54 +185,54 @@ class _SideEffectPageState extends State<SideEffectPage>
                       // 질문 및 답변
                       Expanded(
                         child: controller.isLoading &&
-                                controller.questions.isEmpty
+                            controller.questions.isEmpty
                             ? Center(child: CustomLoadingIndicator())
                             : controller.questions.isEmpty
-                                ? Center(
-                                    child: Text(
-                                      '질문이 없습니다.',
-                                      style:
-                                          TextStyle(color: Color(0xffD9D9D9)),
+                            ? Center(
+                          child: Text(
+                            '질문이 없습니다.',
+                            style:
+                            TextStyle(color: Color(0xffD9D9D9)),
+                          ),
+                        )
+                            : SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: List.generate(
+                                controller.questions.length, (index) {
+                              final question =
+                              controller.questions[index];
+                              return Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: [
+                                  // 질문 앞에 인덱스 추가
+                                  Text(
+                                    '${index + 1}. ${question.questionText}',
+                                    style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      color: Colors.white,
                                     ),
-                                  )
-                                : SingleChildScrollView(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 32, vertical: 16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: List.generate(
-                                          controller.questions.length, (index) {
-                                        final question =
-                                            controller.questions[index];
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            // 질문 앞에 인덱스 추가
-                                            Text(
-                                              '${index + 1}. ${question.questionText}',
-                                              style: TextStyle(
-                                                fontFamily: 'Pretendard',
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            SizedBox(height: 18),
-                                            _buildAnswerChoices(
-                                              context,
-                                              controller: controller,
-                                              index: index,
-                                              question: question,
-                                            ),
-                                            SizedBox(height: 60),
-                                          ],
-                                        );
-                                      }),
-                                    ),
+                                    textAlign: TextAlign.left,
                                   ),
+                                  SizedBox(height: 18),
+                                  _buildAnswerChoices(
+                                    context,
+                                    controller: controller,
+                                    index: index,
+                                    question: question,
+                                  ),
+                                  SizedBox(height: 60),
+                                ],
+                              );
+                            }),
+                          ),
+                        ),
                       ),
                       // 제출 버튼
                       if (controller.questions.isNotEmpty)
@@ -239,17 +242,11 @@ class _SideEffectPageState extends State<SideEffectPage>
                             child: CustomSubmitButton(
                               onPressed: () async {
                                 await controller.submitResponses();
-                                final snackBar = SnackBar(
-                                  content: Text('부작용 설문이 제출되었습니다.'),
-                                  duration: Duration(seconds: 1),
+                                CustomSnackbar.show(
+                                  context: context,
+                                  message: '부작용 설문이 제출되었습니다.',
+                                  isSuccess: true,
                                 );
-
-                                final snackBarController =
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
-
-                                await snackBarController.closed;
-                                Navigator.pop(context);
                               },
                               text: '제출하기',
                               isEnabled: true,
@@ -268,11 +265,11 @@ class _SideEffectPageState extends State<SideEffectPage>
   }
 
   Widget _buildAnswerChoices(
-    BuildContext context, {
-    required RecallController controller,
-    required int index,
-    required Question question,
-  }) {
+      BuildContext context, {
+        required RecallController controller,
+        required int index,
+        required Question question,
+      }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: question.answerChoices.map((answerChoice) {

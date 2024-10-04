@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/mypage/repository/mypage_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 
@@ -122,14 +123,29 @@ class MypageController extends GetxController {
       if (success) {
         // 생리 주기 리스트를 다시 불러옵니다.
         fetchMenstruationCycles(cycle.startDate.year);
-        Get.back(); // 다이얼로그 닫기
-        Get.snackbar('성공', '생리 주기가 추가되었습니다.');
+
+        // 성공 스낵바 먼저 호출
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '생리 주기가 추가되었습니다.',
+          isSuccess: true,
+        );
+
+        // 이후 다이얼로그 닫기
+        Get.back();
       } else {
-        Get.snackbar('실패', '생리 주기를 추가하지 못했습니다.');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '생리 주기를 추가하지 못했습니다',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to create menstruation cycle: $e');
-      Get.snackbar('에러', '생리 주기를 추가하지 못했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '생리 주기 추가에 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 

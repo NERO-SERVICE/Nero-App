@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/user/enum/authentication_status.dart';
 import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
@@ -115,17 +116,17 @@ class AuthenticationController extends GetxController {
       final success = await kakaoAuthRepo.deleteAccount();
       if (success) {
         Get.offAllNamed('/login');
-        Get.snackbar(
-          '성공',
-          '회원 탈퇴가 완료되었습니다.',
-          snackPosition: SnackPosition.BOTTOM,
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '회원 탈퇴가 완료되었습니다.',
+          isSuccess: true,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        '오류',
-        '회원 탈퇴에 실패했습니다: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '회원 탈퇴를 실패했습니다.',
+        isSuccess: false,
       );
     }
   }

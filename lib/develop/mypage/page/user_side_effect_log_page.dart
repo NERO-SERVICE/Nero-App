@@ -70,8 +70,11 @@ class UserSideEffectLogPage extends StatelessWidget {
                 Expanded(
                   child: Theme(
                     // Theme to remove divider color in ExpansionTile
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
+                    data: Theme.of(context).copyWith(
+                      dividerColor: Colors.transparent,
+                      highlightColor: Colors.transparent, // 터치 시 번쩍이는 효과 제거
+                      splashColor: Colors.transparent, // 터치 시 잔물결 효과 제거
+                    ),
                     child: ListView.builder(
                       padding: EdgeInsets.all(16),
                       itemCount: _controller.sideEffectResponses.length,
@@ -113,7 +116,7 @@ class UserSideEffectLogPage extends StatelessWidget {
                                         fontFamily: 'Pretendard',
                                         fontWeight: FontWeight.w400,
                                         fontSize: 14,
-                                        color: Color(0xffD9D9D9),
+                                        color: Color(0xffD9D9D9).withOpacity(0.8),
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
@@ -129,7 +132,7 @@ class UserSideEffectLogPage extends StatelessWidget {
                                             color: question.answerText ==
                                                     '답변이 없습니다.'
                                                 ? Color(0xffD9D9D9)
-                                                    .withOpacity(0.5)
+                                                    .withOpacity(0.1)
                                                 : Colors.white,
                                           ),
                                           SizedBox(width: 8),
@@ -139,7 +142,7 @@ class UserSideEffectLogPage extends StatelessWidget {
                                               color: question.answerText ==
                                                       '답변이 없습니다.'
                                                   ? Color(0xffD9D9D9)
-                                                      .withOpacity(0.5)
+                                                      .withOpacity(0.1)
                                                   : Colors.white,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w400,

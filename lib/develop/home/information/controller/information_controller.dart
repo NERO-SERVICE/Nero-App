@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 
@@ -47,10 +48,18 @@ class InformationController extends GetxController {
           await _informationRepository.createInformation(information);
       if (newInformation != null) {
         informations.add(newInformation);
-        Get.snackbar('성공', '공지사항이 성공적으로 생성되었습니다.');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '공지사항이 생성되었습니다.',
+          isSuccess: true,
+        );
       }
     } catch (e) {
-      Get.snackbar('실패', '공지사항 생성에 실패했습니다.');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '공지사항 생성에 실패했습니다.',
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }

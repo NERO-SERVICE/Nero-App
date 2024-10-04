@@ -102,6 +102,8 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 30),
+                  
                   // 매거진 제목
                   MagazineTitleWidget(title: magazine.title),
                   const SizedBox(height: 30),

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../../../common/components/app_font.dart';
 import '../../../../common/components/calandar_widget.dart';
@@ -92,6 +93,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
         key: _formKey,
         child: ListView(
           children: [
+            const SizedBox(height: 21),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
@@ -104,9 +106,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 21),
-            CustomDivider(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 42),
               child: Column(
@@ -364,7 +364,11 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                               controller.addDrug(drug);
                               Get.back();
                             } else {
-                              Get.snackbar('Error', '모든 필드를 채워주세요.');
+                              CustomSnackbar.show(
+                                context: Get.context!,
+                                message: '모든 필드를 채워주세요.',
+                                isSuccess: false,
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(

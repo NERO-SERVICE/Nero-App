@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../common/components/calandar_widget.dart';
 import '../../common/components/custom_matrix_pageview_widget.dart';
@@ -458,7 +459,11 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
                         ElevatedButton(
                           onPressed: () async {
                             if (endDate.value.isBefore(startDate.value)) {
-                              Get.snackbar('오류', '종료일은 시작일보다 빠를 수 없습니다.');
+                              CustomSnackbar.show(
+                                context: Get.context!,
+                                message: '종료일은 시작일보다 빠를 수 없습니다.',
+                                isSuccess: false,
+                              );
                               return;
                             }
                             MenstruationCycle cycle = MenstruationCycle(

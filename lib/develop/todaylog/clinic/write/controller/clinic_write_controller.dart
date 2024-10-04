@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
 import '../../controller/clinic_controller.dart';
 import '../../model/clinic.dart';
@@ -126,11 +127,18 @@ class ClinicWriteController extends GetxController {
 
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to create clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 생성을 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to create clinic: $e');
-      Get.snackbar('Error', 'Failed to create clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 생성을 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 
@@ -150,11 +158,18 @@ class ClinicWriteController extends GetxController {
         clinicController.fetchClinics();
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to update clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 수정을 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to update clinic: $e');
-      Get.snackbar('Error', 'Failed to update clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 수정을 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 
@@ -167,11 +182,18 @@ class ClinicWriteController extends GetxController {
         clinicController.fetchClinics();
         Get.back(result: true);
       } else {
-        Get.snackbar('Error', 'Failed to delete clinic');
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '진료기록 삭제를 실패했습니다.',
+          isSuccess: false,
+        );
       }
     } catch (e) {
-      print('Failed to delete clinic: $e');
-      Get.snackbar('Error', 'Failed to delete clinic');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '진료기록 삭제를 실패했습니다.',
+        isSuccess: false,
+      );
     }
   }
 }
