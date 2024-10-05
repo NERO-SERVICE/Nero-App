@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
@@ -18,6 +19,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   String _appVersion = '...';
   late AuthenticationController authController; // authController를 클래스 필드로 선언
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -148,7 +150,10 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 클래스 필드로 선언한 authController 사용
+    analytics.logScreenView(
+      screenName: 'SettingPage',
+      screenClass: 'SettingPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomDetailAppBar(title: '설정'),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,9 +21,14 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
       Get.find<NotificationController>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'NotificationDetailPage',
+      screenClass: 'NotificationDetailPage',
+    );
     final int noticeId = Get.arguments['noticeId']; // noticeId만 받음
 
     // 데이터를 로드한 후 렌더링

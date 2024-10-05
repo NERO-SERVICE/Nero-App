@@ -1,9 +1,9 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/main/page/home_main_content_page.dart';
 import 'package:nero_app/develop/mail/controller/mail_controller.dart';
 import 'package:nero_app/develop/settings/page/setting_page.dart';
@@ -20,8 +20,13 @@ class HomeMainPage extends StatefulWidget {
 class _HomeMainPageState extends State<HomeMainPage> {
   final TextEditingController _suggestionController = TextEditingController();
   final MailController _mailController = Get.put(MailController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   void _showMailToDeveloperDialog() {
+    analytics.logEvent(
+      name: 'MailToDeveloperDialog',
+      parameters: {'action': 'open_dialog'},
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -125,6 +130,10 @@ class _HomeMainPageState extends State<HomeMainPage> {
                       Center(
                         child: CustomCompleteButton(
                           onPressed: () {
+                            analytics.logEvent(
+                              name: 'try_send_suggestion',
+                              parameters: {'action': 'try_send_mail'},
+                            );
                             _mailController.suggestion.value = _suggestionController.text;
                             _mailController.sendMail();
                             _suggestionController.clear();

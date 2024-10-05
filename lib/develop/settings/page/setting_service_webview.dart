@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -13,6 +14,7 @@ class SettingServiceWebview extends StatefulWidget {
 
 class _SettingServiceWebviewState extends State<SettingServiceWebview> {
   late WebViewController _controller;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -60,6 +62,10 @@ class _SettingServiceWebviewState extends State<SettingServiceWebview> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SettingPolicyWebviewPage',
+      screenClass: 'SettingPolicyWebviewPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomDetailAppBar(title: '서비스 이용약관'),

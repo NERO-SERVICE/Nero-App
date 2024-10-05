@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -7,8 +8,9 @@ import 'package:nero_app/develop/home/information/page/information_list_page.dar
 
 class HomeInformationPage extends StatelessWidget {
   final Future<List<Information>> latestInformationFuture;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-  const HomeInformationPage({
+  HomeInformationPage({
     Key? key,
     required this.latestInformationFuture,
   }) : super(key: key);
@@ -23,6 +25,10 @@ class HomeInformationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'HomeInformationPage',
+      screenClass: 'HomeInformationPage',
+    );
     return Column(
       children: [
         Row(

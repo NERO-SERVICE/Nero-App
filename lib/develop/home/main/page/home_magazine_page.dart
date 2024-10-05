@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -8,14 +9,19 @@ import 'package:nero_app/develop/home/magazine/page/magazine_list_page.dart';
 
 class HomeMagazinePage extends StatelessWidget {
   final Future<List<Magazine>> latestMagazinesFuture;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-  const HomeMagazinePage({
+  HomeMagazinePage({
     Key? key,
     required this.latestMagazinesFuture,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'HomeMagazinePage',
+      screenClass: 'HomeMagazinePage',
+    );
     return Column(
       children: [
         Row(

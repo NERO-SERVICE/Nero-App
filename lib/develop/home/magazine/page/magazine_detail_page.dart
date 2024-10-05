@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,10 +21,14 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
   final MagazineController controller = Get.put(MagazineController());
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
-    // Get.arguments에서 Magazine 객체를 가져옴
+    analytics.logScreenView(
+      screenName: 'MagazineDetailPage',
+      screenClass: 'MagazineDetailPage',
+    );
     final Magazine magazine = Get.arguments as Magazine;
 
     // 데이터를 로드한 후 렌더링

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,7 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
   final List<int> _selectedDrugIds = [];
   final ClinicRepository _clinicRepository = ClinicRepository();
   String? _rollbackDate; // recentDay에 따라 설정
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -83,6 +85,11 @@ class _DailyDrugWidgetState extends State<DailyDrugWidget> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'DailyDrugWidget',
+      screenClass: 'DailyDrugWidget',
+    );
+
     return FutureBuilder<List<Drug>>(
       future: _drugsFuture,
       builder: (context, snapshot) {

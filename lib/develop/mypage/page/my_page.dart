@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -27,6 +28,7 @@ class _MyPage extends State<MyPage> {
   final MemoriesController _memoriesController = Get.put(MemoriesController());
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   final TextEditingController _textController = TextEditingController();
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void dispose() {
@@ -66,7 +68,7 @@ class _MyPage extends State<MyPage> {
         );
       },
     );
-    return selectedDate; // 모달이 닫힐 때 null 또는 선택된 날짜 반환
+    return selectedDate;
   }
 
   Widget _mypageTitle({required String title, required String content}) {
@@ -375,105 +377,12 @@ class _MyPage extends State<MyPage> {
     );
   }
 
-  Future<bool> _showConfirmationDialog(
-      String content, String confirm, Color dialogColor) async {
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Text(
-                      content,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Color(0xffFFFFFF),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xffD8D8D8).withOpacity(0.3),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(16),
-                            ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                            child: Center(
-                              child: Text(
-                                "취소",
-                                style: TextStyle(
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: dialogColor,
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(16),
-                            ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: Center(
-                              child: Text(
-                                confirm,
-                                style: TextStyle(
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPage',
+      screenClass: 'MyPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(title: '마이페이지'),

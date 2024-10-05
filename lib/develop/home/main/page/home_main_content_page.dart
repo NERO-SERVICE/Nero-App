@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final String _instagramUrl = 'https://www.instagram.com/nero.cat_official/';
   final String _threadUrl = 'https://www.threads.net/@nero.cat_official';
   final String _twitterUrl = 'https://x.com/nerolaboratory';
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   Future<void> _launchUrl(String url, String appUrlScheme) async {
     final Uri appUri = Uri.parse(appUrlScheme);
@@ -53,14 +55,26 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   }
 
   void _openInstagram() {
+    analytics.logScreenView(
+      screenName: '_openInstagram',
+      screenClass: '_openInstagram',
+    );
     _launchUrl(_instagramUrl, 'instagram://user?username=nero.cat_official');
   }
 
   void _openTwitter() {
+    analytics.logScreenView(
+      screenName: '_openTwitter',
+      screenClass: '_openTwitter',
+    );
     _launchUrl(_twitterUrl, 'twitter://user?screen_name=nerolaboratory');
   }
 
-  void _openThreads() {  // 변경된 부분
+  void _openThreads() {
+    analytics.logScreenView(
+      screenName: '_openThreads',
+      screenClass: '_openThreads',
+    );
     _launchUrl(_threadUrl, 'threads://user?username=nero.cat_official');
   }
 
@@ -518,6 +532,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             onPageChanged: (index) {
                               // 현재 페이지 인덱스를 업데이트할 때 모듈러 연산을 사용.
                               _currentPage.value = index;
+                              analytics.logEvent(
+                                name: 'HomeNotificationCardView',
+                                parameters: {
+                                  'page_index': index,
+                                  'page_title': notifications[index % notifications.length].title,
+                                },
+                              );
                             },
                             itemBuilder: (context, index) {
                               // 인덱스를 데이터 리스트의 길이로 나눈 나머지를 사용

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
   final _formKey = GlobalKey<FormState>();
   late ClinicWriteController controller;
   late TextEditingController _descriptionController;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -85,6 +87,11 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'ClinicWritePage',
+      screenClass: 'ClinicWritePage',
+    );
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomDetailAppBar(title: '진료기록'),

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,11 +10,16 @@ import '../../common/components/custom_loading_indicator.dart';
 
 class UserSelfRecordPage extends StatelessWidget {
   final DateTime selectedDate;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   UserSelfRecordPage({required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPageSelfRecordLogPage',
+      screenClass: 'MyPageSelfRecordLogPage',
+    );
     final MypageController controller = Get.put(MypageController());
 
     controller.fetchPreviousSelfRecordAnswers(selectedDate);

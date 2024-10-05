@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final SignUpController controller = Get.put(SignUpController());
 
   final List<String> sexOptions = ['여성', '남성', '기타'];
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -347,6 +349,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SignUpPage',
+      screenClass: 'SignUpPage',
+    );
     return CommonLayout(
       appBar: AppBar(
         automaticallyImplyLeading: false,

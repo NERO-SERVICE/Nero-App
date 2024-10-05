@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -9,10 +10,16 @@ import 'package:nero_app/develop/user/controller/authentication_controller.dart'
 import 'package:nero_app/develop/user/enum/authentication_status.dart';
 
 class SplashPage extends GetView<SplashController> {
-  const SplashPage({super.key});
+  SplashPage({super.key});
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SplashPage',  // 스크린 이름
+      screenClass: 'SplashPage', // 스크린 클래스
+    );
+
     return Scaffold(
       body: Stack(
         children: [

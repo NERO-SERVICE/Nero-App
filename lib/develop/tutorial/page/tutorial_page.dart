@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +11,7 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   bool _isButtonActive = false;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   final List<String> tutorialImages = [
     'assets/develop/tutorial-1.png',
@@ -77,6 +79,10 @@ class _TutorialPageState extends State<TutorialPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'TutorialPage',
+      screenClass: 'TutorialPage',
+    );
     return Scaffold(
       body: Stack(
         children: [

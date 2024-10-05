@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -21,16 +22,15 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   late Information information;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
     super.initState();
     information = Get.arguments as Information;
 
-    // 컨트롤러의 currentInformation을 전달받은 정보로 먼저 설정
     controller.currentInformation.value = information;
 
-    // fetchInformation 호출하여 최신 정보 가져오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (controller.currentInformation.value.infoId != information.infoId) {
         controller.fetchInformation(information.infoId);
@@ -40,6 +40,10 @@ class _InformationDetailPageState extends State<InformationDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'InformationDetailPage',
+      screenClass: 'InformationDetailPage',
+    );
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {

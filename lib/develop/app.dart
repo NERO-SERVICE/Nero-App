@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/init/page/init_start_page.dart';
 import 'package:nero_app/develop/splash/page/splash_page.dart';
@@ -12,6 +13,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late bool isInitStarted;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -21,6 +23,10 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'AppStart',
+      screenClass: 'AppStart',
+    );
     return isInitStarted
         ? InitStartPage(
       onStart: () {
@@ -30,6 +36,6 @@ class _AppState extends State<App> {
         prefs.setBool('isInitStarted', isInitStarted);
       },
     )
-        : const SplashPage();
+        : SplashPage();
   }
 }

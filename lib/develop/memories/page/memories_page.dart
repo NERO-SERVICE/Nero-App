@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/layout/common_layout.dart';
@@ -20,6 +21,7 @@ class _MemoriesPageState extends State<MemoriesPage> {
   List<bool> selectedItems = List.generate(15, (index) => false);
 
   final MemoriesController _memoriesController = Get.put(MemoriesController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   void _registerMemories() async {
     List<String> selectedThings = [];
@@ -172,6 +174,10 @@ class _MemoriesPageState extends State<MemoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SignUpMemoriesPage',
+      screenClass: 'SignUpMemoriesPage',
+    );
     return CommonLayout(
       appBar: AppBar(
         automaticallyImplyLeading: false,

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class _SurveyPageState extends State<SurveyPage>
   late TabController _tabController;
   bool _isTabControllerInitialized = false;
   int _previousIndex = 0;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void dispose() {
@@ -29,6 +31,10 @@ class _SurveyPageState extends State<SurveyPage>
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SurveyWritePage',
+      screenClass: 'SurveyWritePage',
+    );
     return ChangeNotifierProvider(
       create: (_) => RecallController(type: 'survey')..fetchSubtypes(),
       child: Scaffold(
@@ -234,6 +240,9 @@ class _SurveyPageState extends State<SurveyPage>
                             child: CustomSubmitButton(
                               onPressed: () async {
                                 await controller.submitResponses();
+                                analytics.logEvent(
+                                  name: 'survey_registered',
+                                );
                                 CustomSnackbar.show(
                                   context: context,
                                   message: '하루 설문이 제출되었습니다.',

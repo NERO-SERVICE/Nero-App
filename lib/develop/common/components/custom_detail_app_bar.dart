@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

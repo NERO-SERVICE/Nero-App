@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +10,14 @@ import '../controller/recall_controller.dart';
 
 class SelfRecordPage extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SelfRecordWritePage',
+      screenClass: 'SelfRecordWritePage',
+    );
     return ChangeNotifierProvider<RecallController>(
       create: (_) => RecallController(type: '')..fetchSelfLogs(),
       builder: (context, child) {
@@ -203,6 +209,9 @@ class SelfRecordPage extends StatelessWidget {
                             if (_textController.text.isNotEmpty) {
                               await Provider.of<RecallController>(context, listen: false)
                                   .submitSelfLog(_textController.text);
+                              analytics.logEvent(
+                                name: 'self_record_registered',
+                              );
                               _textController.clear();
                             }
                           },

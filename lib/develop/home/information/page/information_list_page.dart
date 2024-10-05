@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -10,9 +11,14 @@ import 'information_detail_page.dart';
 class InformationListPage extends StatelessWidget {
   final InformationController _informationController =
       Get.put(InformationController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'InformationListPage',
+      screenClass: 'InformationListPage',
+    );
     return Scaffold(
       appBar: CustomDetailAppBar(title: '전체 공지사항'),
       body: Obx(

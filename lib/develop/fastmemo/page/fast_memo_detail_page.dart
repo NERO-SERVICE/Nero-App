@@ -1,11 +1,11 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
-import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 
 import '../../common/components/custom_detail_app_bar.dart';
 import '../../common/components/custom_loading_indicator.dart';
@@ -24,6 +24,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late DateTime selectedDate;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -147,6 +148,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                           if (_textController.text.isNotEmpty) {
                             await controller
                                 .submitFastmemo(_textController.text);
+                            analytics.logEvent(
+                              name: 'fast_memo_detail_page_send_content',
+                            );
                             _textController.clear();
                           }
                         },
@@ -247,6 +251,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       );
       if (confirmed) {
         await controller.bulkUpdateIsChecked(true, selectedIds);
+        analytics.logEvent(
+          name: 'fast_memo_item_registered',
+        );
         setState(() {
           _selectedMap.clear();
         });
@@ -264,6 +271,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
           "선택한 메모를 삭제하시겠습니까?", "삭제하기", Color(0xffFF5A5A).withOpacity(0.4));
       if (confirmed) {
         await controller.bulkDeleteFastmemo(selectedIds);
+        analytics.logEvent(
+          name: 'fast_memo_item_deleted',
+        );
         setState(() {
           _selectedMap.clear(); // 선택 해제
         });
@@ -437,6 +447,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
           setState(() {
             _selectedMap[log.id] = !isSelected; // 선택 상태 반전
           });
+          analytics.logEvent(
+            name: 'fastmemo_item_clicked',
+          );
         },
         onLongPress: () {
           _showEditDialog(log, index); // 길게 누르면 수정 가능
@@ -532,6 +545,9 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                             if (_textController.text.isNotEmpty) {
                               await controller.updateFastmemo(
                                   log.id, _textController.text);
+                              analytics.logEvent(
+                                name: 'fast_memo_item_edited',
+                              );
                               Navigator.of(context).pop();
                             }
                           },

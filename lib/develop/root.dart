@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,9 @@ import 'package:nero_app/develop/mypage/page/my_page.dart';
 import 'package:nero_app/develop/todaylog/main/page/todaylog_main_page.dart';
 
 class Root extends GetView<BottomNavController> {
-  const Root({super.key});
+  Root({super.key});
+
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   Widget get _divider => const Divider(
         color: Color(0xff3C3C3E),
@@ -50,7 +53,10 @@ class Root extends GetView<BottomNavController> {
                   tabBackgroundColor: Color(0xff3C3C3C),
                   padding: const EdgeInsets.all(16),
                   selectedIndex: controller.menuIndex.value,
-                  onTabChange: controller.changeBottomNav,
+                  onTabChange: (index) {
+                    _logScreenView(index);
+                    controller.changeBottomNav(index);
+                  },
                   tabs: [
                     GButton(
                       icon: Icons.home,
@@ -91,6 +97,32 @@ class Root extends GetView<BottomNavController> {
           ],
         ),
       ),
+    );
+  }
+
+  void _logScreenView(int index) {
+    String screenName;
+    switch (index) {
+      case 0:
+        screenName = 'HomeMainPage';
+        break;
+      case 1:
+        screenName = 'TodaylogMainPage';
+        break;
+      case 2:
+        screenName = 'FastMemoMainPage';
+        break;
+      case 3:
+        screenName = 'MyPage';
+        break;
+      default:
+        screenName = 'HomeMainPage';
+        break;
+    }
+
+    analytics.logScreenView(
+      screenName: screenName,
+      screenClass: screenName,
     );
   }
 }

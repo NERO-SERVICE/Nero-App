@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,7 @@ import 'package:nero_app/develop/mypage/controller/mypage_controller.dart';
 
 class UserSurveyLogPage extends StatelessWidget {
   final DateTime selectedDate;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   UserSurveyLogPage({required this.selectedDate});
 
@@ -14,6 +16,10 @@ class UserSurveyLogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPageSurveyLogPage',
+      screenClass: 'MyPageSurveyLogPage',
+    );
     _controller.fetchPreviousSurveyAnswers(selectedDate);
     String formattedDate = DateFormat('yy년 MM월 dd일').format(selectedDate);
 

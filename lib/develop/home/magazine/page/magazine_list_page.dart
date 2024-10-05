@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -9,9 +10,14 @@ import '../../../common/components/custom_loading_indicator.dart';
 
 class MagazineListPage extends StatelessWidget {
   final MagazineController _magazineController = Get.put(MagazineController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MagazineListPage',
+      screenClass: 'MagazineListPage',
+    );
     return Scaffold(
       appBar: CustomDetailAppBar(title: '전체 매거진'),
       body: Obx(

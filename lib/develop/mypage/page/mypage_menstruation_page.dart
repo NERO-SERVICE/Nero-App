@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +19,7 @@ class MypageMenstruationPage extends StatefulWidget {
 class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     with SingleTickerProviderStateMixin {
   final MypageController _monthlyCheckController = Get.put(MypageController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   // 생리 주기 관련 변수들
   final PageController _menstruationPageController =
@@ -148,6 +150,10 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   }
 
   Widget _buildMenstruationPageView() {
+    analytics.logScreenView(
+      screenName: 'MyPageMenstruationCardPage',
+      screenClass: 'MyPageMenstruationCardPage',
+    );
     return CustomMatrixPageviewWidget(
       controller: _menstruationPageController,
       itemCount: 12,

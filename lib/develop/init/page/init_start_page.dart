@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/components/custom_loading_indicator.dart';
@@ -5,7 +6,8 @@ import '../../common/components/custom_loading_indicator.dart';
 class InitStartPage extends StatelessWidget {
   final Function() onStart;
 
-  const InitStartPage({super.key, required this.onStart});
+  InitStartPage({super.key, required this.onStart});
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   Widget _backgroundView() {
     return Stack(
@@ -36,6 +38,10 @@ class InitStartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'InitStartPage',
+      screenClass: 'InitStartPage',
+    );
     return Scaffold(
       body: Stack(
         children: [

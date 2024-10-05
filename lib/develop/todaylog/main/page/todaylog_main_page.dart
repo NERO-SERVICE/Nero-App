@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -20,9 +21,14 @@ class TodaylogMainPage extends StatefulWidget {
 
 class _TodayLogMainPageState extends State<TodaylogMainPage> {
   final ClinicController clinicController = Get.put(ClinicController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'TodaylogMainPage',
+      screenClass: 'TodaylogMainPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(

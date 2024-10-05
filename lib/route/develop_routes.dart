@@ -11,7 +11,7 @@ class DevelopRoutes {
   static final routes = [
     GetPage(
       name: '/home',
-      page: () => const Root(),
+      page: () => Root(),
       binding: BindingsBuilder(() {
         Get.lazyPut<BottomNavController>(() => BottomNavController());
       }),

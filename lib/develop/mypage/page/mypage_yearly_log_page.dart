@@ -1,4 +1,5 @@
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -14,6 +15,7 @@ class MypageYearlyLogPage extends StatefulWidget {
 class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
     with SingleTickerProviderStateMixin {
   final MypageController _monthlyCheckController = Get.put(MypageController());
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   final PageController _pageController =
       PageController(initialPage: DateTime.now().month - 1);
@@ -115,6 +117,10 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   }
 
   Widget _buildAnimatedButtonBar() {
+    analytics.logScreenView(
+      screenName: 'MyPageYearlyLogButtonBar',
+      screenClass: 'MyPageYearlyLogButtonBar',
+    );
     return GetBuilder<MypageController>(
       builder: (_) {
         return Padding(
@@ -185,6 +191,10 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   }
 
   Widget _buildPageView() {
+    analytics.logScreenView(
+      screenName: 'MyPageYearlyLogCardPage',
+      screenClass: 'MyPageYearlyLogCardPage',
+    );
     return CustomMatrixPageviewWidget(
       controller: _pageController,
       itemCount: 12,

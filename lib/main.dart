@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,6 +58,10 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+  FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -101,6 +106,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: _lastRoute,
+      navigatorObservers: <NavigatorObserver>[MyApp.observer],
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -7,7 +8,8 @@ import 'package:nero_app/develop/common/components/btn.dart';
 import 'package:nero_app/develop/login/controller/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   Widget _logoView() {
     return Column(
@@ -112,6 +114,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'LoginPage',
+      screenClass: 'LoginPage',
+    );
     return Scaffold(
       body: Stack(
         children: [

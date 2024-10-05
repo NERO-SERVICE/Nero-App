@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
@@ -18,6 +19,7 @@ class _SideEffectPageState extends State<SideEffectPage>
   late TabController _tabController;
   bool _isTabControllerInitialized = false;
   int _previousIndex = 0; // 이전 탭 인덱스 추적
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void dispose() {
@@ -29,6 +31,10 @@ class _SideEffectPageState extends State<SideEffectPage>
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'SideEffectWritePage',
+      screenClass: 'SideEffectWritePage',
+    );
     return ChangeNotifierProvider(
       create: (_) => RecallController(type: 'side_effect')..fetchSubtypes(),
       child: Scaffold(
@@ -242,6 +248,9 @@ class _SideEffectPageState extends State<SideEffectPage>
                             child: CustomSubmitButton(
                               onPressed: () async {
                                 await controller.submitResponses();
+                                analytics.logEvent(
+                                  name: 'side_effect_registered',
+                                );
                                 CustomSnackbar.show(
                                   context: context,
                                   message: '부작용 설문이 제출되었습니다.',

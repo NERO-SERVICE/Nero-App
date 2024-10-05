@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class FastMemoMainPage extends StatefulWidget {
 class _FastMemoMainPageState extends State<FastMemoMainPage> {
   final FastmemoController controller = Get.put(FastmemoController(repository: Get.find<FastmemoRepository>()));
   final Map<int, bool> _selectedMap = {}; // 메모 선택 상태 관리
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -30,6 +32,10 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'FastMemoMainPage',
+      screenClass: 'FastMemoMainPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(title: '빠른 메모'),
@@ -80,10 +86,22 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
         },
         onDaySelected: (selectedDay, focusedDay) {
           controller.setSelectedDate(selectedDay);
+          analytics.logEvent(
+            name: 'fast_memo_main_page_calendar_day_selected',
+            parameters: {
+              'selected_day': selectedDay.toIso8601String(),
+            },
+          );
         },
         onPageChanged: (focusedDay) {
           int focusedYear = focusedDay.year;
-          // focusedYear가 loadedYears에 없으면 호출
+          analytics.logEvent(
+            name: 'fast_memo_main_page_calendar_page_changed',
+            parameters: {
+              'focused_year': focusedYear,
+            },
+          );
+
           if (!controller.loadedYears.contains(focusedYear)) {
             controller.fetchMemoDates(focusedYear);  // 해당 연도에 대한 메모 날짜 호출
           }
@@ -315,7 +333,13 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     child: GestureDetector(
                       onTap: () {
                         if (!memo.isChecked) {
-                          // isChecked가 false일 때만 상태 변경 가능
+                          analytics.logEvent(
+                            name: 'fast_memo_daily_selected_memo_tracking',
+                            parameters: {
+                              'memo_id': memo.id,
+                              'is_selected': !isSelected,
+                            },
+                          );
                           setState(() {
                             _selectedMap[memo.id] = !isSelected;
                           });

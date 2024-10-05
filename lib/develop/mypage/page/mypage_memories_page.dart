@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_complete_button.dart';
@@ -18,6 +19,7 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
   final MemoriesController _memoriesController = Get.put(MemoriesController());
   final TextEditingController _textController = TextEditingController();
   final Map<int, bool> _selectedMap = {}; // 선택된 아이템의 인덱스를 저장
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -326,6 +328,10 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPage',
+      screenClass: 'MyPage',
+    );
     return CommonLayout(
       appBar: CustomDetailAppBar(title: '챙길거리'),
       body: Stack(
