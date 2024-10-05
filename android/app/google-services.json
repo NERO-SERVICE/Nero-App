@@ -48,6 +48,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11058933581:android:7d0e7f7e25e82581d6d104",
+        "android_client_info": {
+          "package_name": "com.nerocompany.nero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11058933581-ghc83bogbej127fu7lii8p6vvt39mbeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerocompany.nero",
+            "certificate_hash": "51ce5be012773fb11fedcdc20d4ea3463802acf8"
+          }
+        },
+        {
+          "client_id": "11058933581-2suf1m5l120e2ials6006cvsl2pjubm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3jFlnJOfkIF9SvwWPZHKqlQo3AW1n5r0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11058933581-2suf1m5l120e2ials6006cvsl2pjubm9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "11058933581-1sq7hhc96pvf63ksovv4h7rrbuuhodfh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nero.neroApp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
