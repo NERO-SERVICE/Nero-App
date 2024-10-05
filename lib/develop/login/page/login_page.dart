@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         const AppFont(
-          '당신 곁의 네로',
+          '당신 곁에 네로',
           fontWeight: FontWeight.bold,
           size: 20,
         ),
@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
           height: 40,
         ),
         AppFont(
-          '토탈 케어 플랫폼 \n 네로를 시작하세요',
+          'ADHD를 위한\n토탈 케어 플랫폼',
           align: TextAlign.center,
           size: 18,
           color: Colors.white.withOpacity(0.6),
