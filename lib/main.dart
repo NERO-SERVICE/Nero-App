@@ -14,11 +14,13 @@ import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/controller/clinic_controller.dart';
+import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'develop/app.dart';
@@ -52,7 +54,10 @@ void main() async {
   await initializeDateFormatting();
 
   FlutterNativeSplash.remove();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_) => RecallController(type: 'side_effect'),
+    child: MyApp(),
+  ),);
 }
 
 class MyApp extends StatefulWidget {

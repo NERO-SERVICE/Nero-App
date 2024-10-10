@@ -1,3 +1,4 @@
+// survey_page.dart
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
@@ -22,6 +23,61 @@ class _SurveyPageState extends State<SurveyPage>
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
+  void initState() {
+    super.initState();
+
+    final controller = Provider.of<RecallController>(context, listen: false);
+    controller.fetchSubtypes();
+
+    controller.addListener(() {
+      if (!_isTabControllerInitialized && controller.subtypes.isNotEmpty) {
+        _initializeTabController(controller);
+      }
+    });
+  }
+
+  void _initializeTabController(RecallController controller) {
+    _tabController = TabController(
+      length: controller.subtypes.length,
+      vsync: this,
+    );
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        final selectedSubtype = controller.subtypes[_tabController.index];
+        if (selectedSubtype.isCompleted) {
+          _tabController.index = _previousIndex;
+          CustomSnackbar.show(
+            context: context,
+            message: '이미 완료된 설문입니다.',
+            isSuccess: true,
+          );
+        } else {
+          _previousIndex = _tabController.index;
+          controller.selectedSubtype = selectedSubtype.subtypeCode;
+          controller.fetchQuestions();
+        }
+      }
+    });
+
+    // 초기 선택 설정
+    if (controller.selectedSubtype == null && controller.subtypes.isNotEmpty) {
+      int initialIndex = controller.subtypes.indexWhere((s) => !s.isCompleted);
+      if (initialIndex == -1) {
+        // 모든 탭이 완료된 경우
+        // 필요한 경우 처리 로직 추가
+      } else {
+        _tabController.index = initialIndex;
+        controller.selectedSubtype = controller.subtypes[initialIndex].subtypeCode;
+        controller.fetchQuestions();
+        _previousIndex = initialIndex;
+      }
+    }
+
+    _isTabControllerInitialized = true;
+  }
+
+  @override
   void dispose() {
     if (_isTabControllerInitialized) {
       _tabController.dispose();
@@ -35,231 +91,171 @@ class _SurveyPageState extends State<SurveyPage>
       screenName: 'SurveyWritePage',
       screenClass: 'SurveyWritePage',
     );
-    return ChangeNotifierProvider(
-      create: (_) => RecallController(type: 'survey')..fetchSubtypes(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: CustomDetailAppBar(title: '하루 설문'),
-        body: SizedBox.expand(
-          child: Stack(
-            children: [
-              // 배경 이미지
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/today_background.png',
-                  fit: BoxFit.cover,
-                ),
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: CustomDetailAppBar(title: '하루 설문'),
+      body: SizedBox.expand(
+        child: Stack(
+          children: [
+            // 배경 이미지
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/today_background.png',
+                fit: BoxFit.cover,
               ),
-              // 그라데이션 오버레이
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.center,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.9),
-                      ],
-                    ),
+            ),
+            // 그라데이션 오버레이
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.center,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.9),
+                    ],
                   ),
                 ),
               ),
-              // 컨텐츠
-              Consumer<RecallController>(
-                builder: (context, controller, child) {
-                  if (controller.isLoading && controller.subtypes.isEmpty) {
-                    return Center(child: CustomLoadingIndicator());
-                  }
+            ),
+            // 컨텐츠
+            Consumer<RecallController>(
+              builder: (context, controller, child) {
+                if (controller.isLoading && controller.subtypes.isEmpty) {
+                  return Center(child: CustomLoadingIndicator());
+                }
 
-                  // TabController 초기화
-                  if (!_isTabControllerInitialized &&
-                      controller.subtypes.isNotEmpty) {
-                    _tabController = TabController(
-                      length: controller.subtypes.length,
-                      vsync: this,
-                    );
+                if (!_isTabControllerInitialized &&
+                    controller.subtypes.isNotEmpty) {
+                  _initializeTabController(controller);
+                }
 
-                    _tabController.addListener(() {
-                      if (_tabController.indexIsChanging) {
-                        final selectedSubtype =
-                        controller.subtypes[_tabController.index];
-                        if (selectedSubtype.isCompleted) {
-                          // 비활성화된 탭 선택 시 이전 탭으로 되돌리고 메시지 표시
-                          _tabController.index = _previousIndex;
-                          CustomSnackbar.show(
-                            context: context,
-                            message: '이미 완료된 설문입니다.',
-                            isSuccess: true,
-                          );
-                        } else {
-                          // 정상적으로 탭 선택 시 이전 인덱스 업데이트
-                          _previousIndex = _tabController.index;
-                          controller.selectedSubtype =
-                              selectedSubtype.subtypeCode;
-                          controller.fetchQuestions();
-                        }
-                      }
-                    });
-
-                    // 초기 선택 설정
-                    if (controller.selectedSubtype == null &&
-                        controller.subtypes.isNotEmpty) {
-                      int initialIndex =
-                      controller.subtypes.indexWhere((s) => !s.isCompleted);
-                      if (initialIndex == -1) {
-                        // 모든 탭이 완료된 경우
-                        return Center(
-                          child: Text(
-                            '모든 설문조사가 완료되었습니다.',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: Color(0xffD9D9D9),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      _tabController.index = initialIndex;
-                      controller.selectedSubtype =
-                          controller.subtypes[initialIndex].subtypeCode;
-                      controller.fetchQuestions();
-                      _previousIndex = initialIndex;
-                    }
-
-                    _isTabControllerInitialized = true;
-                  }
-
-                  return Column(
-                    children: [
-                      SizedBox(height: kToolbarHeight + 56),
+                return Column(
+                  children: [
+                    SizedBox(height: kToolbarHeight + 56),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        '오늘 당신의 하루가 어땠는지\n저에게 알려주세요',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Color(0xffD9D9D9),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    if (controller.subtypes.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Text(
-                          '오늘 당신의 하루가 어땠는지\n저에게 알려주세요',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Color(0xffD9D9D9),
+                        child: TabBar(
+                          controller: _tabController,
+                          isScrollable: false,
+                          indicator: UnderlineTabIndicator(
+                            borderSide:
+                            BorderSide(width: 2.0, color: Color(0xffD0EE17)),
+                            insets: EdgeInsets.symmetric(horizontal: 50),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      if (controller.subtypes.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: TabBar(
-                            controller: _tabController,
-                            isScrollable: false,
-                            // 탭들이 화면 너비에 맞게 고르게 분포
-                            indicator: UnderlineTabIndicator(
-                              borderSide: BorderSide(
-                                  width: 2.0, color: Color(0xffD0EE17)),
-                              insets: EdgeInsets.symmetric(
-                                  horizontal: 50), // 인디케이터 길이 조정
-                            ),
-                            labelColor: Colors.white,
-                            unselectedLabelColor: Color(0xffD9D9D9),
-                            tabs: controller.subtypes.map((subtype) {
-                              final isCompleted = subtype.isCompleted;
-                              return Tab(
-                                child: Text(
-                                  subtype.subtypeName,
-                                  style: TextStyle(
-                                    color: isCompleted
-                                        ? Color(0xff3C3C3C)
-                                        : Colors.white,
-                                  ),
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Color(0xffD9D9D9),
+                          tabs: controller.subtypes.map((subtype) {
+                            final isCompleted = subtype.isCompleted;
+                            return Tab(
+                              child: Text(
+                                subtype.subtypeName,
+                                style: TextStyle(
+                                  color: isCompleted
+                                      ? Color(0xff3C3C3C)
+                                      : Colors.white,
                                 ),
-                              );
-                            }).toList(),
-                          ),
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      SizedBox(height: 20),
-                      // 질문 및 답변
-                      Expanded(
-                        child: controller.isLoading &&
-                            controller.questions.isEmpty
-                            ? Center(child: CustomLoadingIndicator())
-                            : controller.questions.isEmpty
-                            ? Center(
-                          child: Text(
-                            '질문이 없습니다.',
-                            style:
-                            TextStyle(color: Color(0xffD9D9D9)),
-                          ),
-                        )
-                            : SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.center,
-                            children: List.generate(
-                                controller.questions.length, (index) {
-                              final question =
-                              controller.questions[index];
-                              return Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  // 질문 앞에 인덱스 추가
-                                  Text(
-                                    '${index + 1}. ${question.questionText}',
-                                    style: TextStyle(
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                    textAlign: TextAlign.left,
+                      ),
+                    // 질문 및 답변
+                    Expanded(
+                      child: controller.isLoading &&
+                          controller.questions.isEmpty
+                          ? Center(child: CustomLoadingIndicator())
+                          : controller.questions.isEmpty
+                          ? Center(
+                        child: Text(
+                          '질문이 없습니다.',
+                          style:
+                          TextStyle(color: Color(0xffD9D9D9)),
+                        ),
+                      )
+                          : SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.center,
+                          children: List.generate(
+                              controller.questions.length, (index) {
+                            final question =
+                            controller.questions[index];
+                            return Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                // 질문 앞에 인덱스 추가
+                                Text(
+                                  '${index + 1}. ${question.questionText}',
+                                  style: TextStyle(
+                                    fontFamily: 'Pretendard',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Colors.white,
                                   ),
-                                  SizedBox(height: 18),
-                                  _buildAnswerChoices(
-                                    context,
-                                    controller: controller,
-                                    index: index,
-                                    question: question,
-                                  ),
-                                  SizedBox(height: 60),
-                                ],
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: 18),
+                                _buildAnswerChoices(
+                                  context,
+                                  controller: controller,
+                                  index: index,
+                                  question: question,
+                                ),
+                                SizedBox(height: 60),
+                              ],
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                    // 제출 버튼
+                    if (controller.questions.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: Center(
+                          child: CustomSubmitButton(
+                            onPressed: () async {
+                              await controller.submitResponses();
+                              analytics.logEvent(
+                                name: 'survey_registered',
                               );
-                            }),
+                              CustomSnackbar.show(
+                                context: context,
+                                message: '하루 설문이 제출되었습니다.',
+                                isSuccess: true,
+                              );
+                            },
+                            text: '제출하기',
+                            isEnabled: true,
                           ),
                         ),
                       ),
-                      // 제출 버튼
-                      if (controller.questions.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 30),
-                          child: Center(
-                            child: CustomSubmitButton(
-                              onPressed: () async {
-                                await controller.submitResponses();
-                                analytics.logEvent(
-                                  name: 'survey_registered',
-                                );
-                                CustomSnackbar.show(
-                                  context: context,
-                                  message: '하루 설문이 제출되었습니다.',
-                                  isSuccess: true,
-                                );
-                              },
-                              text: '제출하기',
-                              isEnabled: true,
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

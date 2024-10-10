@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/todaylog/recall/model/question_subtype.dart';
 import 'package:nero_app/develop/todaylog/recall/model/question.dart';
 import 'package:nero_app/develop/todaylog/recall/model/self_record.dart';
 
 class RecallController with ChangeNotifier {
-  final DioService _dioService = DioService();
+  final DioService _dioService = Get.find<DioService>();
   final String? type;
 
   RecallController({required this.type});
