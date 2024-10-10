@@ -31,6 +31,8 @@ class AuthenticationRepository extends GetxService {
       if (response.statusCode == 200) {
         final newAccessToken = response.data['access'];
         prefs.setString('accessToken', newAccessToken);
+
+        await dioService.saveTokens(newAccessToken, refreshToken);
       } else {
         throw Exception('토큰 갱신 실패');
       }
@@ -128,6 +130,9 @@ class AuthenticationRepository extends GetxService {
       await prefs.setString('accessToken', accessToken);
       await prefs.setBool('needsSignup', needsSignup);
 
+      // 로그인 후 즉시 토큰 반영
+      await dioService.saveTokens(accessToken, refreshToken);
+
       return {
         'refreshToken': refreshToken,
         'accessToken': accessToken,
@@ -144,6 +149,8 @@ class AuthenticationRepository extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', accessToken);
     await prefs.setString('refreshToken', refreshToken);
+
+    await dioService.saveTokens(accessToken, refreshToken);
   }
 
 
@@ -161,6 +168,8 @@ class AuthenticationRepository extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
+
+    await dioService.clearDrfTokens();
   }
 
 

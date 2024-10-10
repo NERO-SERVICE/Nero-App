@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 
 import '../../dio_service.dart';
@@ -5,8 +6,7 @@ import '../model/menstruation_cycle.dart';
 import '../model/monthly_check.dart';
 
 class MypageRepository {
-  final DioService _dio = DioService();
-
+  final DioService _dio = Get.find<DioService>();
 
   Future<Map<int, MonthlyCheck>?> getYearlyCheck(int year, String type) async {
     try {

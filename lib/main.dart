@@ -14,6 +14,7 @@ import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/controller/clinic_controller.dart';
+import 'package:nero_app/develop/todaylog/clinic/repository/clinic_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
@@ -137,7 +138,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(LoginController(kakaoAuth));
         Get.put(BottomNavController());
         Get.put(InformationController());
-        Get.put(ClinicController());
+        Get.put(ClinicRepository());
         Get.put(FastmemoRepository());
       }),
       getPages: [

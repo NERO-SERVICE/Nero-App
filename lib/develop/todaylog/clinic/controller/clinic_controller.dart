@@ -5,7 +5,7 @@ import '../model/drug.dart';
 import '../repository/clinic_repository.dart';
 
 class ClinicController extends GetxController {
-  final ClinicRepository _clinicRepository = ClinicRepository();
+  final ClinicRepository _clinicRepository = Get.find<ClinicRepository>();
   var clinics = <Clinic>[].obs;
   var isLoading = true.obs;
   var errorMessage = ''.obs;
@@ -20,9 +20,7 @@ class ClinicController extends GetxController {
     try {
       isLoading(true);
       errorMessage('');
-      await Future.delayed(Duration(seconds: 2));
-
-      var fetchedClinics = await _clinicRepository.getClinics();
+      var fetchedClinics = await _clinicRepository.fetchClinics();
       clinics.value = fetchedClinics;
     } catch (e) {
       errorMessage('클리닉 데이터를 불러오는 중 오류가 발생했습니다.');

@@ -1,8 +1,9 @@
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/memories/model/memories.dart';
 
 class MemoriesRepository {
-  final DioService _dio = DioService();
+  final DioService _dio = Get.find<DioService>();
 
   Future<List<Memories>?> fetchMemories() async {
     try {

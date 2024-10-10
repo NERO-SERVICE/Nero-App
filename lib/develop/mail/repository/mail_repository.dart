@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/mail/model/mail.dart';
 
 class MailRepository {
-  final DioService _dio = DioService();
+  final DioService _dio = Get.find<DioService>();
 
   Future<bool> sendMail(Mail mail) async {
     try {

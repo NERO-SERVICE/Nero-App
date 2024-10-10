@@ -95,6 +95,7 @@ class AuthenticationController extends GetxController {
     }
   }
 
+
   Future<void> logout() async {
     await kakaoAuthRepo.logout();
     status(AuthenticationStatus.unknown);

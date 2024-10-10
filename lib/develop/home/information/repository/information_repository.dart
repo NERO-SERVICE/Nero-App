@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 
 import '../model/information.dart';
 
 class InformationRepository {
-  final DioService _dio = DioService();
+  final DioService _dio = Get.find<DioService>();
   ScrollController scrollController = ScrollController();
 
   Future<List<Information>> getInformations() async {

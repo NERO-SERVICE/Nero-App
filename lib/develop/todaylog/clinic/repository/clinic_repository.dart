@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 
 import '../model/clinic.dart';
@@ -7,11 +8,10 @@ import '../model/drug_archive.dart';
 import '../model/my_drug_archive.dart';
 
 class ClinicRepository {
-  final DioService _dio = DioService();
+  final DioService _dio = Get.find<DioService>();
   ScrollController scrollController = ScrollController();
 
-
-  Future<List<Clinic>> getClinics() async {
+  Future<List<Clinic>> fetchClinics() async {
     try {
       final response = await _dio.get('/clinics/lists/');
       List<Clinic> clinics =
@@ -21,7 +21,6 @@ class ClinicRepository {
       rethrow;
     }
   }
-
 
   Future<Clinic?> getClinic(int clinicId) async {
     try {
@@ -113,7 +112,7 @@ class ClinicRepository {
 
   Future<List<Drug>> getDrugsFromLatestClinic() async {
     try {
-      List<Clinic> clinics = await getClinics();
+      List<Clinic> clinics = await fetchClinics();
       if (clinics.isEmpty) {
         return [];
       }

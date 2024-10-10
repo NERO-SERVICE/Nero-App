@@ -1,8 +1,9 @@
+import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/fastmemo/model/fastmemo.dart';
 
 class FastmemoRepository {
-  final DioService _dioService = DioService();
+  final DioService _dioService = Get.find<DioService>();
 
   Future<List<Fastmemo>> getFastmemo(DateTime date) async {
     final response = await _dioService.get('/fastlogs/', params: {
