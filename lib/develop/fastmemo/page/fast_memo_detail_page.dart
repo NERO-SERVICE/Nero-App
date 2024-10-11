@@ -202,7 +202,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               position: _slideAnimation,
               child: _buildCustomActionButton(
                   'assets/develop/check.svg', "체크 완료", _bulkUpdateIsChecked,
-                  backgroundColor: Color(0xff69AC75).withOpacity(0.6),
+                  backgroundColor: Color(0xff69ACF5).withOpacity(0.6),
                   size: 30),
             ),
             SizedBox(height: 10),
@@ -451,9 +451,6 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
             name: 'fastmemo_item_clicked',
           );
         },
-        onLongPress: () {
-          _showEditDialog(log, index); // 길게 누르면 수정 가능
-        },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
@@ -490,90 +487,6 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
           ),
         ),
       ),
-    );
-  }
-
-  void _showEditDialog(dynamic log, int index) {
-    _textController.text = log.content;
-    showDialog(
-      context: context,
-      barrierDismissible: true, // 키보드가 나타나도 다이얼로그 위치를 고정
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "메모 수정",
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: _textController,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: "메모 내용을 입력하세요",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Color(0xff3C3C3C),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () async {
-                            if (_textController.text.isNotEmpty) {
-                              await controller.updateFastmemo(
-                                  log.id, _textController.text);
-                              analytics.logEvent(
-                                name: 'fast_memo_item_edited',
-                              );
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: const Text(
-                            "저장",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            "취소",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

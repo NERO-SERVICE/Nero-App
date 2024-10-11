@@ -8,9 +8,9 @@ class CustomSnackbar {
   }) {
     final snackBar = SnackBar(
       content: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         decoration: BoxDecoration(
-          color: const Color(0xff202020),
+          color: const Color(0xff000000).withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
@@ -20,7 +20,7 @@ class CustomSnackbar {
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: isSuccess ? Colors.white : Colors.red,
+            color: isSuccess ? Colors.white : Color(0xffFF5A5A),
           ),
         ),
       ),

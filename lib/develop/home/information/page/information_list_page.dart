@@ -9,8 +9,7 @@ import '../../../common/components/custom_loading_indicator.dart';
 import 'information_detail_page.dart';
 
 class InformationListPage extends StatelessWidget {
-  final InformationController _informationController =
-      Get.put(InformationController());
+  final InformationController _informationController = Get.put(InformationController());
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override

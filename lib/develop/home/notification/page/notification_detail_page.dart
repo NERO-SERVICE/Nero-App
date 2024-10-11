@@ -220,7 +220,7 @@ class NotificationContentWidget extends StatelessWidget {
           fontFamily: 'Pretendard',
           fontWeight: FontWeight.w600,
           fontSize: 14,
-          color: Color(0xffFFFFFF),
+          color: Color(0xffD9D9D9),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_complete_button.dart';
 import 'package:nero_app/develop/mail/controller/mail_controller.dart';
 import 'package:nero_app/develop/settings/page/setting_page.dart';
 
@@ -81,8 +82,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         constraints: BoxConstraints(maxHeight: 120, minHeight: 120),
                         child: Scrollbar(
                           child: TextField(
-                            controller: _suggestionController,
                             cursorColor: Color(0xffD9D9D9),
+                            controller: _suggestionController,
                             style: TextStyle(
                               fontSize: 14,
                               color: Color(0xffFFFFFF),
@@ -112,6 +113,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 borderSide: BorderSide(color: Color(0xffD0EE17), width: 1),
                               ),
                               contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+                              counterStyle: TextStyle( // maxLength 스타일
+                                fontSize: 12,
+                                color: Color(0xffD9D9D9).withOpacity(0.3),
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             maxLength: 200,
                             maxLines: null,
@@ -124,37 +131,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       ),
                       const SizedBox(height: 20),
                       Center(
-                        child: ElevatedButton(
+                        child: CustomCompleteButton(
                           onPressed: () {
                             analytics.logEvent(
                               name: 'try_send_suggestion',
                               parameters: {'action': 'try_send_mail'},
                             );
-                            _mailController.suggestion.value =
-                                _suggestionController.text;
+                            _mailController.suggestion.value = _suggestionController.text;
                             _mailController.sendMail();
                             _suggestionController.clear();
                             Navigator.of(context).pop();
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff323232),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 66.0,
-                            ),
-                          ),
-                          child: Text(
-                            '보내기',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Color(0xffD0EE17),
-                            ),
-                          ),
+                          text: '보내기',
+                          isEnabled: true,
                         ),
                       ),
                     ],
