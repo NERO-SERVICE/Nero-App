@@ -44,10 +44,7 @@ class DevelopRoutes {
     ),
     GetPage(
       name: '/survey',
-      page: () => ChangeNotifierProvider(
-        create: (_) => RecallController(type: 'survey'),
-        child: SurveyPage(),
-      ),
+      page: () => SurveyPage(),
     ),
   ];
 }

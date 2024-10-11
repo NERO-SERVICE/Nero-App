@@ -55,8 +55,15 @@ void main() async {
   await initializeDateFormatting();
 
   FlutterNativeSplash.remove();
-  runApp(ChangeNotifierProvider(
-    create: (_) => RecallController(type: 'side_effect'),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<SideEffectRecallController>(
+        create: (_) => SideEffectRecallController(),
+      ),
+      ChangeNotifierProvider<SurveyRecallController>(
+        create: (_) => SurveyRecallController(),
+      ),
+    ],
     child: MyApp(),
   ),);
 }

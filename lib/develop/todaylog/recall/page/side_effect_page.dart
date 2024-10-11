@@ -16,7 +16,7 @@ class SideEffectPage extends StatefulWidget {
 
 class _SideEffectPageState extends State<SideEffectPage>
     with SingleTickerProviderStateMixin {
-  late RecallController controller;
+  late SideEffectRecallController controller;
   late TabController _tabController;
   bool _isTabControllerInitialized = false;
   int _previousIndex = 0; // 이전 탭 인덱스 추적
@@ -26,7 +26,7 @@ class _SideEffectPageState extends State<SideEffectPage>
   void initState() {
     super.initState();
 
-    controller = Provider.of<RecallController>(context, listen: false);
+    controller = Provider.of<SideEffectRecallController>(context, listen: false);
     controller.fetchSubtypes();
 
     controller.addListener(() {
@@ -36,7 +36,7 @@ class _SideEffectPageState extends State<SideEffectPage>
     });
   }
 
-  void _initializeTabController(RecallController controller) {
+  void _initializeTabController(SideEffectRecallController controller) {
     _tabController = TabController(
       length: controller.subtypes.length,
       vsync: this,
@@ -114,7 +114,7 @@ class _SideEffectPageState extends State<SideEffectPage>
               ),
             ),
             // 컨텐츠
-            Consumer<RecallController>(
+            Consumer<SideEffectRecallController>(
               builder: (context, controller, child) {
                 if (controller.isLoading && controller.subtypes.isEmpty) {
                   return Center(child: CustomLoadingIndicator());

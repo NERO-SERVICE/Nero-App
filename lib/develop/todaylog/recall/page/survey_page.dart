@@ -26,7 +26,7 @@ class _SurveyPageState extends State<SurveyPage>
   void initState() {
     super.initState();
 
-    final controller = Provider.of<RecallController>(context, listen: false);
+    final controller = Provider.of<SurveyRecallController>(context, listen: false);
     controller.fetchSubtypes();
 
     controller.addListener(() {
@@ -36,7 +36,7 @@ class _SurveyPageState extends State<SurveyPage>
     });
   }
 
-  void _initializeTabController(RecallController controller) {
+  void _initializeTabController(SurveyRecallController controller) {
     _tabController = TabController(
       length: controller.subtypes.length,
       vsync: this,
@@ -121,7 +121,7 @@ class _SurveyPageState extends State<SurveyPage>
               ),
             ),
             // 컨텐츠
-            Consumer<RecallController>(
+            Consumer<SurveyRecallController>(
               builder: (context, controller, child) {
                 if (controller.isLoading && controller.subtypes.isEmpty) {
                   return Center(child: CustomLoadingIndicator());
@@ -263,7 +263,7 @@ class _SurveyPageState extends State<SurveyPage>
 
   Widget _buildAnswerChoices(
       BuildContext context, {
-        required RecallController controller,
+        required SurveyRecallController controller,
         required int index,
         required Question question,
       }) {

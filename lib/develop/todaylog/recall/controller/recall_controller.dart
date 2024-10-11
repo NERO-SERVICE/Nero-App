@@ -174,3 +174,11 @@ class RecallController with ChangeNotifier {
     }
   }
 }
+
+class SideEffectRecallController extends RecallController {
+  SideEffectRecallController() : super(type: 'side_effect');
+}
+
+class SurveyRecallController extends RecallController {
+  SurveyRecallController() : super(type: 'survey');
+}

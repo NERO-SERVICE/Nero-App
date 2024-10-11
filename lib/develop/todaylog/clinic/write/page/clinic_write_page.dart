@@ -160,8 +160,10 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
               child: CustomSubmitButton(
                 onPressed: () async {
                   await _submitForm();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('진료 기록이 제출되었습니다.')),
+                  CustomSnackbar.show(
+                    context: context,
+                    message: '진료 기록이 제출되었습니다.',
+                    isSuccess: true,
                   );
                 },
                 text: '제출하기',
