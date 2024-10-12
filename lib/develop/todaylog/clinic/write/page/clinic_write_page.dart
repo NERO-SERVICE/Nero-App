@@ -56,23 +56,27 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
     final selectedDate = await showModalBottomSheet<DateTime>(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true, // 모달의 크기를 유연하게 조정하기 위함
       builder: (BuildContext context) {
         return ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              padding: EdgeInsets.all(16),
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: CalendarWidget(
-                initialSelectedDate: date.value,
-                initialFocusedDate: date.value,
+              padding: const EdgeInsets.all(16),
+              color: Colors.black.withOpacity(0.3),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // 내부 내용에 따라 크기를 자동으로 조절
+                children: [
+                  CalendarWidget(
+                    initialSelectedDate: date.value,
+                    initialFocusedDate: date.value,
+                  ),
+                  SizedBox(height: 16), // 원하는 만큼의 하단 여백 설정
+                ],
               ),
             ),
           ),
@@ -84,6 +88,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       date.value = selectedDate;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

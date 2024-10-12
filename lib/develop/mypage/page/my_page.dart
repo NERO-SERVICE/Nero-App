@@ -49,8 +49,7 @@ class _MyPage extends State<MyPage> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              padding: EdgeInsets.all(16),
-              height: 400,
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.3),
                 borderRadius: BorderRadius.only(
@@ -58,10 +57,16 @@ class _MyPage extends State<MyPage> {
                   topRight: Radius.circular(16),
                 ),
               ),
-              child: CalendarWidget(
-                initialSelectedDate: initialDate,
-                initialFocusedDate: initialDate,
-                markedDates: recordedDates,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CalendarWidget(
+                    initialSelectedDate: initialDate,
+                    initialFocusedDate: initialDate,
+                    markedDates: recordedDates,
+                  ),
+                  SizedBox(height: 16),
+                ],
               ),
             ),
           ),
@@ -70,6 +75,9 @@ class _MyPage extends State<MyPage> {
     );
     return selectedDate;
   }
+
+
+
 
   Widget _mypageTitle({required String title, required String content}) {
     return Padding(
