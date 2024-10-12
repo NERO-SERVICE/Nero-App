@@ -465,7 +465,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Stack(
-                  children:
+                  children: [
                     Container(
                       child: Obx(() {
                         int currentIndex = _currentPage.value % notifications.length;
@@ -524,7 +524,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     // PageView
                     Column(
                       children: [
-                        SizedBox(height: kToolbarHeight + 56),
+                        SizedBox(height: kToolbarHeight + 80),
                         Container(
                           height: 300,
                           child: PageView.builder(

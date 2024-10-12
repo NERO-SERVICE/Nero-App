@@ -134,7 +134,7 @@ class _SurveyPageState extends State<SurveyPage>
 
                 return Column(
                   children: [
-                    SizedBox(height: kToolbarHeight + 56),
+                    SizedBox(height: kToolbarHeight + 80),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
@@ -164,13 +164,14 @@ class _SurveyPageState extends State<SurveyPage>
                           unselectedLabelColor: Color(0xffD9D9D9),
                           tabs: controller.subtypes.map((subtype) {
                             final isCompleted = subtype.isCompleted;
-                            return Tab(
-                              child: Text(
-                                subtype.subtypeName,
-                                style: TextStyle(
-                                  color: isCompleted
-                                      ? Color(0xff3C3C3C)
-                                      : Colors.white,
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+                              child: Tab(
+                                child: Text(
+                                  subtype.subtypeName,
+                                  style: TextStyle(
+                                    color: isCompleted ? Color(0xff3C3C3C) : Colors.white,
+                                  ),
                                 ),
                               ),
                             );

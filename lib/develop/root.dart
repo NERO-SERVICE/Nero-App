@@ -43,7 +43,7 @@ class Root extends GetView<BottomNavController> {
           children: [
             _divider,
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 8, bottom: 24, left: 24, right: 24),
               child: Obx(
                 () => GNav(
                   gap: 12,

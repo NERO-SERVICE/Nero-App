@@ -58,7 +58,7 @@ class SelfRecordPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(height: kToolbarHeight + 56),
+                                SizedBox(height: kToolbarHeight + 80),
                                 Text(
                                   '아직 적지 못한 당신의 이야기를\n자유롭게 적어주세요',
                                   style: TextStyle(
@@ -162,7 +162,7 @@ class SelfRecordPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
                     child: Row(
                       children: [
                         Expanded(

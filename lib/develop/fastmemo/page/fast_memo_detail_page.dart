@@ -98,7 +98,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               children: [
                 Expanded(child: _memoList()),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
                   child: Row(
                     children: [
                       Expanded(
