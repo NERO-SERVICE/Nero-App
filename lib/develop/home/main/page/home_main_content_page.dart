@@ -465,7 +465,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Stack(
-                  children: [
+                  children:
                     Container(
                       child: Obx(() {
                         int currentIndex = _currentPage.value % notifications.length;

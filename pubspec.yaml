@@ -94,10 +94,11 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-flutter_icons:
+flutter_launcher_icons:
   ios: true
   android: true
   image_path: "assets/launcher/nero-icon.png"
+  remove_alpha_ios: true
 
 # The following section is specific to Flutter packages.
 flutter:
