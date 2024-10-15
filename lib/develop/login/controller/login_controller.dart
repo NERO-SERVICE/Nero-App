@@ -66,14 +66,22 @@ class LoginController extends GetxController {
             AppleIDAuthorizationScopes.fullName,
           ],
           webAuthenticationOptions: WebAuthenticationOptions(
-            clientId: 'com.nerocompany.nero.service', // 여기에 애플에서 제공된 Client ID 입력
+            clientId: 'com.nerocompany.nero',
             redirectUri: Uri.parse('https://www.neromakebrain.site/api/v1/accounts/auth/apple/callback/'),
           ),
         );
-        await authenticationRepository.signUpWithApple(appleCredential);
+
+        final signUpResponse = await authenticationRepository.signUpWithApple(appleCredential);
+        final bool needsSignup = signUpResponse['needsSignup'] ?? false;
+
+        if (needsSignup) {
+          Get.offAllNamed('/signup');  // Redirect to signup if needed
+        } else {
+          Get.offAllNamed('/home');    // Redirect to home if already registered
+        }
       } catch (e) {
         print('Apple 로그인 실패: $e');
-        await authenticationRepository.logout();
+        Get.offAllNamed('/login');  // Redirect to login page on failure
       }
     }
   }

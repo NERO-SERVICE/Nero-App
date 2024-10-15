@@ -51,18 +51,15 @@
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
 				<key>CFBundleURLName</key>
-				<string>com.example.nero_client</string>
+				<string>com.nerocompany.nero</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
+				    <string>com.nerocompany.nero.service</string>
 					<string>kakaoe3da93b3ceaab701f6b768dc3268743b</string>
 					<string>com.googleusercontent.apps.11058933581-1sq7hhc96pvf63ksovv4h7rrbuuhodfh</string>
 				</array>
 			</dict>
 		</array>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>상품 이미지를 제공할 목적으로 사진첩에 접근이 필요합니다.</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>사용자의 현재 위치를 기반으로 장소정보를 제공하기 위해 필요한 권한입니다.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

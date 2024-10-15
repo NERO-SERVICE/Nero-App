@@ -112,19 +112,21 @@ class AuthenticationRepository extends GetxService {
   }
 
   Future<Map<String, dynamic>> signUpWithApple(AuthorizationCredentialAppleID? appleCredential) async {
-    // appleCredential이 null일 때는 서버에서 token 갱신을 처리하도록 할 수 있습니다.
     if (appleCredential == null) {
       throw Exception('Apple Credential is null');
     }
 
     final response = await http.post(
-      Uri.parse('${baseUrl}/accounts/auth/apple/'),
+      Uri.parse('${baseUrl}/accounts/auth/apple/callback/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'identityToken': appleCredential.identityToken,
         'authorizationCode': appleCredential.authorizationCode,
       }),
     );
+
+    print("identityToken: ${appleCredential.identityToken}");
+    print("authorizationCode: ${appleCredential.authorizationCode}");
 
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
