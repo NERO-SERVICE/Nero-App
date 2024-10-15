@@ -125,9 +125,6 @@ class AuthenticationRepository extends GetxService {
       }),
     );
 
-    print("identityToken: ${appleCredential.identityToken}");
-    print("authorizationCode: ${appleCredential.authorizationCode}");
-
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       final refreshToken = parsed['tokens']['refreshToken'];
