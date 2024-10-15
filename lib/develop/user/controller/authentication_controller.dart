@@ -6,6 +6,7 @@ import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthenticationController extends GetxController {
   final AuthenticationRepository kakaoAuthRepo;
@@ -133,6 +134,31 @@ class AuthenticationController extends GetxController {
         Get.offNamed('/home');
       }
     } catch (e) {
+      Get.offNamed('/login');
+    }
+  }
+
+  Future<void> handleAppleLogin() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // 애플 로그인에 성공한 경우 토큰을 서버로 보내어 인증 처리
+      final signUpResponse = await kakaoAuthRepo.signUpWithApple(appleCredential);
+
+      bool needsSignup = signUpResponse['needsSignup'] ?? false;
+
+      if (needsSignup) {
+        Get.offNamed('/signup');
+      } else {
+        Get.offNamed('/home');
+      }
+    } catch (e) {
+      print('Apple 로그인 실패: $e');
       Get.offNamed('/login');
     }
   }

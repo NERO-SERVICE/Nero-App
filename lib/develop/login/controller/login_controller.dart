@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../user/controller/authentication_controller.dart';
 
 class LoginController extends GetxController {
@@ -49,6 +50,29 @@ class LoginController extends GetxController {
       try {
         await authenticationRepository.signUpWithKakao();
       } catch (e) {
+        await authenticationRepository.logout();
+      }
+    }
+  }
+
+  void appleLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? accessToken = prefs.getString('accessToken');
+    if (accessToken == null) {
+      try {
+        final appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ],
+          webAuthenticationOptions: WebAuthenticationOptions(
+            clientId: 'com.nerocompany.nero.service', // 여기에 애플에서 제공된 Client ID 입력
+            redirectUri: Uri.parse('https://www.neromakebrain.site/api/v1/accounts/auth/apple/callback/'),
+          ),
+        );
+        await authenticationRepository.signUpWithApple(appleCredential);
+      } catch (e) {
+        print('Apple 로그인 실패: $e');
         await authenticationRepository.logout();
       }
     }

@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nero_app/develop/common/components/app_font.dart';
 import 'package:nero_app/develop/common/components/btn.dart';
 import 'package:nero_app/develop/login/controller/login_controller.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -106,6 +107,11 @@ class LoginPage extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+          ),
+          SignInWithAppleButton(
+            onPressed: () => Get.find<LoginController>().appleLogin(), // 애플 로그인 메소드 호출
+            style: SignInWithAppleButtonStyle.white,
+            borderRadius: BorderRadius.circular(12),
           ),
         ],
       ),
