@@ -60,8 +60,6 @@
 				</array>
 			</dict>
 		</array>
-		<key>NSPrincipalClass</key>
-        <string>UIResponder</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>
