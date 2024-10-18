@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
           size: 20,
         ),
         const SizedBox(
-          height: 40,
+          height: 30,
         ),
         AppFont(
           'ADHD를 위한\n토탈 케어 플랫폼',
@@ -56,7 +56,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
             child: AppFont(
               '회원가입/로그인',
               color: Colors.white,

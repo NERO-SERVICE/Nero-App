@@ -235,6 +235,7 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
                       ),
                       const SizedBox(height: 16),
                       TextField(
+                        cursorColor: Color(0xffD9D9D9),
                         controller: _textController,
                         style: TextStyle(
                           fontSize: 14,

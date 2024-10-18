@@ -76,9 +76,6 @@ class _MyPage extends State<MyPage> {
     return selectedDate;
   }
 
-
-
-
   Widget _mypageTitle({required String title, required String content}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -287,6 +284,7 @@ class _MyPage extends State<MyPage> {
                       ),
                       const SizedBox(height: 16),
                       TextField(
+                        cursorColor: Color(0xffD9D9D9),
                         controller: _textController,
                         style: TextStyle(
                           fontSize: 14,
@@ -385,6 +383,39 @@ class _MyPage extends State<MyPage> {
     );
   }
 
+  Widget _mypageUserInfo() {
+    return Obx(() {
+      final nickname = _monthlyCheckController.userInfo.value.nickname;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "안녕하세요",
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              "${nickname} 님",
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     analytics.logScreenView(
@@ -399,6 +430,8 @@ class _MyPage extends State<MyPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: kToolbarHeight + 80),
+            _mypageUserInfo(),
+            SizedBox(height: 40),
             _myMemoriesButton(),
             SizedBox(height: 40),
             CustomDivider(),

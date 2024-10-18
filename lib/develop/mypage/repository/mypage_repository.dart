@@ -4,6 +4,7 @@ import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 import '../../dio_service.dart';
 import '../model/menstruation_cycle.dart';
 import '../model/monthly_check.dart';
+import '../model/mypage_user_info.dart';
 
 class MypageRepository {
   final DioService _dio = Get.find<DioService>();
@@ -193,6 +194,16 @@ class MypageRepository {
     } catch (e) {
       print('Failed to fetch self-record recorded dates: $e');
       return {};
+    }
+  }
+
+  Future<MypageUserInfo?> getUserInfo() async {
+    try {
+      final response = await _dio.get('/accounts/mypage/userinfo/');
+      return MypageUserInfo.fromJson(response.data);
+    } catch (e) {
+      print('Failed to load user info: $e');
+      return null;
     }
   }
 }

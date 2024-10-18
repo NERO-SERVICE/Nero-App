@@ -138,56 +138,61 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _signUpBirth() {
-    return Focus(
-      focusNode: _focusNodeBirth,
-      child: TextField(
-        cursorColor: Color(0xffD9D9D9),
-        onChanged: (value) {
-          if (value.length == 6) {
-            controller.birth.value = value;
-          }
-        },
-        keyboardType: TextInputType.number,
-        maxLength: 6,
-        style: const TextStyle(
-          fontFamily: 'Pretendard',
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-          color: Color(0xffFFFFFF),
-        ),
-        decoration: InputDecoration(
-          hintText: '생년월일을 입력해주세요 (ex. 950101)',
-          hintStyle: const TextStyle(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Focus(
+        focusNode: _focusNodeBirth,
+        child: TextField(
+          cursorColor: Color(0xffD9D9D9),
+          onChanged: (value) {
+            if (value.length == 6) {
+              controller.birth.value = value;
+            }
+          },
+          keyboardType: TextInputType.number,
+          maxLength: 6,
+          style: const TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w400,
             fontSize: 14,
-            color: Color(0xff959595),
+            color: Color(0xffFFFFFF),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: Color(0xffD0EE17),
-              width: 1,
+          decoration: InputDecoration(
+            hintText: '생년월일을 입력해주세요 (ex. 950101)',
+            hintStyle: const TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Color(0xff959595),
             ),
-          ),
-          filled: true,
-          fillColor: _focusNodeBirth.hasFocus
-              ? const Color(0xffD0EE17).withOpacity(0.1)
-              : const Color(0xff3B3B3B),
-          contentPadding: const EdgeInsets.all(20),
-          counterStyle: TextStyle( // maxLength 스타일
-            fontSize: 12,
-            color: Color(0xffD9D9D9).withOpacity(0.3),
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w400,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: Color(0xffD0EE17),
+                width: 1,
+              ),
+            ),
+            filled: true,
+            fillColor: _focusNodeBirth.hasFocus
+                ? const Color(0xffD0EE17).withOpacity(0.1)
+                : const Color(0xff3B3B3B),
+            contentPadding: const EdgeInsets.all(20),
+            counterStyle: TextStyle( // maxLength 스타일
+              fontSize: 12,
+              color: Color(0xffD9D9D9).withOpacity(0.3),
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
       ),
@@ -397,11 +402,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   _signUpNickName(),
                   const SizedBox(height: 16),
+                  _sexDropdown(),
+                  const SizedBox(height: 16),
                   _signUpEmail(),
                   const SizedBox(height: 16),
                   _signUpBirth(),
-                  const SizedBox(height: 16),
-                  _sexDropdown(),
                 ],
               ),
             ),
