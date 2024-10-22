@@ -391,50 +391,60 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 50),
-              Center(
-                child: SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Image.asset('assets/develop/3d-bell-icon.png'),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            reverse: true,
+            // Ensure that the view scrolls up when the keyboard appears
+            padding: EdgeInsets.only(
+              bottom: MediaQuery
+                  .of(context)
+                  .viewInsets
+                  .bottom, // Adds space for the keyboard
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 50),
+                Center(
+                  child: SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: Image.asset('assets/develop/3d-bell-icon.png'),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  children: [
-                    _signUpNickName(),
-                    const SizedBox(height: 16),
-                    _sexDropdown(),
-                    const SizedBox(height: 16),
-                    _signUpEmail(),
-                    const SizedBox(height: 16),
-                    _signUpBirth(),
-                  ],
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    children: [
+                      _signUpNickName(),
+                      const SizedBox(height: 16),
+                      _sexDropdown(),
+                      const SizedBox(height: 16),
+                      _signUpEmail(),
+                      const SizedBox(height: 16),
+                      _signUpBirth(),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 60),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: _nextButton(),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: _registerButton(),
-                    ),
-                  ],
+                const SizedBox(height: 60),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: _nextButton(),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: _registerButton(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
