@@ -57,7 +57,7 @@ class _SettingPolicyWebviewState extends State<SettingPolicyWebview> {
         },
       )
       ..loadRequest(Uri.parse(
-          'https://lavish-flower-814.notion.site/Nero-821c0b5c2bb7428096ca6d4f10728297')); // www.naver.com으로 변경
+          'https://lavish-flower-814.notion.site/8905c3179c664d8f848a6bcc85419f1d'));
   }
 
   @override
