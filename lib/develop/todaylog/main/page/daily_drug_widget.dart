@@ -219,7 +219,7 @@ class DrugListWidget extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
-                          drug.myDrugArchive.drugName,
+                          '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg',
                           style: TextStyle(
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w500,

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
+import 'package:nero_app/develop/mypage/model/mypage_user_info.dart';
 import 'package:nero_app/develop/mypage/repository/mypage_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/model/response_subtype.dart';
 
@@ -16,11 +17,33 @@ class MypageController extends GetxController {
   var sideEffectResponses = <ResponseSubtype>[].obs;
   var selfRecordResponses = <SelfRecord>[].obs;
   var menstruationCycles = <MenstruationCycle>[].obs;
+  var userInfo = MypageUserInfo(nickname: '').obs;
 
   Map<String, MonthlyCheck> monthlyCheckCache = {};
   var surveyRecordedDates = <DateTime>{}.obs;
   var sideEffectRecordedDates = <DateTime>{}.obs;
   var selfRecordRecordedDates = <DateTime>{}.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserInfo();
+  }
+
+  void fetchUserInfo() async {
+    try {
+      final fetchedUserInfo = await _mypageRepository.getUserInfo();
+      if (fetchedUserInfo != null) {
+        userInfo.value = fetchedUserInfo;
+        print("User info fetched: ${fetchedUserInfo.nickname}");
+      } else {
+        print("User info is null");
+      }
+    } catch (e) {
+      print("Error fetching user info: $e");
+    }
+  }
+
 
   void fetchYearlyChecks(int year) async {
     try {

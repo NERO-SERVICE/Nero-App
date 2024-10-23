@@ -7,6 +7,7 @@ import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/user/exceptions/user_not_found_exception.dart';
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthenticationRepository extends GetxService {
   String baseUrl = "https://www.neromakebrain.site/api/v1";
@@ -100,7 +101,7 @@ class AuthenticationRepository extends GetxService {
       User kakaoUser = await UserApi.instance.me();
 
       var kakaoAccessToken = token.accessToken;
-      final signUpResponse = await signUp(kakaoAccessToken);
+      final signUpResponse = await signUpWithKakaoServer(kakaoAccessToken);
 
       return signUpResponse;
     } catch (e) {
@@ -110,8 +111,46 @@ class AuthenticationRepository extends GetxService {
     }
   }
 
+  Future<Map<String, dynamic>> signUpWithApple(AuthorizationCredentialAppleID? appleCredential) async {
+    if (appleCredential == null) {
+      throw Exception('Apple Credential is null');
+    }
 
-  Future<Map<String, dynamic>> signUp(String kakaoAccessToken) async {
+    final response = await http.post(
+      Uri.parse('${baseUrl}/accounts/auth/apple/callback/'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'identityToken': appleCredential.identityToken,
+        'authorizationCode': appleCredential.authorizationCode,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      final refreshToken = parsed['tokens']['refreshToken'];
+      final accessToken = parsed['tokens']['accessToken'];
+      final needsSignup = parsed['needsSignup'] ?? false;
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('refreshToken', refreshToken);
+      await prefs.setString('accessToken', accessToken);
+      await prefs.setBool('needsSignup', needsSignup);
+
+      // 로그인 후 즉시 토큰 반영
+      await dioService.saveTokens(accessToken, refreshToken);
+
+      return {
+        'refreshToken': refreshToken,
+        'accessToken': accessToken,
+        'needsSignup': needsSignup,
+      };
+    } else {
+      String responseBody = utf8.decode(response.bodyBytes);
+      throw Exception('Apple 인증 실패: $responseBody');
+    }
+  }
+
+  Future<Map<String, dynamic>> signUpWithKakaoServer(String kakaoAccessToken) async {
     final response = await http.post(
       Uri.parse('${baseUrl}/accounts/auth/kakao/'),
       headers: {'Content-Type': 'application/json'},

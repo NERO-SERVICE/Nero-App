@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nero_app/develop/common/components/app_font.dart';
 import 'package:nero_app/develop/common/components/btn.dart';
 import 'package:nero_app/develop/login/controller/login_controller.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -32,7 +33,7 @@ class LoginPage extends StatelessWidget {
           size: 20,
         ),
         const SizedBox(
-          height: 40,
+          height: 30,
         ),
         AppFont(
           'ADHD를 위한\n토탈 케어 플랫폼',
@@ -55,7 +56,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
             child: AppFont(
               '회원가입/로그인',
               color: Colors.white,
@@ -96,6 +97,37 @@ class LoginPage extends StatelessWidget {
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
                         color: Color(0xff000000),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Btn(
+            color: Colors.white,
+            onTap: () => Get.find<LoginController>().appleLogin(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: SvgPicture.asset('assets/images/apple.svg'),
+                ),
+                Expanded(
+                  child: Center(
+                    child: const Text(
+                      'Apple 로그인',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
                         fontSize: 16,
                       ),
                     ),

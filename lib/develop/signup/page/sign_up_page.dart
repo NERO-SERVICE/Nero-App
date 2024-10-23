@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/layout/common_layout.dart';
@@ -138,56 +139,64 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _signUpBirth() {
-    return Focus(
-      focusNode: _focusNodeBirth,
-      child: TextField(
-        cursorColor: Color(0xffD9D9D9),
-        onChanged: (value) {
-          if (value.length == 6) {
-            controller.birth.value = value;
-          }
-        },
-        keyboardType: TextInputType.number,
-        maxLength: 6,
-        style: const TextStyle(
-          fontFamily: 'Pretendard',
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-          color: Color(0xffFFFFFF),
-        ),
-        decoration: InputDecoration(
-          hintText: '생년월일을 입력해주세요 (ex. 950101)',
-          hintStyle: const TextStyle(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 키보드 닫기
+      },
+      child: Focus(
+        focusNode: _focusNodeBirth,
+        child: TextField(
+          cursorColor: Color(0xffD9D9D9),
+          onChanged: (value) {
+            if (value.length == 6) {
+              controller.birth.value = value;
+            }
+          },
+          keyboardType: TextInputType.text, // 텍스트 키보드로 설정
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly, // 숫자만 허용
+          ],
+          maxLength: 6, // 최대 6자리 숫자 입력
+          style: const TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w400,
             fontSize: 14,
-            color: Color(0xff959595),
+            color: Color(0xffFFFFFF),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: Color(0xffD0EE17),
-              width: 1,
+          decoration: InputDecoration(
+            hintText: '생년월일을 입력해주세요 (ex. 950101)',
+            hintStyle: const TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Color(0xff959595),
             ),
-          ),
-          filled: true,
-          fillColor: _focusNodeBirth.hasFocus
-              ? const Color(0xffD0EE17).withOpacity(0.1)
-              : const Color(0xff3B3B3B),
-          contentPadding: const EdgeInsets.all(20),
-          counterStyle: TextStyle( // maxLength 스타일
-            fontSize: 12,
-            color: Color(0xffD9D9D9).withOpacity(0.3),
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w400,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: Color(0xffD0EE17),
+                width: 1,
+              ),
+            ),
+            filled: true,
+            fillColor: _focusNodeBirth.hasFocus
+                ? const Color(0xffD0EE17).withOpacity(0.1)
+                : const Color(0xff3B3B3B),
+            contentPadding: const EdgeInsets.all(20),
+            counterStyle: TextStyle(
+              fontSize: 12,
+              color: Color(0xffD9D9D9).withOpacity(0.3),
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
       ),
@@ -353,75 +362,90 @@ class _SignUpPageState extends State<SignUpPage> {
       screenName: 'SignUpPage',
       screenClass: 'SignUpPage',
     );
-    return CommonLayout(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: Container(
-              color: Colors.transparent,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: CommonLayout(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: Container(
+                color: Colors.transparent,
+              ),
             ),
           ),
-        ),
-        title: const Text(
-          '프로필 설정',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Color(0xffFFFFFF),
+          title: const Text(
+            '프로필 설정',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              color: Color(0xffFFFFFF),
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 50),
-            Center(
-              child: SizedBox(
-                width: 150,
-                height: 150,
-                child: Image.asset('assets/develop/3d-bell-icon.png'),
-              ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            reverse: true,
+            // Ensure that the view scrolls up when the keyboard appears
+            padding: EdgeInsets.only(
+              bottom: MediaQuery
+                  .of(context)
+                  .viewInsets
+                  .bottom, // Adds space for the keyboard
             ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                children: [
-                  _signUpNickName(),
-                  const SizedBox(height: 16),
-                  _signUpEmail(),
-                  const SizedBox(height: 16),
-                  _signUpBirth(),
-                  const SizedBox(height: 16),
-                  _sexDropdown(),
-                ],
-              ),
-            ),
-            const SizedBox(height: 60),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: _nextButton(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 50),
+                Center(
+                  child: SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: Image.asset('assets/develop/3d-bell-icon.png'),
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: _registerButton(),
+                ),
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    children: [
+                      _signUpNickName(),
+                      const SizedBox(height: 16),
+                      _sexDropdown(),
+                      const SizedBox(height: 16),
+                      _signUpEmail(),
+                      const SizedBox(height: 16),
+                      _signUpBirth(),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 60),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: _nextButton(),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: _registerButton(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

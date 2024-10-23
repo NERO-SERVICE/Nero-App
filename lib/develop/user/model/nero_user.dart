@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 class NeroUser extends Equatable {
   final int? userId;
   final int? kakaoId;
+  final int? appleId;
   final DateTime? createdAt;
   final String? nickname;
   final String? email;
@@ -13,6 +14,7 @@ class NeroUser extends Equatable {
   NeroUser({
     this.userId,
     this.kakaoId,
+    this.appleId,
     this.createdAt,
     this.nickname,
     this.email,
@@ -24,6 +26,7 @@ class NeroUser extends Equatable {
   NeroUser.empty()
       : userId = 1,
         kakaoId = 1,
+        appleId = null,
         createdAt = DateTime.now(),
         nickname = null,
         email = null,
@@ -36,6 +39,7 @@ class NeroUser extends Equatable {
 
     int? parsedUserId;
     int? parsedKakaoId;
+    int? parsedAppleId;
 
     if (json['userId'] != null) {
       if (json['userId'] is int) {
@@ -53,9 +57,18 @@ class NeroUser extends Equatable {
       }
     }
 
+    if (json['appleId'] != null) {
+      if (json['appleId'] is int) {
+        parsedAppleId = json['appleId'];
+      } else if (json['appleId'] is String) {
+        parsedAppleId = int.tryParse(json['appleId']);
+      }
+    }
+
     return NeroUser(
       userId: parsedUserId ?? 1,
       kakaoId: parsedKakaoId ?? 1,
+      appleId: parsedAppleId ?? 1,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'].toString())
           : null,
@@ -84,6 +97,7 @@ class NeroUser extends Equatable {
   NeroUser copyWith({
     int? userId,
     int? kakaoId,
+    int? appleId,
     DateTime? createdAt,
     String? nickname,
     String? email,
@@ -94,6 +108,7 @@ class NeroUser extends Equatable {
     return NeroUser(
       userId: userId ?? this.userId,
       kakaoId: kakaoId ?? this.kakaoId,
+      appleId: appleId ?? this.appleId,
       createdAt: createdAt ?? this.createdAt,
       nickname: nickname ?? this.nickname,
       email: email ?? this.email,
@@ -107,6 +122,7 @@ class NeroUser extends Equatable {
   List<Object?> get props => [
     userId,
     kakaoId,
+    appleId,
     createdAt,
     nickname,
     email,
