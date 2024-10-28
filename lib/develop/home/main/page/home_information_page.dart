@@ -2,17 +2,16 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
-import 'package:nero_app/develop/home/information/model/information.dart';
+import 'package:nero_app/develop/home/information/controller/information_controller.dart';
 import 'package:nero_app/develop/home/information/page/information_detail_page.dart';
 import 'package:nero_app/develop/home/information/page/information_list_page.dart';
 
 class HomeInformationPage extends StatelessWidget {
-  final Future<List<Information>> latestInformationFuture;
+  final InformationController _informationController = Get.find<InformationController>();
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   HomeInformationPage({
     Key? key,
-    required this.latestInformationFuture,
   }) : super(key: key);
 
   String _shortenTitle(String title) {
@@ -29,6 +28,9 @@ class HomeInformationPage extends StatelessWidget {
       screenName: 'HomeInformationPage',
       screenClass: 'HomeInformationPage',
     );
+
+    _informationController.fetchInformations();
+
     return Column(
       children: [
         Row(
@@ -52,7 +54,8 @@ class HomeInformationPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InformationListPage()),
+                    MaterialPageRoute(
+                        builder: (context) => InformationListPage()),
                   );
                 },
                 child: Text(
@@ -68,45 +71,42 @@ class HomeInformationPage extends StatelessWidget {
             ),
           ],
         ),
-        FutureBuilder<List<Information>>(
-          future: latestInformationFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CustomLoadingIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Failed to load informations'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No news available'));
-            } else {
-              return ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final information = snapshot.data![index];
-                  return GestureDetector(
-                    onTap: () {
-                      Get.to(() => InformationDetailPage(), arguments: information);
-                    },
-                    child: Container(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 7.0, horizontal: 32.0),
-                      child: Text(
-                        _shortenTitle(information.title),
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xffD9D9D9),
-                        ),
+        Obx(() {
+          if (_informationController.isLoading.value) {
+            return Center(child: CustomLoadingIndicator());
+          } else if (_informationController.informations.isEmpty) {
+            return Center(child: Text('No news available'));
+          } else {
+            return ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _informationController.informations.length,
+              itemBuilder: (context, index) {
+                final information = _informationController.informations[index];
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => InformationDetailPage(),
+                        arguments: information);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 7.0, horizontal: 32.0),
+                    child: Text(
+                      _shortenTitle(information.title),
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        color: Color(0xffD9D9D9),
                       ),
                     ),
-                  );
-                },
-              );
-            }
-          },
+                  ),
+                );
+              },
+            );
+          }
+        },
         ),
       ],
     );

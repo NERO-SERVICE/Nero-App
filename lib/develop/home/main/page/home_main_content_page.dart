@@ -28,7 +28,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
       Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.6, initialPage: 1000);
-  final InformationRepository _informationRepository = InformationRepository();
+  final InformationRepository _informationRepository = Get.find<InformationRepository>();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
@@ -558,8 +558,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ],
                 ),
-                HomeInformationPage(
-                    latestInformationFuture: _latestInformationsFuture),
+                HomeInformationPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),
                 const SizedBox(height: 30),
