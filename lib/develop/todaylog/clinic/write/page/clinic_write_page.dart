@@ -521,7 +521,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
               return Row(
                 children: [
                   const AppFont(
-                    '선택하기',
+                    '추가하기',
                     size: 13,
                     color: Color(0xffD0EE17),
                   ),
