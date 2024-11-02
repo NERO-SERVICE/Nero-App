@@ -19,6 +19,7 @@ import 'package:nero_app/develop/user/controller/authentication_controller.dart'
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
+import 'develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +146,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(BottomNavController());
         Get.put(ClinicRepository());
         Get.put(FastmemoRepository());
+        Get.put(InformationRepository());
+        Get.put(InformationController());
       }),
       getPages: [
         GetPage(

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
+import 'dart:async';
 import 'package:nero_app/develop/user/controller/authentication_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,6 +8,8 @@ class DioService {
   late dio.Dio _dio;
   String _accessToken = '';
   String _refreshToken = '';
+
+  final Completer<void> _tokenInitializationCompleter = Completer<void>();
 
   DioService() {
     dio.BaseOptions options = dio.BaseOptions(
@@ -24,17 +27,40 @@ class DioService {
   }
 
   Future<void> _initializeTokens() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _accessToken = prefs.getString('accessToken') ?? '';
-    _refreshToken = prefs.getString('refreshToken') ?? '';
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _accessToken = prefs.getString('accessToken') ?? '';
+      _refreshToken = prefs.getString('refreshToken') ?? '';
+    } catch (e) {
+      print('토큰 초기화 중 오류 발생: $e');
+    } finally {
+      // 토큰 초기화 완료 알림
+      if (!_tokenInitializationCompleter.isCompleted) {
+        _tokenInitializationCompleter.complete();
+      }
+    }
   }
 
   void _initializeInterceptors() {
     _dio.interceptors.add(dio.InterceptorsWrapper(
       onRequest: (dio.RequestOptions options,
           dio.RequestInterceptorHandler handler) async {
+        // 토큰 초기화 완료될 때까지 대기
+        if (!_tokenInitializationCompleter.isCompleted) {
+          await _tokenInitializationCompleter.future;
+        }
+        
         if (_accessToken.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $_accessToken';
+        } else {
+          // 액세스 토큰이 없을 경우 예외 처리
+          return handler.reject(
+            dio.DioException(
+              requestOptions: options,
+              error: '액세스 토큰이 없습니다.',
+              type: dio.DioExceptionType.cancel,
+            ),
+          );
         }
         return handler.next(options);
       },
@@ -43,6 +69,15 @@ class DioService {
         return handler.next(response);
       },
       onError: (dio.DioException e, dio.ErrorInterceptorHandler handler) async {
+        // 토큰 초기화 완료될 때까지 대기
+        if (!_tokenInitializationCompleter.isCompleted) {
+          await _tokenInitializationCompleter.future;
+        }
+
+        if (e.requestOptions.extra['refreshTokenRequest'] == true) {
+          return handler.next(e);
+        }
+
         if (e.response?.statusCode == 401 && _refreshToken.isNotEmpty) {
           dio.RequestOptions options = e.requestOptions;
           int retryCount = options.extra["retryCount"] ?? 0;
@@ -70,6 +105,7 @@ class DioService {
             }
           } else {
             Get.find<AuthenticationController>().logout();
+            return handler.reject(e);
           }
         }
         return handler.next(e);
@@ -86,17 +122,26 @@ class DioService {
         throw Exception('리프레시 토큰이 없습니다.');
       }
 
-      final response = await _dio.post('/accounts/auth/token/refresh/', data: {
-        'refresh': refreshToken,
-      });
+      final response = await _dio.post(
+        '/accounts/auth/token/refresh/',
+        data: {'refresh': refreshToken},
+        options: dio.Options(
+          extra: {'refreshTokenRequest': true},
+        ),
+      );
+
 
       if (response.statusCode == 200) {
         _accessToken = response.data['access'];
+        _refreshToken = response.data['refresh'] ?? _refreshToken;
         prefs.setString('accessToken', _accessToken);
+        prefs.setString('refreshToken', _refreshToken);
       } else {
+        await clearDrfTokens();
         throw Exception('토큰 갱신 실패');
       }
     } catch (e) {
+      await clearDrfTokens();
       throw Exception('토큰 갱신 실패');
     }
   }
@@ -122,6 +167,8 @@ class DioService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
+    _accessToken = '';
+    _refreshToken = '';
   }
 
   Future<dio.Response<dynamic>> postFormData(String url,
