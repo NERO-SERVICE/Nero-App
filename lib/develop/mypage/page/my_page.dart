@@ -9,6 +9,7 @@ import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/mypage/page/mypage_memories_page.dart';
 import 'package:nero_app/develop/mypage/page/mypage_menstruation_page.dart';
 import 'package:nero_app/develop/mypage/page/mypage_yearly_log_page.dart';
+import 'package:nero_app/develop/mypage/page/user_profile_update_page.dart';
 import 'package:nero_app/develop/mypage/page/user_self_record_page.dart';
 import 'package:nero_app/develop/mypage/page/user_side_effect_log_page.dart';
 import 'package:nero_app/develop/mypage/page/user_survey_log_page.dart';
@@ -388,28 +389,62 @@ class _MyPage extends State<MyPage> {
       final nickname = _monthlyCheckController.userInfo.value.nickname;
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "안녕하세요",
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: Colors.white,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "안녕하세요",
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "${nickname} 님",
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () async {
+                await Get.to(() => UserProfileUpdatePage());
+                _monthlyCheckController.fetchUserInfo(); // 돌아온 후 데이터 새로고침
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Color(0xffD9D9D9).withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Color(0xffD9D9D9),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    '프로필 설정',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xffFFFFFF),
+                    ),
+                  ),
+                ),
               ),
             ),
-            Text(
-              "${nickname} 님",
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
-          ],
+          ]
         ),
       );
     });
