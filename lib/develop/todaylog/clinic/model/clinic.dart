@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'drug.dart';
-import 'drug_archive.dart';
-import 'my_drug_archive.dart';
 
 class Clinic extends Equatable {
   final int clinicId;
@@ -11,7 +9,7 @@ class Clinic extends Equatable {
   final DateTime nextDay;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String? description;
+  late final String? description;
   final List<Drug> drugs;
 
   Clinic({

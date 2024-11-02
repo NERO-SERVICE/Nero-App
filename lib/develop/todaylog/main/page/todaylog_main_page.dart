@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/todaylog/clinic/page/clinic_detail_page.dart';
 import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
 import 'package:nero_app/develop/todaylog/recall/page/self_record_page.dart';
 import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
@@ -352,60 +353,63 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           final formattedDate = DateFormat('yyyy-MM-dd').format(clinicDate);
 
           return Padding(
-            padding: EdgeInsets.only(
-              right: itemSpacing,
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: containerHeight,
-                  decoration: BoxDecoration(
-                    color: Color(0xff323232),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: ClipRRect(
+            padding: EdgeInsets.only(right: itemSpacing),
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => ClinicDetailPage(clinicId: clinic.clinicId));
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: containerHeight,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        monthImage.assetPath,
-                        fit: BoxFit.cover,
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          monthImage.assetPath,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          formattedDate,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: Colors.white,
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          '진료기록',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Color(0xffD9D9D9),
+                          SizedBox(height: 15),
+                          Text(
+                            '진료기록',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
