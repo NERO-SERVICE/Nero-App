@@ -172,6 +172,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
                       child: Text(
                         '${DateFormat('yy.MM.dd').format(cycle.startDate)} - ${DateFormat('yy.MM.dd').format(cycle.endDate)}',
                         style: TextStyle(
+                          fontFamily: 'Pretendard',
                           color: Color(0xffFFFFFF),
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -239,9 +240,10 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
                   child: Text(
                     '수정하기',
                     style: TextStyle(
-                      color: Color(0xffC5C5C5),
-                      fontSize: 14,
+                      fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
                     ),
                   ),
                 ),
@@ -252,9 +254,10 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
                   child: Text(
                     '삭제하기',
                     style: TextStyle(
-                      color: Color(0xffFF5A5A).withOpacity(0.8),
+                      fontFamily: 'Pretendard',
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
+                      color: Color(0xffFF5A5A).withOpacity(0.8),
                     ),
                   ),
                 ),

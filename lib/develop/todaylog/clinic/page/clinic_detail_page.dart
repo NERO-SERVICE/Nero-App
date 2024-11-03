@@ -109,7 +109,7 @@ class ClinicDetailPage extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(0xffFF5A5A).withOpacity(0.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -117,7 +117,12 @@ class ClinicDetailPage extends StatelessWidget {
                 ),
                 child: const Text(
                   '삭제하기',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Color(0xffD9D9D9),
+                  ),
                 ),
               ),
             ),
@@ -168,7 +173,7 @@ class ClinicDetailPage extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg · ${drug.number}정 (${drug.time})',
+              '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg · ${drug.initialNumber}정 (${drug.time})',
               style: const TextStyle(color: Colors.white, fontSize: 15),
             ),
           ),

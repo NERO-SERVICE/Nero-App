@@ -517,14 +517,14 @@ class _MyPage extends State<MyPage> {
             CustomDivider(),
             SizedBox(height: 32),
             _mypageTitle(
-              title: '지난 하루기록',
-              content: '그동안 기록한 하루하루의 몸상태를\n다시 돌아볼 수 있어요',
+              title: '과거 하루기록',
+              content: '지난주에 내가 어땠더라?\n여기서 찾아보세요',
             ),
             SizedBox(height: 24),
             _buildCustomButton(
               context,
               labelTop: '하루 설문',
-              labelBottom: '오늘 하루는 어땠어요?',
+              labelBottom: '검증된 설문을 통해 내 마음을 확인해 보세요',
               onPressed: () async {
                 // Fetch the recorded dates
                 await _monthlyCheckController.fetchSurveyRecordedDates(selectedDate.value.year);
@@ -576,7 +576,7 @@ class _MyPage extends State<MyPage> {
             _buildCustomButton(
               context,
               labelTop: '셀프 기록',
-              labelBottom: '오늘 추가로 더 남기고 싶은 말이 있나요?',
+              labelBottom: '오늘 하루를 보내며 기억하고 싶은 일이 있었나요?',
               onPressed: () async {
                 // Fetch the recorded dates
                 await _monthlyCheckController.fetchSelfRecordRecordedDates(selectedDate.value.year);

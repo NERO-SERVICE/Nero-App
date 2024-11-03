@@ -153,7 +153,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '생리 시작일과 종료일을\n기록하고 관리해보세요',
+                    '생리 주기 따로 관리하기 힘드셨죠?\n복약기록과 함께 한눈에 확인해보세요',
                     style: TextStyle(
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w500,

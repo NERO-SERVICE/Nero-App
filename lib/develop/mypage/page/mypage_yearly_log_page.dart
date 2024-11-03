@@ -96,7 +96,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _mypageTitle(
-          title: '연간관리',
+          title: '연간 관리',
           content: '언제 약을 먹고, 부작용이 생겼는지\n연간 기록을 모아볼 수 있어요',
         ),
         SizedBox(height: 20),

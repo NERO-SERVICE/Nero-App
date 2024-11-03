@@ -45,21 +45,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: kToolbarHeight + 56),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  '날짜별로 모아 달력에 저장하는 빠른 메모,\n까먹을 것 같은 모든 정보들을\n빠른 메모에 적어주세요!',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0xffD9D9D9),
-                  ),
-                ),
-              ),
-              SizedBox(height: 60),
+              SizedBox(height: kToolbarHeight + 40),
               _fastCalendar(),
               SizedBox(height: 50),
               CustomDivider(),
