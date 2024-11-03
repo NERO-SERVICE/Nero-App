@@ -424,12 +424,8 @@ class _MyPage extends State<MyPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 height: 30,
                 decoration: BoxDecoration(
-                  color: Color(0xffD9D9D9).withOpacity(0.5),
+                  color: Color(0xff3C3C3C),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Color(0xffD9D9D9),
-                    width: 1,
-                  ),
                 ),
                 child: Center(
                   child: Text(

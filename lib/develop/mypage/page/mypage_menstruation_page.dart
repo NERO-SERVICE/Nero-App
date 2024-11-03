@@ -121,7 +121,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: Color(0xffD0EE17),
+                        color: Color(0xffFFADC6),
                       ),
                     ),
                   ),
@@ -142,17 +142,31 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
                       color: Color(0xffD9D9D9),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      _showMenstruationInputDialog();
-                    },
-                    child: Text(
-                      '추가하기',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Color(0xff3C3C3C),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
                         color: Color(0xffFFADC6),
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          _showMenstruationInputDialog();
+                        },
+                        child: Text(
+                          '추가하기',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -143,11 +143,6 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
             }
           });
         },
-        onLongPress: () {
-          setState(() {
-            _selectedMap[index] = !isSelected;
-          });
-        },
         child: Container(
           decoration: BoxDecoration(
             color: containerColor,
@@ -532,8 +527,6 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
