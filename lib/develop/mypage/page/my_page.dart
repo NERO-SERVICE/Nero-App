@@ -471,12 +471,10 @@ class _MyPage extends State<MyPage> {
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
-            // 연간관리 페이지 호출
             MypageYearlyLogPage(),
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
-            // 생리주기 페이지 호출
             MypageMenstruationPage(),
             SizedBox(height: 40),
             CustomDivider(),
