@@ -23,12 +23,18 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   // 생리 주기 관련 변수들
-  final PageController _menstruationPageController =
-      PageController(initialPage: DateTime.now().month - 1);
+  static const int menstruationStartYear = 2022;
+  static const int menstruationTotalMonths = 100;
+
+  late final int menstruationInitialPage;
+
+  late final PageController _menstruationPageController;
+
   final RxInt menstruationCurrentMonth = DateTime.now().month.obs;
   final RxInt menstruationCurrentYear = DateTime.now().year.obs;
-  int menstruationCurrentIndex = DateTime.now().month - 1;
-  int menstruationPreviousIndex = DateTime.now().month - 1;
+
+  late int menstruationCurrentIndex;
+  late int menstruationPreviousIndex;
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -36,6 +42,18 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   @override
   void initState() {
     super.initState();
+
+    menstruationInitialPage =
+        (DateTime.now().year - menstruationStartYear) * 12 +
+            (DateTime.now().month - 1);
+
+    _menstruationPageController = PageController(
+      initialPage: menstruationInitialPage,
+    );
+
+    menstruationCurrentIndex = menstruationInitialPage;
+    menstruationPreviousIndex = menstruationInitialPage;
+
     _monthlyCheckController
         .fetchMenstruationCycles(menstruationCurrentYear.value);
 
@@ -59,7 +77,8 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     setState(() {
       menstruationPreviousIndex = menstruationCurrentIndex;
       menstruationCurrentIndex = index;
-      menstruationCurrentMonth.value = index + 1;
+      menstruationCurrentYear.value = menstruationStartYear + (index ~/ 12);
+      menstruationCurrentMonth.value = (index % 12) + 1;
     });
     _monthlyCheckController
         .fetchMenstruationCycles(menstruationCurrentYear.value);
@@ -186,7 +205,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     );
     return CustomMatrixPageviewWidget(
       controller: _menstruationPageController,
-      itemCount: 12,
+      itemCount: menstruationTotalMonths,
       onPageChanged: onMenstruationPageChanged,
       itemBuilder: (context, index) {
         return FadeTransition(
@@ -281,7 +300,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
             ),
           ),
         ),
-        menstruationCurrentIndex < 11
+        menstruationCurrentIndex < menstruationTotalMonths - 1
             ? FloatingActionButton(
                 mini: true,
                 elevation: 0,
@@ -364,13 +383,14 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
           DateTime cycleEnd = DateTime(year, month, totalDays);
 
           DateTime overlapStart =
-              startDate.isAfter(cycleStart) ? startDate : cycleStart;
-          DateTime overlapEnd = endDate.isBefore(cycleEnd) ? endDate : cycleEnd;
+          startDate.isAfter(cycleStart) ? startDate : cycleStart;
+          DateTime overlapEnd =
+          endDate.isBefore(cycleEnd) ? endDate : cycleEnd;
 
           if (!overlapStart.isAfter(overlapEnd)) {
             for (DateTime date = overlapStart;
-                !date.isAfter(overlapEnd);
-                date = date.add(Duration(days: 1))) {
+            !date.isAfter(overlapEnd);
+            date = date.add(Duration(days: 1))) {
               menstruationDays.add(date.day);
             }
           }

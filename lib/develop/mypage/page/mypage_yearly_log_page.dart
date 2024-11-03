@@ -17,12 +17,18 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   final MypageController _monthlyCheckController = Get.put(MypageController());
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-  final PageController _pageController =
-      PageController(initialPage: DateTime.now().month - 1);
+  static const int startYear = 2022;
+  static const int totalMonths = 100;
+
+  late final int initialPage;
+
+  late final PageController _pageController;
+
   final RxInt currentMonth = DateTime.now().month.obs;
   final RxInt currentYear = DateTime.now().year.obs;
-  int currentIndex = DateTime.now().month - 1;
-  int previousIndex = DateTime.now().month - 1;
+
+  late int currentIndex;
+  late int previousIndex;
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -30,6 +36,18 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   @override
   void initState() {
     super.initState();
+
+    // initialPage를 initState에서 초기화
+    initialPage =
+        (DateTime.now().year - startYear) * 12 + (DateTime.now().month - 1);
+
+    _pageController = PageController(
+      initialPage: initialPage,
+    );
+
+    currentIndex = initialPage;
+    previousIndex = initialPage;
+
     _monthlyCheckController.setSelectedType('all');
     _monthlyCheckController.fetchYearlyChecks(currentYear.value);
 
@@ -53,8 +71,11 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
     setState(() {
       previousIndex = currentIndex;
       currentIndex = index;
-      currentMonth.value = index + 1;
+      currentYear.value = startYear + (index ~/ 12);
+      currentMonth.value = (index % 12) + 1;
     });
+
+    _monthlyCheckController.fetchYearlyChecks(currentYear.value);
 
     _animationController.reset();
     _animationController.forward();
@@ -142,7 +163,8 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
-                    color: _monthlyCheckController.selectedType.value == 'all'
+                    color:
+                    _monthlyCheckController.selectedType.value == 'all'
                         ? Color(0xff3C3C3C)
                         : Color(0Xff959595),
                   ),
@@ -159,7 +181,8 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
-                    color: _monthlyCheckController.selectedType.value == 'dose'
+                    color:
+                    _monthlyCheckController.selectedType.value == 'dose'
                         ? Color(0xff3C3C3C)
                         : Color(0Xff959595),
                   ),
@@ -177,7 +200,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: _monthlyCheckController.selectedType.value ==
-                            'side_effect'
+                        'side_effect'
                         ? Color(0xff3C3C3C)
                         : Color(0Xff959595),
                   ),
@@ -197,7 +220,7 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
     );
     return CustomMatrixPageviewWidget(
       controller: _pageController,
-      itemCount: 12,
+      itemCount: totalMonths,
       onPageChanged: onPageChanged,
       itemBuilder: (context, index) {
         return FadeTransition(
@@ -263,18 +286,17 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
       children: [
         currentIndex > 0
             ? FloatingActionButton(
-                mini: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                onPressed: () {
-                  _pageController.previousPage(
-                    duration: Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                child:
-                    Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
-              )
+          mini: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            _pageController.previousPage(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
+        )
             : SizedBox(width: 32),
         Flexible(
           child: FittedBox(
@@ -290,20 +312,20 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
             ),
           ),
         ),
-        currentIndex < 11
+        currentIndex < totalMonths - 1
             ? FloatingActionButton(
-                mini: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                onPressed: () {
-                  _pageController.nextPage(
-                    duration: Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                child: Icon(Icons.arrow_forward_ios,
-                    color: Colors.white, size: 16),
-              )
+          mini: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            _pageController.nextPage(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          child:
+          Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+        )
             : SizedBox(width: 32),
       ],
     );
@@ -348,7 +370,8 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
   Widget _buildMonthlyMatrix() {
     return GetBuilder<MypageController>(
       builder: (_) {
-        final String currentMonthKey = '${currentYear.value}-${currentMonth.value}';
+        final String currentMonthKey =
+            '${currentYear.value}-${currentMonth.value}';
         final data = _monthlyCheckController.monthlyCheckCache[currentMonthKey];
 
         if (data == null) {
@@ -356,8 +379,10 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
         }
 
         // 월의 첫 번째 날과 마지막 날 계산
-        DateTime firstDayOfMonth = DateTime(currentYear.value, currentMonth.value, 1);
-        DateTime lastDayOfMonth = DateTime(currentYear.value, currentMonth.value + 1, 0);
+        DateTime firstDayOfMonth =
+        DateTime(currentYear.value, currentMonth.value, 1);
+        DateTime lastDayOfMonth =
+        DateTime(currentYear.value, currentMonth.value + 1, 0);
         int totalDays = lastDayOfMonth.day;
 
         // 월의 시작 요일 계산 (일요일을 0으로 설정)
@@ -380,15 +405,21 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
               ),
             ));
           } else {
-            bool hasDose = data.doseCheck.containsKey(day) && data.doseCheck[day]!;
-            bool hasSideEffect = data.sideEffectCheck.containsKey(day) && data.sideEffectCheck[day]!;
+            bool hasDose =
+                data.doseCheck.containsKey(day) && data.doseCheck[day]!;
+            bool hasSideEffect = data.sideEffectCheck.containsKey(day) &&
+                data.sideEffectCheck[day]!;
 
-            if (_monthlyCheckController.selectedType.value == 'dose' && hasDose) {
+            if (_monthlyCheckController.selectedType.value == 'dose' &&
+                hasDose) {
               dayWidgets.add(_buildDayCell(day, hasDose, false));
-            } else if (_monthlyCheckController.selectedType.value == 'side_effect' && hasSideEffect) {
+            } else if (_monthlyCheckController.selectedType.value ==
+                'side_effect' &&
+                hasSideEffect) {
               dayWidgets.add(_buildDayCell(day, false, hasSideEffect));
             } else if (_monthlyCheckController.selectedType.value == 'all') {
-              dayWidgets.add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
+              dayWidgets
+                  .add(_buildDayCellWithShadow(day, hasDose, hasSideEffect));
             } else {
               dayWidgets.add(_buildDayCell(day, false, false));
             }
@@ -425,21 +456,24 @@ class _MypageYearlyLogPageState extends State<MypageYearlyLogPage>
         borderRadius: BorderRadius.circular(8),
         boxShadow: hasSideEffect
             ? [
-                BoxShadow(
-                    color: Color(0xff8B16DB),
-                    offset: Offset(0, 0),
-                    blurRadius: 4,
-                    spreadRadius: 4)
-              ]
+          BoxShadow(
+              color: Color(0xff8B16DB),
+              offset: Offset(0, 0),
+              blurRadius: 4,
+              spreadRadius: 4)
+        ]
             : [],
       ),
       child: Center(
-        child: Text('$day', style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontWeight: FontWeight.w300,
-          fontSize: 12,
-          color: Colors.white,
-        ),),
+        child: Text(
+          '$day',
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w300,
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

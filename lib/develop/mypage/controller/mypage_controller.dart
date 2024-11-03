@@ -47,11 +47,9 @@ class MypageController extends GetxController {
 
   void fetchYearlyChecks(int year) async {
     try {
-
       var fetchedYearlyCheck = await _mypageRepository.getYearlyCheck(year, selectedType.value);
 
       if (fetchedYearlyCheck != null) {
-
         fetchedYearlyCheck.forEach((month, data) {
           final currentMonthKey = '$year-$month';
           monthlyCheckCache[currentMonthKey] = data;
@@ -64,7 +62,6 @@ class MypageController extends GetxController {
       print('Failed to fetch yearly checks: $e');
     }
   }
-
 
 
   void setSelectedType(String type) {
@@ -116,13 +113,9 @@ class MypageController extends GetxController {
 
   Future<void> fetchMenstruationCycles(int year) async {
     try {
-      // 서버로부터 생리 주기 데이터를 가져옵니다.
       List<MenstruationCycle> cycles = await _mypageRepository.getMenstruationCycles(year);
-
-      // 기존 리스트를 새로운 데이터로 대체합니다.
       menstruationCycles.value = cycles;
     } catch (e) {
-      // 에러 처리
       print('Error fetching menstruation cycles: $e');
     }
   }
