@@ -31,7 +31,6 @@ class ClinicRepository {
     }
   }
 
-
   Future<Clinic?> createClinic(Clinic clinic) async {
     try {
       final data = clinic.toJson();
@@ -65,8 +64,8 @@ class ClinicRepository {
 
       data['drugs'] = clinic.drugs.map((drug) {
         return {
-          ...drug.toJson(),
           'myDrugArchive': drug.myDrugArchive.myArchiveId,
+          ...drug.toJson(),
         };
       }).toList();
 
@@ -77,7 +76,7 @@ class ClinicRepository {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('클리닉을 수정하지 못했습니다: $e');
+      print('클리닉을 업데이트하지 못했습니다: $e');
       return false;
     }
   }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/todaylog/clinic/page/clinic_detail_page.dart';
 import 'package:nero_app/develop/todaylog/main/page/daily_drug_widget.dart';
 import 'package:nero_app/develop/todaylog/recall/page/self_record_page.dart';
 import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
@@ -32,7 +33,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
-        title: '하루기록',
+        title: '하루 기록',
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -43,7 +44,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             _todaylogTitle(
               title: '데일리 복용관리',
               content:
-                  '마지막으로 병원에서 처방받은 약을\n매일 잘 복용하는지 체크하는 곳이에요.\n오늘 섭취한 약물만 체크해주세요',
+                  '매일 복약 여부를 체크하는 곳이에요.\n오늘 복용한 약물만 체크해주세요',
             ),
             SizedBox(height: 24),
             Obx(() {
@@ -106,18 +107,52 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
                 ),
               );
             }),
-            SizedBox(height: 48),
+            SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '진료기록 작성',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      _clinicWriteWidget(context),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    '새로 처방받은 약이 있나요? 여기서 등록해요',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
             _todaylogTitle(
               title: '하루 돌아보기',
-              content: '오늘 하루는 평소와 다른 점이 있었나요?\n내가 느낀 나의 상태를 적어주세요',
+              content: '오늘 하루는 평소와 다른 점이 있었나요?\n내가 느낀 나의 상태를 직접 기록해보아요',
             ),
             SizedBox(height: 25),
             _buildCustomButton(
               context,
               labelTop: '하루 설문',
-              labelBottom: '오늘 하루는 어땠어요?',
+              labelBottom: '검증된 설문을 통해 내 마음을 확인해 보세요',
               onPressed: () {
                 Navigator.push(
                   context,
@@ -141,7 +176,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             _buildCustomButton(
               context,
               labelTop: '셀프 기록',
-              labelBottom: '오늘 추가로 더 남기고 싶은 말이 있나요?',
+              labelBottom: '오늘 하루를 보내며 기억하고 싶은 일이 있었나요?',
               onPressed: () {
                 Navigator.push(
                   context,
@@ -154,7 +189,7 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
             SizedBox(height: 32),
             _todaylogTitle(
               title: '과거 진료기록',
-              content: '그동안 병원에서 받은 진료 기록과\n처방받은 약물을 모아볼 수 있는 곳이에요',
+              content: '그동안 병원에서 받은 진료 기록과\n처방받은 이력을 모아볼 수 있는 곳이에요',
             ),
             SizedBox(height: 32),
             Obx(() {
@@ -212,8 +247,6 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
 
               return _clinicListWidget();
             }),
-            SizedBox(height: 32),
-            _clinicWriteWidget(context),
             SizedBox(height: 36),
           ],
         ),
@@ -309,30 +342,36 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
   }
 
   Widget _clinicWriteWidget(BuildContext context) {
-    return Center( // 가운데 정렬을 위해 Center 위젯 사용
-      child: ElevatedButton(
-        onPressed: () {
-          Get.to(() => ClinicWritePage());
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xff323232),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 33),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      height: 30,
+      decoration: BoxDecoration(
+        color: Color(0xff3C3C3C),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Color(0xffD0EE17),
+          width: 1,
         ),
-        child: Text(
-          '작성하기',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w600,
-            color: Color(0xffD0EE17),
-            fontSize: 16,
+      ),
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            Get.to(() => ClinicWritePage());
+          },
+          child: Text(
+            '작성하기',
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: Color(0xffFFFFFF),
+            ),
           ),
         ),
       ),
     );
   }
+
 
   Widget _clinicListWidget() {
     final double containerHeight = 150;
@@ -352,60 +391,63 @@ class _TodayLogMainPageState extends State<TodaylogMainPage> {
           final formattedDate = DateFormat('yyyy-MM-dd').format(clinicDate);
 
           return Padding(
-            padding: EdgeInsets.only(
-              right: itemSpacing,
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: containerHeight,
-                  decoration: BoxDecoration(
-                    color: Color(0xff323232),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: ClipRRect(
+            padding: EdgeInsets.only(right: itemSpacing),
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => ClinicDetailPage(clinicId: clinic.clinicId));
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: containerHeight,
+                    decoration: BoxDecoration(
+                      color: Color(0xff323232),
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        monthImage.assetPath,
-                        fit: BoxFit.cover,
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          monthImage.assetPath,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          formattedDate,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: Colors.white,
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          '진료기록',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Color(0xffD9D9D9),
+                          SizedBox(height: 15),
+                          Text(
+                            '진료기록',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

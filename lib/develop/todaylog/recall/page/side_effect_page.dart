@@ -130,7 +130,7 @@ class _SideEffectPageState extends State<SideEffectPage>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
-                        '오늘 겪은 부작용을 기록해주세요',
+                        '오늘 겪은 부작용을\n체계적으로 기록해보아요',
                         style: TextStyle(
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,

@@ -206,4 +206,24 @@ class MypageRepository {
       return null;
     }
   }
+
+  Future<bool> updateMenstruationCycle(MenstruationCycle cycle) async {
+    try {
+      final response = await _dio.put('/menstruation/${cycle.id}/', data: cycle.toJson());
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Failed to update menstruation cycle: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteMenstruationCycle(int cycleId) async {
+    try {
+      final response = await _dio.delete('/menstruation/$cycleId/');
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Failed to delete menstruation cycle: $e');
+      return false;
+    }
+  }
 }

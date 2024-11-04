@@ -138,7 +138,7 @@ class _SurveyPageState extends State<SurveyPage>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
-                        '오늘 당신의 하루가 어땠는지\n저에게 알려주세요',
+                        '오늘 어떤 기분이 들었나요?\n우울증(PHQ-9) 및 불안장애(GAD-7)\n검증된 설문으로 알아보아요' ,
                         style: TextStyle(
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,

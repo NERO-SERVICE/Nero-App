@@ -129,6 +129,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
         ),
         scaffoldBackgroundColor: const Color(0xFF202020),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Color(0xffD9D9D9), // 전체 앱의 커서 색상
+        ),
       ),
       initialBinding: BindingsBuilder(() {
         Get.put<DioService>(DioService());

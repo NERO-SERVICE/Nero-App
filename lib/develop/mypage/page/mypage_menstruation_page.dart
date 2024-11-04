@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
+import 'package:nero_app/develop/mypage/page/menstruation_list_page.dart';
 
 import '../../common/components/calandar_widget.dart';
 import '../../common/components/custom_matrix_pageview_widget.dart';
@@ -22,12 +23,18 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   // 생리 주기 관련 변수들
-  final PageController _menstruationPageController =
-      PageController(initialPage: DateTime.now().month - 1);
+  static const int menstruationStartYear = 2022;
+  static const int menstruationTotalMonths = 100;
+
+  late final int menstruationInitialPage;
+
+  late final PageController _menstruationPageController;
+
   final RxInt menstruationCurrentMonth = DateTime.now().month.obs;
   final RxInt menstruationCurrentYear = DateTime.now().year.obs;
-  int menstruationCurrentIndex = DateTime.now().month - 1;
-  int menstruationPreviousIndex = DateTime.now().month - 1;
+
+  late int menstruationCurrentIndex;
+  late int menstruationPreviousIndex;
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -35,6 +42,18 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   @override
   void initState() {
     super.initState();
+
+    menstruationInitialPage =
+        (DateTime.now().year - menstruationStartYear) * 12 +
+            (DateTime.now().month - 1);
+
+    _menstruationPageController = PageController(
+      initialPage: menstruationInitialPage,
+    );
+
+    menstruationCurrentIndex = menstruationInitialPage;
+    menstruationPreviousIndex = menstruationInitialPage;
+
     _monthlyCheckController
         .fetchMenstruationCycles(menstruationCurrentYear.value);
 
@@ -58,7 +77,8 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     setState(() {
       menstruationPreviousIndex = menstruationCurrentIndex;
       menstruationCurrentIndex = index;
-      menstruationCurrentMonth.value = index + 1;
+      menstruationCurrentYear.value = menstruationStartYear + (index ~/ 12);
+      menstruationCurrentMonth.value = (index % 12) + 1;
     });
     _monthlyCheckController
         .fetchMenstruationCycles(menstruationCurrentYear.value);
@@ -89,62 +109,91 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
   }
 
   Widget _buildMenstruationHeader() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: _mypageTitle(
-            title: '생리 주기',
-            content: '생리 시작일과 종료일을\n기록하고 관리해보세요',
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 32),
-          child: GestureDetector(
-            onTap: () {
-              _showMenstruationInputDialog();
-            },
-            child: Text(
-              '입력하기',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: Color(0xffFFADC6),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _mypageTitle({required String title, required String content}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-              color: Colors.white,
+      child: SizedBox(
+        height: 80, // 원하는 높이로 설정하세요
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '생리 주기',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => MenstruationListPage());
+                    },
+                    child: Text(
+                      '더보기',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffFFADC6),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            content,
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: Color(0xffD9D9D9),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '생리 주기 따로 관리하기 힘드셨죠?\n복약기록과 함께 한눈에 확인해보세요',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Color(0xff3C3C3C),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Color(0xffFFADC6),
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          _showMenstruationInputDialog();
+                        },
+                        child: Text(
+                          '추가하기',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -156,7 +205,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     );
     return CustomMatrixPageviewWidget(
       controller: _menstruationPageController,
-      itemCount: 12,
+      itemCount: menstruationTotalMonths,
       onPageChanged: onMenstruationPageChanged,
       itemBuilder: (context, index) {
         return FadeTransition(
@@ -251,7 +300,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
             ),
           ),
         ),
-        menstruationCurrentIndex < 11
+        menstruationCurrentIndex < menstruationTotalMonths - 1
             ? FloatingActionButton(
                 mini: true,
                 elevation: 0,
@@ -334,13 +383,14 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
           DateTime cycleEnd = DateTime(year, month, totalDays);
 
           DateTime overlapStart =
-              startDate.isAfter(cycleStart) ? startDate : cycleStart;
-          DateTime overlapEnd = endDate.isBefore(cycleEnd) ? endDate : cycleEnd;
+          startDate.isAfter(cycleStart) ? startDate : cycleStart;
+          DateTime overlapEnd =
+          endDate.isBefore(cycleEnd) ? endDate : cycleEnd;
 
           if (!overlapStart.isAfter(overlapEnd)) {
             for (DateTime date = overlapStart;
-                !date.isAfter(overlapEnd);
-                date = date.add(Duration(days: 1))) {
+            !date.isAfter(overlapEnd);
+            date = date.add(Duration(days: 1))) {
               menstruationDays.add(date.day);
             }
           }
@@ -394,10 +444,12 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
 
   Widget _buildMenstruationDayCell(int day, bool isMenstruationDay,
       {double size = 40.0, ShapeBorder? shape, Color? color}) {
-    Color backgroundColor = color ?? (isMenstruationDay ? Color(0xffFFADC6) : Colors.grey);
-    ShapeBorder cellShape = shape ?? RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    );
+    Color backgroundColor =
+        color ?? (isMenstruationDay ? Color(0xffFFADC6) : Colors.grey);
+    ShapeBorder cellShape = shape ??
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        );
 
     return Container(
       width: size,
@@ -420,7 +472,6 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
       ),
     );
   }
-
 
   void _showMenstruationInputDialog() {
     Rx<DateTime> startDate = DateTime.now().obs;

@@ -182,11 +182,12 @@ class DrugListWidget extends StatelessWidget {
         final initialNumber = drug.initialNumber;
         final displayNumber = isSelected ? drug.number - 1 : drug.number;
 
-        final displayNumberColor =
-        !drug.allow ? Color(0xff848481) : Colors.white;
-        final initialNumberColor = Color(0xff848481);
+        // 버튼 활성화 여부 결정
+        final isEnabled = drug.allow && drug.number > 0;
 
-        final drugNameColor = !drug.allow ? Color(0xff848481) : Colors.white;
+        // 텍스트 색상 설정
+        final displayNumberColor = !isEnabled ? Color(0xff848481) : Colors.white;
+        final drugNameColor = !isEnabled ? Color(0xff848481) : Colors.white;
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -194,15 +195,14 @@ class DrugListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: drug.allow
+                  onPressed: isEnabled
                       ? () {
                     onDrugSelection(drug.drugId);
                   }
                       : null,
                   style: ElevatedButton.styleFrom(
                     side: BorderSide(
-                      color:
-                      isSelected ? Color(0xffD0EE17) : Colors.transparent,
+                      color: isSelected ? Color(0xffD0EE17) : Colors.transparent,
                       width: 1.0,
                     ),
                     backgroundColor: isSelected
@@ -217,7 +217,8 @@ class DrugListWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
                           '${drug.myDrugArchive.drugName} ${drug.myDrugArchive.capacity}mg',
                           style: TextStyle(
@@ -229,10 +230,10 @@ class DrugListWidget extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 14),
                         child: Row(
                           children: [
-                            // displayNumber
                             Text(
                               '$displayNumber',
                               style: TextStyle(
@@ -247,7 +248,7 @@ class DrugListWidget extends StatelessWidget {
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w500,
-                                color: initialNumberColor,
+                                color: Color(0xff848481),
                                 fontSize: 12,
                               ),
                             ),
