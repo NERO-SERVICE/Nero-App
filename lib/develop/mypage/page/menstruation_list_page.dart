@@ -23,7 +23,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
   @override
   void initState() {
     super.initState();
-    _mypageController.fetchMenstruationCycles(DateTime.now().year);
+    _mypageController.fetchAllMenstruationCycles();
   }
 
   Future<bool> _showConfirmationDialog(
@@ -279,7 +279,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
 
     if (confirmed) {
       await _mypageController.deleteMenstruationCycle(cycle.id!);
-      _mypageController.fetchMenstruationCycles(DateTime.now().year);
+      _mypageController.fetchAllMenstruationCycles();
       setState(() {
         _expandedIndices.clear();
       });
@@ -362,7 +362,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
                                   .updateMenstruationCycle(newCycle);
                             }
                             _mypageController
-                                .fetchMenstruationCycles(DateTime.now().year);
+                                .fetchAllMenstruationCycles();
                             Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(

@@ -55,7 +55,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
     menstruationPreviousIndex = menstruationInitialPage;
 
     _monthlyCheckController
-        .fetchMenstruationCycles(menstruationCurrentYear.value);
+        .fetchMenstruationCycles(year: menstruationCurrentYear.value);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
@@ -81,7 +81,7 @@ class _MypageMenstruationPageState extends State<MypageMenstruationPage>
       menstruationCurrentMonth.value = (index % 12) + 1;
     });
     _monthlyCheckController
-        .fetchMenstruationCycles(menstruationCurrentYear.value);
+        .fetchMenstruationCycles(year: menstruationCurrentYear.value);
 
     _animationController.reset();
     _animationController.forward();

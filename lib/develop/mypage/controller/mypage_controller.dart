@@ -111,15 +111,23 @@ class MypageController extends GetxController {
   }
 
 
-  Future<void> fetchMenstruationCycles(int year) async {
+  Future<void> fetchMenstruationCycles({int? year}) async {
     try {
       List<MenstruationCycle> cycles = await _mypageRepository.getMenstruationCycles(year);
       menstruationCycles.value = cycles;
+      print('Fetched menstruation cycles: ${cycles.length} cycles');
     } catch (e) {
       print('Error fetching menstruation cycles: $e');
     }
   }
 
+  void setSelectedYear(int year) {
+    fetchMenstruationCycles(year: year);
+  }
+
+  void fetchAllMenstruationCycles() {
+    fetchMenstruationCycles(); // year 파라미터 없이 호출하여 모든 데이터를 불러옴
+  }
 
   bool isMenstruationDay(DateTime date) {
     for (var cycle in menstruationCycles) {
@@ -135,7 +143,7 @@ class MypageController extends GetxController {
     try {
       bool success = await _mypageRepository.createMenstruationCycle(cycle);
       if (success) {
-        fetchMenstruationCycles(cycle.startDate.year);
+        fetchMenstruationCycles(year: cycle.startDate.year);
         CustomSnackbar.show(
           context: Get.context!,
           message: '생리 주기가 추가되었습니다.',
@@ -188,7 +196,7 @@ class MypageController extends GetxController {
     try {
       bool success = await _mypageRepository.updateMenstruationCycle(cycle);
       if (success) {
-        fetchMenstruationCycles(cycle.startDate.year);
+        fetchMenstruationCycles(year: cycle.startDate.year);
         CustomSnackbar.show(
           context: Get.context!,
           message: '생리 주기가 수정되었습니다.',
@@ -215,7 +223,7 @@ class MypageController extends GetxController {
       bool success = await _mypageRepository.deleteMenstruationCycle(cycleId);
       if (success) {
         // 삭제된 주기의 연도로 생리 주기 목록을 갱신합니다.
-        fetchMenstruationCycles(DateTime.now().year);
+        fetchMenstruationCycles(year: DateTime.now().year);
         CustomSnackbar.show(
           context: Get.context!,
           message: '생리 주기가 삭제되었습니다.',

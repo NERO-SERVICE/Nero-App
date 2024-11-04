@@ -134,18 +134,28 @@ class MypageRepository {
   }
 
 
-  Future<List<MenstruationCycle>> getMenstruationCycles(int year) async {
+  Future<List<MenstruationCycle>> getMenstruationCycles([int? year]) async {
     try {
-      final String url = '/menstruation/cycles/?year=$year';
+      String url = '/menstruation/';
+      if (year != null) {
+        url += '?year=$year';
+      }
       final response = await _dio.get(url);
-      List<dynamic> data = response.data;
-      return data.map((json) => MenstruationCycle.fromJson(json)).toList();
+      if (response.statusCode == 200 && response.data is List) {
+        List<MenstruationCycle> cycles = (response.data as List)
+            .map((json) => MenstruationCycle.fromJson(json))
+            .toList();
+        print('Received ${cycles.length} menstruation cycles from backend for year ${year ?? 'all'}');
+        return cycles;
+      } else {
+        print('Unexpected response format when fetching menstruation cycles');
+        return [];
+      }
     } catch (e) {
-      print('Failed to load menstruation cycles: $e');
+      print('Failed to fetch menstruation cycles: $e');
       return [];
     }
   }
-
 
   Future<bool> createMenstruationCycle(MenstruationCycle cycle) async {
     try {
@@ -153,6 +163,26 @@ class MypageRepository {
       return response.statusCode == 201;
     } catch (e) {
       print('Failed to create menstruation cycle: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateMenstruationCycle(MenstruationCycle cycle) async {
+    try {
+      final response = await _dio.put('/menstruation/${cycle.id}/', data: cycle.toJson());
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Failed to update menstruation cycle: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteMenstruationCycle(int cycleId) async {
+    try {
+      final response = await _dio.delete('/menstruation/${cycleId}/');
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Failed to delete menstruation cycle: $e');
       return false;
     }
   }
@@ -204,26 +234,6 @@ class MypageRepository {
     } catch (e) {
       print('Failed to load user info: $e');
       return null;
-    }
-  }
-
-  Future<bool> updateMenstruationCycle(MenstruationCycle cycle) async {
-    try {
-      final response = await _dio.put('/menstruation/${cycle.id}/', data: cycle.toJson());
-      return response.statusCode == 200;
-    } catch (e) {
-      print('Failed to update menstruation cycle: $e');
-      return false;
-    }
-  }
-
-  Future<bool> deleteMenstruationCycle(int cycleId) async {
-    try {
-      final response = await _dio.delete('/menstruation/$cycleId/');
-      return response.statusCode == 204;
-    } catch (e) {
-      print('Failed to delete menstruation cycle: $e');
-      return false;
     }
   }
 }
