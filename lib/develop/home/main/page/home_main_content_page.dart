@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/home/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
@@ -375,10 +376,12 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        // CommunityController를 lazy로 주입
+                        Get.lazyPut(() => CommunityController());
                         Get.to(() => CommunityMainPage());
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // 버튼 색상 조정
+                        backgroundColor: Colors.blue,
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

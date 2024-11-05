@@ -7,7 +7,7 @@ class Post extends Equatable {
   final String nickname;
   final DateTime createdAt;
   final int likeCount;
-  final int commentCount;
+  late final int commentCount;
   final bool isLiked;
 
   Post({

@@ -90,7 +90,7 @@ class PostItem extends StatelessWidget {
                           Text(
                             '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
                             style: TextStyle(
-                              color: Colors.grey[400],
+                              color: Colors.white,
                               fontSize: 12,
                             ),
                           ),

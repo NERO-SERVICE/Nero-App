@@ -1,7 +1,4 @@
-// lib/develop/home/community/controllers/community_controller.dart
-
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/community/models/post.dart';
@@ -23,13 +20,16 @@ class CommunityController extends GetxController {
   var hasMorePosts = true.obs;
   var searchQuery = ''.obs;
 
-  // 게시물 상세
-  var currentPost = Post.empty().obs;
+  // 게시물 정보 및 댓글 목록 관리
+  Rx<Post> currentPost = Post.empty().obs;
+  RxList<Comment> comments = <Comment>[].obs;
+
+  // 로딩 상태
   var isLoadingPostDetail = false.obs;
+  var isLoadingComments = false.obs;
+
 
   // 댓글 목록
-  var comments = <Comment>[].obs;
-  var isLoadingComments = false.obs;
   var currentCommentPage = 1.obs;
   var hasMoreComments = true.obs;
 
@@ -67,6 +67,7 @@ class CommunityController extends GetxController {
 
       posts.addAll(fetchedPosts);
       currentPostPage.value += 1;
+      update();  // UI 업데이트
     } catch (e) {
       print('게시물 가져오기 실패: $e');
       CustomSnackbar.show(
@@ -79,21 +80,15 @@ class CommunityController extends GetxController {
     }
   }
 
-  // 게시물 상세 가져오기
+  // 게시물 상세 정보 가져오기
   Future<void> fetchPostDetail(int postId) async {
     isLoadingPostDetail.value = true;
-
     try {
       final post = await _communityRepository.fetchPostDetail(postId);
       currentPost.value = post;
-      fetchComments(postId);
+      fetchComments(postId); // 댓글도 동시에 가져오기
     } catch (e) {
       print('게시물 상세 가져오기 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '게시물 상세 정보를 가져오지 못했습니다.',
-        isSuccess: false,
-      );
     } finally {
       isLoadingPostDetail.value = false;
     }
@@ -105,11 +100,11 @@ class CommunityController extends GetxController {
     List<File>? images,
   }) async {
     try {
-      await _communityRepository.createPost(
+      final newPost = await _communityRepository.createPost(
         content: content,
         images: images,
       );
-      // 게시물 작성 후 이미지 목록 초기화
+      fetchPosts(refresh: true);
       selectedImages.clear();
       this.content.value = '';
       CustomSnackbar.show(
@@ -144,6 +139,7 @@ class CommunityController extends GetxController {
         posts[index] = updatedPost;
       }
       currentPost.value = updatedPost;
+      update();  // UI 업데이트
       CustomSnackbar.show(
         context: Get.context!,
         message: '게시물이 수정되었습니다.',
@@ -164,6 +160,7 @@ class CommunityController extends GetxController {
     try {
       await _communityRepository.deletePost(postId);
       posts.removeWhere((post) => post.postId == postId);
+      update();  // UI 업데이트
       CustomSnackbar.show(
         context: Get.context!,
         message: '게시물이 삭제되었습니다.',
@@ -179,100 +176,44 @@ class CommunityController extends GetxController {
     }
   }
 
-  // 댓글 가져오기
-  Future<void> fetchComments(int postId, {bool refresh = false}) async {
-    if (isLoadingComments.value) return;
-
-    if (refresh) {
-      currentCommentPage.value = 1;
-      hasMoreComments.value = true;
-      comments.clear();
-    }
-
-    if (!hasMoreComments.value) return;
-
+  // 댓글 목록 가져오기
+  Future<void> fetchComments(int postId) async {
     isLoadingComments.value = true;
-
     try {
-      final fetchedComments = await _communityRepository.fetchComments(
-        postId,
-        page: currentCommentPage.value,
-      );
-
-      if (fetchedComments.length < 10) {
-        hasMoreComments.value = false;
-      }
-
-      comments.addAll(fetchedComments);
-      currentCommentPage.value += 1;
+      final fetchedComments = await _communityRepository.fetchComments(postId);
+      comments.assignAll(fetchedComments); // 리스트 갱신
     } catch (e) {
       print('댓글 가져오기 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글 가져오기에 실패했습니다.',
-        isSuccess: false,
-      );
     } finally {
       isLoadingComments.value = false;
     }
   }
 
   // 댓글 작성
-  Future<void> createComment({
-    required int postId,
-    required String content,
-  }) async {
+  Future<void> createComment(int postId, String content) async {
     try {
-      final newComment = await _communityRepository.createComment(
-        postId: postId,
-        content: content,
-      );
-      comments.insert(0, newComment);
-      // currentPost.update 수정
-      currentPost.value = currentPost.value.copyWith(
-        commentCount: currentPost.value.commentCount + 1,
-      );
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글이 작성되었습니다.',
-        isSuccess: true,
-      );
+      final newComment = await _communityRepository.createComment(postId: postId, content: content);
+      comments.insert(0, newComment); // 새로운 댓글 추가
+      currentPost.update((post) {
+        if (post != null) post.commentCount += 1;
+      });
+      update();
     } catch (e) {
       print('댓글 작성 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글 작성에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 
   // 댓글 수정
-  Future<void> updateComment({
-    required int commentId,
-    String? content,
-  }) async {
+  Future<void> updateComment(int commentId, String content) async {
     try {
-      final updatedComment = await _communityRepository.updateComment(
-        commentId: commentId,
-        content: content,
-      );
+      final updatedComment = await _communityRepository.updateComment(commentId: commentId, content: content);
       int index = comments.indexWhere((c) => c.commentId == commentId);
       if (index != -1) {
-        comments[index] = updatedComment;
+        comments[index] = updatedComment; // 해당 댓글 수정
       }
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글이 수정되었습니다.',
-        isSuccess: true,
-      );
+      update();
     } catch (e) {
       print('댓글 수정 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글 수정에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 
@@ -280,25 +221,13 @@ class CommunityController extends GetxController {
   Future<void> deleteComment(int commentId) async {
     try {
       await _communityRepository.deleteComment(commentId);
-      comments.removeWhere((c) => c.commentId == commentId);
-      // currentPost.update 수정
-      currentPost.value = currentPost.value.copyWith(
-        commentCount: currentPost.value.commentCount > 0
-            ? currentPost.value.commentCount - 1
-            : 0,
-      );
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글이 삭제되었습니다.',
-        isSuccess: true,
-      );
+      comments.removeWhere((c) => c.commentId == commentId); // 해당 댓글 삭제
+      currentPost.update((post) {
+        if (post != null && post.commentCount > 0) post.commentCount -= 1;
+      });
+      update();
     } catch (e) {
       print('댓글 삭제 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '댓글 삭제에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 
@@ -320,18 +249,9 @@ class CommunityController extends GetxController {
           isLiked: !currentPost.value.isLiked,
         );
       }
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '좋아요가 토글되었습니다.',
-        isSuccess: true,
-      );
+      update();  // UI 업데이트
     } catch (e) {
       print('게시물 좋아요 토글 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '좋아요 토글에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 
@@ -347,18 +267,9 @@ class CommunityController extends GetxController {
           isLiked: !comment.isLiked,
         );
       }
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '좋아요가 토글되었습니다.',
-        isSuccess: true,
-      );
+      update();  // UI 업데이트
     } catch (e) {
       print('댓글 좋아요 토글 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '좋아요 토글에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:nero_app/develop/home/community/pages/community_write_page.dart'
 import 'package:nero_app/develop/home/community/widgets/post_item.dart';
 
 class CommunityMainPage extends StatelessWidget {
-  final CommunityController _controller = Get.put(CommunityController());
+  final CommunityController _controller = Get.find<CommunityController>();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -55,14 +55,16 @@ class CommunityMainPage extends StatelessWidget {
                 final post = _controller.posts[index];
                 return PostItem(
                   post: post,
-                  onTap: () {
-                    Get.to(() => CommunityDetailPage(postId: post.postId));
+                  onTap: () async {
+                    await Get.to(() => CommunityDetailPage(postId: post.postId));
+                    _controller.fetchPosts(refresh: true);
                   },
                   onLike: () {
                     _controller.toggleLikePost(post.postId);
                   },
-                  onComment: () {
-                    Get.to(() => CommunityDetailPage(postId: post.postId));
+                  onComment: () async {
+                    await Get.to(() => CommunityDetailPage(postId: post.postId));
+                    _controller.fetchPosts(refresh: true);
                   },
                 );
               } else {
@@ -83,8 +85,9 @@ class CommunityMainPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => CommunityWritePage());
+        onPressed: () async {
+          await Get.to(() => CommunityWritePage());
+          _controller.fetchPosts(refresh: true); // 메인 페이지 목록 갱신
         },
         child: Icon(Icons.add),
       ),

@@ -90,22 +90,20 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("게시물 삭제", style: TextStyle(color: Colors.white),),
-          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Colors.white),),
+          title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
+          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Colors.white)),
           actions: [
             TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("취소", style: TextStyle(color: Colors.white),),
+              onPressed: () => Get.back(),
+              child: Text("취소", style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 _controller.deletePost(post.postId);
                 Get.back();
-                Get.back(); // 상세 페이지에서 돌아가기
+                _controller.fetchPosts(refresh: true); // 목록 갱신
               },
-              child: Text("삭제", style: TextStyle(color: Colors.white),),
+              child: Text("삭제", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -113,41 +111,33 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  void _showEditCommentDialog(Comment comment) {
-    final TextEditingController _editCommentController =
-        TextEditingController(text: comment.content);
 
+  void _showEditCommentDialog(Comment comment) {
+    final TextEditingController _editCommentController = TextEditingController(text: comment.content);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("댓글 수정", style: TextStyle(color: Colors.white),),
+          title: Text("댓글 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editCommentController,
             maxLines: null,
-            decoration: InputDecoration(
-              hintText: "댓글을 입력하세요",
-            ),
+            decoration: InputDecoration(hintText: "댓글을 입력하세요"),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("취소", style: TextStyle(color: Colors.white),),
+              onPressed: () => Get.back(),
+              child: Text("취소", style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 String updatedContent = _editCommentController.text.trim();
                 if (updatedContent.isNotEmpty) {
-                  _controller.updateComment(
-                    commentId: comment.commentId,
-                    content: updatedContent,
-                  );
+                  _controller.updateComment(comment.commentId, updatedContent);
                   Get.back();
                 }
               },
-              child: Text("수정", style: TextStyle(color: Colors.white),),
+              child: Text("수정", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -160,21 +150,19 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("댓글 삭제", style: TextStyle(color: Colors.white),),
+          title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
           content: Text("정말로 이 댓글을 삭제하시겠습니까?"),
           actions: [
             TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("취소", style: TextStyle(color: Colors.white),),
+              onPressed: () => Get.back(),
+              child: Text("취소", style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 _controller.deleteComment(comment.commentId);
                 Get.back();
               },
-              child: Text("삭제", style: TextStyle(color: Colors.white),),
+              child: Text("삭제", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -185,11 +173,14 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   void _submitComment() {
     String content = _commentController.text.trim();
     if (content.isNotEmpty) {
-      _controller.createComment(postId: widget.postId, content: content);
-      _commentController.clear();
-      FocusScope.of(context).unfocus();
+      _controller.createComment(widget.postId, content).then((_) {
+        _controller.fetchComments(widget.postId); // 댓글 목록 갱신
+        _commentController.clear();
+        FocusScope.of(context).unfocus();
+      });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +231,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                             // 게시물 내용
                             Text(
                               post.content,
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(color: Colors.white),
                             ),
                             SizedBox(height: 16),
 
@@ -266,7 +257,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                             (context, error, stackTrace) {
                                           return Image.asset(
                                             'assets/develop/default.png',
-                                            width: 300,
+                                            width: 200,
                                             height: 200,
                                             fit: BoxFit.cover,
                                           );
@@ -295,7 +286,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                         color: Colors.red,
                                       ),
                                       SizedBox(width: 4),
-                                      Text('${post.likeCount}'),
+                                      Text('${post.likeCount}', style: TextStyle(color: Colors.white),),
                                     ],
                                   ),
                                 ),
@@ -309,7 +300,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                         color: Colors.blue,
                                       ),
                                       SizedBox(width: 4),
-                                      Text('${post.commentCount}'),
+                                      Text('${post.commentCount}', style: TextStyle(color: Colors.white),),
                                     ],
                                   ),
                                 ),
@@ -360,49 +351,27 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                         ),
                       ),
                       Obx(() {
-                        if (_controller.isLoadingComments.value &&
-                            _controller.comments.isEmpty) {
+                        if (_controller.isLoadingComments.value && _controller.comments.isEmpty) {
                           return Center(child: CustomLoadingIndicator());
                         }
 
                         if (_controller.comments.isEmpty) {
-                          return Center(child: Text('댓글이 없습니다.', style: TextStyle(color: Colors.white),));
+                          return Center(child: Text('댓글이 없습니다.', style: TextStyle(color: Colors.white)));
                         }
 
                         return ListView.builder(
                           controller: _commentScrollController,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: _controller.comments.length + 1,
+                          itemCount: _controller.comments.length,
                           itemBuilder: (context, index) {
-                            if (index < _controller.comments.length) {
-                              final comment = _controller.comments[index];
-                              return CommentItem(
-                                comment: comment,
-                                onLike: () {
-                                  _controller
-                                      .toggleLikeComment(comment.commentId);
-                                },
-                                onEdit: () {
-                                  _showEditCommentDialog(comment);
-                                },
-                                onDelete: () {
-                                  _showDeleteCommentDialog(comment);
-                                },
-                              );
-                            } else {
-                              return Obx(() {
-                                if (_controller.hasMoreComments.value) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child:
-                                        Center(child: CustomLoadingIndicator()),
-                                  );
-                                } else {
-                                  return SizedBox.shrink();
-                                }
-                              });
-                            }
+                            final comment = _controller.comments[index];
+                            return CommentItem(
+                              comment: comment,
+                              onLike: () => _controller.toggleLikeComment(comment.commentId),
+                              onEdit: () => _showEditCommentDialog(comment),
+                              onDelete: () => _showDeleteCommentDialog(comment),
+                            );
                           },
                         );
                       }),
