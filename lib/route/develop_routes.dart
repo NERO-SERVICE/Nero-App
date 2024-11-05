@@ -9,7 +9,6 @@ import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.da
 import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
 import 'package:nero_app/develop/todaylog/recall/page/survey_page.dart';
 import 'package:nero_app/develop/tutorial/page/tutorial_page.dart';
-import 'package:provider/provider.dart';
 
 class DevelopRoutes {
   static final routes = [

@@ -1,3 +1,5 @@
+// lib/home/main/page/home_main_content_page.dart
+
 import 'dart:ui';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/home/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
@@ -26,7 +29,7 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-      Get.put(NotificationController(), permanent: true);
+  Get.put(NotificationController(), permanent: true);
   final PageController _pageController = PageController(viewportFraction: 0.6, initialPage: 1000);
   final InformationRepository _informationRepository = Get.find<InformationRepository>();
   final MagazineRepository _magazineRepository = MagazineRepository();
@@ -121,13 +124,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             Positioned.fill(
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                      notification.imageUrls.first,
-                      fit: BoxFit.cover,
-                    )
+                notification.imageUrls.first,
+                fit: BoxFit.cover,
+              )
                   : Image.asset(
-                      'assets/develop/default.png',
-                      fit: BoxFit.cover,
-                    ),
+                'assets/develop/default.png',
+                fit: BoxFit.cover,
+              ),
             ),
             Positioned.fill(
               child: Container(
@@ -346,7 +349,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
-        () {
+            () {
           if (_notificationController.isLoading.value) {
             return SingleChildScrollView(
               child: Column(
@@ -367,6 +370,31 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ),
                   const SizedBox(height: 30),
+                  // "게시판" 버튼 추가
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => CommunityMainPage());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, // 버튼 색상 조정
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        '게시판',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -557,6 +585,31 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       ],
                     ),
                   ],
+                ),
+                // "게시판" 버튼 추가
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.to(() => CommunityMainPage());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // 버튼 색상 조정
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      '게시판',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
