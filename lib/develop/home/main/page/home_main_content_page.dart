@@ -30,9 +30,11 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-  Get.put(NotificationController(), permanent: true);
-  final PageController _pageController = PageController(viewportFraction: 0.6, initialPage: 1000);
-  final InformationRepository _informationRepository = Get.find<InformationRepository>();
+      Get.put(NotificationController(), permanent: true);
+  final PageController _pageController =
+      PageController(viewportFraction: 0.6, initialPage: 1000);
+  final InformationRepository _informationRepository =
+      Get.find<InformationRepository>();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
@@ -125,13 +127,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             Positioned.fill(
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                notification.imageUrls.first,
-                fit: BoxFit.cover,
-              )
+                      notification.imageUrls.first,
+                      fit: BoxFit.cover,
+                    )
                   : Image.asset(
-                'assets/develop/default.png',
-                fit: BoxFit.cover,
-              ),
+                      'assets/develop/default.png',
+                      fit: BoxFit.cover,
+                    ),
             ),
             Positioned.fill(
               child: Container(
@@ -350,7 +352,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
-            () {
+        () {
           if (_notificationController.isLoading.value) {
             return SingleChildScrollView(
               child: Column(
@@ -373,7 +375,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   const SizedBox(height: 30),
                   // "게시판" 버튼 추가
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0, vertical: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
                         // CommunityController를 lazy로 주입
@@ -499,10 +502,12 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   children: [
                     Container(
                       child: Obx(() {
-                        int currentIndex = _currentPage.value % notifications.length;
+                        int currentIndex =
+                            _currentPage.value % notifications.length;
                         String imageUrl;
                         if (notifications[currentIndex].imageUrls.isNotEmpty) {
-                          imageUrl = notifications[currentIndex].imageUrls.first;
+                          imageUrl =
+                              notifications[currentIndex].imageUrls.first;
                           return Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
@@ -567,7 +572,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                                 name: 'HomeNotificationCardView',
                                 parameters: {
                                   'page_index': index,
-                                  'page_title': notifications[index % notifications.length].title,
+                                  'page_title': notifications[
+                                          index % notifications.length]
+                                      .title,
                                 },
                               );
                             },
@@ -575,8 +582,8 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                               // 인덱스를 데이터 리스트의 길이로 나눈 나머지를 사용
                               int dataIndex = index % notifications.length;
                               return Padding(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
                                 child: _notificationOne(
                                   notifications[dataIndex],
                                 ),
@@ -590,30 +597,56 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                   ],
                 ),
                 // "게시판" 버튼 추가
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => CommunityMainPage());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // 버튼 색상 조정
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        '커뮤니티 마당 (Beta)',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      '게시판',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => CommunityMainPage());
+                        },
+                        child: Text(
+                          '더보기',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xffD0EE17),
+                          ),
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    "같은 고민을 하는 유저들을\n한 곳에서 만나볼 수 있어요",
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
                     ),
                   ),
                 ),
+                const SizedBox(height: 40),
+                const CustomDivider(),
+                const SizedBox(height: 30),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),
