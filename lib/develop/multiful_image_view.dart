@@ -1,5 +1,3 @@
-// lib/develop/home/community/pages/multiful_image_view.dart
-
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -94,85 +92,29 @@ class _MultifulImageViewState extends State<MultifulImageView> {
     return (index + 1).toString();
   }
 
-  void _selectedImage(AssetEntity asset) {
-    setState(() {
-      if (containValue(asset)) {
-        selectedImages.removeWhere((element) => element.id == asset.id);
-      } else {
-        if (selectedImages.length < 10) {
-          selectedImages.add(asset);
-        } else {
-          // 최대 선택 수 초과 시 메시지 표시
-          Get.snackbar(
-            '알림',
-            '이미지는 최대 10개까지 선택 가능합니다.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-          );
-        }
-      }
-    });
-  }
-
   Widget _photoWidget(AssetEntity asset) {
     return FutureBuilder<Uint8List?>(
       future: asset.thumbnailDataWithSize(const ThumbnailSize(200, 200)),
       builder: (_, snapshot) {
         if (snapshot.hasData) {
-          return Stack(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: Image.memory(
-                  snapshot.data!,
-                  fit: BoxFit.cover,
-                ),
+          return GestureDetector(
+            onTap: () {
+              // 하나의 이미지만 선택하도록 설정
+              selectedImages.clear(); // 선택된 이미지 초기화
+              selectedImages.add(asset); // 새로 선택한 이미지를 추가
+              Get.back(result: selectedImages); // 선택한 이미지 1개 전달 후 페이지 닫기
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: containValue(asset)
+                    ? Border.all(color: Color(0xffD0EE17), width: 4)
+                    : null,
               ),
-              Positioned(
-                left: 0,
-                bottom: 0,
-                right: 0,
-                top: 0,
-                child: Stack(children: [
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    left: 0,
-                    bottom: 0,
-                    child: Container(
-                      color: containValue(asset) ? Colors.white.withOpacity(0.5) : Colors.transparent,
-                    ),
-                  ),
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: GestureDetector(
-                      onTap: () {
-                        _selectedImage(asset);
-                      },
-                      behavior: HitTestBehavior.translucent,
-                      child: Container(
-                        width: 25,
-                        height: 25,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: containValue(asset) ? Color(0xffED7738) : Colors.white.withOpacity(0.5),
-                          border: Border.all(color: Colors.white, width: 1),
-                        ),
-                        child: Center(
-                          child: Text(
-                            returnIndexValue(asset),
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-              )
-            ],
+              child: Image.memory(
+                snapshot.data!,
+                fit: BoxFit.cover,
+              ),
+            ),
           );
         } else {
           return Container(
@@ -182,6 +124,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

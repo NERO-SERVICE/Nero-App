@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/post.dart';
 
@@ -96,28 +96,13 @@ class PostItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
-                else
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      color: Color(0xff1C1C1C),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        'assets/develop/nero-small-logo.svg',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
                   ),
                 Row(
                   children: [
                     GestureDetector(
                       onTap: onLike,
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
                         child: Row(
                           children: [
                             SvgPicture.asset(

@@ -47,23 +47,24 @@ class CommunityMainPage extends StatelessWidget {
                 onRefresh: () => _controller.fetchPosts(refresh: true),
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: _controller.posts.length + 1,
+                  itemCount: _controller.posts.length + 2, // +2 상단과 하단에 대한 아이템 처리
                   itemBuilder: (context, index) {
-                    if (index < _controller.posts.length) {
-                      final post = _controller.posts[index];
+                    if (index == 0) {
+                      // 첫 번째 항목으로 SizedBox 추가
+                      return SizedBox(height: 16);
+                    } else if (index <= _controller.posts.length) {
+                      final post = _controller.posts[index - 1];
                       return PostItem(
                         post: post,
                         onTap: () async {
-                          await Get.to(
-                                  () => CommunityDetailPage(postId: post.postId));
+                          await Get.to(() => CommunityDetailPage(postId: post.postId));
                           _controller.fetchPosts(refresh: true);
                         },
                         onLike: () {
                           _controller.toggleLikePost(post.postId);
                         },
                         onComment: () async {
-                          await Get.to(
-                                  () => CommunityDetailPage(postId: post.postId));
+                          await Get.to(() => CommunityDetailPage(postId: post.postId));
                           _controller.fetchPosts(refresh: true);
                         },
                       );
@@ -82,7 +83,7 @@ class CommunityMainPage extends StatelessWidget {
                   },
                 ),
               );
-            },
+                },
           ),
         ],
       ),

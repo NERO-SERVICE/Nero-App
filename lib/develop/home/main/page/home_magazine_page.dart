@@ -2,10 +2,12 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_detail_page.dart';
 import 'package:nero_app/develop/home/magazine/page/magazine_list_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeMagazinePage extends StatelessWidget {
   final Future<List<Magazine>> latestMagazinesFuture;
@@ -89,7 +91,7 @@ class HomeMagazinePage extends StatelessWidget {
                         vertical: 8,
                       ),
                       child: Container(
-                        height: 120,  // 각 리스트 항목의 고정된 높이 설정
+                        height: 120, // 고정된 높이 설정
                         decoration: BoxDecoration(
                           color: Color(0xff3C3C3C),
                           borderRadius: BorderRadius.circular(16),
@@ -106,16 +108,21 @@ class HomeMagazinePage extends StatelessWidget {
                                     topLeft: Radius.circular(16),
                                     bottomLeft: Radius.circular(16),
                                   ),
-                                  child: Image.network(
-                                    magazine.imageUrls[0],
+                                  child: CachedNetworkImage(
+                                    imageUrl: magazine.imageUrls[0],
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(
-                                        Icons.error,
-                                        size: 40,
-                                        color: Colors.grey[400],
-                                      );
-                                    },
+                                    placeholder: (context, url) => Shimmer.fromColors(
+                                      baseColor: Colors.grey[300]!,
+                                      highlightColor: Colors.grey[100]!,
+                                      child: Container(
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.error,
+                                      size: 40,
+                                      color: Colors.grey[400],
+                                    ),
                                   ),
                                 ),
                               )
@@ -156,8 +163,7 @@ class HomeMagazinePage extends StatelessWidget {
                                         color: Color(0xffFFFFFF),
                                       ),
                                       maxLines: 2,
-                                      overflow: TextOverflow.visible,
-                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     Spacer(),
                                     Align(
