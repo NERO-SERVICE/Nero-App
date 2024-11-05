@@ -26,60 +26,65 @@ class CommunityMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
-      body: Obx(
-            () {
-          if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
-            return Center(child: CustomLoadingIndicator());
-          }
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          Obx(
+                () {
+              if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
+                return Center(child: CustomLoadingIndicator());
+              }
 
-          if (_controller.posts.isEmpty) {
-            return Center(
-                child: Text(
-                  '게시물이 없습니다.',
-                  style: TextStyle(color: Colors.white),
-                ));
-          }
+              if (_controller.posts.isEmpty) {
+                return Center(
+                    child: Text(
+                      '게시물이 없습니다.',
+                      style: TextStyle(color: Colors.white),
+                    ));
+              }
 
-          return RefreshIndicator(
-            onRefresh: () => _controller.fetchPosts(refresh: true),
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: _controller.posts.length + 1,
-              itemBuilder: (context, index) {
-                if (index < _controller.posts.length) {
-                  final post = _controller.posts[index];
-                  return PostItem(
-                    post: post,
-                    onTap: () async {
-                      await Get.to(
-                              () => CommunityDetailPage(postId: post.postId));
-                      _controller.fetchPosts(refresh: true);
-                    },
-                    onLike: () {
-                      _controller.toggleLikePost(post.postId);
-                    },
-                    onComment: () async {
-                      await Get.to(
-                              () => CommunityDetailPage(postId: post.postId));
-                      _controller.fetchPosts(refresh: true);
-                    },
-                  );
-                } else {
-                  return Obx(() {
-                    if (_controller.hasMorePosts.value) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Center(child: CustomLoadingIndicator()),
+              return RefreshIndicator(
+                onRefresh: () => _controller.fetchPosts(refresh: true),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _controller.posts.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index < _controller.posts.length) {
+                      final post = _controller.posts[index];
+                      return PostItem(
+                        post: post,
+                        onTap: () async {
+                          await Get.to(
+                                  () => CommunityDetailPage(postId: post.postId));
+                          _controller.fetchPosts(refresh: true);
+                        },
+                        onLike: () {
+                          _controller.toggleLikePost(post.postId);
+                        },
+                        onComment: () async {
+                          await Get.to(
+                                  () => CommunityDetailPage(postId: post.postId));
+                          _controller.fetchPosts(refresh: true);
+                        },
                       );
                     } else {
-                      return SizedBox.shrink();
+                      return Obx(() {
+                        if (_controller.hasMorePosts.value) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(child: CustomLoadingIndicator()),
+                          );
+                        } else {
+                          return SizedBox.shrink();
+                        }
+                      });
                     }
-                  });
-                }
-              },
-            ),
-          );
-        },
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

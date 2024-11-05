@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../models/comment.dart';
 
 class CommentItem extends StatelessWidget {
@@ -15,64 +16,150 @@ class CommentItem extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
+  void _showEditDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xff2C2C2C),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.edit, color: Colors.blue),
+                title: Text(
+                  '수정',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  onEdit();
+                },
+              ),
+              Divider(color: Colors.grey),
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.red),
+                title: Text(
+                  '삭제',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  onDelete();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff2C2C2C),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 닉네임 및 날짜
-              Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 32),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    comment.nickname,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          comment.nickname,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Color(0xffFFFFFF),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          '${comment.createdAt.year}-${comment.createdAt.month.toString().padLeft(2, '0')}-${comment.createdAt.day.toString().padLeft(2, '0')}',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 10,
+                            color: Color(0xff959595),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    '${comment.createdAt.year}-${comment.createdAt.month.toString().padLeft(2, '0')}-${comment.createdAt.day.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 12,
-                    ),
+                  PopupMenuButton<String>(
+                    icon: Icon(Icons.more_vert, color: Colors.white),
+                    onSelected: (value) {
+                      _showEditDeleteDialog(context);
+                    },
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text('수정', style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete, color: Colors.red),
+                            SizedBox(width: 8),
+                            Text('삭제', style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              SizedBox(height: 8),
-
-              // 댓글 내용
-              Text(
-                comment.content,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 8),
-
-              // 좋아요 및 수정/삭제
-              Row(
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 32, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Expanded(
+                    child: Text(
+                      comment.content,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
                   GestureDetector(
                     onTap: onLike,
                     child: Row(
                       children: [
-                        Icon(
-                          comment.isLiked ? Icons.favorite : Icons.favorite_border,
-                          size: 16,
-                          color: Colors.red,
+                        SvgPicture.asset(
+                          comment.isLiked
+                              ? 'assets/develop/heart-on.svg'
+                              : 'assets/develop/heart-off.svg',
+                          width: 16,
+                          height: 16,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           '${comment.likeCount}',
                           style: TextStyle(color: Colors.white),
@@ -80,26 +167,14 @@ class CommentItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Spacer(),
-                  // 수정 및 삭제 버튼 (작성자만 보이도록 조건 추가 필요)
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue, size: 20),
-                        onPressed: onEdit,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red, size: 20),
-                        onPressed: onDelete,
-                      ),
-                    ],
-                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+          ],
         ),
-      ),
+        Divider(color: Color(0xffD9D9D9)),
+      ],
     );
   }
 }

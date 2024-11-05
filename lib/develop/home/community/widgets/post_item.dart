@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/post.dart';
@@ -69,14 +71,29 @@ class PostItem extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 if (post.images.isNotEmpty)
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      image: DecorationImage(
-                        image: NetworkImage(post.images[0]),
-                        fit: BoxFit.cover,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: CachedNetworkImage(
+                      imageUrl: post.images[0],
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: double.infinity,
+                          height: 200,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Center(
+                        child: SvgPicture.asset(
+                          'assets/develop/nero-small-logo.svg',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   )
@@ -89,13 +106,9 @@ class PostItem extends StatelessWidget {
                       color: Color(0xff1C1C1C),
                     ),
                     child: Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: SvgPicture.asset(
-                          'assets/develop/nero-small-logo.svg',
-                          fit: BoxFit.contain,
-                        ),
+                      child: SvgPicture.asset(
+                        'assets/develop/nero-small-logo.svg',
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -104,7 +117,7 @@ class PostItem extends StatelessWidget {
                     GestureDetector(
                       onTap: onLike,
                       child: Padding(
-                        padding: const EdgeInsets.all(16), // 터치 영역을 넓히기 위한 여백
+                        padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
                             SvgPicture.asset(
@@ -117,7 +130,12 @@ class PostItem extends StatelessWidget {
                             SizedBox(width: 4),
                             Text(
                               '${post.likeCount}',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 10,
+                                color: Color(0xffD9D9D9),
+                              ),
                             ),
                           ],
                         ),
@@ -137,7 +155,12 @@ class PostItem extends StatelessWidget {
                             SizedBox(width: 4),
                             Text(
                               '${post.commentCount}',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 10,
+                                color: Color(0xffD9D9D9),
+                              ),
                             ),
                           ],
                         ),

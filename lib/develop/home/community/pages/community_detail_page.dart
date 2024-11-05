@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../controllers/community_controller.dart';
 import '../models/comment.dart';
@@ -28,7 +32,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
 
     _commentScrollController.addListener(() {
       if (_commentScrollController.position.pixels >=
-              _commentScrollController.position.maxScrollExtent - 300 &&
+          _commentScrollController.position.maxScrollExtent - 300 &&
           !_controller.isLoadingComments.value &&
           _controller.hasMoreComments.value) {
         _controller.fetchComments(widget.postId);
@@ -45,13 +49,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
 
   void _showEditPostDialog(Post post) {
     final TextEditingController _editController =
-        TextEditingController(text: post.content);
+    TextEditingController(text: post.content);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("게시물 수정" , style: TextStyle(color: Colors.white),),
+          title: Text("게시물 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editController,
             maxLines: null,
@@ -61,10 +65,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("취소", style: TextStyle(color: Colors.white),),
+              onPressed: () => Get.back(),
+              child: Text("취소", style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
@@ -77,7 +79,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   Get.back();
                 }
               },
-              child: Text("수정", style: TextStyle(color: Colors.white),),
+              child: Text("수정", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -110,7 +112,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       },
     );
   }
-
 
   void _showEditCommentDialog(Comment comment) {
     final TextEditingController _editCommentController = TextEditingController(text: comment.content);
@@ -151,7 +152,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       builder: (context) {
         return AlertDialog(
           title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 댓글을 삭제하시겠습니까?"),
+          content: Text("정말로 이 댓글을 삭제하시겠습니까?", style: TextStyle(color: Colors.white)),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
@@ -181,15 +182,12 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('게시물 상세', style: TextStyle(color: Colors.white),),
-      ),
+      appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
       body: Obx(
-        () {
+            () {
           if (_controller.isLoadingPostDetail.value) {
             return Center(child: CustomLoadingIndicator());
           }
@@ -202,161 +200,218 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // 게시물 정보
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 닉네임 및 날짜
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  post.nickname,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.white,
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 32),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.nickname,
+                                    style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: Color(0xffFFFFFF),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-
-                            // 게시물 내용
-                            Text(
-                              post.content,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: 16),
-
-                            // 사진 (최대 3개)
-                            if (post.images.isNotEmpty)
-                              SizedBox(
-                                height: 200,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: post.images.length > 3
-                                      ? 3
-                                      : post.images.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Image.network(
-                                        post.images[index],
-                                        width: 200,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                            'assets/develop/default.png',
-                                            width: 200,
-                                            height: 200,
-                                            fit: BoxFit.cover,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 10,
+                                      color: Color(0xff959595),
+                                    ),
+                                  ),
+                                ],
                               ),
-
-                            SizedBox(height: 16),
-
-                            // 좋아요 및 댓글 수
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    _controller.toggleLikePost(post.postId);
-                                  },
+                            ),
+                          ),
+                          Container(
+                            child: PopupMenuButton<String>(
+                              icon: Icon(Icons.more_vert, color: Colors.white),
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _showEditPostDialog(post);
+                                } else if (value == 'delete') {
+                                  _showDeletePostDialog(post);
+                                }
+                              },
+                              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                PopupMenuItem<String>(
+                                  value: 'edit',
                                   child: Row(
                                     children: [
-                                      Icon(
-                                        post.isLiked
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text('${post.likeCount}', style: TextStyle(color: Colors.white),),
+                                      Icon(Icons.edit, color: Colors.blue),
+                                      SizedBox(width: 8),
+                                      Text('수정', style: TextStyle(color: Colors.black)),
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 16),
-                                GestureDetector(
-                                  onTap: () {},
+                                PopupMenuItem<String>(
+                                  value: 'delete',
                                   child: Row(
                                     children: [
-                                      Icon(
-                                        Icons.comment,
-                                        color: Colors.blue,
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text('${post.commentCount}', style: TextStyle(color: Colors.white),),
+                                      Icon(Icons.delete, color: Colors.red),
+                                      SizedBox(width: 8),
+                                      Text('삭제', style: TextStyle(color: Colors.black)),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
-
-                            SizedBox(height: 16),
-
-                            // 수정 및 삭제 버튼 (작성자만)
-                            // 작성자 확인은 서버에서 처리하므로 여기서는 예시로 버튼 표시
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () {
-                                    _showEditPostDialog(post);
-                                  },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            post.content,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      if (post.images.isNotEmpty)
+                        SizedBox(
+                          height: 300,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: post.images.length > 3 ? 3 : post.images.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  right: 8.0,
+                                  left: index == 0 ? 32.0 : 0,
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () {
-                                    _showDeletePostDialog(post);
-                                  },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: CachedNetworkImage(
+                                    imageUrl: post.images[index],
+                                    width: 300,
+                                    height: 300,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Shimmer.fromColors(
+                                      baseColor: Colors.grey[300]!,
+                                      highlightColor: Colors.grey[100]!,
+                                      child: Container(
+                                        width: 300,
+                                        height: 300,
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) => Image.asset(
+                                      'assets/develop/default.png',
+                                      width: 300,
+                                      height: 300,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ],
+                              );
+                            },
+                          ),
+                        ),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _controller.toggleLikePost(post.postId);
+                              },
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    post.isLiked
+                                        ? 'assets/develop/heart-on.svg'
+                                        : 'assets/develop/heart-off.svg',
+                                    width: 16,
+                                    height: 16,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '${post.likeCount}',
+                                    style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 10,
+                                      color: Color(0xffD9D9D9),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/develop/comment_icon.svg',
+                                    width: 16,
+                                    height: 16,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '${post.commentCount}',
+                                    style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 10,
+                                      color: Color(0xffD9D9D9),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-
-                      Divider(),
-
-                      // 댓글 목록
+                      SizedBox(height: 16),
+                      Divider(color: Color(0xffD9D9D9)),
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                         child: Row(
                           children: [
                             Text(
                               '댓글',
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.white
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Color(0xffFFFFFF),
                               ),
                             ),
                           ],
                         ),
                       ),
+                      Divider(color: Color(0xffD9D9D9)),
                       Obx(() {
                         if (_controller.isLoadingComments.value && _controller.comments.isEmpty) {
                           return Center(child: CustomLoadingIndicator());
                         }
 
                         if (_controller.comments.isEmpty) {
-                          return Center(child: Text('댓글이 없습니다.', style: TextStyle(color: Colors.white)));
+                          return Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Center(child: Text('댓글이 없습니다.', style: TextStyle(color: Colors.white))),
+                          );
                         }
 
                         return ListView.builder(
@@ -379,8 +434,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   ),
                 ),
               ),
-
-              // 댓글 입력 필드
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -393,21 +446,19 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
                           ),
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                         ),
                       ),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: _submitComment,
-                      child: Text('게시', style: TextStyle(color: Colors.white),),
+                      child: Text('게시', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                       ),
                     ),
                   ],
