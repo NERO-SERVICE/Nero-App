@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import '../models/comment.dart';
 
 class CommentItem extends StatelessWidget {
@@ -40,7 +41,7 @@ class CommentItem extends StatelessWidget {
                   onEdit();
                 },
               ),
-              Divider(color: Colors.grey),
+              CustomCommunityDivider(),
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),
                 title: Text(
@@ -173,7 +174,7 @@ class CommentItem extends StatelessWidget {
             const SizedBox(height: 16),
           ],
         ),
-        Divider(color: Color(0xffD9D9D9)),
+        CustomCommunityDivider(),
       ],
     );
   }

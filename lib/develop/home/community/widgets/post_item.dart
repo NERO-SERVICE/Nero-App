@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../models/post.dart';
@@ -26,7 +27,7 @@ class PostItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Divider(color: Color(0xffD9D9D9)),
+          CustomCommunityDivider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(

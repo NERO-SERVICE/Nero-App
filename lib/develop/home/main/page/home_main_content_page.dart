@@ -373,34 +373,56 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // "게시판" 버튼 추가
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0, vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // CommunityController를 lazy로 주입
-                        Get.lazyPut(() => CommunityController());
-                        Get.to(() => CommunityMainPage());
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          '커뮤니티 마당 (Beta)',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        '게시판',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => CommunityMainPage());
+                          },
+                          child: Text(
+                            '더보기',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xffD9D9D9),
+                            ),
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
+                      "같은 고민을 하는 유저들을\n한 곳에서 만나볼 수 있어요",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD9D9D9),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 40),
+                  CustomDivider(),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

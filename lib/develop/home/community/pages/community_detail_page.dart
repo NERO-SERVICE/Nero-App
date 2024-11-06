@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -384,7 +385,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Divider(color: Color(0xffD9D9D9)),
+                      CustomCommunityDivider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                         child: Row(
@@ -401,7 +402,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                           ],
                         ),
                       ),
-                      Divider(color: Color(0xffD9D9D9)),
+                      CustomCommunityDivider(),
                       Obx(() {
                         if (_controller.isLoadingComments.value && _controller.comments.isEmpty) {
                           return Center(child: CustomLoadingIndicator());
@@ -435,30 +436,62 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _commentController,
-                        decoration: InputDecoration(
-                          hintText: '댓글을 입력하세요',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: 50,
+                          maxHeight: 50,
+                        ),
+                        child: TextField(
+                          controller: _commentController,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            color: Color(0xffFFFFFF),
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                          cursorColor: Color(0xffD9D9D9),
+                          decoration: InputDecoration(
+                            hintText: '댓글을 입력하세요',
+                            hintStyle: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Color(0xffD9D9D9),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            filled: true,
+                            fillColor: Color(0xffD8D8D8).withOpacity(0.4),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 21),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: _submitComment,
-                      child: Text('게시', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+                        backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/develop/send.svg',
+                          width: 24,
+                          height: 24,
                         ),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                       ),
                     ),
                   ],
