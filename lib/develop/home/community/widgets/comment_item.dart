@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import '../models/comment.dart';
 
 class CommentItem extends StatelessWidget {
@@ -40,7 +41,7 @@ class CommentItem extends StatelessWidget {
                   onEdit();
                 },
               ),
-              Divider(color: Colors.grey),
+              CustomCommunityDivider(),
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),
                 title: Text(
@@ -67,7 +68,6 @@ class CommentItem extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 32),
               child: Row(
@@ -129,7 +129,6 @@ class CommentItem extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 32, right: 16),
               child: Row(
@@ -156,8 +155,8 @@ class CommentItem extends StatelessWidget {
                           comment.isLiked
                               ? 'assets/develop/heart-on.svg'
                               : 'assets/develop/heart-off.svg',
-                          width: 16,
-                          height: 16,
+                          width: 24,
+                          height: 24,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -173,7 +172,7 @@ class CommentItem extends StatelessWidget {
             const SizedBox(height: 16),
           ],
         ),
-        Divider(color: Color(0xffD9D9D9)),
+        CustomCommunityDivider(),
       ],
     );
   }

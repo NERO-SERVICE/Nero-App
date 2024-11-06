@@ -70,11 +70,6 @@ class CommunityController extends GetxController {
       update();  // UI 업데이트
     } catch (e) {
       print('게시물 가져오기 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '게시물 가져오기에 실패했습니다.',
-        isSuccess: false,
-      );
     } finally {
       isLoadingPosts.value = false;
     }
@@ -114,11 +109,6 @@ class CommunityController extends GetxController {
       );
     } catch (e) {
       print('게시물 작성 실패: $e');
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '게시물 작성에 실패했습니다.',
-        isSuccess: false,
-      );
     }
   }
 
@@ -296,7 +286,7 @@ class CommunityController extends GetxController {
 
   // 게시 가능 여부 검증
   void _isValidSubmitPossible() {
-    if (content.value.isNotEmpty && selectedImages.isNotEmpty) {
+    if (content.value.isNotEmpty) {
       isPossibleSubmit.value = true;
     } else {
       isPossibleSubmit.value = false;
