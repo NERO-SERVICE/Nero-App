@@ -103,15 +103,15 @@ class PostItem extends StatelessWidget {
                     GestureDetector(
                       onTap: onLike,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                        padding: const EdgeInsets.only(top: 16, bottom: 16),
                         child: Row(
                           children: [
                             SvgPicture.asset(
                               post.isLiked
                                   ? 'assets/develop/heart-on.svg'
                                   : 'assets/develop/heart-off.svg',
-                              width: 16,
-                              height: 16,
+                              width: 30,
+                              height: 30,
                             ),
                             SizedBox(width: 4),
                             Text(
@@ -119,7 +119,7 @@ class PostItem extends StatelessWidget {
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w400,
-                                fontSize: 10,
+                                fontSize: 14,
                                 color: Color(0xffD9D9D9),
                               ),
                             ),
@@ -135,8 +135,8 @@ class PostItem extends StatelessWidget {
                           children: [
                             SvgPicture.asset(
                               'assets/develop/comment_icon.svg',
-                              width: 16,
-                              height: 16,
+                              width: 30,
+                              height: 30,
                             ),
                             SizedBox(width: 4),
                             Text(
@@ -144,7 +144,7 @@ class PostItem extends StatelessWidget {
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w400,
-                                fontSize: 10,
+                                fontSize: 14,
                                 color: Color(0xffD9D9D9),
                               ),
                             ),

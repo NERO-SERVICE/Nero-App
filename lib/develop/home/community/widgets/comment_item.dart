@@ -68,7 +68,6 @@ class CommentItem extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 32),
               child: Row(
@@ -130,7 +129,6 @@ class CommentItem extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 32, right: 16),
               child: Row(
@@ -157,8 +155,8 @@ class CommentItem extends StatelessWidget {
                           comment.isLiked
                               ? 'assets/develop/heart-on.svg'
                               : 'assets/develop/heart-off.svg',
-                          width: 16,
-                          height: 16,
+                          width: 24,
+                          height: 24,
                         ),
                         const SizedBox(width: 4),
                         Text(

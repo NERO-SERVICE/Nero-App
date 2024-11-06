@@ -56,18 +56,27 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Color(0xff333333), // 배경 색상 조정
           title: Text("게시물 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editController,
             maxLines: null,
             decoration: InputDecoration(
               hintText: "내용을 입력하세요",
+              hintStyle: TextStyle(color: Color(0xffD9D9D9)), // 힌트 텍스트 색상 조정
+              filled: true,
+              fillColor: Color(0xff555555), // 입력창 배경 색상 조정
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
             ),
+            style: TextStyle(color: Colors.white), // 입력 텍스트 색상
           ),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: Text("취소", style: TextStyle(color: Colors.white)),
+              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
@@ -80,7 +89,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   Get.back();
                 }
               },
-              child: Text("수정", style: TextStyle(color: Colors.white)),
+              child: Text("수정", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -93,20 +102,22 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Color(0xff333333), // 배경 색상 조정
           title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Colors.white)),
+          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: Text("취소", style: TextStyle(color: Colors.white)),
+              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
                 _controller.deletePost(post.postId);
-                Get.back();
+                Get.back(); // 다이얼로그 닫기
+                Get.back(); // CommunityMainPage로 돌아가기
                 _controller.fetchPosts(refresh: true); // 목록 갱신
               },
-              child: Text("삭제", style: TextStyle(color: Colors.white)),
+              child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -120,16 +131,27 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Color(0xff333333), // 배경 색상 조정
           title: Text("댓글 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editCommentController,
             maxLines: null,
-            decoration: InputDecoration(hintText: "댓글을 입력하세요"),
+            decoration: InputDecoration(
+              hintText: "댓글을 입력하세요",
+              hintStyle: TextStyle(color: Color(0xffD9D9D9)), // 힌트 텍스트 색상 조정
+              filled: true,
+              fillColor: Color(0xff555555), // 입력창 배경 색상 조정
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            style: TextStyle(color: Colors.white), // 입력 텍스트 색상
           ),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: Text("취소", style: TextStyle(color: Colors.white)),
+              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
@@ -139,7 +161,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   Get.back();
                 }
               },
-              child: Text("수정", style: TextStyle(color: Colors.white)),
+              child: Text("수정", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -152,25 +174,27 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Color(0xff333333), // 배경 색상 조정
           title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 댓글을 삭제하시겠습니까?", style: TextStyle(color: Colors.white)),
+          content: Text("정말로 이 댓글을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: Text("취소", style: TextStyle(color: Colors.white)),
+              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
                 _controller.deleteComment(comment.commentId);
                 Get.back();
               },
-              child: Text("삭제", style: TextStyle(color: Colors.white)),
+              child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
       },
     );
   }
+
 
   void _submitComment() {
     String content = _commentController.text.trim();
@@ -342,8 +366,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                     post.isLiked
                                         ? 'assets/develop/heart-on.svg'
                                         : 'assets/develop/heart-off.svg',
-                                    width: 16,
-                                    height: 16,
+                                    width: 30,
+                                    height: 30,
                                   ),
                                   SizedBox(width: 4),
                                   Text(
@@ -351,7 +375,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                     style: TextStyle(
                                       fontFamily: 'Pretendard',
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 10,
+                                      fontSize: 14,
                                       color: Color(0xffD9D9D9),
                                     ),
                                   ),
@@ -365,8 +389,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                 children: [
                                   SvgPicture.asset(
                                     'assets/develop/comment_icon.svg',
-                                    width: 16,
-                                    height: 16,
+                                    width: 30,
+                                    height: 30,
                                   ),
                                   SizedBox(width: 4),
                                   Text(
@@ -374,7 +398,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                     style: TextStyle(
                                       fontFamily: 'Pretendard',
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 10,
+                                      fontSize: 14,
                                       color: Color(0xffD9D9D9),
                                     ),
                                   ),

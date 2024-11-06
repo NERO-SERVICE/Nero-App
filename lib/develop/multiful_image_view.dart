@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import 'dart:ui';
+
 class MultifulImageView extends StatefulWidget {
   final List<AssetEntity>? initImages;
 
@@ -22,6 +24,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
   int lastPage = -1;
   List<AssetEntity> imageList = [];
   List<AssetEntity> selectedImages = [];
+  bool isSubmitting = false; // 완료 버튼 중복 클릭 방지용 플래그
 
   @override
   void initState() {
@@ -82,14 +85,30 @@ class _MultifulImageViewState extends State<MultifulImageView> {
     }
   }
 
-  bool containValue(AssetEntity value) {
-    return selectedImages.any((element) => element.id == value.id);
+  void _onSubmit() {
+    if (!isSubmitting) {
+      setState(() {
+        isSubmitting = true;
+      });
+      if (selectedImages.isNotEmpty) {
+        Get.back(result: selectedImages);
+      } else {
+        Get.snackbar(
+          '알림',
+          '선택된 이미지가 없습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
+        setState(() {
+          isSubmitting = false; // 이미지 선택이 없을 때 플래그 초기화
+        });
+      }
+    }
   }
 
-  String returnIndexValue(AssetEntity value) {
-    var index = selectedImages.indexWhere((element) => element.id == value.id);
-    if (index == -1) return '';
-    return (index + 1).toString();
+  bool containValue(AssetEntity value) {
+    return selectedImages.any((element) => element.id == value.id);
   }
 
   Widget _photoWidget(AssetEntity asset) {
@@ -99,10 +118,9 @@ class _MultifulImageViewState extends State<MultifulImageView> {
         if (snapshot.hasData) {
           return GestureDetector(
             onTap: () {
-              // 하나의 이미지만 선택하도록 설정
-              selectedImages.clear(); // 선택된 이미지 초기화
-              selectedImages.add(asset); // 새로 선택한 이미지를 추가
-              Get.back(result: selectedImages); // 선택한 이미지 1개 전달 후 페이지 닫기
+              selectedImages.clear();
+              selectedImages.add(asset);
+              Get.back(result: selectedImages);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -125,36 +143,59 @@ class _MultifulImageViewState extends State<MultifulImageView> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('이미지 선택'),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              if (selectedImages.isNotEmpty) {
-                Get.back(result: selectedImages);
-              } else {
-                Get.snackbar(
-                  '알림',
-                  '선택된 이미지가 없습니다.',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.redAccent,
-                  colorText: Colors.white,
-                );
-              }
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(top: 20.0, right: 25),
-              child: Text(
-                '완료',
-                style: TextStyle(fontSize: 16),
+        automaticallyImplyLeading: false,
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+        toolbarHeight: 56.0,
+        titleSpacing: 0,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            const Text(
+              '이미지 선택',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: Colors.white,
               ),
             ),
-          )
-        ],
+            GestureDetector(
+              onTap: isSubmitting ? null : _onSubmit,
+              child: Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Text(
+                  '완료',
+                  style: TextStyle(
+                    color: isSubmitting ? Colors.grey : Color(0xffD0EE17),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -172,7 +213,7 @@ class _MultifulImageViewState extends State<MultifulImageView> {
                 return _photoWidget(imageList[index]);
               },
             ),
-          )
+          ),
         ],
       ),
     );
