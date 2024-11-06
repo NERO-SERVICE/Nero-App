@@ -108,37 +108,37 @@ class LoginPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          // const SizedBox(height: 16),
-          // Btn(
-          //   color: Colors.white,
-          //   onTap: () => Get.find<LoginController>().appleLogin(),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       SizedBox(
-          //         width: 24,
-          //         height: 24,
-          //         child: SvgPicture.asset('assets/images/apple.svg'),
-          //       ),
-          //       Expanded(
-          //         child: Center(
-          //           child: const Text(
-          //             'Apple 로그인',
-          //             style: TextStyle(
-          //               fontFamily: 'Pretendard',
-          //               fontWeight: FontWeight.w500,
-          //               color: Colors.black,
-          //               fontSize: 16,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(12),
-          //   ),
-          // ),
+          const SizedBox(height: 16),
+          Btn(
+            color: Colors.white,
+            onTap: () => Get.find<LoginController>().appleLogin(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: SvgPicture.asset('assets/images/apple.svg'),
+                ),
+                Expanded(
+                  child: Center(
+                    child: const Text(
+                      'Apple 로그인',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ],
       ),
     );

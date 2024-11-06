@@ -4,10 +4,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
-import 'package:nero_app/develop/multiful_image_view.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 class CommunityWritePage extends StatefulWidget {
   @override
@@ -18,29 +17,20 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   final CommunityController _controller = Get.find<CommunityController>();
   final TextEditingController _contentController = TextEditingController();
   List<File> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImages() async {
     try {
-      var selectedAssets = await Get.to<List<AssetEntity>?>(
-        MultifulImageView(
-          initImages: [],
-        ),
-      );
+      final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-      if (selectedAssets != null && selectedAssets.isNotEmpty) {
-        List<File> files = [];
-        for (var asset in selectedAssets) {
-          var file = await asset.file;
-          if (file != null) {
-            files.add(file);
-          }
-        }
+      if (pickedFile != null) {
+        final File imageFile = File(pickedFile.path);
 
         setState(() {
-          _selectedImages = files;
+          _selectedImages = [imageFile];  // 한 장의 이미지만 선택
         });
 
-        _controller.addImages(files);
+        _controller.addImages([imageFile]);
       }
     } catch (e) {
       print('이미지 선택 실패: $e');
@@ -98,48 +88,48 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   Widget _buildImagePreview() {
     return _selectedImages.isNotEmpty
         ? SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _selectedImages.length,
-              itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(right: 8),
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: DecorationImage(
-                          image: FileImage(_selectedImages[index]),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _selectedImages.length,
+        itemBuilder: (context, index) {
+          return Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: FileImage(_selectedImages[index]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: GestureDetector(
+                  onTap: () => _removeImage(index),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: GestureDetector(
-                        onTap: () => _removeImage(index),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            size: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                    child: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Colors.white,
                     ),
-                  ],
-                );
-              },
-            ),
-          )
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    )
         : SizedBox.shrink();
   }
 
