@@ -5,6 +5,7 @@ class Post extends Equatable {
   final String content;
   final List<String> images;
   final String nickname;
+  final String? profileImageUrl;
   final DateTime createdAt;
   final int likeCount;
   late final int commentCount;
@@ -15,6 +16,7 @@ class Post extends Equatable {
     required this.content,
     required this.images,
     required this.nickname,
+    this.profileImageUrl,
     required this.createdAt,
     required this.likeCount,
     required this.commentCount,
@@ -30,6 +32,9 @@ class Post extends Equatable {
           .toList() ??
           [],
       nickname: json['user'] != null ? json['user']['nickname'] ?? '' : '',
+      profileImageUrl: json['user'] != null && json['user']['profile_image_url'] != null
+          ? json['user']['profile_image_url'] as String
+          : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
@@ -45,6 +50,7 @@ class Post extends Equatable {
       content: '',
       images: [],
       nickname: '',
+      profileImageUrl: null, // 빈 문자열 대신 null로 설정
       createdAt: DateTime.now(),
       likeCount: 0,
       commentCount: 0,
@@ -57,6 +63,7 @@ class Post extends Equatable {
     String? content,
     List<String>? images,
     String? nickname,
+    String? profileImageUrl,
     DateTime? createdAt,
     int? likeCount,
     int? commentCount,
@@ -67,6 +74,7 @@ class Post extends Equatable {
       content: content ?? this.content,
       images: images ?? this.images,
       nickname: nickname ?? this.nickname,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       createdAt: createdAt ?? this.createdAt,
       likeCount: likeCount ?? this.likeCount,
       commentCount: commentCount ?? this.commentCount,
@@ -80,6 +88,7 @@ class Post extends Equatable {
     content,
     images,
     nickname,
+    profileImageUrl,
     createdAt,
     likeCount,
     commentCount,

@@ -20,6 +20,22 @@ class PostItem extends StatelessWidget {
     required this.onComment,
   }) : super(key: key);
 
+  Widget _buildProfileImage() {
+    if (post.profileImageUrl != null && post.profileImageUrl!.isNotEmpty) {
+      return CircleAvatar(
+        radius: 16,
+        backgroundImage: CachedNetworkImageProvider(post.profileImageUrl!),
+        backgroundColor: Colors.grey[200],
+      );
+    } else {
+      return const CircleAvatar(
+        radius: 16,
+        backgroundImage: AssetImage('assets/develop/default.png'),
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,36 +44,40 @@ class PostItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomCommunityDivider(),
+          SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                _buildProfileImage(),
+                SizedBox(width: 8),
+                Text(
+                  post.nickname,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color(0xffFFFFFF),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 10,
+                    color: Color(0xff959595),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 56, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.nickname,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: Color(0xffFFFFFF),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 10,
-                        color: Color(0xff959595),
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 16),
                 Text(
                   post.content,
