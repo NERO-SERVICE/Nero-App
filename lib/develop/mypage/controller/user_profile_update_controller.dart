@@ -1,5 +1,3 @@
-// lib/develop/mypage/controller/user_profile_update_controller.dart
-
 import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:nero_app/develop/mypage/model/user_update_profile.dart';
@@ -32,11 +30,12 @@ class UserProfileUpdateController extends GetxController {
     try {
       final userInfo = await _repository.getUserInfo();
       if (userInfo != null) {
-        nicknameController.text = userInfo.nickname.isNotEmpty ? userInfo.nickname : '';
+        nicknameController.text =
+        userInfo.nickname.isNotEmpty ? userInfo.nickname : '';
         emailController.text = userInfo.email.isNotEmpty ? userInfo.email : '';
         birthController.text = userInfo.birth.isNotEmpty ? userInfo.birth : '';
         selectedSex.value = userInfo.sex.isNotEmpty ? userInfo.sex : '';
-        profileImageUrl.value = '${_dioService.baseDomain}${userInfo.profileImageUrl}';
+        profileImageUrl.value = userInfo.profileImageUrl ?? '';
       } else {
         nicknameController.text = '';
         emailController.text = '';
@@ -79,11 +78,13 @@ class UserProfileUpdateController extends GetxController {
         birth: birthController.text,
         sex: selectedSex.value,
       );
+      // 사용자 정보 업데이트
       final success = await _repository.updateUserInfo(userInfo);
       if (success) {
-        // 이미지가 선택된 경우 프로필 이미지 업로드
+        // 프로필 이미지가 선택된 경우에만 업로드
         if (selectedImage.value != null) {
-          final imageSuccess = await _repository.uploadProfileImage(selectedImage.value!);
+          final imageSuccess = await _repository.uploadProfileImage(
+              selectedImage.value!);
           if (imageSuccess) {
             CustomSnackbar.show(
               context: Get.context!,
@@ -91,7 +92,6 @@ class UserProfileUpdateController extends GetxController {
               isSuccess: true,
             );
             _fetchUserInfo();
-            Get.back();
           } else {
             CustomSnackbar.show(
               context: Get.context!,
@@ -105,8 +105,8 @@ class UserProfileUpdateController extends GetxController {
             message: '프로필이 성공적으로 업데이트되었습니다.',
             isSuccess: true,
           );
-          Get.back();
         }
+        Get.back();
       } else {
         CustomSnackbar.show(
           context: Get.context!,
@@ -115,10 +115,9 @@ class UserProfileUpdateController extends GetxController {
         );
       }
     } catch (e) {
-      String errorMessage = '프로필 업데이트 중 오류가 발생했습니다.';
       CustomSnackbar.show(
         context: Get.context!,
-        message: errorMessage,
+        message: '프로필 업데이트 중 오류가 발생했습니다.',
         isSuccess: false,
       );
     }

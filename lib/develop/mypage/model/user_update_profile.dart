@@ -1,5 +1,3 @@
-// lib/develop/mypage/model/user_update_profile.dart
-
 import 'dart:io';
 import 'package:intl/intl.dart';
 
@@ -36,7 +34,7 @@ class UserUpdateProfile {
       email: json['email'] ?? '',
       birth: formattedBirth,
       sex: json['sex'] ?? '',
-      profileImageUrl: json['profile_image'] != null ? json['profile_image'] : null,
+      profileImageUrl: json['profile_image']['image_url'] ?? '',
     );
   }
 

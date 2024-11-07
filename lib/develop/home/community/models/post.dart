@@ -32,8 +32,8 @@ class Post extends Equatable {
           .toList() ??
           [],
       nickname: json['user'] != null ? json['user']['nickname'] ?? '' : '',
-      profileImageUrl: json['user'] != null && json['user']['profile_image_url'] != null
-          ? json['user']['profile_image_url'] as String
+      profileImageUrl: json['user'] != null && json['user']['profile_image'] != null
+          ? json['user']['profile_image']['image_url'] as String
           : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
@@ -50,7 +50,7 @@ class Post extends Equatable {
       content: '',
       images: [],
       nickname: '',
-      profileImageUrl: null, // 빈 문자열 대신 null로 설정
+      profileImageUrl: '',
       createdAt: DateTime.now(),
       likeCount: 0,
       commentCount: 0,
