@@ -207,6 +207,22 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     }
   }
 
+  Widget _buildProfileImage(Post post) {
+    if (post.profileImageUrl != null && post.profileImageUrl!.isNotEmpty) {
+      return CircleAvatar(
+        radius: 16,
+        backgroundImage: CachedNetworkImageProvider(post.profileImageUrl!),
+        backgroundColor: Colors.grey[200],
+      );
+    } else {
+      return const CircleAvatar(
+        radius: 16,
+        backgroundImage: AssetImage('assets/develop/default_profile.png'),
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,6 +251,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  _buildProfileImage(post),
+                                  SizedBox(width: 12),
                                   Text(
                                     post.nickname,
                                     style: TextStyle(
@@ -244,7 +262,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                       color: Color(0xffFFFFFF),
                                     ),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 8),
                                   Text(
                                     '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
                                     style: TextStyle(

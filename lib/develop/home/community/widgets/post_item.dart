@@ -30,7 +30,7 @@ class PostItem extends StatelessWidget {
     } else {
       return const CircleAvatar(
         radius: 16,
-        backgroundImage: AssetImage('assets/develop/default.png'),
+        backgroundImage: AssetImage('assets/develop/default_profile.png'),
         backgroundColor: Colors.grey,
       );
     }
@@ -60,7 +60,7 @@ class PostItem extends StatelessWidget {
                     color: Color(0xffFFFFFF),
                   ),
                 ),
-                SizedBox(width: 5),
+                SizedBox(width: 8),
                 Text(
                   '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
                   style: TextStyle(

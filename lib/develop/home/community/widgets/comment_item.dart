@@ -85,7 +85,7 @@ class CommentItem extends StatelessWidget {
                             color: Color(0xffFFFFFF),
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        SizedBox(width: 8),
                         Text(
                           '${comment.createdAt.year}-${comment.createdAt.month.toString().padLeft(2, '0')}-${comment.createdAt.day.toString().padLeft(2, '0')}',
                           style: TextStyle(
