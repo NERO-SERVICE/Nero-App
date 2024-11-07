@@ -1,3 +1,6 @@
+// lib/develop/mypage/model/user_update_profile.dart
+
+import 'dart:io';
 import 'package:intl/intl.dart';
 
 class UserUpdateProfile {
@@ -5,12 +8,16 @@ class UserUpdateProfile {
   final String email;
   final String birth;
   final String sex;
+  final File? profileImage;
+  final String? profileImageUrl;
 
   UserUpdateProfile({
     required this.nickname,
     required this.email,
     required this.birth,
     required this.sex,
+    this.profileImage,
+    this.profileImageUrl,
   });
 
   factory UserUpdateProfile.fromJson(Map<String, dynamic> json) {
@@ -20,7 +27,7 @@ class UserUpdateProfile {
         DateTime birthDate = DateTime.parse(json['birth']);
         formattedBirth = DateFormat('yyMMdd').format(birthDate);
       } catch (e) {
-        print("Failed to parse birth date: $e");
+        print("생년월일 파싱 실패: $e");
       }
     }
 
@@ -29,6 +36,7 @@ class UserUpdateProfile {
       email: json['email'] ?? '',
       birth: formattedBirth,
       sex: json['sex'] ?? '',
+      profileImageUrl: json['profile_image'] != null ? json['profile_image'] : null,
     );
   }
 
@@ -37,11 +45,12 @@ class UserUpdateProfile {
     if (birth.length == 6) {
       try {
         String prefix = int.parse(birth.substring(0, 2)) > 21 ? '19' : '20';
-        String formatted = '$prefix${birth.substring(0, 2)}-${birth.substring(2, 4)}-${birth.substring(4, 6)}';
+        String formatted =
+            '$prefix${birth.substring(0, 2)}-${birth.substring(2, 4)}-${birth.substring(4, 6)}';
         DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(formatted);
         formattedBirth = DateFormat('yyyy-MM-dd').format(parsedDate);
       } catch (e) {
-        print("Failed to format birth date for server: $e");
+        print("서버용 생년월일 형식 변환 실패: $e");
       }
     }
 

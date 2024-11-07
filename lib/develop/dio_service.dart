@@ -26,6 +26,11 @@ class DioService {
     _initializeInterceptors();
   }
 
+  String get baseDomain {
+    Uri baseUri = Uri.parse(_dio.options.baseUrl);
+    return "${baseUri.scheme}://${baseUri.host}";
+  }
+
   Future<void> _initializeTokens() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -187,6 +192,19 @@ class DioService {
   Future<dio.Response<dynamic>> putFormData(String url,
       {dio.FormData? formData}) async {
     return _dio.put(
+      url,
+      data: formData,
+      options: dio.Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+  }
+
+  Future<dio.Response<dynamic>> patchFormData(String url,
+      {dio.FormData? formData}) async {
+    return _dio.patch(
       url,
       data: formData,
       options: dio.Options(

@@ -1,9 +1,15 @@
+// lib/develop/mypage/view/user_profile_update_page.dart
+
+import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/develop/common/layout/common_layout.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/mypage/controller/user_profile_update_controller.dart';
+import 'package:flutter/services.dart';
+import 'package:nero_app/develop/common/layout/common_layout.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UserProfileUpdatePage extends StatefulWidget {
   const UserProfileUpdatePage({super.key});
@@ -16,7 +22,8 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
   final FocusNode _focusNodeNickName = FocusNode();
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodeBirth = FocusNode();
-  final UserProfileUpdateController controller = Get.put(UserProfileUpdateController());
+  final UserProfileUpdateController controller =
+  Get.put(UserProfileUpdateController());
 
   final List<String> sexOptions = ['여성', '남성', '기타'];
 
@@ -41,6 +48,98 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
     _focusNodeEmail.dispose();
     _focusNodeBirth.dispose();
     super.dispose();
+  }
+
+  Widget _editIcon() {
+    return Positioned(
+      bottom: 0,
+      right: 4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xffD0EE17),
+          shape: BoxShape.circle,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(
+            Icons.edit,
+            color: Colors.black,
+            size: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _profileImage() {
+    return Obx(() {
+      if (controller.selectedImage.value != null) {
+        // Display the selected local image
+        return GestureDetector(
+          onTap: controller.pickImage,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              CircleAvatar(
+                radius: 75,
+                backgroundColor: Colors.grey[800],
+                backgroundImage: FileImage(controller.selectedImage.value!),
+              ),
+              _editIcon(),
+            ],
+          ),
+        );
+      } else if (controller.profileImageUrl.value.isNotEmpty) {
+        return GestureDetector(
+          onTap: controller.pickImage,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              CircleAvatar(
+                radius: 75,
+                backgroundColor: Colors.grey[800],
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: controller.profileImageUrl.value,
+                    fit: BoxFit.cover,
+                    width: 150,
+                    height: 150,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey[800]!,
+                      highlightColor: Colors.grey[700]!,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+              _editIcon(),
+            ],
+          ),
+        );
+      } else {
+        return GestureDetector(
+          onTap: controller.pickImage,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              const CircleAvatar(
+                radius: 75,
+                backgroundColor: Colors.grey,
+              ),
+              _editIcon(),
+            ],
+          ),
+        );
+      }
+    });
   }
 
   Widget _profileNicknameField() {
@@ -94,6 +193,7 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
       child: TextField(
         controller: controller.emailController,
         cursorColor: Color(0xffD9D9D9),
+        keyboardType: TextInputType.emailAddress,
         style: const TextStyle(
           fontFamily: 'Pretendard',
           fontWeight: FontWeight.w400,
@@ -227,12 +327,22 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
           contentPadding: const EdgeInsets.all(20),
         ),
         style: TextStyle(
-          color: controller.selectedSex.value.isNotEmpty ? const Color(0xffFFFFFF) : const Color(0xff959595),
+          color: controller.selectedSex.value.isNotEmpty
+              ? const Color(0xffFFFFFF)
+              : const Color(0xff959595),
+        ),
+        hint: Text(
+          '성별을 선택해주세요',
+          style: TextStyle(
+            color: const Color(0xff959595),
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w400,
+            fontSize: 14,
+          ),
         ),
       );
     });
   }
-
 
   Widget _updateButton() {
     return ElevatedButton(
@@ -303,11 +413,7 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
               children: [
                 const SizedBox(height: 50),
                 Center(
-                  child: SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: Image.asset('assets/develop/3d-bell-icon.png'),
-                  ),
+                  child: _profileImage(),
                 ),
                 const SizedBox(height: 50),
                 Padding(
