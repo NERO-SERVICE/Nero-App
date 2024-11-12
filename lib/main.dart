@@ -152,8 +152,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(FastmemoRepository());
         Get.put(InformationRepository());
         Get.put(InformationController());
-
-        Get.lazyPut(() => CommunityController(), fenix: true);
+        Get.put(CommunityController());
+        // Get.lazyPut(() => CommunityController(), fenix: true);
       }),
       getPages: [
         GetPage(

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/fastmemo/page/fast_memo_main_page.dart';
+import 'package:nero_app/develop/home/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/home/main/page/home_main_page.dart';
 import 'package:nero_app/develop/mypage/page/my_page.dart';
 import 'package:nero_app/develop/todaylog/main/page/todaylog_main_page.dart';
@@ -33,6 +34,7 @@ class Root extends GetView<BottomNavController> {
             TodaylogMainPage(),
             FastMemoMainPage(),
             MyPage(),
+            CommunityMainPage(),
           ],
         );
       }),
@@ -46,7 +48,7 @@ class Root extends GetView<BottomNavController> {
               padding: const EdgeInsets.only(top: 8, bottom: 24, left: 24, right: 24),
               child: Obx(
                 () => GNav(
-                  gap: 12,
+                  gap: 5,
                   activeColor: Colors.white,
                   color: Colors.grey,
                   backgroundColor: Color(0xff202020),
@@ -90,6 +92,14 @@ class Root extends GetView<BottomNavController> {
                           ? 'assets/develop/mypage-on.svg'
                           : 'assets/develop/mypage-off.svg'),
                     ),
+                    GButton(
+                      icon: Icons.person,
+                      text: '커뮤니티',
+                      iconActiveColor: Colors.white,
+                      leading: SvgPicture.asset(controller.menuIndex.value == 3
+                          ? 'assets/develop/mypage-on.svg'
+                          : 'assets/develop/mypage-off.svg'),
+                    ),
                   ],
                 ),
               ),
@@ -114,6 +124,9 @@ class Root extends GetView<BottomNavController> {
         break;
       case 3:
         screenName = 'MyPage';
+        break;
+      case 4:
+        screenName = 'CommunityMainPage';
         break;
       default:
         screenName = 'HomeMainPage';

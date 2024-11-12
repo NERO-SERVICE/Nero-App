@@ -28,7 +28,6 @@ class CommunityController extends GetxController {
   var isLoadingPostDetail = false.obs;
   var isLoadingComments = false.obs;
 
-
   // 댓글 목록
   var currentCommentPage = 1.obs;
   var hasMoreComments = true.obs;
@@ -36,13 +35,10 @@ class CommunityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchPosts();
-    // 게시물 내용이나 이미지가 변경될 때마다 제출 가능 여부를 검증
-    everAll([content, selectedImages], (_) => _isValidSubmitPossible());
+    fetchAllPosts(); // CommunityMainPage용 초기 게시물 로드
   }
 
-  // 게시물 목록 가져오기
-  Future<void> fetchPosts({bool refresh = false}) async {
+  Future<void> fetchAllPosts({bool refresh = false}) async {
     if (isLoadingPosts.value) return;
 
     if (refresh) {
@@ -58,21 +54,60 @@ class CommunityController extends GetxController {
     try {
       final fetchedPosts = await _communityRepository.fetchPosts(
         page: currentPostPage.value,
-        searchQuery: searchQuery.value.isNotEmpty ? searchQuery.value : null,
       );
 
-      if (fetchedPosts.length < 10) {
-        hasMorePosts.value = false;
+      if (fetchedPosts.isNotEmpty) {
+        posts.addAll(fetchedPosts);
+        currentPostPage.value += 1;
       }
 
-      posts.addAll(fetchedPosts);
-      currentPostPage.value += 1;
-      update();  // UI 업데이트
+      // 만약 서버에서 10개 미만의 게시물을 반환했다면, 다음 요청에서 더 이상 게시물이 없음을 나타냅니다.
+      hasMorePosts.value = fetchedPosts.length == 10;
     } catch (e) {
       print('게시물 가져오기 실패: $e');
     } finally {
       isLoadingPosts.value = false;
     }
+  }
+
+  // 검색된 게시물 가져오기 (CommunitySearchPage 용)
+  Future<void> fetchFilteredPosts({bool refresh = false}) async {
+    if (isLoadingPosts.value || searchQuery.isEmpty) return;
+
+    if (refresh) {
+      currentPostPage.value = 1;
+      hasMorePosts.value = true;
+      posts.clear();
+    }
+
+    if (!hasMorePosts.value) return;
+
+    isLoadingPosts.value = true;
+
+    try {
+      final fetchedPosts = await _communityRepository.fetchPosts(
+        page: currentPostPage.value,
+        searchQuery: searchQuery.value,
+      );
+
+      if (fetchedPosts.isNotEmpty) {
+        posts.addAll(fetchedPosts);
+        currentPostPage.value += 1;
+      }
+
+      // 서버에서 10개 미만의 게시물을 반환하면 더 이상 가져올 게시물이 없다고 설정
+      hasMorePosts.value = fetchedPosts.length == 10;
+    } catch (e) {
+      print('검색된 게시물 가져오기 실패: $e');
+    } finally {
+      isLoadingPosts.value = false;
+    }
+  }
+
+  // 검색 쿼리 설정
+  void setSearchQuery(String query) {
+    searchQuery.value = query;
+    fetchFilteredPosts(refresh: true); // 검색 쿼리 변경 시 필터링된 게시물 새로고침
   }
 
   // 게시물 상세 정보 가져오기
@@ -99,7 +134,7 @@ class CommunityController extends GetxController {
         content: content,
         images: images,
       );
-      fetchPosts(refresh: true);
+      fetchAllPosts(refresh: true);
       selectedImages.clear();
       this.content.value = '';
       CustomSnackbar.show(
@@ -261,12 +296,6 @@ class CommunityController extends GetxController {
     } catch (e) {
       print('댓글 좋아요 토글 실패: $e');
     }
-  }
-
-  // 검색 쿼리 설정
-  void setSearchQuery(String query) {
-    searchQuery.value = query;
-    fetchPosts(refresh: true);
   }
 
   // 게시물 내용 업데이트

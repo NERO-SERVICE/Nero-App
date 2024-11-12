@@ -74,7 +74,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
         message: '게시물이 생성되었습니다.',
         isSuccess: true,
       );
-      Get.back();
+      Get.back(result: true);
     } catch (e) {
       print('게시물 작성 실패: $e');
       CustomSnackbar.show(
@@ -198,7 +198,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
           ],
         ),
       ),
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
@@ -217,6 +217,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
               ),
               onChanged: (value) {
                 _controller.updateContent(value);
+                _controller.isPossibleSubmit.value = value.isNotEmpty;
               },
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),

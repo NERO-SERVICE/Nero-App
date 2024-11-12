@@ -115,7 +115,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 _controller.deletePost(post.postId);
                 Get.back(); // 다이얼로그 닫기
                 Get.back(); // CommunityMainPage로 돌아가기
-                _controller.fetchPosts(refresh: true); // 목록 갱신
+                _controller.fetchAllPosts(refresh: true); // 목록 갱신
               },
               child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
             ),

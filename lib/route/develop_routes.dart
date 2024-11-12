@@ -5,7 +5,6 @@ import 'package:nero_app/develop/memories/page/memories_page.dart';
 import 'package:nero_app/develop/root.dart';
 import 'package:nero_app/develop/signup/controller/sign_up_controller.dart';
 import 'package:nero_app/develop/signup/page/sign_up_page.dart';
-import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
 import 'package:nero_app/develop/todaylog/recall/page/side_effect_page.dart';
 import 'package:nero_app/develop/todaylog/recall/page/survey_page.dart';
 import 'package:nero_app/develop/tutorial/page/tutorial_page.dart';

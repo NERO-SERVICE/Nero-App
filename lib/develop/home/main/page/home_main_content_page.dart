@@ -1,5 +1,3 @@
-// lib/home/main/page/home_main_content_page.dart
-
 import 'dart:ui';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
