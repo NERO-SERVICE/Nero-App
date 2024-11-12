@@ -1213,14 +1213,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
-  photo_manager:
-    dependency: "direct main"
-    description:
-      name: photo_manager
-      sha256: f5ef2618870e9a50d8bfeb81a02c242d580ae8614bd5ea9e1b80dbb7e49d4260
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.6.1"
   platform:
     dependency: transitive
     description:

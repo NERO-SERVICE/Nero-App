@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/fastmemo/page/fast_memo_main_page.dart';
+import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/home/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/home/main/page/home_main_page.dart';
 import 'package:nero_app/develop/mypage/page/my_page.dart';
@@ -14,6 +15,7 @@ class Root extends GetView<BottomNavController> {
   Root({super.key});
 
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final CommunityController _communityController = Get.find<CommunityController>();
 
   Widget get _divider => const Divider(
         color: Color(0xff3C3C3E),
@@ -32,9 +34,9 @@ class Root extends GetView<BottomNavController> {
           children: [
             const HomeMainPage(),
             TodaylogMainPage(),
+            CommunityMainPage(),
             FastMemoMainPage(),
             MyPage(),
-            CommunityMainPage(),
           ],
         );
       }),
@@ -58,11 +60,14 @@ class Root extends GetView<BottomNavController> {
                   onTabChange: (index) {
                     _logScreenView(index);
                     controller.changeBottomNav(index);
+
+                    if (index == 2) {
+                      _communityController.fetchAllPosts(refresh: true);
+                    }
                   },
                   tabs: [
                     GButton(
                       icon: Icons.home,
-                      text: '홈',
                       iconActiveColor: Colors.white,
                       leading: SvgPicture.asset(controller.menuIndex.value == 0
                           ? 'assets/develop/home-on.svg'
@@ -70,33 +75,29 @@ class Root extends GetView<BottomNavController> {
                     ),
                     GButton(
                       icon: Icons.calendar_today,
-                      text: '하루기록',
                       iconActiveColor: Colors.white,
                       leading: SvgPicture.asset(controller.menuIndex.value == 1
                           ? 'assets/develop/todaylog-on.svg'
                           : 'assets/develop/todaylog-off.svg'),
                     ),
                     GButton(
-                      icon: Icons.note_add,
-                      text: '빠른메모',
+                      icon: Icons.person,
                       iconActiveColor: Colors.white,
                       leading: SvgPicture.asset(controller.menuIndex.value == 2
+                          ? 'assets/develop/community-on.svg'
+                          : 'assets/develop/community-off.svg'),
+                    ),
+                    GButton(
+                      icon: Icons.note_add,
+                      iconActiveColor: Colors.white,
+                      leading: SvgPicture.asset(controller.menuIndex.value == 3
                           ? 'assets/develop/fastmemo-on.svg'
                           : 'assets/develop/fastmemo-off.svg'),
                     ),
                     GButton(
                       icon: Icons.person,
-                      text: '마이페이지',
                       iconActiveColor: Colors.white,
-                      leading: SvgPicture.asset(controller.menuIndex.value == 3
-                          ? 'assets/develop/mypage-on.svg'
-                          : 'assets/develop/mypage-off.svg'),
-                    ),
-                    GButton(
-                      icon: Icons.person,
-                      text: '커뮤니티',
-                      iconActiveColor: Colors.white,
-                      leading: SvgPicture.asset(controller.menuIndex.value == 3
+                      leading: SvgPicture.asset(controller.menuIndex.value == 4
                           ? 'assets/develop/mypage-on.svg'
                           : 'assets/develop/mypage-off.svg'),
                     ),
@@ -120,13 +121,13 @@ class Root extends GetView<BottomNavController> {
         screenName = 'TodaylogMainPage';
         break;
       case 2:
-        screenName = 'FastMemoMainPage';
+        screenName = 'CommunityMainPage';
         break;
       case 3:
-        screenName = 'MyPage';
+        screenName = 'FastMemoMainPage';
         break;
       case 4:
-        screenName = 'CommunityMainPage';
+        screenName = 'MyPage';
         break;
       default:
         screenName = 'HomeMainPage';
