@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 class BottomNavController extends GetxController
     with GetTickerProviderStateMixin {
   late TabController tabController;
-  RxInt menuIndex = 0.obs;
+  RxInt menuIndex = 2.obs;
 
   @override
   void onInit() {
