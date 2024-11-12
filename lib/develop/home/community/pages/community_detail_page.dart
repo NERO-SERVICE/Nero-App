@@ -30,15 +30,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   void initState() {
     super.initState();
     _controller.fetchPostDetail(widget.postId);
-
-    _commentScrollController.addListener(() {
-      if (_commentScrollController.position.pixels >=
-          _commentScrollController.position.maxScrollExtent - 300 &&
-          !_controller.isLoadingComments.value &&
-          _controller.hasMoreComments.value) {
-        _controller.fetchComments(widget.postId);
-      }
-    });
   }
 
   @override
@@ -48,30 +39,35 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     super.dispose();
   }
 
+  void _closePageWithScrollOffset() {
+    // 페이지를 닫을 때 현재 스크롤 위치를 반환
+    Get.back(result: _commentScrollController.offset);
+  }
+
+
   void _showEditPostDialog(Post post) {
-    final TextEditingController _editController =
-    TextEditingController(text: post.content);
+    final TextEditingController _editController = TextEditingController(text: post.content);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color(0xff333333), // 배경 색상 조정
+          backgroundColor: Color(0xff333333),
           title: Text("게시물 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editController,
             maxLines: null,
             decoration: InputDecoration(
               hintText: "내용을 입력하세요",
-              hintStyle: TextStyle(color: Color(0xffD9D9D9)), // 힌트 텍스트 색상 조정
+              hintStyle: TextStyle(color: Color(0xffD9D9D9)),
               filled: true,
-              fillColor: Color(0xff555555), // 입력창 배경 색상 조정
+              fillColor: Color(0xff555555),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
             ),
-            style: TextStyle(color: Colors.white), // 입력 텍스트 색상
+            style: TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
@@ -102,7 +98,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color(0xff333333), // 배경 색상 조정
+          backgroundColor: Color(0xff333333),
           title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
           content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [
@@ -113,9 +109,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
             TextButton(
               onPressed: () {
                 _controller.deletePost(post.postId);
-                Get.back(); // 다이얼로그 닫기
-                Get.back(); // CommunityMainPage로 돌아가기
-                _controller.fetchAllPosts(refresh: true); // 목록 갱신
+                Get.back();
+                _closePageWithScrollOffset(); // 삭제 후 CommunityMainPage로 돌아가면서 스크롤 위치 반환
               },
               child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
@@ -131,22 +126,22 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color(0xff333333), // 배경 색상 조정
+          backgroundColor: Color(0xff333333),
           title: Text("댓글 수정", style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: _editCommentController,
             maxLines: null,
             decoration: InputDecoration(
               hintText: "댓글을 입력하세요",
-              hintStyle: TextStyle(color: Color(0xffD9D9D9)), // 힌트 텍스트 색상 조정
+              hintStyle: TextStyle(color: Color(0xffD9D9D9)),
               filled: true,
-              fillColor: Color(0xff555555), // 입력창 배경 색상 조정
+              fillColor: Color(0xff555555),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
             ),
-            style: TextStyle(color: Colors.white), // 입력 텍스트 색상
+            style: TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
@@ -174,7 +169,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color(0xff333333), // 배경 색상 조정
+          backgroundColor: Color(0xff333333),
           title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
           content: Text("정말로 이 댓글을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [

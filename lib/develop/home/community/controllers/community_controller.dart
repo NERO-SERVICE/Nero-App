@@ -18,7 +18,12 @@ class CommunityController extends GetxController {
   var isLoadingPosts = false.obs;
   var currentPostPage = 1.obs;
   var hasMorePosts = true.obs;
+
+  // 검색
   var searchQuery = ''.obs;
+  // 현재 스크롤 위치 저장
+  var scrollOffsetMain = 0.0.obs; // CommunityMainPage 스크롤 오프셋
+  var scrollOffsetSearch = 0.0.obs; // CommunitySearchPage 스크롤 오프셋
 
   // 게시물 정보 및 댓글 목록 관리
   Rx<Post> currentPost = Post.empty().obs;
@@ -35,7 +40,7 @@ class CommunityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAllPosts(); // CommunityMainPage용 초기 게시물 로드
+    fetchAllPosts(refresh: true); // 초기 게시물 로드
   }
 
   Future<void> fetchAllPosts({bool refresh = false}) async {
@@ -61,7 +66,6 @@ class CommunityController extends GetxController {
         currentPostPage.value += 1;
       }
 
-      // 만약 서버에서 10개 미만의 게시물을 반환했다면, 다음 요청에서 더 이상 게시물이 없음을 나타냅니다.
       hasMorePosts.value = fetchedPosts.length == 10;
     } catch (e) {
       print('게시물 가져오기 실패: $e');
@@ -70,7 +74,6 @@ class CommunityController extends GetxController {
     }
   }
 
-  // 검색된 게시물 가져오기 (CommunitySearchPage 용)
   Future<void> fetchFilteredPosts({bool refresh = false}) async {
     if (isLoadingPosts.value || searchQuery.isEmpty) return;
 
@@ -95,7 +98,6 @@ class CommunityController extends GetxController {
         currentPostPage.value += 1;
       }
 
-      // 서버에서 10개 미만의 게시물을 반환하면 더 이상 가져올 게시물이 없다고 설정
       hasMorePosts.value = fetchedPosts.length == 10;
     } catch (e) {
       print('검색된 게시물 가져오기 실패: $e');

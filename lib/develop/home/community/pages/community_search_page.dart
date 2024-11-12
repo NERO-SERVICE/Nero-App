@@ -9,18 +9,29 @@ import 'package:nero_app/develop/home/community/widgets/post_item.dart';
 class CommunitySearchPage extends StatelessWidget {
   final CommunityController _controller = Get.find<CommunityController>();
   final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
 
   CommunitySearchPage({Key? key}) : super(key: key) {
+    // 스크롤 컨트롤러 초기화 및 위치 설정
+    _scrollController = ScrollController(
+      initialScrollOffset: _controller.scrollOffsetSearch.value,
+    );
+
     _scrollController.addListener(() {
-      // 스크롤이 바닥에 닿기 직전이면서 로딩 중이 아니고, 추가 게시물이 있는 경우에만 불러오기
+      // 스크롤 위치를 컨트롤러에 저장
+      _controller.scrollOffsetSearch.value = _scrollController.offset;
+
+      // 스크롤 위치가 끝에 도달했을 때 추가 데이터 로드
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 300 &&
+          _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPosts.value &&
           _controller.hasMorePosts.value) {
         _controller.fetchFilteredPosts();
       }
     });
+
+    // 초기 데이터 로드
+    _controller.fetchFilteredPosts(refresh: true);
   }
 
   void _searchPosts() {
@@ -42,52 +53,60 @@ class CommunitySearchPage extends StatelessWidget {
           Navigator.of(context).pop();
         },
       ),
-      body: Obx(() {
-        if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
-          // 처음 로딩 중일 때만 로딩 인디케이터를 중앙에 표시
-          return Center(child: CustomLoadingIndicator());
-        }
-
-        if (_controller.posts.isEmpty) {
-          return Center(
-            child: Text('검색 결과가 없습니다.', style: TextStyle(color: Colors.white)),
-          );
-        }
-
-        return ListView.builder(
-          controller: _scrollController,
-          itemCount: _controller.posts.length + 1,  // 추가 아이템 하나는 로딩 인디케이터용
-          itemBuilder: (context, index) {
-            if (index == _controller.posts.length) {
-              // 게시물이 더 있을 경우만 하단 로딩 인디케이터 표시
-              return Obx(() {
-                if (_controller.hasMorePosts.value) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(child: CustomLoadingIndicator()),
-                  );
-                } else {
-                  return SizedBox.shrink();  // 더 이상 로딩할 게시물이 없는 경우 빈 위젯 반환
-                }
-              });
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          Obx(() {
+            if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
+              // 처음 로딩 중일 때만 로딩 인디케이터를 중앙에 표시
+              return Center(child: CustomLoadingIndicator());
             }
 
-            final post = _controller.posts[index];
-            return PostItem(
-              post: post,
-              onTap: () async {
-                await Get.to(() => CommunityDetailPage(postId: post.postId));
-                _controller.fetchFilteredPosts(refresh: true);
-              },
-              onLike: () => _controller.toggleLikePost(post.postId),
-              onComment: () async {
-                await Get.to(() => CommunityDetailPage(postId: post.postId));
-                _controller.fetchFilteredPosts(refresh: true);
+            if (_controller.posts.isEmpty) {
+              return Center(
+                child:
+                    Text('검색 결과가 없습니다.', style: TextStyle(color: Colors.white)),
+              );
+            }
+
+            return ListView.builder(
+              controller: _scrollController,
+              itemCount: _controller.posts.length + 1, // 추가 아이템 하나는 로딩 인디케이터용
+              itemBuilder: (context, index) {
+                if (index == _controller.posts.length) {
+                  // 게시물이 더 있을 경우만 하단 로딩 인디케이터 표시
+                  return Obx(() {
+                    if (_controller.hasMorePosts.value) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(child: CustomLoadingIndicator()),
+                      );
+                    } else {
+                      return SizedBox.shrink(); // 더 이상 로딩할 게시물이 없는 경우 빈 위젯 반환
+                    }
+                  });
+                }
+
+                final post = _controller.posts[index];
+                return PostItem(
+                  post: post,
+                  onTap: () async {
+                    await Get.to(
+                        () => CommunityDetailPage(postId: post.postId));
+                    _controller.fetchFilteredPosts(refresh: true);
+                  },
+                  onLike: () => _controller.toggleLikePost(post.postId),
+                  onComment: () async {
+                    await Get.to(
+                        () => CommunityDetailPage(postId: post.postId));
+                    _controller.fetchFilteredPosts(refresh: true);
+                  },
+                );
               },
             );
-          },
-        );
-      }),
+          }),
+        ],
+      ),
     );
   }
 }

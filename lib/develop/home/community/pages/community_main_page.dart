@@ -14,21 +14,26 @@ class CommunityMainPage extends StatefulWidget {
 
 class _CommunityMainPageState extends State<CommunityMainPage> {
   final CommunityController _controller = Get.find<CommunityController>();
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _controller.fetchAllPosts();
+    _scrollController = ScrollController(
+      initialScrollOffset: _controller.scrollOffsetMain.value,
+    );
 
     _scrollController.addListener(() {
+      _controller.scrollOffsetMain.value = _scrollController.offset;
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 300 &&
+          _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPosts.value &&
           _controller.hasMorePosts.value) {
         _controller.fetchAllPosts();
       }
     });
+
+    _controller.fetchAllPosts(refresh: true);
   }
 
   @override
@@ -38,62 +43,49 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          Obx(
-                () {
-              if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
-                return Center(child: CustomLoadingIndicator());
-              }
+          Obx(() {
+            if (_controller.isLoadingPosts.value && _controller.posts.isEmpty) {
+              return Center(child: CustomLoadingIndicator());
+            }
 
-              if (_controller.posts.isEmpty) {
-                return Center(
-                    child: Text(
-                      '게시물이 없습니다.',
-                      style: TextStyle(color: Colors.white),
-                    ));
-              }
+            if (_controller.posts.isEmpty) {
+              return Center(child: Text('게시물이 없습니다.', style: TextStyle(color: Colors.white)));
+            }
 
-              return RefreshIndicator(
-                onRefresh: () => _controller.fetchAllPosts(refresh: true),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _controller.posts.length + 2, // +2 상단과 하단에 대한 아이템 처리
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      // 첫 번째 항목으로 SizedBox 추가
-                      return SizedBox(height: 16);
-                    } else if (index <= _controller.posts.length) {
-                      final post = _controller.posts[index - 1];
-                      return PostItem(
-                        post: post,
-                        onTap: () async {
-                          await Get.to(() => CommunityDetailPage(postId: post.postId));
-                          _controller.fetchAllPosts(refresh: true);
-                        },
-                        onLike: () {
-                          _controller.toggleLikePost(post.postId);
-                        },
-                        onComment: () async {
-                          await Get.to(() => CommunityDetailPage(postId: post.postId));
-                          _controller.fetchAllPosts(refresh: true);
-                        },
-                      );
-                    } else {
-                      return Obx(() {
-                        if (_controller.hasMorePosts.value) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Center(child: CustomLoadingIndicator()),
-                          );
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      });
-                    }
-                  },
-                ),
-              );
-            },
-          ),
+            return RefreshIndicator(
+              onRefresh: () => _controller.fetchAllPosts(refresh: true),
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: _controller.posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _controller.posts.length) {
+                    return _controller.hasMorePosts.value
+                        ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(child: CustomLoadingIndicator()),
+                    )
+                        : SizedBox.shrink();
+                  }
+
+                  final post = _controller.posts[index];
+                  return PostItem(
+                    post: post,
+                    onTap: () async {
+                      // 페이지로 이동하고 돌아온 후 위치를 복원
+                      await Get.to(() => CommunityDetailPage(postId: post.postId));
+                      // 현재 페이지 위치 유지
+                      _scrollController.jumpTo(_controller.scrollOffsetMain.value);
+                    },
+                    onLike: () => _controller.toggleLikePost(post.postId),
+                    onComment: () async {
+                      await Get.to(() => CommunityDetailPage(postId: post.postId));
+                      _scrollController.jumpTo(_controller.scrollOffsetMain.value);
+                    },
+                  );
+                },
+              ),
+            );
+          }),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -104,11 +96,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
         tooltip: "커뮤니티 글 작성",
         backgroundColor: Color(0xffD0EE17).withOpacity(0.5),
         shape: CircleBorder(),
-        child: Icon(
-          Icons.add,
-          size: 30,
-          color: Colors.white,
-        ),
+        child: Icon(Icons.add, size: 30, color: Colors.white),
       ),
     );
   }
