@@ -19,6 +19,11 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
   @override
   void initState() {
     super.initState();
+    // 페이지 초기 접근 시 데이터 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.fetchAllPosts(refresh: true);
+    });
+
     _scrollController = ScrollController(
       initialScrollOffset: _controller.scrollOffsetMain.value,
     );
@@ -32,9 +37,8 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
         _controller.fetchAllPosts();
       }
     });
-
-    _controller.fetchAllPosts(refresh: true);
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,6 +16,20 @@ class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidg
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
+      scrolledUnderElevation: 0,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      flexibleSpace: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Container(
+            color: Colors.transparent,
+          ),
+        ),
+      ),
+      toolbarHeight: 56.0,
+      titleSpacing: 0,
       title: TextField(
         controller: searchController,
         onSubmitted: (_) => onSearch(),
@@ -35,7 +51,6 @@ class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidg
         icon: const Icon(Icons.chevron_left, color: Colors.white),
         onPressed: onBack,  // 뒤로 가기 버튼에 onBack 콜백 할당
       ),
-      backgroundColor: Color(0xff202020),
     );
   }
 
