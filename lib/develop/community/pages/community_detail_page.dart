@@ -423,6 +423,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       onTap: _dismissKeyboard, // 화면 외부를 탭했을 때 키보드 해제
       child: Scaffold(
         appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
+        extendBodyBehindAppBar: true,
         body: Obx(
           () {
             if (_controller.isLoadingPostDetail.value) {
@@ -437,7 +438,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 16),
+                        SizedBox(height: kToolbarHeight + 56),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

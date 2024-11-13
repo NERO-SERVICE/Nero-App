@@ -66,26 +66,6 @@ class PostItem extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  onEdit();
-                },
-                child: Text(
-                  "수정",
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xffFFFFFF),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.inactiveButtonColor,
-                  fixedSize: Size(150, 50),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
                   onDelete();
                 },
                 child: Text(
