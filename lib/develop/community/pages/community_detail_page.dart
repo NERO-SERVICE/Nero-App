@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../controllers/community_controller.dart';
@@ -25,6 +26,10 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   final TextEditingController _commentController = TextEditingController();
   final ScrollController _commentScrollController = ScrollController();
+  final TextEditingController _reportController = TextEditingController();
+  final TextEditingController _editController = TextEditingController();
+
+  String _selectedReportType = '';
 
   @override
   void initState() {
@@ -39,15 +44,138 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     super.dispose();
   }
 
-  void _closePageWithScrollOffset() {
-    // 페이지를 닫을 때 현재 스크롤 위치를 반환
-    Get.back(result: _commentScrollController.offset);
+  // void _showEditCommentDialog(Comment comment) {
+  //   final TextEditingController _editCommentController =
+  //       TextEditingController(text: comment.content);
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         backgroundColor: Color(0xff333333),
+  //         title: Text("댓글 수정", style: TextStyle(color: Colors.white)),
+  //         content: TextField(
+  //           controller: _editCommentController,
+  //           maxLines: null,
+  //           decoration: InputDecoration(
+  //             hintText: "댓글을 입력하세요",
+  //             hintStyle: TextStyle(color: Color(0xffD9D9D9)),
+  //             filled: true,
+  //             fillColor: Color(0xff555555),
+  //             border: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(12),
+  //               borderSide: BorderSide.none,
+  //             ),
+  //           ),
+  //           style: TextStyle(color: Colors.white),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Get.back(),
+  //             child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               String updatedContent = _editCommentController.text.trim();
+  //               if (updatedContent.isNotEmpty) {
+  //                 _controller.updateComment(comment.commentId, updatedContent);
+  //                 Get.back();
+  //               }
+  //             },
+  //             child: Text("수정", style: TextStyle(color: Color(0xffD8D8D8))),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+  //
+  // void _showDeleteCommentDialog(Comment comment) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         backgroundColor: Color(0xff333333),
+  //         title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
+  //         content: Text("정말로 이 댓글을 삭제하시겠습니까?",
+  //             style: TextStyle(color: Color(0xffD9D9D9))),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Get.back(),
+  //             child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               _controller.deleteComment(comment.commentId);
+  //               Get.back();
+  //             },
+  //             child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  void _showCenterActionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.all(20),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryTextColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showEditPostDialog();
+                    },
+                    child: Text("수정"),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showDeletePostDialog();
+                    },
+                    child: Text("삭제"),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryTextColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showReportDialog(widget.postId, null);
+                    },
+                    child: Text("신고/차단"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-
-  void _showEditPostDialog(Post post) {
-    final TextEditingController _editController = TextEditingController(text: post.content);
-
+  void _showEditPostDialog() {
+    _editController.text = _controller.currentPost.value.content;
     showDialog(
       context: context,
       builder: (context) {
@@ -71,7 +199,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Navigator.pop(context),
               child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
@@ -79,13 +207,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 String updatedContent = _editController.text.trim();
                 if (updatedContent.isNotEmpty) {
                   _controller.updatePost(
-                    postId: post.postId,
+                    postId: widget.postId,
                     content: updatedContent,
                   );
-                  Get.back();
+                  Navigator.pop(context);
                 }
               },
-              child: Text("수정", style: TextStyle(color: Color(0xffD8D8D8))),
+              child: Text("수정 완료", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -93,26 +221,27 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  void _showDeletePostDialog(Post post) {
+  void _showDeletePostDialog() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: Color(0xff333333),
           title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
+          content: Text("정말로 이 게시물을 삭제하시겠습니까?",
+              style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [
             TextButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Navigator.pop(context),
               child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
-                _controller.deletePost(post.postId);
-                Get.back();
-                _closePageWithScrollOffset(); // 삭제 후 CommunityMainPage로 돌아가면서 스크롤 위치 반환
+                _controller.deletePost(widget.postId);
+                Navigator.pop(context);
+                Get.snackbar("알림", "삭제를 완료했습니다.");
               },
-              child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
+              child: Text("예", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -120,8 +249,166 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
+  void _showReportDialog(int? postId, int? commentId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Color(0xff333333),
+          title: Text("신고/차단", style: TextStyle(color: Colors.white)),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 신고 옵션들
+                  _buildReportOption("게시물 신고", "post_report", setState),
+                  _buildReportOption("게시물 차단", "post_block", setState),
+                  _buildReportOption("작성자 신고", "author_report", setState),
+                  SizedBox(height: 10),
+                  // 상세 설명 입력란
+                  TextField(
+                    controller: _reportController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: "상세 설명 (선택)",
+                      filled: true,
+                      fillColor: Color(0xff555555),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              );
+            },
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text("취소")),
+            TextButton(
+              onPressed: () {
+                if (_selectedReportType.isNotEmpty) {
+                  _controller.reportContent(
+                    reportType: _selectedReportType,
+                    postId: postId,
+                    commentId: commentId,
+                    description: _reportController.text,
+                  );
+                  Navigator.pop(context);
+                  setState(() {
+                    _selectedReportType = ''; // 선택 초기화
+                  });
+                } else {
+                  Get.snackbar("알림", "신고 유형을 선택해주세요.", backgroundColor: Colors.redAccent);
+                }
+              },
+              child: Text("전송하기", style: TextStyle(color: Color(0xffD8D8D8))),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// 신고 옵션 버튼을 생성하는 위젯
+  Widget _buildReportOption(String title, String value, StateSetter setState) {
+    bool isSelected = _selectedReportType == value;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedReportType = value;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        margin: EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          color: isSelected ? Color(0xffD0EE17).withOpacity(0.2) : Color(0xff1C1B1B),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? Color(0xffD0EE17) : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.grey[400],
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCommentActionDialog(Comment comment) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.all(20),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryTextColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showEditCommentDialog(comment);
+                    },
+                    child: Text("수정"),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showDeleteCommentDialog(comment);
+                    },
+                    child: Text("삭제"),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryTextColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showReportDialog(null, comment.commentId);
+                    },
+                    child: Text("신고/차단"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+// 댓글 수정 다이얼로그
   void _showEditCommentDialog(Comment comment) {
-    final TextEditingController _editCommentController = TextEditingController(text: comment.content);
+    final TextEditingController _editCommentController =
+    TextEditingController(text: comment.content);
     showDialog(
       context: context,
       builder: (context) {
@@ -145,7 +432,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Navigator.pop(context),
               child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
@@ -153,10 +440,10 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 String updatedContent = _editCommentController.text.trim();
                 if (updatedContent.isNotEmpty) {
                   _controller.updateComment(comment.commentId, updatedContent);
-                  Get.back();
+                  Navigator.pop(context);
                 }
               },
-              child: Text("수정", style: TextStyle(color: Color(0xffD8D8D8))),
+              child: Text("수정 완료", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
           ],
         );
@@ -164,6 +451,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
+// 댓글 삭제 다이얼로그
   void _showDeleteCommentDialog(Comment comment) {
     showDialog(
       context: context,
@@ -171,16 +459,17 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
         return AlertDialog(
           backgroundColor: Color(0xff333333),
           title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 댓글을 삭제하시겠습니까?", style: TextStyle(color: Color(0xffD9D9D9))),
+          content: Text("정말로 이 댓글을 삭제하시겠습니까?",
+              style: TextStyle(color: Color(0xffD9D9D9))),
           actions: [
             TextButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Navigator.pop(context),
               child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
             ),
             TextButton(
               onPressed: () {
                 _controller.deleteComment(comment.commentId);
-                Get.back();
+                Navigator.pop(context);
               },
               child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
             ),
@@ -189,7 +478,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       },
     );
   }
-
 
   void _submitComment() {
     String content = _commentController.text.trim();
@@ -207,13 +495,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       return CircleAvatar(
         radius: 16,
         backgroundImage: CachedNetworkImageProvider(post.profileImageUrl!),
-        backgroundColor: Colors.grey[200],
+        backgroundColor: AppColors.primaryTextColor,
       );
     } else {
       return const CircleAvatar(
         radius: 16,
         backgroundImage: AssetImage('assets/develop/default_profile.png'),
-        backgroundColor: Colors.grey,
+        backgroundColor: AppColors.primaryTextColor,
       );
     }
   }
@@ -223,7 +511,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     return Scaffold(
       appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
       body: Obx(
-            () {
+        () {
           if (_controller.isLoadingPostDetail.value) {
             return Center(child: CustomLoadingIndicator());
           }
@@ -254,7 +542,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                       fontFamily: 'Pretendard',
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
-                                      color: Color(0xffFFFFFF),
+                                      color: AppColors.titleColor,
                                     ),
                                   ),
                                   SizedBox(width: 8),
@@ -264,46 +552,17 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                       fontFamily: 'Pretendard',
                                       fontWeight: FontWeight.w400,
                                       fontSize: 10,
-                                      color: Color(0xff959595),
+                                      color: AppColors.hintTextColor,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          Container(
-                            child: PopupMenuButton<String>(
-                              icon: Icon(Icons.more_vert, color: Colors.white),
-                              onSelected: (value) {
-                                if (value == 'edit') {
-                                  _showEditPostDialog(post);
-                                } else if (value == 'delete') {
-                                  _showDeletePostDialog(post);
-                                }
-                              },
-                              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                  value: 'edit',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.edit, color: Colors.blue),
-                                      SizedBox(width: 8),
-                                      Text('수정', style: TextStyle(color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.delete, color: Colors.red),
-                                      SizedBox(width: 8),
-                                      Text('삭제', style: TextStyle(color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                          IconButton(
+                            icon: Icon(Icons.more_vert,
+                                color: AppColors.titleColor),
+                            onPressed: _showCenterActionDialog,
                           ),
                         ],
                       ),
@@ -318,7 +577,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
-                              color: Color(0xffD9D9D9),
+                              color: AppColors.primaryTextColor,
                             ),
                           ),
                         ),
@@ -329,7 +588,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                           height: 300,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: post.images.length > 3 ? 3 : post.images.length,
+                            itemCount:
+                                post.images.length > 3 ? 3 : post.images.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: EdgeInsets.only(
@@ -343,7 +603,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                     width: 300,
                                     height: 300,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Shimmer.fromColors(
+                                    placeholder: (context, url) =>
+                                        Shimmer.fromColors(
                                       baseColor: Colors.grey[300]!,
                                       highlightColor: Colors.grey[100]!,
                                       child: Container(
@@ -352,7 +613,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                         color: Colors.grey[300],
                                       ),
                                     ),
-                                    errorWidget: (context, url, error) => Image.asset(
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
                                       'assets/develop/default.png',
                                       width: 300,
                                       height: 300,
@@ -424,7 +686,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                       SizedBox(height: 16),
                       CustomCommunityDivider(),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
                         child: Row(
                           children: [
                             Text(
@@ -441,14 +704,17 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                       ),
                       CustomCommunityDivider(),
                       Obx(() {
-                        if (_controller.isLoadingComments.value && _controller.comments.isEmpty) {
+                        if (_controller.isLoadingComments.value &&
+                            _controller.comments.isEmpty) {
                           return Center(child: CustomLoadingIndicator());
                         }
 
                         if (_controller.comments.isEmpty) {
                           return Padding(
                             padding: const EdgeInsets.all(32),
-                            child: Center(child: Text('댓글이 없습니다.', style: TextStyle(color: Colors.white))),
+                            child: Center(
+                                child: Text('댓글이 없습니다.',
+                                    style: TextStyle(color: Colors.white))),
                           );
                         }
 
@@ -461,7 +727,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                             final comment = _controller.comments[index];
                             return CommentItem(
                               comment: comment,
-                              onLike: () => _controller.toggleLikeComment(comment.commentId),
+                              onLike: () => _controller
+                                  .toggleLikeComment(comment.commentId),
                               onEdit: () => _showEditCommentDialog(comment),
                               onDelete: () => _showDeleteCommentDialog(comment),
                             );
@@ -473,7 +740,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 24, left: 16, right: 16),
                 child: Row(
                   children: [
                     Expanded(
@@ -510,7 +778,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                             ),
                             filled: true,
                             fillColor: Color(0xffD8D8D8).withOpacity(0.4),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 21),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 21),
                           ),
                         ),
                       ),
@@ -521,7 +790,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffD8D8D8).withOpacity(0.4),
                         shape: CircleBorder(),
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                       ),
                       child: Center(
                         child: SvgPicture.asset(

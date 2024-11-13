@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nero_app/develop/home/community/pages/community_search_page.dart';
+import 'package:nero_app/app_colors.dart';
+import 'package:nero_app/develop/community/pages/community_search_page.dart';
 import 'package:nero_app/develop/settings/page/setting_page.dart';
 
 class CommunityAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -46,7 +47,7 @@ class _CommunityAppBarState extends State<CommunityAppBar> {
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w600,
                   fontSize: 20,
-                  color: Colors.white,
+                  color: AppColors.titleColor,
                 ),
               ),
             ],
@@ -62,7 +63,7 @@ class _CommunityAppBarState extends State<CommunityAppBar> {
                 },
                 child: Icon(
                   Icons.search,
-                  color: Colors.white,
+                  color: AppColors.titleColor,
                   size: 24,
                 ),
               ),

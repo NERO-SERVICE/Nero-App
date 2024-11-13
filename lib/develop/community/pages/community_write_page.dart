@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
-import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
+import 'package:nero_app/develop/community/controllers/community_controller.dart';
 
 class CommunityWritePage extends StatefulWidget {
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 
 class CommunityDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -23,7 +24,7 @@ class CommunityDetailAppBar extends StatelessWidget implements PreferredSizeWidg
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.chevron_left, color: Colors.white),
+        icon: const Icon(Icons.chevron_left, color: AppColors.titleColor),
         onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
       ),
       toolbarHeight: 56.0,

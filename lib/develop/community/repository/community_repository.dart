@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
-import 'package:nero_app/develop/home/community/models/post.dart';
-import 'package:nero_app/develop/home/community/models/comment.dart';
+import 'package:nero_app/develop/community/models/comment.dart';
+import 'package:nero_app/develop/community/models/post.dart';
+import 'package:nero_app/develop/community/models/report_request.dart';
 import 'package:nero_app/develop/dio_service.dart';
 
 class CommunityRepository {
@@ -207,6 +208,32 @@ class CommunityRepository {
       await _dioService.post('/community/comments/$commentId/like/');
     } catch (e) {
       print('댓글 좋아요 토글 실패: $e');
+      throw e;
+    }
+  }
+
+  // 게시물 신고
+  Future<void> reportPost(ReportRequest report) async {
+    try {
+      await _dioService.post(
+        '/community/reports/create/',
+        data: report.toJson(),
+      );
+    } catch (e) {
+      print('게시물 신고 실패: $e');
+      throw e;
+    }
+  }
+
+  // 댓글 신고
+  Future<void> reportComment(ReportRequest report) async {
+    try {
+      await _dioService.post(
+        '/community/comments/reports/create/',
+        data: report.toJson(),
+      );
+    } catch (e) {
+      print('댓글 신고 실패: $e');
       throw e;
     }
   }

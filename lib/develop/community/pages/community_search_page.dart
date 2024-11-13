@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
-import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
-import 'package:nero_app/develop/home/community/pages/community_detail_page.dart';
-import 'package:nero_app/develop/home/community/pages/community_search_app_bar.dart';
-import 'package:nero_app/develop/home/community/widgets/post_item.dart';
+import 'package:nero_app/develop/community/controllers/community_controller.dart';
+import 'package:nero_app/develop/community/pages/community_detail_page.dart';
+import 'package:nero_app/develop/community/pages/community_search_app_bar.dart';
+import 'package:nero_app/develop/community/widgets/post_item.dart';
 
 class CommunitySearchPage extends StatelessWidget {
   final CommunityController _controller = Get.find<CommunityController>();

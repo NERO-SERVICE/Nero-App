@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
-import 'package:nero_app/develop/home/community/models/post.dart';
-import 'package:nero_app/develop/home/community/models/comment.dart';
-import 'package:nero_app/develop/home/community/repository/community_repository.dart';
+import 'package:nero_app/develop/community/models/comment.dart';
+import 'package:nero_app/develop/community/models/post.dart';
+import 'package:nero_app/develop/community/models/report_request.dart';
+import 'package:nero_app/develop/community/repository/community_repository.dart';
 
 class CommunityController extends GetxController {
   final CommunityRepository _communityRepository = Get.put(CommunityRepository());
@@ -300,6 +301,41 @@ class CommunityController extends GetxController {
     }
   }
 
+  // 게시물,댓글 신고
+  Future<void> reportContent({
+    required String reportType,
+    int? postId,
+    int? commentId,
+    String? description,
+  }) async {
+    final reportRequest = ReportRequest(
+      reportType: reportType,
+      postId: postId,
+      commentId: commentId,
+      description: description,
+    );
+
+    try {
+      if (postId != null) {
+        await _communityRepository.reportPost(reportRequest);
+      } else if (commentId != null) {
+        await _communityRepository.reportComment(reportRequest);
+      }
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '신고가 접수되었습니다.',
+        isSuccess: true,
+      );
+    } catch (e) {
+      print('신고 처리 실패: $e');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '신고 처리에 실패했습니다.',
+        isSuccess: false,
+      );
+    }
+  }
+
   // 게시물 내용 업데이트
   void updateContent(String value) {
     content.value = value;
@@ -313,14 +349,5 @@ class CommunityController extends GetxController {
   // 이미지 제거
   void removeImage(File image) {
     selectedImages.remove(image);
-  }
-
-  // 게시 가능 여부 검증
-  void _isValidSubmitPossible() {
-    if (content.value.isNotEmpty) {
-      isPossibleSubmit.value = true;
-    } else {
-      isPossibleSubmit.value = false;
-    }
   }
 }
