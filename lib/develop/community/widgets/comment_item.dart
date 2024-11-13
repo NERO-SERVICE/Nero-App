@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import '../models/comment.dart';
 
@@ -8,6 +9,7 @@ class CommentItem extends StatelessWidget {
   final VoidCallback onLike;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onReport;
 
   const CommentItem({
     Key? key,
@@ -15,43 +17,83 @@ class CommentItem extends StatelessWidget {
     required this.onLike,
     required this.onEdit,
     required this.onDelete,
+    required this.onReport,
   }) : super(key: key);
 
-  void _showEditDeleteDialog(BuildContext context) {
-    showDialog(
+  void _showEditDeleteReportModal(BuildContext context) {
+    showModalBottomSheet(
       context: context,
+      isDismissible: true,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff2C2C2C),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.dialogBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
           ),
-          contentPadding: EdgeInsets.zero,
-          content: Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: Icon(Icons.edit, color: Colors.blue),
-                title: Text(
-                  '수정',
-                  style: TextStyle(color: Colors.white),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.inactiveButtonColor,
+                  fixedSize: Size(150, 50),
                 ),
-                onTap: () {
+                onPressed: () {
                   Navigator.pop(context);
                   onEdit();
                 },
-              ),
-              CustomCommunityDivider(),
-              ListTile(
-                leading: Icon(Icons.delete, color: Colors.red),
-                title: Text(
-                  '삭제',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  "수정",
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color(0xffFFFFFF),
+                  ),
                 ),
-                onTap: () {
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.inactiveButtonColor,
+                  fixedSize: Size(150, 50),
+                ),
+                onPressed: () {
                   Navigator.pop(context);
                   onDelete();
                 },
+                child: Text(
+                  "삭제",
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color(0xFFFF5A5A),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.inactiveButtonColor,
+                  fixedSize: Size(150, 50),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onReport();
+                },
+                child: Text(
+                  "신고",
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color(0xffFFFFFF),
+                  ),
+                ),
               ),
             ],
           ),
@@ -98,33 +140,9 @@ class CommentItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  PopupMenuButton<String>(
+                  IconButton(
                     icon: Icon(Icons.more_vert, color: Colors.white),
-                    onSelected: (value) {
-                      _showEditDeleteDialog(context);
-                    },
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, color: Colors.blue),
-                            SizedBox(width: 8),
-                            Text('수정', style: TextStyle(color: Colors.black)),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Icon(Icons.delete, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('삭제', style: TextStyle(color: Colors.black)),
-                          ],
-                        ),
-                      ),
-                    ],
+                    onPressed: () => _showEditDeleteReportModal(context),
                   ),
                 ],
               ),

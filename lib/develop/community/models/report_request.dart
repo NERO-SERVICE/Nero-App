@@ -14,9 +14,9 @@ class ReportRequest {
   Map<String, dynamic> toJson() {
     return {
       'report_type': reportType,
-      'post_id': postId,
-      'comment_id': commentId,
-      'description': description,
+      if (postId != null) 'post_id': postId,
+      if (commentId != null) 'comment_id': commentId,
+      if (description != null) 'description': description,
     };
   }
 }

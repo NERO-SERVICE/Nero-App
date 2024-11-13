@@ -68,8 +68,8 @@ class LoginPage extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: AppColors.titleColor,
+                fontSize: 14,
+                color: AppColors.secondaryTextColor,
               ),
             ),
           ),
