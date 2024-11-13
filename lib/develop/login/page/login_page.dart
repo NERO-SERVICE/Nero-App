@@ -30,7 +30,7 @@ class LoginPage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 18,
             color: AppColors.titleColor,
           ),
         ),
@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w500,
-            fontSize: 18,
+            fontSize: 14,
             color: AppColors.secondaryTextColor,
           ),
           textAlign: TextAlign.center,
@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
-                color: AppColors.secondaryTextColor,
+                color: AppColors.titleColor,
               ),
             ),
           ),

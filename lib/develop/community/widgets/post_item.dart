@@ -134,7 +134,7 @@ class PostItem extends StatelessWidget {
                     ),
                     SizedBox(width: 8),
                     Text(
-                      '${post.createdAt.year}-${post.createdAt.month.toString().padLeft(2, '0')}-${post.createdAt.day.toString().padLeft(2, '0')}',
+                      '${post.createdTimeAgo}',
                       style: TextStyle(
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w400,

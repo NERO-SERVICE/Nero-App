@@ -20,6 +20,8 @@ class CommunityRepository {
         },
       );
 
+      print("응답 데이터: ${response.data}"); // 응답 구조 확인용 로그
+
       List<Post> posts = (response.data['results'] as List)
           .map((json) => Post.fromJson(json))
           .toList();

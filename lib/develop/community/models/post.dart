@@ -6,7 +6,7 @@ class Post extends Equatable {
   final List<String> images;
   final String nickname;
   final String? profileImageUrl;
-  final DateTime createdAt;
+  final String createdTimeAgo;
   final int likeCount;
   late final int commentCount;
   final bool isLiked;
@@ -17,7 +17,7 @@ class Post extends Equatable {
     required this.images,
     required this.nickname,
     this.profileImageUrl,
-    required this.createdAt,
+    required this.createdTimeAgo,
     required this.likeCount,
     required this.commentCount,
     required this.isLiked,
@@ -35,9 +35,7 @@ class Post extends Equatable {
       profileImageUrl: json['user'] != null && json['user']['profile_image'] != null
           ? json['user']['profile_image']['image_url'] as String
           : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+      createdTimeAgo: json['created_time_ago'] ?? '',
       likeCount: json['likes_count'] ?? 0,
       commentCount: json['comments_count'] ?? 0,
       isLiked: json['isLiked'] ?? false,
@@ -51,7 +49,7 @@ class Post extends Equatable {
       images: [],
       nickname: '',
       profileImageUrl: '',
-      createdAt: DateTime.now(),
+      createdTimeAgo: '',
       likeCount: 0,
       commentCount: 0,
       isLiked: false,
@@ -64,7 +62,7 @@ class Post extends Equatable {
     List<String>? images,
     String? nickname,
     String? profileImageUrl,
-    DateTime? createdAt,
+    String? createdTimeAgo,
     int? likeCount,
     int? commentCount,
     bool? isLiked,
@@ -75,7 +73,7 @@ class Post extends Equatable {
       images: images ?? this.images,
       nickname: nickname ?? this.nickname,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
-      createdAt: createdAt ?? this.createdAt,
+      createdTimeAgo: createdTimeAgo ?? this.createdTimeAgo,
       likeCount: likeCount ?? this.likeCount,
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
@@ -89,7 +87,7 @@ class Post extends Equatable {
     images,
     nickname,
     profileImageUrl,
-    createdAt,
+    createdTimeAgo,
     likeCount,
     commentCount,
     isLiked,
