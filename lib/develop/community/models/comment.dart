@@ -34,7 +34,7 @@ class Comment extends Equatable {
           : DateTime.now(),
       content: json['content'] ?? '',
       likeCount: json['likes_count'] ?? 0,
-      isLiked: json['is_liked'] ?? false,
+      isLiked: json['isLiked'] ?? false,  // 수정된 부분
     );
   }
 
@@ -45,7 +45,7 @@ class Comment extends Equatable {
       'created_at': createdAt.toIso8601String(),
       'content': content,
       'likes_count': likeCount,
-      'is_liked': isLiked,
+      'isLiked': isLiked,  // 수정된 부분
     };
   }
 

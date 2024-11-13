@@ -210,6 +210,7 @@ class CommunityController extends GetxController {
     try {
       final fetchedComments = await _communityRepository.fetchComments(postId);
       comments.assignAll(fetchedComments); // 리스트 갱신
+      update();
     } catch (e) {
       print('댓글 가져오기 실패: $e');
     } finally {
