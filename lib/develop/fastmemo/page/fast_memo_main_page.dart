@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -20,8 +21,9 @@ class FastMemoMainPage extends StatefulWidget {
 }
 
 class _FastMemoMainPageState extends State<FastMemoMainPage> {
-  final FastmemoController controller = Get.put(FastmemoController(repository: Get.find<FastmemoRepository>()));
-  final Map<int, bool> _selectedMap = {}; // 메모 선택 상태 관리
+  final FastmemoController controller =
+      Get.put(FastmemoController(repository: Get.find<FastmemoRepository>()));
+  final Map<int, bool> _selectedMap = {};
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
@@ -41,7 +43,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       appBar: CustomAppBar(title: '빠른 메모'),
       body: BackgroundLayout(
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(), // 기본적으로 수직 스크롤
+          physics: AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -61,7 +63,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
   Widget _fastCalendar() {
     return Obx(
-          () => TableCalendar(
+      () => TableCalendar(
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: controller.selectedDate.value,
@@ -89,37 +91,37 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
           );
 
           if (!controller.loadedYears.contains(focusedYear)) {
-            controller.fetchMemoDates(focusedYear);  // 해당 연도에 대한 메모 날짜 호출
+            controller.fetchMemoDates(focusedYear);
           }
         },
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
           titleTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
             fontWeight: FontWeight.bold,
           ),
           leftChevronIcon: Icon(
             Icons.chevron_left,
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           rightChevronIcon: Icon(
             Icons.chevron_right,
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: Color(0xff6D7179)),
-          weekendStyle: TextStyle(color: Color(0xff6D7179)),
+          weekdayStyle: TextStyle(color: AppColors.weekendTextColor),
+          weekendStyle: TextStyle(color: AppColors.weekendTextColor),
         ),
         daysOfWeekHeight: 60,
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(
-            color: Colors.grey,
+            color: AppColors.primaryTextColor,
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(
-            color: Color(0xffD0EE17),
+            color: AppColors.primaryColor,
             shape: BoxShape.circle,
           ),
           outsideDaysVisible: false,
@@ -133,13 +135,13 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
             shape: BoxShape.circle,
           ),
           todayTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           selectedTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           defaultTextStyle: TextStyle(
-            color: Colors.grey,
+            color: AppColors.primaryTextColor,
           ),
           weekendTextStyle: TextStyle(
             color: Color(0xff6D7179),
@@ -163,19 +165,23 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
     );
   }
 
-
-  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
-    bool hasMemo = controller.memoDates.contains(DateTime(date.year, date.month, date.day)); // 메모 데이터가 있는지 확인
+  Widget _buildDayCell(DateTime date,
+      {bool isSelected = false, bool isToday = false}) {
+    bool hasMemo = controller.memoDates
+        .contains(DateTime(date.year, date.month, date.day));
 
     TextStyle textStyle = TextStyle(
       color: isSelected
-          ? Colors.white
+          ? AppColors.titleColor
           : isToday
-          ? Colors.white
-          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
-          ? Color(0xff6D7179)
-          : Colors.grey,
+              ? AppColors.titleColor
+              : (date.weekday == DateTime.saturday ||
+                      date.weekday == DateTime.sunday)
+                  ? AppColors.weekendTextColor
+                  : AppColors.primaryTextColor,
       fontWeight: FontWeight.w500,
+      fontFamily: 'Pretendard',
+      fontSize: 14,
     );
 
     Widget dayText = Text(
@@ -187,7 +193,9 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       dayText = Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected || isToday ? Colors.transparent : Colors.black.withOpacity(0.1),
+          color: isSelected || isToday
+              ? Colors.transparent
+              : AppColors.buttonSelectedTextColor.withOpacity(0.1),
         ),
         child: Center(
           child: dayText,
@@ -199,25 +207,25 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
       margin: const EdgeInsets.all(6.0),
       decoration: isSelected
           ? BoxDecoration(
-        color: Color(0xffD0EE17),
-        shape: BoxShape.circle,
-      )
+              color: AppColors.primaryColor,
+              shape: BoxShape.circle,
+            )
           : isToday
-          ? BoxDecoration(
-        color: Colors.grey,
-        shape: BoxShape.circle,
-      )
-          : hasMemo
-          ? BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Color(0xffD0EE17), width: 1),
-      )
-          : null,
+              ? BoxDecoration(
+                  color: AppColors.primaryTextColor,
+                  shape: BoxShape.circle,
+                )
+              : hasMemo
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      border:
+                          Border.all(color: AppColors.primaryColor, width: 1),
+                    )
+                  : null,
       alignment: Alignment.center,
       child: dayText,
     );
   }
-
 
   Widget _uncheckedMemo() {
     return Obx(() {
@@ -236,7 +244,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
-                    color: Color(0xffFFFFFF),
+                    color: AppColors.titleColor,
                   ),
                 ),
                 SizedBox(height: 20),
@@ -267,7 +275,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: Color(0xffFFFFFF),
+                        color: AppColors.titleColor,
                       ),
                     ),
                     GestureDetector(
@@ -281,7 +289,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: Color(0xffD0EE17),
+                          color: AppColors.primaryColor,
                         ),
                       ),
                     ),
@@ -299,19 +307,19 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                           : 'assets/develop/is-not-checked.svg';
 
                   Color containerColor = isSelected
-                      ? Color(0xff1C1B1B).withOpacity(0.5)
+                      ? AppColors.activeButtonColor.withOpacity(0.5)
                       : memo.isChecked
-                          ? Color(0xff1C1B1B).withOpacity(0.1)
-                          : Color(0xff1C1B1B).withOpacity(0.3);
+                          ? AppColors.activeButtonColor.withOpacity(0.1)
+                          : AppColors.activeButtonColor.withOpacity(0.3);
 
                   Color textColor = isSelected
-                      ? Color(0xffFFFFFF)
+                      ? AppColors.titleColor
                       : memo.isChecked
-                          ? Color(0xffFFFFFF).withOpacity(0.1)
-                          : Color(0xffFFFFFF);
+                          ? AppColors.titleColor.withOpacity(0.1)
+                          : AppColors.titleColor;
 
                   BorderSide borderSide = isSelected
-                      ? BorderSide(color: Color(0xffD0EE17), width: 1)
+                      ? BorderSide(color: AppColors.primaryColor, width: 1)
                       : BorderSide(color: Colors.transparent, width: 1);
 
                   return Padding(
@@ -379,7 +387,6 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
     );
   }
 
-
   Widget _emptyNextButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 105),
@@ -395,7 +402,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: Color(0xffD0EE17)),
+                color: AppColors.primaryColor),
           ),
         ),
       ),

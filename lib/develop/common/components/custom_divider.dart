@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 
 class CustomDivider extends StatelessWidget {
   const CustomDivider({super.key});
@@ -8,7 +9,7 @@ class CustomDivider extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 8,
-      color: const Color(0xFF222222),
+      color: AppColors.dividerColor,
     );
   }
 }

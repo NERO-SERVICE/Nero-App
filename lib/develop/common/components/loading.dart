@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nero_app/develop/common/components/app_font.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 
 class Loading extends StatelessWidget {
@@ -15,11 +15,15 @@ class Loading extends StatelessWidget {
           children: [
             CustomLoadingIndicator(),
             SizedBox(height: 20),
-            AppFont(
+            Text(
               '로딩 중...',
-              color: Colors.white,
-              size: 18,
-            )
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                color: AppColors.titleColor,
+              ),
+            ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 
 class Btn extends StatelessWidget {
   final Widget child;
@@ -13,7 +14,7 @@ class Btn extends StatelessWidget {
     required this.child,
     required this.onTap,
     this.disabled = false,
-    this.color = const Color(0xffD0EE17),
+    this.color = AppColors.primaryColor,
     this.padding = const EdgeInsets.symmetric(vertical: 15, horizontal: 41),
     this.shape,
   });
@@ -33,7 +34,7 @@ class Btn extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: ShapeDecoration(
-            color: disabled ? Color(0xffD9D9D9).withOpacity(0.5) : color,
+            color: disabled ? AppColors.inactiveButtonColor : color,
             shape: shape ??
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),

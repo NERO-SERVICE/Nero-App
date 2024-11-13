@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 
-import '../../../../common/components/app_font.dart';
 import '../../../../common/components/calandar_widget.dart';
 import '../../../../common/components/custom_submit_button.dart';
 import '../../../../common/components/time_selection_widget.dart';
@@ -511,20 +511,18 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const AppFont(
-            '약물 등록',
-            size: 16,
-            color: Colors.white,
-          ),
+          Text('약물 등록', style: TextStyle(fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: AppColors.titleColor,),),
           GetBuilder<ClinicWriteController>(
             builder: (controller) {
               return Row(
                 children: [
-                  const AppFont(
-                    '추가하기',
-                    size: 13,
-                    color: Color(0xffD0EE17),
-                  ),
+                  Text('추가하기', style: TextStyle(fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: AppColors.primaryColor,),),
                   SvgPicture.asset(
                     'assets/svg/icons/right.svg',
                     height: 24,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/fastmemo/controller/fastmemo_controller.dart';
 
 import '../../common/components/custom_detail_app_bar.dart';
@@ -18,9 +19,9 @@ class FastMemoDetailPage extends StatefulWidget {
 class _FastMemoDetailPageState extends State<FastMemoDetailPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
-  final FocusNode _textFieldFocusNode = FocusNode(); // FocusNode 생성
+  final FocusNode _textFieldFocusNode = FocusNode();
   final FastmemoController controller = Get.find<FastmemoController>();
-  final Map<int, bool> _selectedMap = {}; // 선택 상태를 저장할 Map
+  final Map<int, bool> _selectedMap = {};
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late DateTime selectedDate;
@@ -45,7 +46,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
         selectedDate = DateTime.now();
       }
       controller.setSelectedDate(selectedDate);
-      setState(() {}); // 날짜 변경을 UI에 반영
+      setState(() {});
     });
   }
 
@@ -53,7 +54,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
   void dispose() {
     _controller.dispose();
     _textController.dispose();
-    _textFieldFocusNode.dispose(); // FocusNode 해제
+    _textFieldFocusNode.dispose();
     super.dispose();
   }
 
@@ -63,7 +64,6 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
 
     return GestureDetector(
       onTap: () {
-        // TextField가 아닌 다른 곳을 터치하면 포커스 삭제
         if (_textFieldFocusNode.hasFocus) {
           _textFieldFocusNode.unfocus();
         }
@@ -98,7 +98,8 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               children: [
                 Expanded(child: _memoList()),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
+                  padding: const EdgeInsets.only(
+                      top: 8, bottom: 24, left: 16, right: 16),
                   child: Row(
                     children: [
                       Expanded(
@@ -110,21 +111,20 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                           child: TextField(
                             controller: _textController,
                             focusNode: _textFieldFocusNode,
-                            // FocusNode 설정
                             style: TextStyle(
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color: Color(0xffFFFFFF),
+                              color: AppColors.titleColor,
                             ),
-                            cursorColor: Color(0xffD9D9D9),
+                            cursorColor: AppColors.inputTextColor,
                             decoration: InputDecoration(
                               hintText: '기록을 입력해주세요',
                               hintStyle: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
-                                color: Color(0xffD9D9D9),
+                                color: AppColors.hintTextColor,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(28),
@@ -202,16 +202,14 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               position: _slideAnimation,
               child: _buildCustomActionButton(
                   'assets/develop/check.svg', "체크 완료", _bulkUpdateIsChecked,
-                  backgroundColor: Color(0xff69ACF5).withOpacity(0.6),
-                  size: 30),
+                  backgroundColor: AppColors.completeButtonColor, size: 30),
             ),
             SizedBox(height: 10),
             SlideTransition(
               position: _slideAnimation,
               child: _buildCustomActionButton(
                   'assets/develop/delete.svg', "선택 삭제", _bulkDeleteFastmemo,
-                  backgroundColor: Color(0xffFF5A5A).withOpacity(0.4),
-                  size: 30),
+                  backgroundColor: AppColors.deleteButtonColor, size: 30),
             ),
           ],
         ),
@@ -247,7 +245,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       bool confirmed = await _showConfirmationDialog(
         "선택한 메모를 수행하셨나요?",
         "체크하기",
-        Color(0xff69ACF5).withOpacity(0.8),
+        AppColors.completeButtonColor,
       );
       if (confirmed) {
         await controller.bulkUpdateIsChecked(true, selectedIds);
@@ -268,7 +266,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
         .toList();
     if (selectedIds.isNotEmpty) {
       bool confirmed = await _showConfirmationDialog(
-          "선택한 메모를 삭제하시겠습니까?", "삭제하기", Color(0xffFF5A5A).withOpacity(0.4));
+          "선택한 메모를 삭제하시겠습니까?", "삭제하기", AppColors.deleteButtonColor);
       if (confirmed) {
         await controller.bulkDeleteFastmemo(selectedIds);
         analytics.logEvent(
@@ -293,7 +291,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            backgroundColor: Color(0xffD8D8D8).withOpacity(0.3),
+            backgroundColor: AppColors.dialogBackgroundColor,
             child: SingleChildScrollView(
               child: Container(
                 child: Column(
@@ -308,7 +306,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
-                          color: Color(0xffFFFFFF),
+                          color: AppColors.titleColor,
                         ),
                       ),
                     ),
@@ -319,7 +317,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                           child: Container(
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Color(0xffD8D8D8).withOpacity(0.3),
+                              color: AppColors.dialogBackgroundColor,
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(16),
                               ),
@@ -335,7 +333,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                                     fontFamily: 'Pretendard',
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
-                                    color: Colors.white,
+                                    color: AppColors.titleColor,
                                   ),
                                 ),
                               ),
@@ -362,7 +360,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                                     fontFamily: 'Pretendard',
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
-                                    color: Colors.white,
+                                    color: AppColors.titleColor,
                                   ),
                                 ),
                               ),
@@ -400,7 +398,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w500,
               fontSize: 16,
-              color: Color(0xffD9D9D9),
+              color: AppColors.primaryTextColor,
             ),
           ),
         );
@@ -426,18 +424,18 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
             ? 'assets/develop/is-already-checked.svg'
             : 'assets/develop/is-not-checked.svg';
     Color containerColor = isSelected
-        ? Color(0xffD8D8D8).withOpacity(0.5)
+        ? AppColors.memoSelectedButtonColor.withOpacity(0.5)
         : isAlreadyChecked
-            ? Color(0xffD8D8D8).withOpacity(0.1)
-            : Color(0xffD8D8D8).withOpacity(0.3);
+            ? AppColors.memoSelectedButtonColor.withOpacity(0.1)
+            : AppColors.memoSelectedButtonColor.withOpacity(0.3);
     Color textColor = isSelected
-        ? Color(0xffFFFFFF)
+        ? AppColors.memoSelectedTextColor
         : isAlreadyChecked
-            ? Color(0xffFFFFFF).withOpacity(0.1)
-            : Color(0xffFFFFFF);
+            ? AppColors.memoSelectedTextColor.withOpacity(0.1)
+            : AppColors.memoSelectedTextColor;
 
     BorderSide borderSide = isSelected
-        ? BorderSide(color: Color(0xffFFFFFF), width: 1)
+        ? BorderSide(color: AppColors.titleColor, width: 1)
         : BorderSide(color: Colors.transparent, width: 1);
 
     return Padding(
@@ -445,7 +443,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _selectedMap[log.id] = !isSelected; // 선택 상태 반전
+            _selectedMap[log.id] = !isSelected;
           });
           analytics.logEvent(
             name: 'fastmemo_item_clicked',
@@ -474,6 +472,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
                   child: Text(
                     log.content,
                     style: TextStyle(
+                      fontFamily: 'Pretendard',
                       color: textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w400,

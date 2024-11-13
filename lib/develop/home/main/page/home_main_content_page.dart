@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
-import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
-import 'package:nero_app/develop/home/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
@@ -377,56 +375,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Text(
-                          '커뮤니티 마당 (Beta)',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.to(() => CommunityMainPage());
-                          },
-                          child: Text(
-                            '더보기',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: Color(0xffD9D9D9),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Text(
-                      "같은 고민을 하는 유저들을\n한 곳에서 만나볼 수 있어요",
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Color(0xffD9D9D9),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  CustomDivider(),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Text(
                           '공지사항',
                           style: TextStyle(
                             fontFamily: 'Pretendard',
@@ -616,56 +564,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ],
                 ),
-                // "게시판" 버튼 추가
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        '커뮤니티 마당 (Beta)',
-                        style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(() => CommunityMainPage());
-                        },
-                        child: Text(
-                          '더보기',
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Color(0xffD0EE17),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Text(
-                    "같은 고민을 하는 유저들을\n한 곳에서 만나볼 수 있어요",
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Color(0xffD9D9D9),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-                const CustomDivider(),
                 const SizedBox(height: 30),
                 HomeInformationPage(),
                 const SizedBox(height: 40),

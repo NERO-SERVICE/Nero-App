@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nero_app/develop/common/components/app_font.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/btn.dart';
 import 'package:nero_app/develop/login/controller/login_controller.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
+
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   Widget _logoView() {
@@ -21,25 +21,31 @@ class LoginPage extends StatelessWidget {
           child: Lottie.asset(
             'assets/lottie/nero_splash.json',
             fit: BoxFit.contain,
-            repeat: false, // 한 번만 실행
-            onLoaded: (composition) {
-              // 애니메이션이 끝난 후에도 마지막 프레임에서 멈춤
-            },
+            repeat: false,
+            onLoaded: (composition) {},
           ),
         ),
-        const AppFont(
+        Text(
           '당신 곁에 네로',
-          fontWeight: FontWeight.bold,
-          size: 20,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: AppColors.titleColor,
+          ),
         ),
         const SizedBox(
           height: 30,
         ),
-        AppFont(
+        Text(
           'ADHD를 위한\n토탈 케어 플랫폼',
-          align: TextAlign.center,
-          size: 18,
-          color: Colors.white.withOpacity(0.6),
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+            color: AppColors.secondaryTextColor,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -57,9 +63,14 @@ class LoginPage extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
-            child: AppFont(
+            child: Text(
               '회원가입/로그인',
-              color: Colors.white,
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: AppColors.titleColor,
+              ),
             ),
           ),
           Expanded(

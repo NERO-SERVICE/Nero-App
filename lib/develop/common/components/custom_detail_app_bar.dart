@@ -1,7 +1,10 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
 
-class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
+import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
+
+class CustomDetailAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
 
   CustomDetailAppBar({required this.title});
@@ -22,7 +25,7 @@ class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget 
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.chevron_left, color: Colors.white),
+        icon: const Icon(Icons.chevron_left, color: AppColors.titleColor),
         onPressed: () {
           Navigator.of(context).pop();
         },
@@ -41,7 +44,7 @@ class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget 
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
-                    color: Colors.white,
+                    color: AppColors.titleColor,
                   ),
                 ),
               ],
@@ -52,7 +55,6 @@ class CustomDetailAppBar extends StatelessWidget implements PreferredSizeWidget 
     );
   }
 
-  // AppBar의 크기를 지정하는 preferredSize
   @override
   Size get preferredSize => Size.fromHeight(56.0);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 
 class CustomSubmitButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -18,8 +19,8 @@ class CustomSubmitButton extends StatelessWidget {
       onPressed: isEnabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: isEnabled
-            ? Colors.grey.withOpacity(0.3)
-            : Colors.grey.withOpacity(0.1),
+            ? AppColors.activeButtonColor
+            : AppColors.inactiveButtonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -31,7 +32,7 @@ class CustomSubmitButton extends StatelessWidget {
           fontFamily: 'Pretendard',
           fontWeight: FontWeight.w600,
           fontSize: 16,
-          color: Color(0xffFFFFFF),
+          color: AppColors.titleColor,
         ),
       ),
     );

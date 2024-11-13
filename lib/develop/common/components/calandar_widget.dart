@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -56,26 +57,26 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           formatButtonVisible: false,
           titleCentered: true,
           titleTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
             fontWeight: FontWeight.bold,
           ),
           leftChevronIcon: Icon(
             Icons.chevron_left,
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           rightChevronIcon: Icon(
             Icons.chevron_right,
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: Colors.white),
-          weekendStyle: TextStyle(color: Colors.white),
+          weekdayStyle: TextStyle(color: AppColors.titleColor),
+          weekendStyle: TextStyle(color: AppColors.titleColor),
         ),
         daysOfWeekHeight: 40,
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(
-            color: Colors.grey,
+            color: AppColors.secondaryTextColor,
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(
@@ -93,16 +94,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             shape: BoxShape.circle,
           ),
           todayTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           selectedTextStyle: TextStyle(
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
           defaultTextStyle: TextStyle(
-            color: Colors.grey,
+            color: AppColors.secondaryTextColor,
           ),
           weekendTextStyle: TextStyle(
-            color: Color(0xff6D7179),
+            color: AppColors.weekendTextColor,
           ),
         ),
         calendarBuilders: CalendarBuilders(
@@ -123,21 +124,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  Widget _buildDayCell(DateTime date, {bool isSelected = false, bool isToday = false}) {
+  Widget _buildDayCell(DateTime date,
+      {bool isSelected = false, bool isToday = false}) {
     bool hasRecord = false;
 
     if (widget.markedDates != null) {
-      hasRecord = widget.markedDates!.contains(DateTime(date.year, date.month, date.day));
+      hasRecord = widget.markedDates!
+          .contains(DateTime(date.year, date.month, date.day));
     }
 
     TextStyle textStyle = TextStyle(
       color: isSelected
-          ? Colors.white
+          ? AppColors.titleColor
           : isToday
-          ? Colors.white
-          : (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday)
-          ? Color(0xff6D7179)
-          : Colors.grey,
+              ? AppColors.titleColor
+              : (date.weekday == DateTime.saturday ||
+                      date.weekday == DateTime.sunday)
+                  ? AppColors.weekendTextColor
+                  : AppColors.secondaryTextColor,
       fontWeight: FontWeight.w500,
     );
 
@@ -153,7 +157,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           shape: BoxShape.circle,
           color: isSelected || isToday
               ? Colors.transparent
-              : Colors.black.withOpacity(0.1),
+              : AppColors.selectedButtonColor,
         ),
         child: Center(
           child: dayText,
@@ -165,20 +169,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       margin: const EdgeInsets.all(6.0),
       decoration: isSelected
           ? BoxDecoration(
-        color: widget.selectedColor,
-        shape: BoxShape.circle,
-      )
+              color: widget.selectedColor,
+              shape: BoxShape.circle,
+            )
           : isToday
-          ? BoxDecoration(
-        color: Colors.grey,
-        shape: BoxShape.circle,
-      )
-          : hasRecord
-          ? BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: widget.selectedColor, width: 1),
-      )
-          : null,
+              ? BoxDecoration(
+                  color: AppColors.secondaryTextColor,
+                  shape: BoxShape.circle,
+                )
+              : hasRecord
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: widget.selectedColor, width: 1),
+                    )
+                  : null,
       alignment: Alignment.center,
       child: dayText,
     );

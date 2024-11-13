@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/app_colors.dart';
 
 class TimeSelectionWidget extends StatefulWidget {
   final RxString selectedTime;
@@ -15,7 +16,7 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
   final AnimatedButtonController _controller = AnimatedButtonController();
 
   @override
-  void dispose() { // 메모리 누수 방지
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }
@@ -31,7 +32,7 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w600,
             fontSize: 16,
-            color: Colors.white,
+            color: AppColors.titleColor,
           ),
         ),
         const SizedBox(height: 20),
@@ -39,8 +40,8 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
           return AnimatedButtonBar(
             controller: _controller,
             radius: 16.0,
-            backgroundColor: Color(0xff3C3C3C),
-            foregroundColor: Color(0xffD0EE17),
+            backgroundColor: AppColors.inactiveButtonColor,
+            foregroundColor: AppColors.primaryColor,
             innerVerticalPadding: 16,
             children: [
               ButtonBarEntry(
@@ -56,8 +57,8 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: widget.selectedTime.value == '아침'
-                        ? Colors.black
-                        : Colors.white,
+                        ? AppColors.buttonSelectedTextColor
+                        : AppColors.titleColor,
                   ),
                 ),
               ),
@@ -74,8 +75,8 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: widget.selectedTime.value == '점심'
-                        ? Colors.black
-                        : Colors.white,
+                        ? AppColors.buttonSelectedTextColor
+                        : AppColors.titleColor,
                   ),
                 ),
               ),
@@ -92,8 +93,8 @@ class _TimeSelectionWidgetState extends State<TimeSelectionWidget> {
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: widget.selectedTime.value == '저녁'
-                        ? Colors.black
-                        : Colors.white,
+                        ? AppColors.buttonSelectedTextColor
+                        : AppColors.titleColor,
                   ),
                 ),
               ),

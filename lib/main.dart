@@ -11,8 +11,8 @@ import 'package:nero_app/background_layout.dart';
 import 'package:nero_app/develop/common/controller/bottom_nav_controller.dart';
 import 'package:nero_app/develop/common/controller/common_layout_controller.dart';
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
+import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
-import 'package:nero_app/develop/home/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/repository/clinic_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
@@ -20,7 +20,6 @@ import 'package:nero_app/develop/user/controller/authentication_controller.dart'
 import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
-import 'develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'develop/app.dart';
 import 'develop/dio_service.dart';
 import 'develop/home/information/controller/information_controller.dart';
+import 'develop/home/information/repository/information_repository.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
 
@@ -56,17 +56,19 @@ void main() async {
   await initializeDateFormatting();
 
   FlutterNativeSplash.remove();
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider<SideEffectRecallController>(
-        create: (_) => SideEffectRecallController(),
-      ),
-      ChangeNotifierProvider<SurveyRecallController>(
-        create: (_) => SurveyRecallController(),
-      ),
-    ],
-    child: MyApp(),
-  ),);
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SideEffectRecallController>(
+          create: (_) => SideEffectRecallController(),
+        ),
+        ChangeNotifierProvider<SurveyRecallController>(
+          create: (_) => SurveyRecallController(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -74,7 +76,7 @@ class MyApp extends StatefulWidget {
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
-  FirebaseAnalyticsObserver(analytics: analytics);
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<MyApp> createState() => _MyAppState();
