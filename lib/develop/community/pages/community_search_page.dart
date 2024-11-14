@@ -17,8 +17,6 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
   final TextEditingController _searchController = TextEditingController();
   late final ScrollController _scrollController;
 
-  String _selectedReportType = ''; // 클래스 멤버 변수로 선언
-
   @override
   void initState() {
     super.initState();

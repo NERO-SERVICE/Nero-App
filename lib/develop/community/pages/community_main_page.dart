@@ -18,8 +18,6 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
 
-  String _selectedReportType = ''; // 클래스 멤버 변수로 선언
-
   @override
   void initState() {
     super.initState();
