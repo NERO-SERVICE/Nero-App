@@ -1,11 +1,15 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
+import 'package:nero_app/develop/common/components/custom_complete_button.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
+import 'package:nero_app/develop/community/pages/report/report_dialog.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../controllers/community_controller.dart';
@@ -213,106 +217,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  // 신고 옵션 버튼을 생성하는 위젯
-  Widget _buildReportOption(String title, String value, StateSetter setState) {
-    bool isSelected = _selectedReportType == value;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedReportType = value;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        margin: EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Color(0xffD0EE17).withOpacity(0.2)
-              : Color(0xff1C1B1B),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? Color(0xffD0EE17) : Colors.transparent,
-            width: 2,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey[400],
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 신고 다이얼로그
   void _showReportDialog(int? postId, int? commentId) {
-    _selectedReportType = ''; // 신고 타입 초기화
-    _reportController.clear(); // 상세 설명 초기화
-
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff333333),
-          title: Text("신고/차단", style: TextStyle(color: Colors.white)),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildReportOption("댓글 신고", "comment_report", setState),
-                  _buildReportOption("댓글 차단", "comment_block", setState),
-                  _buildReportOption("작성자 신고", "author_report", setState),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _reportController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: "상세 설명 (선택)",
-                      filled: true,
-                      fillColor: Color(0xff555555),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소"),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_selectedReportType.isNotEmpty) {
-                  _controller.reportContent(
-                    reportType: _selectedReportType,
-                    postId: postId,
-                    commentId: commentId,
-                    description: _reportController.text,
-                  );
-                  Navigator.pop(context);
-                } else {
-                  // 신고 타입을 선택하지 않은 경우 처리
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("신고 유형을 선택해주세요.")),
-                  );
-                }
-              },
-              child: Text("전송하기", style: TextStyle(color: Color(0xffD8D8D8))),
-            ),
-          ],
+        return ReportDialog(
+          postId: postId,
+          commentId: commentId,
         );
       },
     );

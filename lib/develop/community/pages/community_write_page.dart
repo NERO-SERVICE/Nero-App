@@ -235,7 +235,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                 hintStyle: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w400,
-                  fontSize: 14,
+                  fontSize: 16,
                   color: Color(0xff323232),
                 ),
                 border: InputBorder.none,
@@ -244,7 +244,12 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                 _controller.updateContent(value);
                 _controller.isPossibleSubmit.value = value.isNotEmpty;
               },
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: Color(0xffFFFFFF),
+              ),
             ),
             SizedBox(height: 16),
             GestureDetector(
