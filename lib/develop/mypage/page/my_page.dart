@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
 import 'package:nero_app/develop/community/pages/community_liked_posts_page.dart';
+import 'package:nero_app/develop/community/pages/community_my_posts_page.dart';
 import 'package:nero_app/develop/mypage/page/mypage_memories_page.dart';
 import 'package:nero_app/develop/mypage/page/mypage_menstruation_page.dart';
 import 'package:nero_app/develop/mypage/page/mypage_yearly_log_page.dart';
@@ -483,6 +484,38 @@ class _MyPage extends State<MyPage> {
                   GestureDetector(
                     onTap: () {
                       Get.to(() => CommunityLikedPostsPage());
+                    },
+                    child: Text(
+                      '더보기',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Color(0xffD0EE17),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '내가 작성한 커뮤니티 글',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xffFFFFFF),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => CommunityMyPostsPage());
                     },
                     child: Text(
                       '더보기',

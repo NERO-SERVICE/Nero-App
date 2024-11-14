@@ -259,4 +259,24 @@ class CommunityRepository {
       throw e;
     }
   }
+
+  // 내가 작성한 게시물
+  Future<List<Post>> fetchMyPosts({int page = 1}) async {
+    try {
+      final response = await _dioService.get(
+        '/community/posts/mine/',
+        params: {
+          'page': page,
+        },
+      );
+
+      List<Post> posts = (response.data['results'] as List)
+          .map((json) => Post.fromJson(json))
+          .toList();
+      return posts;
+    } catch (e) {
+      print('내가 작성한 게시물 가져오기 실패: $e');
+      throw e;
+    }
+  }
 }

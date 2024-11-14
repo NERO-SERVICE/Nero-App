@@ -44,6 +44,12 @@ class CommunityController extends GetxController {
   var currentLikedPostPage = 1.obs;
   var hasMoreLikedPosts = true.obs;
 
+  // 내가 작성한 게시물 목록
+  var myPosts = <Post>[].obs;
+  var isLoadingMyPosts = false.obs;
+  var currentMyPostPage = 1.obs;
+  var hasMoreMyPosts = true.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -372,6 +378,38 @@ class CommunityController extends GetxController {
       print('좋아요한 게시물 가져오기 실패: $e');
     } finally {
       isLoadingLikedPosts.value = false;
+    }
+  }
+
+  // 내가 작성한 게시물 가져오기
+  Future<void> fetchMyPosts({bool refresh = false}) async {
+    if (isLoadingMyPosts.value) return;
+
+    if (refresh) {
+      currentMyPostPage.value = 1;
+      hasMoreMyPosts.value = true;
+      myPosts.clear();
+    }
+
+    if (!hasMoreMyPosts.value) return;
+
+    isLoadingMyPosts.value = true;
+
+    try {
+      final fetchedPosts = await _communityRepository.fetchMyPosts(
+        page: currentMyPostPage.value,
+      );
+
+      if (fetchedPosts.isNotEmpty) {
+        myPosts.addAll(fetchedPosts);
+        currentMyPostPage.value += 1;
+      }
+
+      hasMoreMyPosts.value = fetchedPosts.length == 10;
+    } catch (e) {
+      print('내가 작성한 게시물 가져오기 실패: $e');
+    } finally {
+      isLoadingMyPosts.value = false;
     }
   }
 
