@@ -11,6 +11,7 @@ import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
 import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
+import 'package:nero_app/develop/home/main/page/home_popular_community_posts_page.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
@@ -401,7 +402,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       ),
                     ],
                   ),
-                  _skeletonNews(),
                   const SizedBox(height: 40),
                   const CustomDivider(),
                   const SizedBox(height: 30),
@@ -566,6 +566,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 ),
                 const SizedBox(height: 30),
                 HomeInformationPage(),
+                const SizedBox(height: 40),
+                const CustomDivider(),
+                const SizedBox(height: 30),
+                HomePopularCommunityPostsPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),
                 const SizedBox(height: 30),

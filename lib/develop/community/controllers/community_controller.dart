@@ -50,6 +50,16 @@ class CommunityController extends GetxController {
   var currentMyPostPage = 1.obs;
   var hasMoreMyPosts = true.obs;
 
+  // 인기 게시물 목록
+  var popularPosts = <Post>[].obs;
+  var isLoadingPopularPosts = false.obs;
+  var currentPopularPostPage = 1.obs;
+  var hasMorePopularPosts = true.obs;
+
+  // 최근 게시물 목록
+  var recentPosts = <Post>[].obs;
+  var isLoadingRecentPosts = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -410,6 +420,54 @@ class CommunityController extends GetxController {
       print('내가 작성한 게시물 가져오기 실패: $e');
     } finally {
       isLoadingMyPosts.value = false;
+    }
+  }
+
+  // 인기 게시물 가져오기
+  Future<void> fetchPopularPosts({bool refresh = false}) async {
+    if (isLoadingPopularPosts.value) return;
+
+    if (refresh) {
+      currentPopularPostPage.value = 1;
+      hasMorePopularPosts.value = true;
+      popularPosts.clear();
+    }
+
+    if (!hasMorePopularPosts.value) return;
+
+    isLoadingPopularPosts.value = true;
+
+    try {
+      final fetchedPosts = await _communityRepository.fetchPopularPosts(
+        page: currentPopularPostPage.value,
+      );
+
+      if (fetchedPosts.isNotEmpty) {
+        popularPosts.addAll(fetchedPosts);
+        currentPopularPostPage.value += 1;
+      }
+
+      hasMorePopularPosts.value = fetchedPosts.length == 10;
+    } catch (e) {
+      print('인기 게시물 가져오기 실패: $e');
+    } finally {
+      isLoadingPopularPosts.value = false;
+    }
+  }
+
+  // 최근 게시물 가져오기
+  Future<void> fetchRecentPosts() async {
+    if (isLoadingRecentPosts.value) return;
+
+    isLoadingRecentPosts.value = true;
+
+    try {
+      final fetchedPosts = await _communityRepository.fetchRecentPosts();
+      recentPosts.assignAll(fetchedPosts);
+    } catch (e) {
+      print('최근 게시물 가져오기 실패: $e');
+    } finally {
+      isLoadingRecentPosts.value = false;
     }
   }
 
