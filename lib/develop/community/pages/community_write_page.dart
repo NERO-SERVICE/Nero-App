@@ -218,6 +218,11 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                           fontSize: 16,
                         ),
                       ),
+                      style: TextButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                        minimumSize: Size(80, 40),
+                      ),
                     ),
             ),
           ],
