@@ -4,7 +4,7 @@ import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/community/pages/community_detail_page.dart';
-import 'package:nero_app/develop/community/pages/community_search_app_bar.dart';
+import 'package:nero_app/develop/community/pages/appbar/community_search_app_bar.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
 
 class CommunitySearchPage extends StatefulWidget {

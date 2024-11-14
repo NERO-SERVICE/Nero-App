@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:nero_app/app_colors.dart';
 
@@ -12,6 +11,7 @@ class CustomDetailAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       automaticallyImplyLeading: false,
       scrolledUnderElevation: 0,
       backgroundColor: Colors.transparent,
@@ -30,27 +30,19 @@ class CustomDetailAppBar extends StatelessWidget
           Navigator.of(context).pop();
         },
       ),
+      actions: [
+        SizedBox(width: kToolbarHeight),
+      ],
       toolbarHeight: 56.0,
       titleSpacing: 0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            child: Row(
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: AppColors.titleColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          color: AppColors.titleColor,
+        ),
       ),
     );
   }

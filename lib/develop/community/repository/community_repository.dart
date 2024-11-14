@@ -239,4 +239,24 @@ class CommunityRepository {
       throw e;
     }
   }
+
+  // 좋아요 한 게시물 목록
+  Future<List<Post>> fetchLikedPosts({int page = 1}) async {
+    try {
+      final response = await _dioService.get(
+        '/community/posts/liked/',
+        params: {
+          'page': page,
+        },
+      );
+
+      List<Post> posts = (response.data['results'] as List)
+          .map((json) => Post.fromJson(json))
+          .toList();
+      return posts;
+    } catch (e) {
+      print('좋아요한 게시물 가져오기 실패: $e');
+      throw e;
+    }
+  }
 }
