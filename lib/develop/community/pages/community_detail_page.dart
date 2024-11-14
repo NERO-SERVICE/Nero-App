@@ -1,15 +1,16 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
-import 'package:nero_app/develop/common/components/custom_complete_button.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
-import 'package:nero_app/develop/community/pages/report/report_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/delete_comment_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/delete_post_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/edit_comment_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/edit_post_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/report_dialog.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../controllers/community_controller.dart';
@@ -30,10 +31,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   final TextEditingController _commentController = TextEditingController();
   final ScrollController _commentScrollController = ScrollController();
-  final TextEditingController _reportController = TextEditingController();
-  final TextEditingController _editController = TextEditingController();
 
-  String _selectedReportType = '';
   final FocusNode _commentFocusNode = FocusNode(); // 키보드 자동 올라옴 방지
 
   @override
@@ -138,85 +136,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  void _showEditPostDialog() {
-    _editController.text = _controller.currentPost.value.content;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff333333),
-          title: Text("게시물 수정", style: TextStyle(color: Colors.white)),
-          content: TextField(
-            controller: _editController,
-            maxLines: null,
-            decoration: InputDecoration(
-              hintText: "내용을 입력하세요",
-              hintStyle: TextStyle(color: Color(0xffD9D9D9)),
-              filled: true,
-              fillColor: Color(0xff555555),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
-            ),
-            TextButton(
-              onPressed: () {
-                String updatedContent = _editController.text.trim();
-                if (updatedContent.isNotEmpty) {
-                  _controller.updatePost(
-                    postId: widget.postId,
-                    content: updatedContent,
-                  );
-                  Navigator.pop(context);
-                }
-              },
-              child: Text("수정 완료", style: TextStyle(color: Color(0xffD8D8D8))),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeletePostDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff333333),
-          title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
-          content: Text(
-            "정말로 이 게시물을 삭제하시겠습니까?",
-            style: TextStyle(
-              color: Color(0xffD9D9D9),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
-            ),
-            TextButton(
-              onPressed: () {
-                _controller.deletePost(widget.postId);
-                Navigator.pop(context);
-                Get.snackbar("알림", "삭제를 완료했습니다.");
-              },
-              child: Text("예", style: TextStyle(color: Color(0xFFFF5A5A))),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showReportDialog(int? postId, int? commentId) {
     showDialog(
       context: context,
@@ -229,47 +148,33 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  void _showEditCommentDialog(Comment comment) {
-    final TextEditingController _editCommentController =
-        TextEditingController(text: comment.content);
+  void _showEditPostDialog() {
+    final postContent = _controller.currentPost.value.content;
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff333333),
-          title: Text("댓글 수정", style: TextStyle(color: Colors.white)),
-          content: TextField(
-            controller: _editCommentController,
-            maxLines: null,
-            decoration: InputDecoration(
-              hintText: "댓글을 입력하세요",
-              hintStyle: TextStyle(color: Color(0xffD9D9D9)),
-              filled: true,
-              fillColor: Color(0xff555555),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
-            ),
-            TextButton(
-              onPressed: () {
-                String updatedContent = _editCommentController.text.trim();
-                if (updatedContent.isNotEmpty) {
-                  _controller.updateComment(comment.commentId, updatedContent);
-                  Navigator.pop(context);
-                }
-              },
-              child: Text("수정 완료", style: TextStyle(color: Color(0xffD8D8D8))),
-            ),
-          ],
+        return EditPostDialog(
+          postId: widget.postId,
+          initialContent: postContent,
         );
+      },
+    );
+  }
+
+  void _showDeletePostDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DeletePostDialog(postId: widget.postId);
+      },
+    );
+  }
+
+  void _showEditCommentDialog(Comment comment) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return EditCommentDialog(comment: comment);
       },
     );
   }
@@ -278,25 +183,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff333333),
-          title: Text("댓글 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 댓글을 삭제하시겠습니까?",
-              style: TextStyle(color: Color(0xffD9D9D9))),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: Color(0xffD9D9D9))),
-            ),
-            TextButton(
-              onPressed: () {
-                _controller.deleteComment(comment.commentId);
-                Navigator.pop(context);
-              },
-              child: Text("삭제", style: TextStyle(color: Color(0xffD8D8D8))),
-            ),
-          ],
-        );
+        return DeleteCommentDialog(comment: comment);
       },
     );
   }

@@ -6,7 +6,7 @@ import 'package:nero_app/develop/community/controllers/community_controller.dart
 import 'package:nero_app/develop/community/pages/appbar/community_app_bar.dart';
 import 'package:nero_app/develop/community/pages/community_detail_page.dart';
 import 'package:nero_app/develop/community/pages/community_write_page.dart';
-import 'package:nero_app/develop/community/pages/report/report_dialog.dart';
+import 'package:nero_app/develop/community/pages/dialog/report_dialog.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
 
 class CommunityMainPage extends StatefulWidget {
