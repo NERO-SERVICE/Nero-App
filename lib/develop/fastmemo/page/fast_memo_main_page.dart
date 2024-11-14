@@ -382,7 +382,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
 
     return CustomCompleteButton(
       onPressed: isEnabled ? _completeSelectedMemos : null,
-      text: "선택하기",
+      text: "완료",
       isEnabled: isEnabled,
     );
   }

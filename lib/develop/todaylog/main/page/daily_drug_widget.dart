@@ -281,7 +281,7 @@ class SubmitButtonWidget extends StatelessWidget {
     return CustomCompleteButton(
       onPressed: isEnabled ? onSubmit : null,
       isEnabled: isEnabled,
-      text: "선택하기",
+      text: "완료",
     );
   }
 }
