@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 
@@ -18,16 +19,18 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   final TextEditingController _contentController = TextEditingController();
   List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
+  bool _isSubmitting = false;
 
   Future<void> _pickImages() async {
     try {
-      final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedFile =
+          await _picker.pickImage(source: ImageSource.gallery);
 
       if (pickedFile != null) {
         final File imageFile = File(pickedFile.path);
 
         setState(() {
-          _selectedImages = [imageFile];  // 한 장의 이미지만 선택
+          _selectedImages = [imageFile]; // 한 장의 이미지만 선택
         });
 
         _controller.addImages([imageFile]);
@@ -50,6 +53,11 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   }
 
   Future<void> _submitPost() async {
+    if (_isSubmitting) return; // 이미 제출 중이면 함수 종료
+    setState(() {
+      _isSubmitting = true; // 제출 시작
+    });
+
     String content = _contentController.text.trim();
     if (content.isEmpty) {
       CustomSnackbar.show(
@@ -57,6 +65,9 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
         message: '게시물 내용을 입력해주세요.',
         isSuccess: false,
       );
+      setState(() {
+        _isSubmitting = false; // 제출 상태 해제
+      });
       return;
     }
 
@@ -67,6 +78,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
       );
       setState(() {
         _selectedImages.clear();
+        _isSubmitting = false; // 제출 완료 후 상태 해제
       });
       _contentController.clear();
       CustomSnackbar.show(
@@ -77,6 +89,9 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
       Get.back(result: true);
     } catch (e) {
       print('게시물 작성 실패: $e');
+      setState(() {
+        _isSubmitting = false; // 제출 실패 시 상태 해제
+      });
       CustomSnackbar.show(
         context: context,
         message: '게시물 작성에 실패했습니다.',
@@ -88,48 +103,48 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   Widget _buildImagePreview() {
     return _selectedImages.isNotEmpty
         ? SizedBox(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _selectedImages.length,
-        itemBuilder: (context, index) {
-          return Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(right: 8),
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: FileImage(_selectedImages[index]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: GestureDetector(
-                  onTap: () => _removeImage(index),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      shape: BoxShape.circle,
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _selectedImages.length,
+              itemBuilder: (context, index) {
+                return Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 8),
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: FileImage(_selectedImages[index]),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: Colors.white,
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: GestureDetector(
+                        onTap: () => _removeImage(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    )
+                  ],
+                );
+              },
+            ),
+          )
         : SizedBox.shrink();
   }
 
@@ -178,22 +193,32 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
               ),
             ),
             Obx(
-                  () => GestureDetector(
-                onTap: _controller.isPossibleSubmit.value ? _submitPost : null,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: Text(
-                    '완료',
-                    style: TextStyle(
-                      color: _controller.isPossibleSubmit.value
-                          ? Color(0xffD0EE17)
-                          : Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+              () => _isSubmitting
+                  ? Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CustomLoadingIndicator(),
+                      ),
+                    )
+                  : TextButton(
+                      onPressed:
+                          (_controller.isPossibleSubmit.value && !_isSubmitting)
+                              ? _submitPost
+                              : null,
+                      child: Text(
+                        '완료',
+                        style: TextStyle(
+                          color: (_controller.isPossibleSubmit.value &&
+                                  !_isSubmitting)
+                              ? Color(0xffD0EE17)
+                              : Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
