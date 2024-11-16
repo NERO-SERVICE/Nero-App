@@ -178,6 +178,7 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                   },
                   text: '제출하기',
                   isEnabled: true,
+                  backgroundColor: AppColors.primaryColor,
                 ),
               ),
               const SizedBox(height: 30),

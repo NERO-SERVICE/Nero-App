@@ -230,6 +230,7 @@ class _FastMemoDetailPageState extends State<FastMemoDetailPage>
       onPressed: onPressed,
       tooltip: tooltip,
       backgroundColor: backgroundColor,
+      elevation: 0,
       shape: CircleBorder(),
       child: SvgPicture.asset(
         svgPath,

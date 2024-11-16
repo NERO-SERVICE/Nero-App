@@ -317,6 +317,7 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
     return FloatingActionButton(
       onPressed: onPressed,
       tooltip: tooltip,
+      elevation: 0,
       backgroundColor: backgroundColor,
       shape: CircleBorder(),
       child: Icon(

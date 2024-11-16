@@ -5,12 +5,14 @@ class CustomSubmitButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isEnabled;
   final String text;
+  final Color? backgroundColor;
 
   const CustomSubmitButton({
     Key? key,
     required this.onPressed,
     this.isEnabled = true,
     this.text = "제출하기",
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,7 @@ class CustomSubmitButton extends StatelessWidget {
       onPressed: isEnabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: isEnabled
-            ? AppColors.activeButtonColor
+            ? (backgroundColor ?? AppColors.activeButtonColor)
             : AppColors.inactiveButtonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),

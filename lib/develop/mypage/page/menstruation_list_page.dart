@@ -521,6 +521,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
     return FloatingActionButton(
       onPressed: onPressed,
       tooltip: tooltip,
+      elevation: 0,
       backgroundColor: backgroundColor,
       shape: CircleBorder(),
       child: Icon(
