@@ -369,7 +369,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 32),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -559,12 +559,11 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 32),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),

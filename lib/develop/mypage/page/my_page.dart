@@ -448,6 +448,77 @@ class _MyPage extends State<MyPage> {
     });
   }
 
+  Widget _communityLikedPostsSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: ElevatedButton(
+        onPressed: () {
+          Get.to(() => CommunityLikedPostsPage());
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xff3C3C3C),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 16),
+            elevation: 0
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '좋아한 커뮤니티 글',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Color(0xffD9D9D9),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _communityMyPostsSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: ElevatedButton(
+        onPressed: () {
+          Get.to(() => CommunityMyPostsPage());
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xff3C3C3C),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          elevation: 0
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '내가 작성한 커뮤니티 글',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Color(0xffD9D9D9),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -467,69 +538,9 @@ class _MyPage extends State<MyPage> {
             SizedBox(height: 40),
             _myMemoriesButton(),
             SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '좋아요 한 커뮤니티 글',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Color(0xffFFFFFF),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => CommunityLikedPostsPage());
-                    },
-                    child: Text(
-                      '더보기',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Color(0xffD0EE17),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '내가 작성한 커뮤니티 글',
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Color(0xffFFFFFF),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => CommunityMyPostsPage());
-                    },
-                    child: Text(
-                      '더보기',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Color(0xffD0EE17),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _communityLikedPostsSection(),
+            SizedBox(height: 16),
+            _communityMyPostsSection(),
             SizedBox(height: 40),
             CustomDivider(),
             SizedBox(height: 32),
@@ -592,15 +603,13 @@ class _MyPage extends State<MyPage> {
               labelTop: '하루 설문',
               labelBottom: '검증된 설문을 통해 내 마음을 확인해 보세요',
               onPressed: () async {
-                // Fetch the recorded dates
                 await _monthlyCheckController.fetchSurveyRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
                   selectedDate.value,
-                  _monthlyCheckController.surveyRecordedDates, // Highlight recorded dates
+                  _monthlyCheckController.surveyRecordedDates,
                 );
                 if (date != null) {
-                  // Navigate to the survey log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -618,15 +627,13 @@ class _MyPage extends State<MyPage> {
               labelTop: '부작용 설문',
               labelBottom: '평소와 다른 증상이 나타났나요?',
               onPressed: () async {
-                // Fetch the recorded dates
                 await _monthlyCheckController.fetchSideEffectRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
                   selectedDate.value,
-                  _monthlyCheckController.sideEffectRecordedDates, // Highlight recorded dates
+                  _monthlyCheckController.sideEffectRecordedDates,
                 );
                 if (date != null) {
-                  // Navigate to the side effect log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -644,15 +651,13 @@ class _MyPage extends State<MyPage> {
               labelTop: '셀프 기록',
               labelBottom: '오늘 하루를 보내며 기억하고 싶은 일이 있었나요?',
               onPressed: () async {
-                // Fetch the recorded dates
                 await _monthlyCheckController.fetchSelfRecordRecordedDates(selectedDate.value.year);
                 final date = await _selectDate(
                   context,
                   selectedDate.value,
-                  _monthlyCheckController.selfRecordRecordedDates, // Highlight recorded dates
+                  _monthlyCheckController.selfRecordRecordedDates,
                 );
                 if (date != null) {
-                  // Navigate to the self record log page if a valid date is selected
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -485,12 +485,15 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(28),
+                                borderSide: BorderSide.none,
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(28),
+                                borderSide: BorderSide.none,
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(28),
+                                borderSide: BorderSide.none,
                               ),
                               filled: true,
                               fillColor: Color(0xffD8D8D8).withOpacity(0.4),
