@@ -46,6 +46,9 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
     if (query.isNotEmpty) {
       _controller.setSearchQuery(query);
       _controller.fetchFilteredPosts(refresh: true);
+    } else {
+      // 검색어가 비어있으면 게시물 목록을 클리어
+      _controller.clearSearch();
     }
   }
 
@@ -80,61 +83,75 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
               return Center(child: CustomLoadingIndicator());
             }
 
-            if (_controller.posts.isEmpty) {
+            if (_controller.searchQuery.isEmpty) {
+              // 검색어가 입력되지 않은 상태일 때 메시지 표시
               return Center(
-                child: Text('검색 결과가 없습니다.', style: TextStyle(color: Colors.white)),
+                child: Text(
+                  '검색어를 입력해주세요.',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
               );
             }
 
-            return ListView.builder(
-              controller: _scrollController,
-              itemCount: _controller.posts.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _controller.posts.length) {
-                  if (_controller.hasMorePosts.value) {
-                    return Padding(
+            if (_controller.posts.isEmpty) {
+              return Center(
+                child: Text(
+                  '검색 결과가 없습니다.',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () => _controller.fetchFilteredPosts(refresh: true),
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: _controller.posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _controller.posts.length) {
+                    return _controller.hasMorePosts.value
+                        ? Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Center(child: CustomLoadingIndicator()),
-                    );
-                  } else {
-                    return SizedBox.shrink();
+                    )
+                        : SizedBox.shrink();
                   }
-                }
 
-                final post = _controller.posts[index];
-                return PostItem(
-                  post: post,
-                  onTap: () async {
-                    // 페이지 이동 후 결과로 스크롤 위치를 받아 복원
-                    final offset = await Get.to(() => CommunityDetailPage(postId: post.postId));
-                    if (offset != null) {
-                      _scrollController.jumpTo(offset); // 스크롤 위치 복원
-                    }
-                    _controller.fetchFilteredPosts(refresh: true);
-                  },
-                  onLike: () => _controller.toggleLikePost(post.postId),
-                  onComment: () async {
-                    final offset = await Get.to(() => CommunityDetailPage(postId: post.postId));
-                    if (offset != null) {
-                      _scrollController.jumpTo(offset);
-                    }
-                    _controller.fetchFilteredPosts(refresh: true);
-                  },
-                  onEdit: () {
-                    print('게시물 수정: ${post.postId}');
-                  },
-                  onDelete: () {
-                    print('게시물 삭제: ${post.postId}');
-                  },
-                  onReport: () {
-                    _showReportDialog(post.postId);
-                  },
-                );
-              },
+                  final post = _controller.posts[index];
+                  return PostItem(
+                    post: post,
+                    onTap: () async {
+                      await Get.to(() => CommunityDetailPage(postId: post.postId));
+                      _scrollController.jumpTo(_controller.scrollOffsetSearch.value);
+                    },
+                    onLike: () => _controller.toggleLikePost(post.postId),
+                    onComment: () async {
+                      await Get.to(() => CommunityDetailPage(postId: post.postId));
+                      _scrollController.jumpTo(_controller.scrollOffsetSearch.value);
+                    },
+                    onEdit: () {
+                      // 필요 시 수정 기능 구현
+                      print('게시물 수정: ${post.postId}');
+                    },
+                    onDelete: () {
+                      // 필요 시 삭제 기능 구현
+                      print('게시물 삭제: ${post.postId}');
+                    },
+                    onReport: () => _showReportDialog(post.postId),
+                  );
+                },
+              ),
             );
           }),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 }

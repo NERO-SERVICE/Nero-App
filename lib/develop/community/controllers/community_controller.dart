@@ -485,4 +485,13 @@ class CommunityController extends GetxController {
   void removeImage(File image) {
     selectedImages.remove(image);
   }
+
+  // 검색 상태 초기화
+  void clearSearch() {
+    searchQuery.value = '';
+    posts.clear();
+    hasMorePosts.value = true;
+    currentPostPage.value = 1;
+    update();
+  }
 }
