@@ -86,7 +86,7 @@ class ClinicWriteController extends GetxController {
 
   void addDrugToClinic(DrugArchive drugArchive, int number, String time) {
     final myDrugArchive = MyDrugArchive(
-      myArchiveId: drugArchive.archiveId,
+      myArchiveId: 0, // 서버에서 생성되므로 0 또는 적절한 기본값
       archiveId: drugArchive.archiveId,
       drugName: drugArchive.drugName,
       target: drugArchive.target,
@@ -94,7 +94,7 @@ class ClinicWriteController extends GetxController {
     );
 
     final drug = Drug(
-      drugId: 0,
+      drugId: 0, // 서버에서 생성되므로 0 또는 적절한 기본값
       myDrugArchive: myDrugArchive,
       number: number,
       initialNumber: number,

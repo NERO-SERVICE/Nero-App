@@ -108,6 +108,21 @@ class ClinicRepository {
     }
   }
 
+  Future<List<DrugArchive>> searchDrugArchives(String query) async {
+    try {
+      final response = await _dio.get(
+        '/clinics/drugs/archives/',
+        params: {'search': query},
+      );
+      List<DrugArchive> archives = (response.data as List)
+          .map<DrugArchive>((item) => DrugArchive.fromJson(item))
+          .toList();
+      return archives;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
   Future<List<Drug>> getDrugsFromLatestClinic() async {
     try {

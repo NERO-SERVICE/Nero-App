@@ -14,7 +14,7 @@ class InitStartPage extends StatelessWidget {
       children: [
         Positioned.fill(
           child: Image.asset(
-            'assets/images/login_background.png',
+            'assets/develop/login_background.png',
             fit: BoxFit.cover,
           ),
         ),

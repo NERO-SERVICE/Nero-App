@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
+import 'package:nero_app/develop/todaylog/clinic/write/page/clinic_write_search_drug_page.dart';
 
 import '../../../../common/components/calandar_widget.dart';
 import '../../../../common/components/custom_submit_button.dart';
@@ -316,10 +317,54 @@ class _ClinicWritePageState extends State<ClinicWritePage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              DrugArchiveDropdown(
-                                selectedArchive: selectedArchive,
-                                controller: controller,
-                              ),
+                              Obx(() {
+                                return Container(
+                                  padding: EdgeInsets.only(left: 16),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff3C3C3C),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: selectedArchive.value != null
+                                            ? Text(
+                                          '${selectedArchive.value!.drugName} (${selectedArchive.value!.capacity}mg)',
+                                          style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                            : Text(
+                                          '약물을 선택해주세요.',
+                                          style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            color: Colors.white.withOpacity(0.6),
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.search, color: Color(0xffD0EE17)),
+                                        onPressed: () async {
+                                          final result = await Get.to(() => ClinicWriteSearchDrugPage());
+                                          if (result != null && result is DrugArchive) {
+                                            selectedArchive.value = result;
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
                               const SizedBox(height: 20),
                             ],
                           ),
