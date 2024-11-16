@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
@@ -241,7 +242,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w400,
                   fontSize: 16,
-                  color: Color(0xff323232),
+                  color: AppColors.hintTextColor,
                 ),
                 border: InputBorder.none,
               ),
@@ -268,12 +269,22 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                   SizedBox(width: 8),
                   Text(
                     '사진 선택',
-                    style: TextStyle(color: Color(0xffD9D9D9)),
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
+                    ),
                   ),
                   SizedBox(width: 16),
                   Text(
                     '${_selectedImages.length}/1',
-                    style: TextStyle(color: Color(0xffD9D9D9)),
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
+                    ),
                   ),
                 ],
               ),
@@ -283,7 +294,12 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
             SizedBox(height: 30),
             Text(
               '''커뮤니티 이용 주의사항''',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                color: Color(0xffD9D9D9),
+              ),
             ),
             SizedBox(height: 16),
             Text(
@@ -292,7 +308,12 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
 3. 부적절한 콘텐츠 금지: 폭력적, 혐오적, 선정적이거나 불법적인 콘텐츠는 허용되지 않습니다. 또한, 외부 링크를 통한 불법 콘텐츠 유도는 금지됩니다.\n
 4. 스팸 및 광고 제한: 상업적 목적으로 작성된 글과 반복적인 스팸 게시물은 삭제될 수 있습니다.\n
 5. 건전한 대화 유도: 커뮤니티는 서로의 지식과 경험을 나누는 공간입니다. 잘못된 정보 유포를 방지하기 위해, 항상 신뢰할 수 있는 정보를 바탕으로 대화해 주세요.''',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: Color(0xffD9D9D9),
+              ),
             ),
             SizedBox(height: 16),
           ],

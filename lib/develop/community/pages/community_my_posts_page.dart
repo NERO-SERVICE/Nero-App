@@ -45,10 +45,16 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
 
         if (_controller.myPosts.isEmpty) {
           return Center(
-              child: Text(
-            '내가 작성한 게시물이 없습니다.',
-            style: TextStyle(color: Colors.white),
-          ));
+            child: Text(
+              '내가 작성한 게시물이 없습니다.',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Color(0xffD9D9D9),
+              ),
+            ),
+          );
         }
 
         return RefreshIndicator(

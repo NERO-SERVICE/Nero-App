@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
-import 'package:nero_app/develop/community/pages/appbar/community_detail_app_bar.dart';
 import 'package:nero_app/develop/community/pages/community_detail_page.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
 
@@ -48,10 +47,16 @@ class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
 
         if (_controller.likedPosts.isEmpty) {
           return Center(
-              child: Text(
-            '좋아요한 게시물이 없습니다.',
-            style: TextStyle(color: Colors.white),
-          ));
+            child: Text(
+              '좋아요한 게시물이 없습니다.',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Color(0xffD9D9D9),
+              ),
+            ),
+          );
         }
 
         return RefreshIndicator(
@@ -73,13 +78,11 @@ class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
               return PostItem(
                 post: post,
                 onTap: () async {
-                  await Get.to(
-                      () => CommunityDetailPage(postId: post.postId));
+                  await Get.to(() => CommunityDetailPage(postId: post.postId));
                 },
                 onLike: () {},
                 onComment: () async {
-                  await Get.to(
-                      () => CommunityDetailPage(postId: post.postId));
+                  await Get.to(() => CommunityDetailPage(postId: post.postId));
                 },
                 onEdit: () {},
                 onDelete: () {},

@@ -1,3 +1,4 @@
+// CommunityMainPage.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
@@ -8,13 +9,14 @@ import 'package:nero_app/develop/community/pages/community_detail_page.dart';
 import 'package:nero_app/develop/community/pages/community_write_page.dart';
 import 'package:nero_app/develop/community/pages/dialog/report_dialog.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
+import 'package:nero_app/main.dart';
 
 class CommunityMainPage extends StatefulWidget {
   @override
   _CommunityMainPageState createState() => _CommunityMainPageState();
 }
 
-class _CommunityMainPageState extends State<CommunityMainPage> {
+class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
 
@@ -33,7 +35,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
     _scrollController.addListener(() {
       _controller.scrollOffsetMain.value = _scrollController.offset;
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 500 &&
+              _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPosts.value &&
           _controller.hasMorePosts.value) {
         _controller.fetchAllPosts();
@@ -41,7 +43,29 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
     });
   }
 
-  // 게시물 수정 다이얼로그
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // RouteObserver에 등록
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    // RouteObserver에서 해제
+    routeObserver.unsubscribe(this);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // 다른 페이지에서 돌아왔을 때 호출되는 메서드
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // 페이지가 다시 표시될 때 게시물 새로 고침
+    _controller.fetchAllPosts(refresh: true);
+  }
+
   void _showEditPostDialog(int postId) {
     final TextEditingController _editController = TextEditingController();
     showDialog(
@@ -65,17 +89,20 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: AppColors.hintTextColor)),
+              child:
+                  Text("취소", style: TextStyle(color: AppColors.hintTextColor)),
             ),
             TextButton(
               onPressed: () {
                 String updatedContent = _editController.text.trim();
                 if (updatedContent.isNotEmpty) {
-                  _controller.updatePost(postId: postId, content: updatedContent);
+                  _controller.updatePost(
+                      postId: postId, content: updatedContent);
                   Navigator.pop(context);
                 }
               },
-              child: Text("수정 완료", style: TextStyle(color: AppColors.primaryColor)),
+              child: Text("수정 완료",
+                  style: TextStyle(color: AppColors.primaryColor)),
             ),
           ],
         );
@@ -83,7 +110,6 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
     );
   }
 
-  // 게시물 삭제 다이얼로그
   void _showDeletePostDialog(int postId) {
     showDialog(
       context: context,
@@ -91,7 +117,8 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
         return AlertDialog(
           backgroundColor: AppColors.dialogBackgroundColor,
           title: Text("게시물 삭제", style: TextStyle(color: Colors.white)),
-          content: Text("정말로 이 게시물을 삭제하시겠습니까?", style: TextStyle(color: Colors.white70)),
+          content: Text("정말로 이 게시물을 삭제하시겠습니까?",
+              style: TextStyle(color: Colors.white70)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -101,7 +128,6 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
               onPressed: () {
                 _controller.deletePost(postId);
                 Navigator.pop(context);
-                Get.snackbar("알림", "삭제가 완료되었습니다.", snackPosition: SnackPosition.BOTTOM);
               },
               child: Text("삭제", style: TextStyle(color: Colors.red)),
             ),
@@ -136,7 +162,17 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
             }
 
             if (_controller.posts.isEmpty) {
-              return Center(child: Text('게시물이 없습니다.', style: TextStyle(color: Colors.white)));
+              return Center(
+                child: Text(
+                  '게시물이 없습니다.',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xffD9D9D9),
+                  ),
+                ),
+              );
             }
 
             return RefreshIndicator(
@@ -148,9 +184,9 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
                   if (index == _controller.posts.length) {
                     return _controller.hasMorePosts.value
                         ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(child: CustomLoadingIndicator()),
-                    )
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(child: CustomLoadingIndicator()),
+                          )
                         : SizedBox.shrink();
                   }
 
@@ -158,13 +194,17 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
                   return PostItem(
                     post: post,
                     onTap: () async {
-                      await Get.to(() => CommunityDetailPage(postId: post.postId));
-                      _scrollController.jumpTo(_controller.scrollOffsetMain.value);
+                      await Get.to(
+                          () => CommunityDetailPage(postId: post.postId));
+                      _scrollController
+                          .jumpTo(_controller.scrollOffsetMain.value);
                     },
                     onLike: () => _controller.toggleLikePost(post.postId),
                     onComment: () async {
-                      await Get.to(() => CommunityDetailPage(postId: post.postId));
-                      _scrollController.jumpTo(_controller.scrollOffsetMain.value);
+                      await Get.to(
+                          () => CommunityDetailPage(postId: post.postId));
+                      _scrollController
+                          .jumpTo(_controller.scrollOffsetMain.value);
                     },
                     onEdit: () => _showEditPostDialog(post.postId),
                     onDelete: () => _showDeletePostDialog(post.postId),
@@ -187,11 +227,5 @@ class _CommunityMainPageState extends State<CommunityMainPage> {
         child: Icon(Icons.add, size: 30, color: Colors.white),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }

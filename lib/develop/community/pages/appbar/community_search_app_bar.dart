@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
 
-class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CommunitySearchAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final TextEditingController searchController;
   final VoidCallback onSearch;
   final VoidCallback onBack;
@@ -36,7 +38,12 @@ class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidg
         decoration: InputDecoration(
           hintText: '검색어를 입력하세요',
           border: InputBorder.none,
-          hintStyle: TextStyle(color: Color(0xffd9d9d9)),
+          hintStyle: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w400,
+            fontSize: 14,
+            color: AppColors.hintTextColor,
+          ),
         ),
         style: TextStyle(color: Colors.white),
         cursorColor: Color(0xffd9d9d9),
@@ -49,7 +56,7 @@ class CommunitySearchAppBar extends StatelessWidget implements PreferredSizeWidg
       ],
       leading: IconButton(
         icon: const Icon(Icons.chevron_left, color: Colors.white),
-        onPressed: onBack,  // 뒤로 가기 버튼에 onBack 콜백 할당
+        onPressed: onBack, // 뒤로 가기 버튼에 onBack 콜백 할당
       ),
     );
   }

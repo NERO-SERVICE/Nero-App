@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
-import 'package:nero_app/develop/community/pages/community_detail_page.dart';
 import 'package:nero_app/develop/community/pages/appbar/community_search_app_bar.dart';
+import 'package:nero_app/develop/community/pages/community_detail_page.dart';
 import 'package:nero_app/develop/community/pages/dialog/report_dialog.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
 
@@ -33,7 +33,7 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
       _controller.scrollOffsetSearch.value = _scrollController.offset;
 
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 500 &&
+              _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPosts.value &&
           _controller.hasMorePosts.value) {
         _controller.fetchFilteredPosts();
@@ -88,7 +88,12 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
               return Center(
                 child: Text(
                   '검색어를 입력해주세요.',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Color(0xffD9D9D9),
+                    ),
                 ),
               );
             }
@@ -97,7 +102,12 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
               return Center(
                 child: Text(
                   '검색 결과가 없습니다.',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xffD9D9D9),
+                  ),
                 ),
               );
             }
@@ -111,9 +121,9 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
                   if (index == _controller.posts.length) {
                     return _controller.hasMorePosts.value
                         ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(child: CustomLoadingIndicator()),
-                    )
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(child: CustomLoadingIndicator()),
+                          )
                         : SizedBox.shrink();
                   }
 
@@ -121,20 +131,22 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
                   return PostItem(
                     post: post,
                     onTap: () async {
-                      await Get.to(() => CommunityDetailPage(postId: post.postId));
-                      _scrollController.jumpTo(_controller.scrollOffsetSearch.value);
+                      await Get.to(
+                          () => CommunityDetailPage(postId: post.postId));
+                      _scrollController
+                          .jumpTo(_controller.scrollOffsetSearch.value);
                     },
                     onLike: () => _controller.toggleLikePost(post.postId),
                     onComment: () async {
-                      await Get.to(() => CommunityDetailPage(postId: post.postId));
-                      _scrollController.jumpTo(_controller.scrollOffsetSearch.value);
+                      await Get.to(
+                          () => CommunityDetailPage(postId: post.postId));
+                      _scrollController
+                          .jumpTo(_controller.scrollOffsetSearch.value);
                     },
                     onEdit: () {
-                      // 필요 시 수정 기능 구현
                       print('게시물 수정: ${post.postId}');
                     },
                     onDelete: () {
-                      // 필요 시 삭제 기능 구현
                       print('게시물 삭제: ${post.postId}');
                     },
                     onReport: () => _showReportDialog(post.postId),

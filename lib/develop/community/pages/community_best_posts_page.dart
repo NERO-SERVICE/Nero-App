@@ -26,7 +26,7 @@ class _CommunityBestPostsPageState extends State<CommunityBestPostsPage> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 500 &&
+              _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPopularPosts.value &&
           _controller.hasMorePopularPosts.value) {
         _controller.fetchPopularPosts();
@@ -39,16 +39,23 @@ class _CommunityBestPostsPageState extends State<CommunityBestPostsPage> {
     return Scaffold(
       appBar: CustomDetailAppBar(title: '인기 게시물'),
       body: Obx(() {
-        if (_controller.isLoadingPopularPosts.value && _controller.popularPosts.isEmpty) {
+        if (_controller.isLoadingPopularPosts.value &&
+            _controller.popularPosts.isEmpty) {
           return Center(child: CustomLoadingIndicator());
         }
 
         if (_controller.popularPosts.isEmpty) {
           return Center(
-              child: Text(
-                '인기 게시물이 없습니다.',
-                style: TextStyle(color: Colors.white),
-              ));
+            child: Text(
+              '인기 게시물이 없습니다.',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Color(0xffD9D9D9),
+              ),
+            ),
+          );
         }
 
         return RefreshIndicator(
@@ -60,9 +67,9 @@ class _CommunityBestPostsPageState extends State<CommunityBestPostsPage> {
               if (index == _controller.popularPosts.length) {
                 return _controller.hasMorePopularPosts.value
                     ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(child: CustomLoadingIndicator()),
-                )
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(child: CustomLoadingIndicator()),
+                      )
                     : SizedBox.shrink();
               }
 

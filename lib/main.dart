@@ -33,6 +33,7 @@ import 'firebase_options.dart';
 
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -122,7 +123,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: _lastRoute,
-      navigatorObservers: <NavigatorObserver>[MyApp.observer],
+      navigatorKey: navigatorKey,
+      navigatorObservers: <NavigatorObserver>[
+        MyApp.observer,
+        routeObserver,
+      ],
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,
