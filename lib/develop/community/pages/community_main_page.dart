@@ -221,6 +221,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
           await Get.to(() => CommunityWritePage());
           _controller.fetchAllPosts(refresh: true);
         },
+        elevation: 0,
         tooltip: "커뮤니티 글 작성",
         backgroundColor: Color(0xffD0EE17).withOpacity(0.5),
         shape: CircleBorder(),

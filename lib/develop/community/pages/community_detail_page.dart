@@ -53,6 +53,9 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   }
 
   void _showCenterActionDialog() {
+    final Post post = _controller.currentPost.value;
+    final bool isAuthor = post.isAuthor;
+
     showModalBottomSheet(
       context: context,
       isDismissible: true,
@@ -69,46 +72,48 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.inactiveButtonColor,
-                    fixedSize: Size(150, 40),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _showEditPostDialog();
-                  },
-                  child: Text(
-                    "수정",
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xffFFFFFF),
+                if (isAuthor) ...[
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.inactiveButtonColor,
+                      fixedSize: Size(150, 40),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showEditPostDialog();
+                    },
+                    child: Text(
+                      "수정",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Color(0xffFFFFFF),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.inactiveButtonColor,
-                    fixedSize: Size(150, 40),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _showDeletePostDialog();
-                  },
-                  child: Text(
-                    "삭제",
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFFFF5A5A),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.inactiveButtonColor,
+                      fixedSize: Size(150, 40),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showDeletePostDialog();
+                    },
+                    child: Text(
+                      "삭제",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Color(0xFFFF5A5A),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10),
+                  SizedBox(height: 10),
+                ],
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.inactiveButtonColor,
@@ -222,7 +227,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
       child: Scaffold(
         appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
         body: Obx(
-          () {
+              () {
             if (_controller.isLoadingPostDetail.value) {
               return Center(child: CustomLoadingIndicator());
             }
@@ -243,7 +248,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 32),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     _buildProfileImage(post),
                                     SizedBox(width: 12),
@@ -317,21 +321,21 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
                                           Shimmer.fromColors(
-                                        baseColor: Colors.grey[300]!,
-                                        highlightColor: Colors.grey[100]!,
-                                        child: Container(
-                                          width: 300,
-                                          height: 300,
-                                          color: Colors.grey[300],
-                                        ),
-                                      ),
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              width: 300,
+                                              height: 300,
+                                              color: Colors.grey[300],
+                                            ),
+                                          ),
                                       errorWidget: (context, url, error) =>
                                           Image.asset(
-                                        'assets/develop/default.png',
-                                        width: 300,
-                                        height: 300,
-                                        fit: BoxFit.cover,
-                                      ),
+                                            'assets/develop/default.png',
+                                            width: 300,
+                                            height: 300,
+                                            fit: BoxFit.cover,
+                                          ),
                                     ),
                                   ),
                                 );
@@ -498,7 +502,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               filled: true,
                               fillColor: Color(0xffD8D8D8).withOpacity(0.4),
                               contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 21),
+                              EdgeInsets.symmetric(horizontal: 21),
                             ),
                           ),
                         ),

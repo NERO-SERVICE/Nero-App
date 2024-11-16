@@ -6,7 +6,8 @@ class Comment extends Equatable {
   final DateTime createdAt;
   final String content;
   final int likeCount;
-  final bool isLiked; // 좋아요 여부
+  final bool isLiked;
+  final bool isAuthor;
 
   Comment({
     this.commentId = 0,
@@ -15,6 +16,7 @@ class Comment extends Equatable {
     this.content = '',
     this.likeCount = 0,
     this.isLiked = false,
+    this.isAuthor = false,
   });
 
   Comment.empty()
@@ -23,7 +25,8 @@ class Comment extends Equatable {
         createdAt = DateTime.now(),
         content = '',
         likeCount = 0,
-        isLiked = false;
+        isLiked = false,
+        isAuthor = false;
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
@@ -34,7 +37,8 @@ class Comment extends Equatable {
           : DateTime.now(),
       content: json['content'] ?? '',
       likeCount: json['likes_count'] ?? 0,
-      isLiked: json['isLiked'] ?? false,  // 수정된 부분
+      isLiked: json['isLiked'] ?? false,
+      isAuthor: json['isAuthor'] ?? false,
     );
   }
 
@@ -45,7 +49,8 @@ class Comment extends Equatable {
       'created_at': createdAt.toIso8601String(),
       'content': content,
       'likes_count': likeCount,
-      'isLiked': isLiked,  // 수정된 부분
+      'isLiked': isLiked,
+      'isAuthor': isAuthor,
     };
   }
 
@@ -56,6 +61,7 @@ class Comment extends Equatable {
     String? content,
     int? likeCount,
     bool? isLiked,
+    bool? isAuthor,
   }) {
     return Comment(
       commentId: commentId ?? this.commentId,
@@ -64,6 +70,7 @@ class Comment extends Equatable {
       content: content ?? this.content,
       likeCount: likeCount ?? this.likeCount,
       isLiked: isLiked ?? this.isLiked,
+      isAuthor: isAuthor ?? this.isAuthor,
     );
   }
 
@@ -75,5 +82,6 @@ class Comment extends Equatable {
     content,
     likeCount,
     isLiked,
+    isAuthor,
   ];
 }

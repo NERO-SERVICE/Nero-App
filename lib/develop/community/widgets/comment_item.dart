@@ -36,46 +36,48 @@ class CommentItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.inactiveButtonColor,
-                  fixedSize: Size(150, 50),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  onEdit();
-                },
-                child: Text(
-                  "수정",
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xffFFFFFF),
+              if (comment.isAuthor) ...[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.inactiveButtonColor,
+                    fixedSize: Size(150, 50),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onEdit();
+                  },
+                  child: Text(
+                    "수정",
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xffFFFFFF),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.inactiveButtonColor,
-                  fixedSize: Size(150, 50),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  onDelete();
-                },
-                child: Text(
-                  "삭제",
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xFFFF5A5A),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.inactiveButtonColor,
+                    fixedSize: Size(150, 50),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onDelete();
+                  },
+                  child: Text(
+                    "삭제",
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xFFFF5A5A),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
+                SizedBox(height: 10),
+              ],
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.inactiveButtonColor,
