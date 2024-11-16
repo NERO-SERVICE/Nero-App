@@ -1,11 +1,7 @@
-// lib/develop/mypage/view/user_profile_update_page.dart
-
-import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/mypage/controller/user_profile_update_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:nero_app/develop/common/layout/common_layout.dart';
@@ -354,7 +350,7 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
         ),
       ),
       child: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Text(
           '저장하기',
           style: TextStyle(

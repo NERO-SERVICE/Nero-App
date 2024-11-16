@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/todaylog/clinic/model/clinic.dart';
@@ -109,11 +110,10 @@ class ClinicDetailPage extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffFF5A5A).withOpacity(0.5),
+                  backgroundColor: AppColors.deleteButtonColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                 ),
                 child: const Text(
                   '삭제하기',
@@ -126,6 +126,7 @@ class ClinicDetailPage extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 30),
           ],
         );
       }),
