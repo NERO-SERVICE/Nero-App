@@ -89,153 +89,156 @@ class PostItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomCommunityDivider(),
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    _buildProfileImage(),
-                    SizedBox(width: 8),
-                    Text(
-                      post.nickname,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: Color(0xffFFFFFF),
+      child: Container(
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomCommunityDivider(),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      _buildProfileImage(),
+                      SizedBox(width: 8),
+                      Text(
+                        post.nickname,
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xffFFFFFF),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '${post.createdTimeAgo}',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 10,
-                        color: Color(0xff959595),
+                      SizedBox(width: 8),
+                      Text(
+                        '${post.createdTimeAgo}',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 10,
+                          color: Color(0xff959595),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  icon: Icon(Icons.more_vert, color: Colors.white),
-                  onPressed: () => _showEditDeleteReportModal(context),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 56, right: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16),
-                Text(
-                  post.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xffD9D9D9),
+                    ],
                   ),
-                ),
-                SizedBox(height: 16),
-                if (post.images.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: CachedNetworkImage(
-                      imageUrl: post.images[0],
-                      width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: Container(
-                          width: double.infinity,
-                          height: 200,
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Center(
-                        child: SvgPicture.asset(
-                          'assets/develop/nero-small-logo.svg',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                  IconButton(
+                    icon: Icon(Icons.more_vert, color: Colors.white),
+                    onPressed: () => _showEditDeleteReportModal(context),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 56, right: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  Text(
+                    post.content,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xffD9D9D9),
                     ),
                   ),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: onLike,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              post.isLiked
-                                  ? 'assets/develop/heart-on.svg'
-                                  : 'assets/develop/heart-off.svg',
-                              width: 30,
-                              height: 30,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              '${post.likeCount}',
-                              style: TextStyle(
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Color(0xffD9D9D9),
-                              ),
-                            ),
-                          ],
+                  SizedBox(height: 16),
+                  if (post.images.isNotEmpty)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: CachedNetworkImage(
+                        imageUrl: post.images[0],
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Center(
+                          child: SvgPicture.asset(
+                            'assets/develop/nero-small-logo.svg',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: onComment,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/develop/comment_icon.svg',
-                              width: 30,
-                              height: 30,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              '${post.commentCount}',
-                              style: TextStyle(
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Color(0xffD9D9D9),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: onLike,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16, bottom: 16),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                post.isLiked
+                                    ? 'assets/develop/heart-on.svg'
+                                    : 'assets/develop/heart-off.svg',
+                                width: 30,
+                                height: 30,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 4),
+                              Text(
+                                '${post.likeCount}',
+                                style: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xffD9D9D9),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      GestureDetector(
+                        onTap: onComment,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/develop/comment_icon.svg',
+                                width: 30,
+                                height: 30,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                '${post.commentCount}',
+                                style: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xffD9D9D9),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

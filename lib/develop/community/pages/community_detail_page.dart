@@ -207,13 +207,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   Widget _buildProfileImage(Post post) {
     if (post.profileImageUrl != null && post.profileImageUrl!.isNotEmpty) {
       return CircleAvatar(
-        radius: 16,
+        radius: 20,
         backgroundImage: CachedNetworkImageProvider(post.profileImageUrl!),
         backgroundColor: AppColors.primaryTextColor,
       );
     } else {
       return const CircleAvatar(
-        radius: 16,
+        radius: 20,
         backgroundImage: AssetImage('assets/develop/default_profile.png'),
         backgroundColor: AppColors.primaryTextColor,
       );
@@ -251,24 +251,29 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   children: [
                                     _buildProfileImage(post),
                                     SizedBox(width: 12),
-                                    Text(
-                                      post.nickname,
-                                      style: TextStyle(
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: AppColors.titleColor,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      '${post.createdTimeAgo}',
-                                      style: TextStyle(
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 10,
-                                        color: AppColors.hintTextColor,
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.nickname,
+                                          style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color: Color(0xffFFFFFF),
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          '${post.createdTimeAgo}',
+                                          style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 10,
+                                            color: Color(0xff959595),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -281,7 +286,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 24),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Align(
