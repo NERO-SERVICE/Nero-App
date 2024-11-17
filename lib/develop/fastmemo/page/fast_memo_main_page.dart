@@ -47,7 +47,7 @@ class _FastMemoMainPageState extends State<FastMemoMainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: kToolbarHeight + 40),
+              SizedBox(height: kToolbarHeight + 55),
               _fastCalendar(),
               SizedBox(height: 50),
               CustomDivider(),
