@@ -47,6 +47,7 @@ class CommunityRepository {
   Future<Post> createPost({
     required String content,
     List<File>? images,
+    String? type,
   }) async {
     try {
       dio.FormData formData = dio.FormData.fromMap({
@@ -59,14 +60,13 @@ class CommunityRepository {
                 filename: file.path.split('/').last,
               ),
           ],
+        if (type != null) 'type': type,
       });
 
       final response = await _dioService.postFormData(
         '/community/posts/create/',
         formData: formData,
       );
-
-      print('Create Post Response: ${response.data}'); // 응답 데이터 로그
 
       if (response.statusCode == 201) {
         return Post.fromJson(response.data);

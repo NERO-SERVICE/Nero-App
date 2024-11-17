@@ -11,6 +11,7 @@ class Post extends Equatable {
   late final int commentCount;
   final bool isLiked;
   final bool isAuthor;
+  final String? type;
 
   Post({
     required this.postId,
@@ -23,6 +24,7 @@ class Post extends Equatable {
     required this.commentCount,
     required this.isLiked,
     required this.isAuthor,
+    this.type,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,7 @@ class Post extends Equatable {
       commentCount: json['comments_count'] ?? 0,
       isLiked: json['isLiked'] ?? false,
       isAuthor: json['isAuthor'] ?? false,
+      type: json['type'],
     );
   }
 
@@ -57,6 +60,7 @@ class Post extends Equatable {
       commentCount: 0,
       isLiked: false,
       isAuthor: false,
+      type: null,
     );
   }
 
@@ -71,6 +75,7 @@ class Post extends Equatable {
     int? commentCount,
     bool? isLiked,
     bool? isAuthor,
+    String? type,
   }) {
     return Post(
       postId: postId ?? this.postId,
@@ -83,6 +88,7 @@ class Post extends Equatable {
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
       isAuthor: isAuthor ?? this.isAuthor,
+      type: type ?? this.type,
     );
   }
 
@@ -98,5 +104,6 @@ class Post extends Equatable {
     commentCount,
     isLiked,
     isAuthor,
+    type,
   ];
 }

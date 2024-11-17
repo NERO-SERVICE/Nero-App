@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
+import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../models/post.dart';
@@ -87,6 +89,9 @@ class PostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CommunityController _controller = Get.find<CommunityController>();
+    final String postTypeKorean =
+    _controller.translateTypeToKorean(post.type);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -232,6 +237,16 @@ class PostItem extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (postTypeKorean.isNotEmpty)
+                        Text(
+                          '#$postTypeKorean',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.hashtagTextColor,
+                          ),
+                        ),
                     ],
                   ),
                 ],

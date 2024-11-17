@@ -60,10 +60,35 @@ class CommunityController extends GetxController {
   var recentPosts = <Post>[].obs;
   var isLoadingRecentPosts = false.obs;
 
+  // 게시물 타입
+  RxString selectedType = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchAllPosts(refresh: true); // 초기 게시물 로드
+  }
+
+  final Map<String, String> typeMapping = {
+    '인증': 'certification',
+    '습관': 'habit',
+    '일기': 'diary',
+    '고민': 'worry',
+    '정보': 'information',
+  };
+
+  Map<String, String> get reverseTypeMapping => {
+    for (var entry in typeMapping.entries) entry.value: entry.key,
+  };
+
+  String translateTypeToKorean(String? type) {
+    if (type == null || type.isEmpty) return '';
+    return reverseTypeMapping[type] ?? type;
+  }
+
+  // type 업데이트 함수
+  void updateSelectedType(String type) {
+    selectedType.value = type;
   }
 
   Future<void> fetchAllPosts({bool refresh = false}) async {
@@ -149,19 +174,23 @@ class CommunityController extends GetxController {
     }
   }
 
-  // 게시물 작성
   Future<void> createPost({
     required String content,
     List<File>? images,
   }) async {
     try {
+      final typeKey = selectedType.value.isNotEmpty
+          ? typeMapping[selectedType.value]
+          : null; // 매핑된 type 값
       final newPost = await _communityRepository.createPost(
         content: content,
         images: images,
+        type: typeKey, // 서버로 매핑된 값 전달
       );
       fetchAllPosts(refresh: true);
       selectedImages.clear();
       this.content.value = '';
+      selectedType.value = '';
       CustomSnackbar.show(
         context: Get.context!,
         message: '게시물이 생성되었습니다.',

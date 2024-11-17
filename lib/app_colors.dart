@@ -13,6 +13,7 @@ class AppColors {
   static const Color hintTextColor = Color(0xFF959595);
   static const Color inactiveTextColor = Color(0xFF777777);
   static const Color buttonSelectedTextColor = Color(0xFF000000);
+  static const Color hashtagTextColor = Color(0xFF65BCFB);
 
   // UI
   static Color dialogBackgroundColor = Color(0xFFD8D8D8).withOpacity(0.3);

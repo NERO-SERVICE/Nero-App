@@ -401,6 +401,21 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   ],
                                 ),
                               ),
+                              SizedBox(width: 16),
+                              if (post.type != null)
+                                Row(
+                                  children: [
+                                    Text(
+                                      '#${_controller.translateTypeToKorean(post.type)}',
+                                      style: TextStyle(
+                                        fontFamily: 'Pretendard',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: AppColors.hashtagTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),

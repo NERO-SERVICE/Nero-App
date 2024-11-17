@@ -21,6 +21,13 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
   bool _isSubmitting = false;
+  final List<String> types = ['인증', '습관', '일기', '고민', '정보'];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.selectedType.value = '';
+  }
 
   Future<void> _pickImages() async {
     try {
@@ -57,10 +64,96 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
     FocusScope.of(context).unfocus();
   }
 
+  Widget _buildTypeSelector() {
+    return Obx(() {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+        child: DropdownButton<String>(
+          value: _controller.selectedType.value.isEmpty
+              ? null
+              : _controller.selectedType.value,
+          hint: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                '유형',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: AppColors.primaryTextColor,
+                ),
+              ),
+              SizedBox(width: 4),
+              Icon(Icons.arrow_drop_down, color: AppColors.primaryTextColor),
+            ],
+          ),
+          dropdownColor: AppColors.secondaryTextColor,
+          elevation: 0,
+          borderRadius: BorderRadius.circular(16),
+          items: types.map((type) {
+            return DropdownMenuItem<String>(
+              value: type,
+              child: Text(
+                type,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: AppColors.primaryTextColor,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value != null) {
+              _controller.updateSelectedType(value);
+            }
+          },
+          icon: SizedBox.shrink(),
+          selectedItemBuilder: (BuildContext context) {
+            return types.map((type) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    _controller.selectedType.value.isEmpty
+                        ? '유형'
+                        : '#${_controller.selectedType.value}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryTextColor,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(Icons.arrow_drop_down, color: AppColors.primaryTextColor),
+                ],
+              );
+            }).toList();
+          },
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: Color(0xffD9D9D9),
+          ),
+          underline: Container(
+            height: 1,
+            color: Colors.transparent,
+          ),
+        ),
+      );
+    });
+  }
+
   Future<void> _submitPost() async {
-    if (_isSubmitting) return; // 이미 제출 중이면 함수 종료
+    if (_isSubmitting) return;
     setState(() {
-      _isSubmitting = true; // 제출 시작
+      _isSubmitting = true;
     });
 
     String content = _contentController.text.trim();
@@ -71,7 +164,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
         isSuccess: false,
       );
       setState(() {
-        _isSubmitting = false; // 제출 상태 해제
+        _isSubmitting = false;
       });
       return;
     }
@@ -83,7 +176,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
       );
       setState(() {
         _selectedImages.clear();
-        _isSubmitting = false; // 제출 완료 후 상태 해제
+        _isSubmitting = false;
       });
       _contentController.clear();
       CustomSnackbar.show(
@@ -95,7 +188,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
     } catch (e) {
       print('게시물 작성 실패: $e');
       setState(() {
-        _isSubmitting = false; // 제출 실패 시 상태 해제
+        _isSubmitting = false;
       });
       CustomSnackbar.show(
         context: context,
@@ -236,9 +329,14 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
           ),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             children: [
+              Row(
+                children: [
+                  _buildTypeSelector(),
+                ],
+              ),
               TextField(
                 controller: _contentController,
                 maxLines: 10,
@@ -309,11 +407,43 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
               ),
               SizedBox(height: 16),
               Text(
-                '''1. 상호 존중: 모든 사용자는 서로를 존중하고 차별적이거나 공격적인 언어를 사용하지 않아야 합니다. 의견은 자유롭게 표현하되, 타인에게 불쾌감을 주는 표현은 삼가 주세요.\n
-      2. 개인정보 보호: 개인정보(전화번호, 주소, 신분증 정보 등)를 포함한 게시물은 금지됩니다. 다른 사용자의 개인정보를 침해하지 않도록 주의해 주세요.\n
-      3. 부적절한 콘텐츠 금지: 폭력적, 혐오적, 선정적이거나 불법적인 콘텐츠는 허용되지 않습니다. 또한, 외부 링크를 통한 불법 콘텐츠 유도는 금지됩니다.\n
-      4. 스팸 및 광고 제한: 상업적 목적으로 작성된 글과 반복적인 스팸 게시물은 삭제될 수 있습니다.\n
-      5. 건전한 대화 유도: 커뮤니티는 서로의 지식과 경험을 나누는 공간입니다. 잘못된 정보 유포를 방지하기 위해, 항상 신뢰할 수 있는 정보를 바탕으로 대화해 주세요.''',
+                '''1. 상호 존중: 모든 사용자는 서로를 존중하고 차별적이거나 공격적인 언어를 사용하지 않아야 합니다. 의견은 자유롭게 표현하되, 타인에게 불쾌감을 주는 표현은 삼가 주세요.\n''',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xffD9D9D9),
+                ),
+              ),
+              Text(
+                '''2. 개인정보 보호: 개인정보(전화번호, 주소, 신분증 정보 등)를 포함한 게시물은 금지됩니다. 다른 사용자의 개인정보를 침해하지 않도록 주의해 주세요.\n''',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xffD9D9D9),
+                ),
+              ),
+              Text(
+                '''3. 부적절한 콘텐츠 금지: 폭력적, 혐오적, 선정적이거나 불법적인 콘텐츠는 허용되지 않습니다. 또한, 외부 링크를 통한 불법 콘텐츠 유도는 금지됩니다.\n''',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xffD9D9D9),
+                ),
+              ),
+              Text(
+                '''4. 스팸 및 광고 제한: 상업적 목적으로 작성된 글과 반복적인 스팸 게시물은 삭제될 수 있습니다.\n''',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xffD9D9D9),
+                ),
+              ),
+              Text(
+                '''5. 건전한 대화 유도: 커뮤니티는 서로의 지식과 경험을 나누는 공간입니다. 잘못된 정보 유포를 방지하기 위해, 항상 신뢰할 수 있는 정보를 바탕으로 대화해 주세요.''',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w400,
