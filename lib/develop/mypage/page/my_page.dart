@@ -550,7 +550,7 @@ class _MyPage extends State<MyPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: kToolbarHeight + 60),
+            SizedBox(height: kToolbarHeight + 75),
             _mypageUserInfo(),
             SizedBox(height: 40),
             _myMemoriesButton(),
