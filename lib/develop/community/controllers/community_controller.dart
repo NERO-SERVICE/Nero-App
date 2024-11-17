@@ -70,7 +70,7 @@ class CommunityController extends GetxController {
   }
 
   final Map<String, String> typeMapping = {
-    '인증': 'certification',
+    '질문': 'question',
     '습관': 'habit',
     '일기': 'diary',
     '고민': 'worry',

@@ -19,6 +19,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
   bool _isVisible = true;
+  final double _appBarHeight = kToolbarHeight + 40;
 
   @override
   void initState() {
@@ -165,8 +166,6 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      appBar: _isVisible ? CommunityAppBar(title: '커뮤니티') : null,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -204,6 +203,37 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
                         : SizedBox.shrink();
                   }
 
+                  if (index == 0) {
+                    return Column(
+                      children: [
+                        SizedBox(height: _appBarHeight - 35),
+                        PostItem(
+                          post: _controller.posts[index],
+                          onTap: () async {
+                            await Get.to(() => CommunityDetailPage(
+                                postId: _controller.posts[index].postId));
+                            _scrollController
+                                .jumpTo(_controller.scrollOffsetMain.value);
+                          },
+                          onLike: () => _controller
+                              .toggleLikePost(_controller.posts[index].postId),
+                          onComment: () async {
+                            await Get.to(() => CommunityDetailPage(
+                                postId: _controller.posts[index].postId));
+                            _scrollController
+                                .jumpTo(_controller.scrollOffsetMain.value);
+                          },
+                          onEdit: () => _showEditPostDialog(
+                              _controller.posts[index].postId),
+                          onDelete: () => _showDeletePostDialog(
+                              _controller.posts[index].postId),
+                          onReport: () => _showReportDialog(
+                              _controller.posts[index].postId),
+                        ),
+                      ],
+                    );
+                  }
+
                   final post = _controller.posts[index];
                   return PostItem(
                     post: post,
@@ -228,6 +258,14 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
               ),
             );
           }),
+          AnimatedOpacity(
+            opacity: _isVisible ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 300),
+            child: Container(
+              height: _appBarHeight,
+              child: CommunityAppBar(title: '커뮤니티'),
+            ),
+          ),
         ],
       ),
     );
