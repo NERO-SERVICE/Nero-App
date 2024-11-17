@@ -17,7 +17,7 @@ class MypageController extends GetxController {
   var sideEffectResponses = <ResponseSubtype>[].obs;
   var selfRecordResponses = <SelfRecord>[].obs;
   var menstruationCycles = <MenstruationCycle>[].obs;
-  var userInfo = MypageUserInfo(nickname: '').obs;
+  var userInfo = MypageUserInfo(nickname: '', profileImageUrl: '').obs;
 
   Map<String, MonthlyCheck> monthlyCheckCache = {};
   var surveyRecordedDates = <DateTime>{}.obs;

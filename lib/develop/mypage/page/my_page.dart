@@ -389,38 +389,54 @@ class _MyPage extends State<MyPage> {
   Widget _mypageUserInfo() {
     return Obx(() {
       final nickname = _monthlyCheckController.userInfo.value.nickname;
+      final profileImageUrl = _monthlyCheckController.userInfo.value.profileImageUrl;
+
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  "안녕하세요",
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
+                CircleAvatar(
+                  radius: 34,
+                  backgroundImage: profileImageUrl.isNotEmpty
+                      ? NetworkImage(profileImageUrl)
+                      : AssetImage('assets/images/default_profile.png') as ImageProvider,
                 ),
-                Text(
-                  "${nickname} 님",
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "안녕하세요",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "$nickname 님",
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
             GestureDetector(
               onTap: () async {
                 await Get.to(() => UserProfileUpdatePage());
-                _monthlyCheckController.fetchUserInfo(); // 돌아온 후 데이터 새로고침
+                _monthlyCheckController.fetchUserInfo();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -442,11 +458,12 @@ class _MyPage extends State<MyPage> {
                 ),
               ),
             ),
-          ]
+          ],
         ),
       );
     });
   }
+
 
   Widget _communityLikedPostsSection() {
     return Padding(
@@ -533,7 +550,7 @@ class _MyPage extends State<MyPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: kToolbarHeight + 80),
+            SizedBox(height: kToolbarHeight + 60),
             _mypageUserInfo(),
             SizedBox(height: 40),
             _myMemoriesButton(),
