@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -17,6 +18,7 @@ class CommunityMainPage extends StatefulWidget {
 class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
+  bool _isVisible = true;
 
   @override
   void initState() {
@@ -32,6 +34,17 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
 
     _scrollController.addListener(() {
       _controller.scrollOffsetMain.value = _scrollController.offset;
+
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        // 아래로 스크롤 중이면 숨김
+        if (_isVisible) setState(() => _isVisible = false);
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        // 위로 스크롤 중이면 표시
+        if (!_isVisible) setState(() => _isVisible = true);
+      }
+
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 500 &&
           !_controller.isLoadingPosts.value &&
@@ -152,7 +165,8 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommunityAppBar(title: '커뮤니티'),
+      extendBody: true,
+      appBar: _isVisible ? CommunityAppBar(title: '커뮤니티') : null,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
