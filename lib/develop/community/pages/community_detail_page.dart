@@ -44,6 +44,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   void dispose() {
     _commentScrollController.dispose();
     _commentController.dispose();
+
+    if (Get.previousRoute == '/CommunityMainPage') {
+      _controller.scrollOffsetMain.value = _commentScrollController.offset;
+    } else if (Get.previousRoute == '/CommunitySearchPage') {
+      _controller.scrollOffsetSearch.value = _commentScrollController.offset;
+    }
+
     super.dispose();
   }
 

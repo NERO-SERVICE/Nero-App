@@ -71,7 +71,10 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
         searchController: _searchController,
         onSearch: _searchPosts,
         onBack: () {
-          _controller.fetchAllPosts(refresh: true);
+          // 검색어가 없거나 결과가 없을 경우에도 상태 복구
+          if (_controller.searchQuery.isEmpty || _controller.posts.isEmpty) {
+            _controller.fetchAllPosts(refresh: true);
+          }
           Navigator.of(context).pop();
         },
       ),

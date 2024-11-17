@@ -58,12 +58,14 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
     super.dispose();
   }
 
-  // 다른 페이지에서 돌아왔을 때 호출되는 메서드
   @override
   void didPopNext() {
     super.didPopNext();
-    // 페이지가 다시 표시될 때 게시물 새로 고침
-    _controller.fetchAllPosts(refresh: true);
+    if (_controller.posts.isEmpty) {
+      _controller.fetchAllPosts(refresh: true);
+    } else {
+      _scrollController.jumpTo(_controller.scrollOffsetMain.value);
+    }
   }
 
   void _showEditPostDialog(int postId) {
