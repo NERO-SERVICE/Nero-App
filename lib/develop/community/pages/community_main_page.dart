@@ -1,4 +1,3 @@
-// CommunityMainPage.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
@@ -6,7 +5,6 @@ import 'package:nero_app/develop/common/components/custom_loading_indicator.dart
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/community/pages/appbar/community_app_bar.dart';
 import 'package:nero_app/develop/community/pages/community_detail_page.dart';
-import 'package:nero_app/develop/community/pages/community_write_page.dart';
 import 'package:nero_app/develop/community/pages/dialog/report_dialog.dart';
 import 'package:nero_app/develop/community/widgets/post_item.dart';
 import 'package:nero_app/main.dart';
@@ -154,7 +152,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommunityAppBar(title: '커뮤니티 마당'),
+      appBar: CommunityAppBar(title: '커뮤니티'),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -217,17 +215,6 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
             );
           }),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Get.to(() => CommunityWritePage());
-          _controller.fetchAllPosts(refresh: true);
-        },
-        elevation: 0,
-        tooltip: "커뮤니티 글 작성",
-        backgroundColor: Color(0xffD0EE17).withOpacity(0.5),
-        shape: CircleBorder(),
-        child: Icon(Icons.add, size: 30, color: Colors.white),
       ),
     );
   }

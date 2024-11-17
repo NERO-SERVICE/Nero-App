@@ -69,7 +69,7 @@ class _ReportDialogState extends State<ReportDialog> {
                     // Centered Title
                     Center(
                       child: Text(
-                        "신고/차단",
+                        "신고하기",
                         style: TextStyle(
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,

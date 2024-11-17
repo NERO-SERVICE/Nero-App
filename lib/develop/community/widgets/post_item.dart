@@ -100,7 +100,7 @@ class PostItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomCommunityDivider(),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -132,7 +132,12 @@ class PostItem extends StatelessWidget {
                     ],
                   ),
                   IconButton(
-                    icon: Icon(Icons.more_vert, color: Colors.white),
+                    icon: SvgPicture.asset(
+                      'assets/develop/more.svg',
+                      width: 24,
+                      height: 24,
+                      color: Colors.white,
+                    ),
                     onPressed: () => _showEditDeleteReportModal(context),
                   ),
                 ],
@@ -143,7 +148,7 @@ class PostItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   Text(
                     post.content,
                     maxLines: 3,
@@ -155,7 +160,7 @@ class PostItem extends StatelessWidget {
                       color: Color(0xffD9D9D9),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   if (post.images.isNotEmpty)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
@@ -188,7 +193,7 @@ class PostItem extends StatelessWidget {
                       GestureDetector(
                         onTap: onLike,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 16, bottom: 16),
+                          padding: const EdgeInsets.only(top: 4, bottom: 4, right: 4),
                           child: Row(
                             children: [
                               SvgPicture.asset(
@@ -215,7 +220,7 @@ class PostItem extends StatelessWidget {
                       GestureDetector(
                         onTap: onComment,
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(4),
                           child: Row(
                             children: [
                               SvgPicture.asset(
@@ -237,6 +242,7 @@ class PostItem extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(width: 4),
                       if (postTypeKorean.isNotEmpty)
                         Text(
                           '#$postTypeKorean',

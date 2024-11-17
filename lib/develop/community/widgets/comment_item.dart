@@ -88,7 +88,7 @@ class CommentItem extends StatelessWidget {
                   onReport();
                 },
                 child: Text(
-                  "신고",
+                  "신고/차단",
                   style: TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w600,
@@ -143,7 +143,12 @@ class CommentItem extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.more_vert, color: Colors.white),
+                    icon: SvgPicture.asset(
+                      'assets/develop/more.svg',
+                      width: 24,
+                      height: 24,
+                      color: Colors.white,
+                    ),
                     onPressed: () => _showEditDeleteReportModal(context),
                   ),
                 ],

@@ -232,7 +232,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     return GestureDetector(
       onTap: _dismissKeyboard, // 화면 외부를 탭했을 때 키보드 해제
       child: Scaffold(
-        appBar: CustomDetailAppBar(title: '커뮤니티 마당'),
+        appBar: CustomDetailAppBar(title: '커뮤니티'),
         body: Obx(
               () {
             if (_controller.isLoadingPostDetail.value) {
@@ -287,13 +287,17 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.more_vert,
-                                  color: AppColors.titleColor),
+                              icon: SvgPicture.asset(
+                                'assets/develop/more.svg',
+                                width: 24,
+                                height: 24,
+                                color: Colors.white,
+                              ),
                               onPressed: _showCenterActionDialog,
                             ),
                           ],
                         ),
-                        SizedBox(height: 24),
+                        SizedBox(height: 16),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Align(
@@ -328,24 +332,24 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                     borderRadius: BorderRadius.circular(16),
                                     child: CachedNetworkImage(
                                       imageUrl: post.images[index],
-                                      width: 300,
-                                      height: 300,
+                                      width: 350,
+                                      height: 350,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
                                           Shimmer.fromColors(
                                             baseColor: Colors.grey[300]!,
                                             highlightColor: Colors.grey[100]!,
                                             child: Container(
-                                              width: 300,
-                                              height: 300,
+                                              width: 350,
+                                              height: 350,
                                               color: Colors.grey[300],
                                             ),
                                           ),
                                       errorWidget: (context, url, error) =>
                                           Image.asset(
                                             'assets/develop/default.png',
-                                            width: 300,
-                                            height: 300,
+                                            width: 350,
+                                            height: 350,
                                             fit: BoxFit.cover,
                                           ),
                                     ),
@@ -354,7 +358,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                               },
                             ),
                           ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 6),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Row(
@@ -385,7 +389,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               GestureDetector(
                                 onTap: () {},
                                 child: Row(
@@ -408,7 +412,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               if (post.type != null)
                                 Row(
                                   children: [
@@ -426,7 +430,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 6),
                         CustomCommunityDivider(),
                         Padding(
                           padding: const EdgeInsets.symmetric(

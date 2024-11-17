@@ -1,9 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
+import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/community/pages/community_search_page.dart';
-import 'package:nero_app/develop/settings/page/setting_page.dart';
+import 'package:nero_app/develop/community/pages/community_write_page.dart';
 
 class CommunityAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -18,6 +20,8 @@ class CommunityAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CommunityAppBarState extends State<CommunityAppBar> {
+  final CommunityController _controller = Get.find<CommunityController>();
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -40,16 +44,37 @@ class _CommunityAppBarState extends State<CommunityAppBar> {
         children: [
           Row(
             children: [
-              SizedBox(width: 32),
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                  color: AppColors.titleColor,
+              Container(
+                child: Row(
+                  children: [
+                    SizedBox(width: 32),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/develop/nero-appbar-logo.svg',
+                          width: 71,
+                          height: 27,
+                        ),
+                        Positioned(
+                          left: 71 + 8,
+                          top: 8,
+                          child: Text(
+                            "Community",
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                              color: AppColors.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+
             ],
           ),
           Row(
@@ -67,18 +92,16 @@ class _CommunityAppBarState extends State<CommunityAppBar> {
                   size: 24,
                 ),
               ),
-              SizedBox(width: 40),
+              SizedBox(width: 16),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingPage()),
-                  );
+                onTap: () async {
+                  await Get.to(() => CommunityWritePage());
+                  _controller.fetchAllPosts(refresh: true);
                 },
-                child: SvgPicture.asset(
-                  'assets/develop/setting.svg',
-                  width: 24,
-                  height: 24,
+                child: Icon(
+                  Icons.add,
+                  color: AppColors.titleColor,
+                  size: 24,
                 ),
               ),
               SizedBox(width: 24),
