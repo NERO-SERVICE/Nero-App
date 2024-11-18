@@ -19,7 +19,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
   bool _isVisible = true;
-  final double _appBarHeight = kToolbarHeight + 40;
+  final double _appBarHeight = kToolbarHeight + 56;
 
   @override
   void initState() {

@@ -404,7 +404,7 @@ class _MyPage extends State<MyPage> {
                   radius: 34,
                   backgroundImage: profileImageUrl.isNotEmpty
                       ? NetworkImage(profileImageUrl)
-                      : AssetImage('assets/images/default_profile.png') as ImageProvider,
+                      : AssetImage('assets/develop/default_profile.png') as ImageProvider,
                 ),
                 SizedBox(width: 16),
                 Column(
