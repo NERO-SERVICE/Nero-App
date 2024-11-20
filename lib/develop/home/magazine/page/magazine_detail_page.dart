@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/common/widget/content_emphasize_widget.dart';
 import 'package:nero_app/develop/home/magazine/controller/magazine_controller.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 
@@ -117,7 +118,7 @@ class _MagazineDetailPageState extends State<MagazineDetailPage> {
                   // 매거진 설명
                   const SizedBox(height: 30),
                   if (magazine.description != null)
-                    MagazineContentWidget(content: magazine.description!),
+                    ContentEmphasizeWidget(content: magazine.description!),
                   const SizedBox(height: 20),
                   MagazineDateWidget(createdAt: magazine.createdAt),
                   const SizedBox(height: 20),
@@ -200,28 +201,6 @@ class MagazineTitleWidget extends StatelessWidget {
           fontWeight: FontWeight.w600,
           fontSize: 18,
           color: Color(0xffFFFFFF),
-        ),
-      ),
-    );
-  }
-}
-
-class MagazineContentWidget extends StatelessWidget {
-  final String content;
-
-  const MagazineContentWidget({required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Text(
-        content,
-        style: const TextStyle(
-          fontFamily: 'Pretendard',
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-          color: Color(0xffD9D9D9),
         ),
       ),
     );
