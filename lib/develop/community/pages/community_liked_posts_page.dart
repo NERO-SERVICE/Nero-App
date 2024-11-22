@@ -38,7 +38,7 @@ class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomDetailAppBar(title: '좋아요 한 커뮤니티 글'),
+      appBar: CustomDetailAppBar(title: '좋아요 누른 게시물'),
       body: Obx(() {
         if (_controller.isLoadingLikedPosts.value &&
             _controller.likedPosts.isEmpty) {
@@ -48,7 +48,7 @@ class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
         if (_controller.likedPosts.isEmpty) {
           return Center(
             child: Text(
-              '좋아요한 게시물이 없습니다.',
+              '좋아요 한 게시물이 없습니다.',
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w600,

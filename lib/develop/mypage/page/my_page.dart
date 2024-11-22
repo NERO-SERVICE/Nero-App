@@ -484,7 +484,7 @@ class _MyPage extends State<MyPage> {
           children: [
             Expanded(
               child: Text(
-                '좋아한 커뮤니티 글',
+                '좋아요 누른 게시물',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w500,
@@ -520,7 +520,7 @@ class _MyPage extends State<MyPage> {
           children: [
             Expanded(
               child: Text(
-                '내가 작성한 커뮤니티 글',
+                '내가 작성한 게시물',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w500,

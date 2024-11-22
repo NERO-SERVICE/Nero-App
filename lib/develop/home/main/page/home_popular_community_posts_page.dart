@@ -33,7 +33,7 @@ class HomePopularCommunityPostsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                '인기 커뮤니티 글',
+                '인기 게시물',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w600,

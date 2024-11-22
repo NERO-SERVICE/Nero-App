@@ -229,10 +229,12 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    double imageWidth = MediaQuery.of(context).size.width - 64;
+
     return GestureDetector(
       onTap: _dismissKeyboard, // 화면 외부를 탭했을 때 키보드 해제
       child: Scaffold(
-        appBar: CustomDetailAppBar(title: '커뮤니티'),
+        appBar: CustomDetailAppBar(title: '게시물'),
         body: Obx(
               () {
             if (_controller.isLoadingPostDetail.value) {
@@ -316,42 +318,38 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                         SizedBox(height: 16),
                         if (post.images.isNotEmpty)
                           SizedBox(
-                            height: 300,
+                            height: imageWidth, // Use the dynamic imageWidth
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: post.images.length > 3
-                                  ? 3
-                                  : post.images.length,
+                              itemCount: post.images.length > 3 ? 3 : post.images.length,
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: EdgeInsets.only(
                                     right: 8.0,
-                                    left: index == 0 ? 32.0 : 0,
+                                    left: index == 0 ? 32.0 : 0, // Maintain left padding for the first image
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
                                     child: CachedNetworkImage(
                                       imageUrl: post.images[index],
-                                      width: 350,
-                                      height: 350,
+                                      width: imageWidth,
+                                      height: imageWidth,
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          Shimmer.fromColors(
-                                            baseColor: Colors.grey[300]!,
-                                            highlightColor: Colors.grey[100]!,
-                                            child: Container(
-                                              width: 350,
-                                              height: 350,
-                                              color: Colors.grey[300],
-                                            ),
-                                          ),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                            'assets/develop/default.png',
-                                            width: 350,
-                                            height: 350,
-                                            fit: BoxFit.cover,
-                                          ),
+                                      placeholder: (context, url) => Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Container(
+                                          width: imageWidth,
+                                          height: imageWidth,
+                                          color: Colors.grey[300],
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) => Image.asset(
+                                        'assets/develop/default.png',
+                                        width: imageWidth,
+                                        height: imageWidth,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 );
@@ -389,7 +387,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 16),
                               GestureDetector(
                                 onTap: () {},
                                 child: Row(
@@ -412,7 +410,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 16),
                               if (post.type != null)
                                 Row(
                                   children: [

@@ -102,7 +102,7 @@ class PostItem extends StatelessWidget {
             CustomCommunityDivider(),
             SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.only(left: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -193,7 +193,7 @@ class PostItem extends StatelessWidget {
                       GestureDetector(
                         onTap: onLike,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 4, bottom: 4, right: 4),
+                          padding: const EdgeInsets.only(top: 4, bottom: 4, right: 16),
                           child: Row(
                             children: [
                               SvgPicture.asset(
@@ -220,7 +220,7 @@ class PostItem extends StatelessWidget {
                       GestureDetector(
                         onTap: onComment,
                         child: Padding(
-                          padding: const EdgeInsets.all(4),
+                          padding: const EdgeInsets.only(top: 4, bottom: 4, right: 16),
                           child: Row(
                             children: [
                               SvgPicture.asset(
