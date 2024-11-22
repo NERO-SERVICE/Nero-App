@@ -77,7 +77,6 @@ dependencies:
   app_version_update: ^5.0.3
   upgrader: ^11.3.0
   image_picker: ^1.1.2
-  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

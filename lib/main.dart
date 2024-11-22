@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +21,6 @@ import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
-import 'package:nero_app/utils/version/version_service.dart';
-import 'package:nero_app/utils/version/widget/update_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -72,6 +68,9 @@ void main() async {
         ),
         ChangeNotifierProvider<SurveyRecallController>(
           create: (_) => SurveyRecallController(),
+        ),
+        ChangeNotifierProvider<HealthController>(
+          create: (_) => HealthController(),
         ),
       ],
       child: MyApp(),
@@ -167,6 +166,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(InformationRepository());
         Get.put(InformationController());
         Get.put(CommunityController());
+        // Get.lazyPut(() => CommunityController(), fenix: true);
       }),
       getPages: [
         GetPage(
