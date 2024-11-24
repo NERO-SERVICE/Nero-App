@@ -451,7 +451,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
                   color: Color(0xffD9D9D9),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 64),
             ],
           ),
         ),
