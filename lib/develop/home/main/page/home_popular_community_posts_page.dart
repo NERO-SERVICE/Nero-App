@@ -61,6 +61,7 @@ class HomePopularCommunityPostsPage extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 8),
         Obx(() {
           if (_controller.isLoadingRecentPosts.value &&
               _controller.recentPosts.isEmpty) {

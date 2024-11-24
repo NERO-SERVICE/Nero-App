@@ -71,6 +71,7 @@ class HomeInformationPage extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 8),
         Obx(() {
           if (_informationController.isLoading.value) {
             return Center(child: CustomLoadingIndicator());

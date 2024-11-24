@@ -87,10 +87,12 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     _loadNotifications();
     _latestInformationsFuture = _informationRepository.getLatestInformation();
     _latestMagazinesFuture = _magazineRepository.getLatestMagazine();
+    _currentPage.value = _pageController.initialPage;
   }
 
   Future<void> _loadNotifications() async {
     await _notificationController.fetchNotifications();
+    _currentPage.value = _pageController.initialPage;
   }
 
   Widget subInfo(NotificationModel notification) {

@@ -63,7 +63,7 @@ class HomeMagazinePage extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         FutureBuilder<List<Magazine>>(
           future: latestMagazinesFuture,
           builder: (context, snapshot) {
