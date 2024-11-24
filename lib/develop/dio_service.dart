@@ -48,29 +48,33 @@ class DioService {
 
   void _initializeInterceptors() {
     _dio.interceptors.add(dio.InterceptorsWrapper(
-      onRequest: (dio.RequestOptions options,
-          dio.RequestInterceptorHandler handler) async {
-        // 토큰 초기화 완료될 때까지 대기
-        if (!_tokenInitializationCompleter.isCompleted) {
-          await _tokenInitializationCompleter.future;
+      onRequest: (dio.RequestOptions options, dio.RequestInterceptorHandler handler) async {
+        // 요청 시 requireToken 플래그 확인
+        bool requireToken = options.extra['requireToken'] != false;
+
+        if (requireToken) {
+          // 토큰 초기화 완료될 때까지 대기
+          if (!_tokenInitializationCompleter.isCompleted) {
+            await _tokenInitializationCompleter.future;
+          }
+
+          if (_accessToken.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $_accessToken';
+          } else {
+            // 액세스 토큰이 없을 경우 예외 처리
+            return handler.reject(
+              dio.DioException(
+                requestOptions: options,
+                error: '액세스 토큰이 없습니다.',
+                type: dio.DioExceptionType.cancel,
+              ),
+            );
+          }
         }
-        
-        if (_accessToken.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $_accessToken';
-        } else {
-          // 액세스 토큰이 없을 경우 예외 처리
-          return handler.reject(
-            dio.DioException(
-              requestOptions: options,
-              error: '액세스 토큰이 없습니다.',
-              type: dio.DioExceptionType.cancel,
-            ),
-          );
-        }
+
         return handler.next(options);
       },
-      onResponse:
-          (dio.Response response, dio.ResponseInterceptorHandler handler) {
+      onResponse: (dio.Response response, dio.ResponseInterceptorHandler handler) {
         return handler.next(response);
       },
       onError: (dio.DioException e, dio.ErrorInterceptorHandler handler) async {
@@ -229,8 +233,12 @@ class DioService {
   }
 
   Future<dio.Response<dynamic>> get(String url,
-      {Map<String, dynamic>? params}) async {
-    return _dio.get(url, queryParameters: params);
+      {Map<String, dynamic>? params, bool requireToken = true}) async {
+    dio.Options options = dio.Options();
+    if (!requireToken) {
+      options.extra = {'requireToken': false};
+    }
+    return _dio.get(url, queryParameters: params, options: options);
   }
 
   Future<dio.Response<dynamic>> post(String url,

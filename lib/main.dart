@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,8 @@ import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
+import 'package:nero_app/utils/version/version_service.dart';
+import 'package:nero_app/utils/version/widget/update_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,6 +60,9 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   await initializeDateFormatting();
 
+  Get.put<DioService>(DioService(), permanent: true);
+  Get.put<VersionService>(VersionService(), permanent: true);
+
   FlutterNativeSplash.remove();
   runApp(
     MultiProvider(
@@ -77,7 +84,7 @@ class MyApp extends StatefulWidget {
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -123,7 +130,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: _lastRoute,
-      navigatorKey: navigatorKey,
+      navigatorKey: navigatorKey, // navigatorKey 설정
       navigatorObservers: <NavigatorObserver>[
         MyApp.observer,
         routeObserver,
@@ -160,13 +167,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(InformationRepository());
         Get.put(InformationController());
         Get.put(CommunityController());
-        // Get.lazyPut(() => CommunityController(), fenix: true);
       }),
       getPages: [
         GetPage(
           name: '/',
-          page: () => BackgroundLayout(
-            child: const App(),
+          page: () => UpdateChecker(
+            child: BackgroundLayout(
+              child: const App(),
+            ),
           ),
         ),
         ...DevelopRoutes.routes,
