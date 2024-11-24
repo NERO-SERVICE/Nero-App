@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 class NeroUser extends Equatable {
   final int? userId;
@@ -85,13 +86,13 @@ class NeroUser extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final data = {
       'nickname': nickname,
       'email': email,
-      'birth': birth?.toIso8601String(),
+      'birth': birth != null ? DateFormat('yyyy-MM-dd').format(birth!) : null,
       'sex': sex,
-      'deletedAt': deletedAt?.toIso8601String(),
     };
+    return data;
   }
 
   NeroUser copyWith({

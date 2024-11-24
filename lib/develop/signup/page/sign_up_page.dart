@@ -305,6 +305,7 @@ class _SignUpPageState extends State<SignUpPage> {
           DateTime? parsedBirth = _parseBirth(controller.birth.value);
           if (parsedBirth == null) {
             print('유효하지 않은 생년월일입니다.');
+            Get.snackbar('오류', '유효하지 않은 생년월일입니다.');
             return;
           }
 
@@ -314,11 +315,16 @@ class _SignUpPageState extends State<SignUpPage> {
             birth: parsedBirth,
             sex: controller.selectedSex.value,
           );
-          await controller.updateUserInfo(currentUser);
+          bool success = await controller.updateUserInfo(currentUser);
 
-          Get.offNamed('/memories');
+          if (success) {
+            Get.offNamed('/memories');
+          } else {
+            print('유저 정보 업데이트 실패.');
+          }
         } catch (e) {
           print('유저 정보 업데이트 중 오류 발생: $e');
+          Get.snackbar('오류', '유저 정보 업데이트 중 오류가 발생했습니다.');
         }
       },
       style: ElevatedButton.styleFrom(
@@ -394,12 +400,11 @@ class _SignUpPageState extends State<SignUpPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             reverse: true,
-            // Ensure that the view scrolls up when the keyboard appears
             padding: EdgeInsets.only(
               bottom: MediaQuery
                   .of(context)
                   .viewInsets
-                  .bottom, // Adds space for the keyboard
+                  .bottom,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

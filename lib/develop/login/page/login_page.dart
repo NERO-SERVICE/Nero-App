@@ -62,7 +62,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
             child: Text(
               '회원가입/로그인',
               style: TextStyle(

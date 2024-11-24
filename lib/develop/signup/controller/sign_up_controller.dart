@@ -11,9 +11,14 @@ class SignUpController extends GetxController {
 
   final SignUpRepository _signUpRepository = SignUpRepository();
 
-  Future<void> updateUserInfo(NeroUser currentUser) async {
+  Future<bool> updateUserInfo(NeroUser currentUser) async {
     try {
       DateTime? birthDate = _parseBirth(birth.value);
+
+      if (birthDate == null) {
+        print('유효하지 않은 생년월일입니다.');
+        return false;
+      }
 
       final updatedUser = currentUser.copyWith(
         nickname: nickname.value.isNotEmpty ? nickname.value : currentUser.nickname,
@@ -25,11 +30,15 @@ class SignUpController extends GetxController {
 
       if (success) {
         print('유저 정보가 성공적으로 업데이트되었습니다.');
+        return true;
       } else {
         print('유저 정보 업데이트 실패.');
+        return false;
       }
     } catch (e) {
       print('유저 정보 업데이트 중 오류 발생: $e');
+      Get.snackbar('오류', '유저 정보 업데이트 중 오류가 발생했습니다.');
+      return false;
     }
   }
 

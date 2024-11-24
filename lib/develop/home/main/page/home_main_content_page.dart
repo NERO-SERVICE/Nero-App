@@ -184,27 +184,6 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     );
   }
 
-  Widget _skeletonNews() {
-    return Shimmer.fromColors(
-      baseColor: Color(0xff323232).withOpacity(0.5),
-      highlightColor: Color(0xff323232).withOpacity(0.8),
-      child: Column(
-        children: List.generate(4, (index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
-            child: Container(
-              height: 22,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Color(0xff323232).withOpacity(0.5),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
   Widget _skeletonMagazines() {
     return Shimmer.fromColors(
       baseColor: Color(0xff323232).withOpacity(0.5),
