@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -33,6 +34,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   final ScrollController _commentScrollController = ScrollController();
 
   final FocusNode _commentFocusNode = FocusNode(); // 키보드 자동 올라옴 방지
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     showModalBottomSheet(
       context: context,
       isDismissible: true,
+      elevation: 0,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Center(
@@ -84,6 +87,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.inactiveButtonColor,
                       fixedSize: Size(150, 40),
+                      elevation: 0,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -229,6 +233,11 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunityDetailPage',
+      screenClass: 'CommunityDetailPage',
+    );
+
     double imageWidth = MediaQuery.of(context).size.width - 64;
 
     return GestureDetector(

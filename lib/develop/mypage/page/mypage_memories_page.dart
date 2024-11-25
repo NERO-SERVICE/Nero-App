@@ -331,8 +331,8 @@ class _MypageMemoriesPageState extends State<MypageMemoriesPage> {
   @override
   Widget build(BuildContext context) {
     analytics.logScreenView(
-      screenName: 'MyPage',
-      screenClass: 'MyPage',
+      screenName: 'MyPageMemoriesDetailPage',
+      screenClass: 'MyPageMemoriesDetailPage',
     );
     return CommonLayout(
       appBar: CustomDetailAppBar(title: '챙길거리'),

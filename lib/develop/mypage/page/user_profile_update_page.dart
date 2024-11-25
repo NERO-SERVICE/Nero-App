@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/mypage/controller/user_profile_update_controller.dart';
@@ -22,6 +23,7 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
   Get.put(UserProfileUpdateController());
 
   final List<String> sexOptions = ['여성', '남성', '기타'];
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -366,6 +368,10 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPageUserProfilePage',
+      screenClass: 'MyPageUserProfilePage',
+    );
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: CommonLayout(

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
@@ -16,6 +17,7 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   final TextEditingController _searchController = TextEditingController();
   late final ScrollController _scrollController;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -66,6 +68,10 @@ class _CommunitySearchPageState extends State<CommunitySearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunitySearchPage',
+      screenClass: 'CommunitySearchPage',
+    );
     return Scaffold(
       appBar: CommunitySearchAppBar(
         searchController: _searchController,

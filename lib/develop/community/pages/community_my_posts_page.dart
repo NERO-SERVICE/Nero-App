@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
@@ -14,6 +15,7 @@ class CommunityMyPostsPage extends StatefulWidget {
 class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -36,6 +38,10 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunityMyPostsPage',
+      screenClass: 'CommunityMyPostsPage',
+    );
     return Scaffold(
       appBar: CustomDetailAppBar(title: '내가 작성한 커뮤니티 글'),
       body: Obx(() {

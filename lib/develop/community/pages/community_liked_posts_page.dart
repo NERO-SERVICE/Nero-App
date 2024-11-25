@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
@@ -15,6 +16,7 @@ class CommunityLikedPostsPage extends StatefulWidget {
 class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
   final CommunityController _controller = Get.find<CommunityController>();
   late final ScrollController _scrollController;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -37,6 +39,10 @@ class _CommunityLikedPostsPageState extends State<CommunityLikedPostsPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunityLikedPostsPage',
+      screenClass: 'CommunityLikedPostsPage',
+    );
     return Scaffold(
       appBar: CustomDetailAppBar(title: '좋아요 누른 게시물'),
       body: Obx(() {

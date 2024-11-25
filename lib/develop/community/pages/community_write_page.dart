@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   final ImagePicker _picker = ImagePicker();
   bool _isSubmitting = false;
   final List<String> types = ['질문', '습관', '일기', '고민', '정보'];
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -254,6 +256,10 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunityWritePage',
+      screenClass: 'CommunityWritePage',
+    );
     return GestureDetector(
       onTap: _dismissKeyboard,
       child: Scaffold(

@@ -49,6 +49,7 @@ class PostItem extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isDismissible: true,
+      elevation: 0,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Container(
@@ -65,6 +66,7 @@ class PostItem extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.inactiveButtonColor,
                   fixedSize: Size(150, 50),
+                  elevation: 0,
                 ),
                 onPressed: () {
                   Navigator.pop(context);

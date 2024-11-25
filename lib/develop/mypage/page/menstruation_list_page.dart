@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,7 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
   final MypageController _mypageController = Get.find<MypageController>();
   final Map<int, bool> _selectedMap = {}; // 선택된 아이템의 인덱스를 저장
   final Set<int> _expandedIndices = {}; // 노트를 표시할 아이템의 인덱스
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -534,6 +536,10 @@ class _MenstruationListPageState extends State<MenstruationListPage> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'MyPageMenstruationDetailPage',
+      screenClass: 'MyPageMenstruationDetailPage',
+    );
     return CommonLayout(
       appBar: CustomDetailAppBar(title: '생리 주기 관리'),
       body: Stack(

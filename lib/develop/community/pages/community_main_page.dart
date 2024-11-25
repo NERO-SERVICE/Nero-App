@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   late final ScrollController _scrollController;
   bool _isVisible = true;
   final double _appBarHeight = kToolbarHeight + 56;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -165,6 +167,10 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
+    analytics.logScreenView(
+      screenName: 'CommunityMainPage',
+      screenClass: 'CommunityMainPage',
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
