@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/mypage/controller/user_profile_update_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:nero_app/develop/common/layout/common_layout.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
 
 class UserProfileUpdatePage extends StatefulWidget {
@@ -24,6 +28,7 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
 
   final List<String> sexOptions = ['여성', '남성', '기타'];
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -74,7 +79,9 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
       if (controller.selectedImage.value != null) {
         // Display the selected local image
         return GestureDetector(
-          onTap: controller.pickImage,
+          onTap: () async {
+            await _pickProfileImage();
+          },
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -89,7 +96,9 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
         );
       } else if (controller.profileImageUrl.value.isNotEmpty) {
         return GestureDetector(
-          onTap: controller.pickImage,
+          onTap: () async {
+            await _pickProfileImage();
+          },
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -124,7 +133,9 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
         );
       } else {
         return GestureDetector(
-          onTap: controller.pickImage,
+          onTap: () async {
+            await _pickProfileImage();
+          },
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -138,6 +149,48 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
         );
       }
     });
+  }
+
+  Future<void> _pickProfileImage() async {
+    PermissionStatus status;
+    if (Platform.isAndroid) {
+      status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+    } else if (Platform.isIOS) {
+      status = await Permission.photos.status;
+      if (!status.isGranted) {
+        status = await Permission.photos.request();
+      }
+    } else {
+      return;
+    }
+
+    if (status.isGranted) {
+      try {
+        final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+        if (pickedFile != null) {
+          final File imageFile = File(pickedFile.path);
+          controller.selectedImage.value = imageFile;
+        }
+      } catch (e) {
+        print('이미지 선택 실패: $e');
+        CustomSnackbar.show(
+          context: context,
+          message: '이미지 선택에 실패했습니다.',
+          isSuccess: false,
+        );
+      }
+    } else {
+      CustomSnackbar.show(
+        context: context,
+        message: '사진 접근 권한이 거부되었습니다.',
+        isSuccess: false,
+      );
+    }
   }
 
   Widget _profileNicknameField() {

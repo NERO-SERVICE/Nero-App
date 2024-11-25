@@ -10,6 +10,7 @@ import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CommunityWritePage extends StatefulWidget {
   @override
@@ -32,24 +33,49 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   }
 
   Future<void> _pickImages() async {
-    try {
-      final XFile? pickedFile =
-          await _picker.pickImage(source: ImageSource.gallery);
-
-      if (pickedFile != null) {
-        final File imageFile = File(pickedFile.path);
-
-        setState(() {
-          _selectedImages = [imageFile]; // 한 장의 이미지만 선택
-        });
-
-        _controller.addImages([imageFile]);
+    // 권한 상태 확인 및 요청
+    PermissionStatus status;
+    if (Platform.isAndroid) {
+      status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
       }
-    } catch (e) {
-      print('이미지 선택 실패: $e');
+    } else if (Platform.isIOS) {
+      status = await Permission.photos.status;
+      if (!status.isGranted) {
+        status = await Permission.photos.request();
+      }
+    } else {
+      // 기타 플랫폼 처리
+      status = PermissionStatus.denied;
+    }
+
+    if (status.isGranted) {
+      try {
+        final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+        if (pickedFile != null) {
+          final File imageFile = File(pickedFile.path);
+
+          setState(() {
+            _selectedImages = [imageFile]; // 한 장의 이미지만 선택
+          });
+
+          _controller.addImages([imageFile]);
+        }
+      } catch (e) {
+        print('이미지 선택 실패: $e');
+        CustomSnackbar.show(
+          context: context,
+          message: '이미지 선택에 실패했습니다.',
+          isSuccess: false,
+        );
+      }
+    } else if (status.isDenied || status.isPermanentlyDenied) {
       CustomSnackbar.show(
         context: context,
-        message: '이미지 선택에 실패했습니다.',
+        message: '설정페이지에서 사진 권한을 허용해주세요',
         isSuccess: false,
       );
     }
