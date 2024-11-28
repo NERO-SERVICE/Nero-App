@@ -111,7 +111,6 @@ class CommunityController extends GetxController {
     try {
       final fetchedPosts = await _communityRepository.fetchPosts(
         page: currentPostPage.value,
-        searchQuery: searchQuery.value.isNotEmpty ? searchQuery.value : null,
       );
 
       if (fetchedPosts.isNotEmpty) {

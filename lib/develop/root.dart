@@ -62,6 +62,7 @@ class Root extends GetView<BottomNavController> {
                     controller.changeBottomNav(index);
 
                     if (index == 2) {
+                      _communityController.searchQuery.value = '';
                       _communityController.fetchAllPosts(refresh: true);
                     }
                   },

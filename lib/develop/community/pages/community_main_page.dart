@@ -26,6 +26,9 @@ class _CommunityMainPageState extends State<CommunityMainPage> with RouteAware {
   @override
   void initState() {
     super.initState();
+    // searchQuery를 초기화
+    _controller.searchQuery.value = '';
+
     // 페이지 초기 접근 시 데이터 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.fetchAllPosts(refresh: true);
