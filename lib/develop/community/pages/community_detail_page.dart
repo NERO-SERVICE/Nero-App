@@ -170,7 +170,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   }
 
   void _showReportDialog(int? postId, int? commentId) async {
-    await showDialog(
+    final result = await showDialog(
       context: context,
       builder: (context) {
         return ReportDialog(
@@ -179,6 +179,10 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
         );
       },
     );
+
+    if (result == 'blocked_post') {
+      Navigator.pop(context);
+    }
   }
 
   void _showEditPostDialog() {

@@ -146,14 +146,21 @@ class _ReportDialogState extends State<ReportDialog> {
                     Center(
                       child: CustomCompleteButton(
                         onPressed: _selectedReportType.isNotEmpty
-                            ? () {
-                          _controller.reportContent(
+                            ? () async {
+                          await _controller.reportContent(
                             reportType: _selectedReportType,
                             postId: widget.postId,
                             commentId: widget.commentId,
                             description: _reportController.text,
                           );
-                          Navigator.pop(context);
+                          // 결과값 반환
+                          if (_selectedReportType == 'post_block') {
+                            Navigator.of(context).pop('blocked_post');
+                          } else if (_selectedReportType == 'comment_block') {
+                            Navigator.of(context).pop('blocked_comment');
+                          } else {
+                            Navigator.of(context).pop('reported');
+                          }
                         }
                             : null,
                         text: '전송하기',
