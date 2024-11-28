@@ -7,6 +7,7 @@ import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_community_divider.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
+import 'package:nero_app/develop/community/pages/community_main_page.dart';
 import 'package:nero_app/develop/community/pages/dialog/delete_comment_dialog.dart';
 import 'package:nero_app/develop/community/pages/dialog/delete_post_dialog.dart';
 import 'package:nero_app/develop/community/pages/dialog/edit_comment_dialog.dart';
@@ -36,14 +37,30 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   final FocusNode _commentFocusNode = FocusNode(); // 키보드 자동 올라옴 방지
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
+  late Worker _blockWorker;
+
   @override
   void initState() {
     super.initState();
     _controller.fetchPostDetail(widget.postId);
+
+    // isBlocked 및 blockedType 감지하여 DetailPage 종료 또는 메인 페이지로 이동
+    _blockWorker = ever(_controller.isBlocked, (bool blocked) {
+      if (blocked) {
+        if (_controller.blockedType.value == 'post') {
+          Navigator.pop(context);
+        } else if (_controller.blockedType.value == 'comment') {
+        }
+        // 차단 후 플래그 초기화
+        _controller.isBlocked.value = false;
+        _controller.blockedType.value = '';
+      }
+    });
   }
 
   @override
   void dispose() {
+    _blockWorker.dispose();
     _commentScrollController.dispose();
     _commentController.dispose();
 
@@ -153,7 +170,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
   }
 
   void _showReportDialog(int? postId, int? commentId) async {
-    final result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) {
         return ReportDialog(
@@ -162,16 +179,6 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
         );
       },
     );
-
-    if (result == 'blocked') {
-      if (postId != null && commentId == null) {
-        // 게시물 작성자가 차단된 경우 이전 페이지로 이동
-        Navigator.pop(context);
-      } else if (commentId != null) {
-        // 댓글 작성자가 차단된 경우 해당 댓글을 목록에서 제거
-        _controller.removeComment(commentId);
-      }
-    }
   }
 
   void _showEditPostDialog() {

@@ -63,6 +63,10 @@ class CommunityController extends GetxController {
   // 게시물 타입
   RxString selectedType = ''.obs;
 
+  // 작성자 차단 시 DetailPage에서 내보내기 위한 플래그
+  RxBool isBlocked = false.obs;
+  RxString blockedType = ''.obs; // 'post' 또는 'comment'
+
   @override
   void onInit() {
     super.onInit();
@@ -72,7 +76,7 @@ class CommunityController extends GetxController {
   final Map<String, String> typeMapping = {
     '질문': 'question',
     '습관': 'habit',
-    '일기': 'diary',
+    '일상': 'diary',
     '고민': 'worry',
     '정보': 'information',
   };
@@ -107,6 +111,7 @@ class CommunityController extends GetxController {
     try {
       final fetchedPosts = await _communityRepository.fetchPosts(
         page: currentPostPage.value,
+        searchQuery: searchQuery.value.isNotEmpty ? searchQuery.value : null,
       );
 
       if (fetchedPosts.isNotEmpty) {
@@ -199,7 +204,6 @@ class CommunityController extends GetxController {
         isSuccess: true,
       );
     } catch (e) {
-      print('게시물 작성 실패: $e');
     }
   }
 
@@ -220,7 +224,7 @@ class CommunityController extends GetxController {
         posts[index] = updatedPost;
       }
       currentPost.value = updatedPost;
-      update();  // UI 업데이트
+      update(); // UI 업데이트
       CustomSnackbar.show(
         context: Get.context!,
         message: '게시물이 수정되었습니다.',
@@ -241,7 +245,7 @@ class CommunityController extends GetxController {
     try {
       await _communityRepository.deletePost(postId);
       posts.removeWhere((post) => post.postId == postId);
-      update();  // UI 업데이트
+      update(); // UI 업데이트
       CustomSnackbar.show(
         context: Get.context!,
         message: '게시물이 삭제되었습니다.',
@@ -284,7 +288,10 @@ class CommunityController extends GetxController {
   // 댓글 작성
   Future<void> createComment(int postId, String content) async {
     try {
-      final newComment = await _communityRepository.createComment(postId: postId, content: content);
+      final newComment = await _communityRepository.createComment(
+        postId: postId,
+        content: content,
+      );
       comments.insert(0, newComment); // 새로운 댓글 추가
       currentPost.update((post) {
         if (post != null) post.commentCount += 1;
@@ -298,7 +305,10 @@ class CommunityController extends GetxController {
   // 댓글 수정
   Future<void> updateComment(int commentId, String content) async {
     try {
-      final updatedComment = await _communityRepository.updateComment(commentId: commentId, content: content);
+      final updatedComment = await _communityRepository.updateComment(
+        commentId: commentId,
+        content: content,
+      );
       int index = comments.indexWhere((c) => c.commentId == commentId);
       if (index != -1) {
         comments[index] = updatedComment; // 해당 댓글 수정
@@ -341,7 +351,7 @@ class CommunityController extends GetxController {
           isLiked: !currentPost.value.isLiked,
         );
       }
-      update();  // UI 업데이트
+      update(); // UI 업데이트
     } catch (e) {
       print('게시물 좋아요 토글 실패: $e');
     }
@@ -359,7 +369,7 @@ class CommunityController extends GetxController {
           isLiked: !comment.isLiked,
         );
       }
-      update();  // UI 업데이트
+      update(); // UI 업데이트
     } catch (e) {
       print('댓글 좋아요 토글 실패: $e');
     }
@@ -380,34 +390,54 @@ class CommunityController extends GetxController {
     );
 
     try {
-      if (postId != null) {
-        await _communityRepository.reportPost(reportRequest);
-      } else if (commentId != null) {
-        await _communityRepository.reportComment(reportRequest);
-      }
+      bool isBlockAuthorPost = reportType == 'post_block';
+      bool isBlockAuthorComment = reportType == 'comment_block';
 
-      if (reportType == 'block_author') {
+      if (isBlockAuthorPost || isBlockAuthorComment) {
+        // 신고 없이 작성자 차단만 수행
+        String blockType = isBlockAuthorPost ? 'post' : 'comment';
         int? userId;
-        if (commentId != null) {
-          final comment = await fetchCommentDetail(commentId);
-          userId = comment.userId;
-        } else if (postId != null) {
+
+        if (isBlockAuthorPost && postId != null) {
           final post = await fetchPostDetail(postId);
           userId = post.userId;
+        } else if (isBlockAuthorComment && commentId != null) {
+          final comment = await fetchCommentDetail(commentId);
+          userId = comment.userId;
         }
 
         if (userId != null) {
-          await blockAuthor(userId);
+          await blockAuthor(userId, blockType);
+
+          if (isBlockAuthorPost) {
+            // 게시물 작성자를 차단한 경우, 게시물 목록에서 해당 게시물 제거
+            posts.removeWhere((post) => post.postId == postId);
+            blockedType.value = 'post';
+            isBlocked.value = true;
+          } else if (isBlockAuthorComment) {
+            // 댓글 작성자를 차단한 경우, 댓글 목록에서 해당 댓글 제거
+            comments.removeWhere((comment) => comment.commentId == commentId);
+            blockedType.value = 'comment';
+            isBlocked.value = true;
+          }
         } else {
           throw Exception('작성자 ID를 찾을 수 없습니다.');
         }
-      }
+      } else {
+        // 일반 신고인 경우 신고 요청 수행
+        if (postId != null && commentId == null) {
+          await _communityRepository.reportPost(reportRequest);
+        } else if (commentId != null) {
+          await _communityRepository.reportComment(reportRequest);
+        }
 
-      CustomSnackbar.show(
-        context: Get.context!,
-        message: '신고가 접수되었습니다.',
-        isSuccess: true,
-      );
+        // "신고가 접수되었습니다." 스낵바 표시
+        CustomSnackbar.show(
+          context: Get.context!,
+          message: '신고가 접수되었습니다.',
+          isSuccess: true,
+        );
+      }
     } catch (e) {
       print('신고 처리 실패: $e');
       CustomSnackbar.show(
@@ -417,7 +447,6 @@ class CommunityController extends GetxController {
       );
     }
   }
-
 
   // 좋아요한 게시물 가져오기
   Future<void> fetchLikedPosts({bool refresh = false}) async {
@@ -531,19 +560,14 @@ class CommunityController extends GetxController {
     }
   }
 
-  Future<void> blockAuthor(int? userId) async {
-    if (userId == null) return;
-
+  Future<void> blockAuthor(int userId, String blockType) async {
     try {
-      await _communityRepository.blockAuthor(userId);
+      await _communityRepository.blockAuthor(userId, blockType);
       CustomSnackbar.show(
         context: Get.context!,
         message: '작성자를 차단했습니다.',
         isSuccess: true,
       );
-
-      // 차단 후 게시물 갱신
-      fetchAllPosts(refresh: true);
     } catch (e) {
       print('작성자 차단 실패: $e');
       CustomSnackbar.show(

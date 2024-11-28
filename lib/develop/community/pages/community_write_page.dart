@@ -23,7 +23,7 @@ class _CommunityWritePageState extends State<CommunityWritePage> {
   List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
   bool _isSubmitting = false;
-  final List<String> types = ['질문', '습관', '일기', '고민', '정보'];
+  final List<String> types = ['질문', '습관', '일상', '고민', '정보'];
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override

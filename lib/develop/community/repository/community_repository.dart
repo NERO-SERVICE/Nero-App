@@ -323,9 +323,12 @@ class CommunityRepository {
     }
   }
 
-  Future<void> blockAuthor(int authorId) async {
+  Future<void> blockAuthor(int authorId, String blockType) async {
     try {
-      await _dioService.post('/community/users/block/', data: {"blocked_user": authorId});
+      await _dioService.post('/community/users/block/', data: {
+        "blocked_user": authorId,
+        "block_type": blockType, // 'post' 또는 'comment'
+      });
       print("작성자 차단 성공");
     } catch (e) {
       print("작성자 차단 실패: $e");
