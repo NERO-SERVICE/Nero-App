@@ -8,6 +8,7 @@ class Comment extends Equatable {
   final int likeCount;
   final bool isLiked;
   final bool isAuthor;
+  final int? userId;
 
   Comment({
     this.commentId = 0,
@@ -17,6 +18,7 @@ class Comment extends Equatable {
     this.likeCount = 0,
     this.isLiked = false,
     this.isAuthor = false,
+    this.userId,
   });
 
   Comment.empty()
@@ -26,7 +28,8 @@ class Comment extends Equatable {
         content = '',
         likeCount = 0,
         isLiked = false,
-        isAuthor = false;
+        isAuthor = false,
+        userId = null;
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
@@ -39,6 +42,7 @@ class Comment extends Equatable {
       likeCount: json['likes_count'] ?? 0,
       isLiked: json['isLiked'] ?? false,
       isAuthor: json['isAuthor'] ?? false,
+      userId: json['user_id'],
     );
   }
 
@@ -51,6 +55,7 @@ class Comment extends Equatable {
       'likes_count': likeCount,
       'isLiked': isLiked,
       'isAuthor': isAuthor,
+      'user_id': userId,
     };
   }
 
@@ -62,6 +67,7 @@ class Comment extends Equatable {
     int? likeCount,
     bool? isLiked,
     bool? isAuthor,
+    int? userId,
   }) {
     return Comment(
       commentId: commentId ?? this.commentId,
@@ -71,6 +77,7 @@ class Comment extends Equatable {
       likeCount: likeCount ?? this.likeCount,
       isLiked: isLiked ?? this.isLiked,
       isAuthor: isAuthor ?? this.isAuthor,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -83,5 +90,6 @@ class Comment extends Equatable {
     likeCount,
     isLiked,
     isAuthor,
+    userId,
   ];
 }

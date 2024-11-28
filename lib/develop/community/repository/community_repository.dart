@@ -144,6 +144,16 @@ class CommunityRepository {
     }
   }
 
+  Future<Comment> fetchCommentDetail(int commentId) async {
+    try {
+      final response = await _dioService.get('/community/comments/$commentId/');
+      return Comment.fromJson(response.data);
+    } catch (e) {
+      print('댓글 세부 정보 가져오기 실패: $e');
+      throw Exception('댓글 정보를 가져오지 못했습니다.');
+    }
+  }
+
   // 댓글 작성
   Future<Comment> createComment({
     required int postId,
@@ -309,6 +319,16 @@ class CommunityRepository {
       return posts;
     } catch (e) {
       print('최근 게시물 가져오기 실패: $e');
+      throw e;
+    }
+  }
+
+  Future<void> blockAuthor(int authorId) async {
+    try {
+      await _dioService.post('/community/users/block/', data: {"blocked_user": authorId});
+      print("작성자 차단 성공");
+    } catch (e) {
+      print("작성자 차단 실패: $e");
       throw e;
     }
   }

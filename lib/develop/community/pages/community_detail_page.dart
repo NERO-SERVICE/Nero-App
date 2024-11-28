@@ -152,8 +152,8 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
     );
   }
 
-  void _showReportDialog(int? postId, int? commentId) {
-    showDialog(
+  void _showReportDialog(int? postId, int? commentId) async {
+    final result = await showDialog(
       context: context,
       builder: (context) {
         return ReportDialog(
@@ -162,6 +162,16 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
         );
       },
     );
+
+    if (result == 'blocked') {
+      if (postId != null && commentId == null) {
+        // 게시물 작성자가 차단된 경우 이전 페이지로 이동
+        Navigator.pop(context);
+      } else if (commentId != null) {
+        // 댓글 작성자가 차단된 경우 해당 댓글을 목록에서 제거
+        _controller.removeComment(commentId);
+      }
+    }
   }
 
   void _showEditPostDialog() {

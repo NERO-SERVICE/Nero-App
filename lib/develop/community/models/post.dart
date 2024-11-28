@@ -12,6 +12,7 @@ class Post extends Equatable {
   final bool isLiked;
   final bool isAuthor;
   final String? type;
+  final int? userId;
 
   Post({
     required this.postId,
@@ -25,6 +26,7 @@ class Post extends Equatable {
     required this.isLiked,
     required this.isAuthor,
     this.type,
+    this.userId,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -36,17 +38,14 @@ class Post extends Equatable {
           .toList() ??
           [],
       nickname: json['user'] != null ? json['user']['nickname'] ?? '' : '',
-      profileImageUrl: json['user'] != null &&
-          json['user']['profile_image'] != null &&
-          json['user']['profile_image']['image_url'] != null
-          ? json['user']['profile_image']['image_url'] as String
-          : null,
+      profileImageUrl: json['user']?['profile_image']?['image_url'] as String?,
       createdTimeAgo: json['created_time_ago'] ?? '',
       likeCount: json['likes_count'] ?? 0,
       commentCount: json['comments_count'] ?? 0,
       isLiked: json['isLiked'] ?? false,
       isAuthor: json['isAuthor'] ?? false,
       type: json['type'],
+      userId: json['user_id'],
     );
   }
 
@@ -63,6 +62,7 @@ class Post extends Equatable {
       isLiked: false,
       isAuthor: false,
       type: null,
+      userId: null,
     );
   }
 
@@ -78,6 +78,7 @@ class Post extends Equatable {
     bool? isLiked,
     bool? isAuthor,
     String? type,
+    int? userId,
   }) {
     return Post(
       postId: postId ?? this.postId,
@@ -91,6 +92,7 @@ class Post extends Equatable {
       isLiked: isLiked ?? this.isLiked,
       isAuthor: isAuthor ?? this.isAuthor,
       type: type ?? this.type,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -107,5 +109,6 @@ class Post extends Equatable {
     isLiked,
     isAuthor,
     type,
+    userId,
   ];
 }

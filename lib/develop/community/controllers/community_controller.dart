@@ -161,14 +161,16 @@ class CommunityController extends GetxController {
   }
 
   // 게시물 상세 정보 가져오기
-  Future<void> fetchPostDetail(int postId) async {
+  Future<Post> fetchPostDetail(int postId) async {
     isLoadingPostDetail.value = true;
     try {
       final post = await _communityRepository.fetchPostDetail(postId);
       currentPost.value = post;
-      fetchComments(postId); // 댓글도 동시에 가져오기
+      fetchComments(postId);
+      return post;
     } catch (e) {
       print('게시물 상세 가져오기 실패: $e');
+      rethrow;
     } finally {
       isLoadingPostDetail.value = false;
     }
@@ -269,6 +271,16 @@ class CommunityController extends GetxController {
     }
   }
 
+  Future<Comment> fetchCommentDetail(int commentId) async {
+    try {
+      final comment = await _communityRepository.fetchCommentDetail(commentId);
+      return comment;
+    } catch (e) {
+      print('댓글 세부 정보 가져오기 실패: $e');
+      throw Exception('댓글 정보를 가져오지 못했습니다.');
+    }
+  }
+
   // 댓글 작성
   Future<void> createComment(int postId, String content) async {
     try {
@@ -353,7 +365,7 @@ class CommunityController extends GetxController {
     }
   }
 
-  // 게시물,댓글 신고
+  // 게시물,댓글 신고 및 작성자 차단
   Future<void> reportContent({
     required String reportType,
     int? postId,
@@ -373,6 +385,24 @@ class CommunityController extends GetxController {
       } else if (commentId != null) {
         await _communityRepository.reportComment(reportRequest);
       }
+
+      if (reportType == 'block_author') {
+        int? userId;
+        if (commentId != null) {
+          final comment = await fetchCommentDetail(commentId);
+          userId = comment.userId;
+        } else if (postId != null) {
+          final post = await fetchPostDetail(postId);
+          userId = post.userId;
+        }
+
+        if (userId != null) {
+          await blockAuthor(userId);
+        } else {
+          throw Exception('작성자 ID를 찾을 수 없습니다.');
+        }
+      }
+
       CustomSnackbar.show(
         context: Get.context!,
         message: '신고가 접수되었습니다.',
@@ -387,6 +417,7 @@ class CommunityController extends GetxController {
       );
     }
   }
+
 
   // 좋아요한 게시물 가져오기
   Future<void> fetchLikedPosts({bool refresh = false}) async {
@@ -500,6 +531,29 @@ class CommunityController extends GetxController {
     }
   }
 
+  Future<void> blockAuthor(int? userId) async {
+    if (userId == null) return;
+
+    try {
+      await _communityRepository.blockAuthor(userId);
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '작성자를 차단했습니다.',
+        isSuccess: true,
+      );
+
+      // 차단 후 게시물 갱신
+      fetchAllPosts(refresh: true);
+    } catch (e) {
+      print('작성자 차단 실패: $e');
+      CustomSnackbar.show(
+        context: Get.context!,
+        message: '작성자 차단에 실패했습니다.',
+        isSuccess: false,
+      );
+    }
+  }
+
   // 게시물 내용 업데이트
   void updateContent(String value) {
     content.value = value;
@@ -522,5 +576,10 @@ class CommunityController extends GetxController {
     hasMorePosts.value = true;
     currentPostPage.value = 1;
     update();
+  }
+
+  // 댓글 목록에서 특정 댓글 제거 메서드
+  void removeComment(int commentId) {
+    comments.removeWhere((comment) => comment.commentId == commentId);
   }
 }

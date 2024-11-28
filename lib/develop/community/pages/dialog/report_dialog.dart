@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_complete_button.dart';
+import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 
 import 'report_option.dart';
@@ -23,20 +24,46 @@ class _ReportDialogState extends State<ReportDialog> {
   final TextEditingController _reportController = TextEditingController();
   String _selectedReportType = '';
 
-  // Define report options based on whether it's a post or a comment
   List<Map<String, String>> get reportOptions {
     if (widget.commentId == null) {
       return [
         {"title": "게시물 신고", "value": "post_report"},
-        {"title": "게시물 차단", "value": "post_block"},
         {"title": "작성자 신고", "value": "author_report"},
+        {"title": "작성자 차단", "value": "block_author"},
       ];
     } else {
       return [
         {"title": "댓글 신고", "value": "comment_report"},
-        {"title": "댓글 차단", "value": "comment_block"},
         {"title": "작성자 신고", "value": "author_report"},
+        {"title": "작성자 차단", "value": "block_author"},
       ];
+    }
+  }
+
+  Future<void> handleBlockAuthor() async {
+    try {
+      int? userId;
+      if (widget.commentId != null) {
+        // 댓글 작성자 ID 가져오기
+        final comment = await _controller.fetchCommentDetail(widget.commentId!);
+        userId = comment.userId;
+        print('댓글 작성자 ID: $userId');
+      } else if (widget.postId != null) {
+        // 게시물 작성자 ID 가져오기
+        final post = await _controller.fetchPostDetail(widget.postId!);
+        userId = post.userId;
+        print('게시물 작성자 ID: $userId');
+      }
+
+      if (userId != null) {
+        await _controller.blockAuthor(userId);
+        Navigator.pop(context, 'blocked'); // 'blocked' 결과 반환
+      } else {
+        throw Exception('작성자 ID를 찾을 수 없습니다.');
+      }
+    } catch (e) {
+      print('작성자 차단 실패: $e');
+      Navigator.pop(context);
     }
   }
 
@@ -66,7 +93,6 @@ class _ReportDialogState extends State<ReportDialog> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Centered Title
                     Center(
                       child: Text(
                         "신고하기",
@@ -79,7 +105,6 @@ class _ReportDialogState extends State<ReportDialog> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Instruction Text
                     Text(
                       widget.commentId == null
                           ? "신고 유형을 선택하고,\n필요시 상세 설명을 추가해주세요."
@@ -93,7 +118,6 @@ class _ReportDialogState extends State<ReportDialog> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Report Options
                     Column(
                       children: reportOptions.map((option) {
                         bool isSelected =
@@ -102,10 +126,13 @@ class _ReportDialogState extends State<ReportDialog> {
                           title: option['title']!,
                           value: option['value']!,
                           isSelected: isSelected,
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
                               _selectedReportType = option['value']!;
                             });
+                            if (_selectedReportType == "block_author") {
+                              await handleBlockAuthor();
+                            }
                           },
                         );
                       }).toList(),
@@ -168,7 +195,6 @@ class _ReportDialogState extends State<ReportDialog> {
                 ),
               ),
             ),
-            // Close Button Positioned at Top-Right
             Positioned(
               top: 16,
               right: 16,
