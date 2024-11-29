@@ -41,6 +41,7 @@ class CommentItem extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.inactiveButtonColor,
                     fixedSize: Size(150, 50),
+                    elevation: 0,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -61,6 +62,7 @@ class CommentItem extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.inactiveButtonColor,
                     fixedSize: Size(150, 50),
+                    elevation: 0,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -82,6 +84,7 @@ class CommentItem extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.inactiveButtonColor,
                   fixedSize: Size(150, 50),
+                  elevation: 0,
                 ),
                 onPressed: () {
                   Navigator.pop(context);

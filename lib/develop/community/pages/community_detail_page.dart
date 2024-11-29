@@ -125,6 +125,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.inactiveButtonColor,
                       fixedSize: Size(150, 40),
+                      elevation: 0,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -146,6 +147,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.inactiveButtonColor,
                     fixedSize: Size(150, 40),
+                    elevation: 0,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
