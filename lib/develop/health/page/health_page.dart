@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nero_app/app_colors.dart';
+import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/health/model/health.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +13,10 @@ class HealthPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => HealthController()..initialize(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('걸음 수 정보'),
-          backgroundColor: Colors.black, // 배경색을 어둡게 설정
+        appBar: CustomDetailAppBar(
+          title: '걸음 수 정보',
         ),
-        backgroundColor: Colors.black, // 전체 배경색을 어둡게 설정
+        backgroundColor: AppColors.backgroundColor,
         body: Consumer<HealthController>(
           builder: (context, controller, child) {
             if (controller.isLoading) {
@@ -26,49 +27,80 @@ class HealthPage extends StatelessWidget {
               return Center(
                 child: Text(
                   '오류 발생: ${controller.error}',
-                  style: TextStyle(color: Colors.white), // 글자색을 흰색으로
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: AppColors.primaryTextColor,
+                  ),
                 ),
               );
             }
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // 오늘의 걸음 수 표시
-                  Text(
-                    '오늘의 걸음 수: ${controller.todaySteps}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white, // 글자색을 흰색으로
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    StepsChart(stepData: controller.stepsHistory),
+                    SizedBox(height: 20),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: controller.stepsHistory.length,
+                      itemBuilder: (context, index) {
+                        final stepCount = controller.stepsHistory[index];
+                        return ListTile(
+                          title: Text(
+                            DateFormat('yyyy년 MM월 dd일').format(stepCount.date),
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: AppColors.primaryTextColor,
+                            ),
+                          ),
+                          trailing: Text(
+                            '${stepCount.steps} 걸음',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: AppColors.titleColor,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  // 걸음 수 그래프
-                  Expanded(
-                    child: StepsChart(stepData: controller.stepsHistory),
-                  ),
-                  SizedBox(height: 20),
-                  // 걸음 수 데이터 수집 및 저장 버튼
-                  ElevatedButton(
-                    onPressed: () async {
-                      DateTime endDate = DateTime.now();
-                      DateTime startDate = endDate.subtract(Duration(days: 7));
-                      await controller.collectAndSaveSteps(
-                        startDate: startDate,
-                        endDate: endDate,
-                      );
-                    },
-                    child: Text(
-                      '걸음 수 데이터 수집 및 저장',
-                      style: TextStyle(color: Colors.white), // 글자색을 흰색으로
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () async {
+                        DateTime endDate = DateTime.now();
+                        DateTime startDate =
+                        endDate.subtract(Duration(days: 7));
+                        await controller.collectAndSaveSteps(
+                          startDate: startDate,
+                          endDate: endDate,
+                        );
+                      },
+                      child: Text(
+                        '걸음 수 데이터 수집 및 저장',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.activeButtonColor,
+                        elevation: 0,
+                      ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // 버튼 배경색
-                    ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
             );
           },
@@ -89,7 +121,12 @@ class StepsChart extends StatelessWidget {
       return Center(
         child: Text(
           '걸음 수 데이터가 없습니다.',
-          style: TextStyle(color: Colors.white), // 글자색을 흰색으로
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: AppColors.primaryTextColor,
+          ),
         ),
       );
     }
@@ -108,89 +145,93 @@ class StepsChart extends StatelessWidget {
     }
 
     // Y축 최대값 설정
-    double maxY = stepData.map((e) => e.steps).reduce((a, b) => a > b ? a : b).toDouble();
+    double maxY = stepData
+        .map((e) => e.steps)
+        .reduce((a, b) => a > b ? a : b)
+        .toDouble();
     maxY = (maxY + 1000);
 
-    return LineChart(
-      LineChartData(
-        maxY: maxY,
-        minY: 0,
-        backgroundColor: Colors.black, // 그래프 배경색
-        gridData: FlGridData(
-          show: true,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: Colors.white.withOpacity(0.2), // 그리드 라인 색상
-            strokeWidth: 1,
-          ),
-          getDrawingVerticalLine: (value) => FlLine(
-            color: Colors.white.withOpacity(0.2),
-            strokeWidth: 1,
-          ),
-        ),
-        titlesData: FlTitlesData(
-          show: true,
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: 1,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                int index = value.toInt();
-                if (index >= 0 && index < xLabels.length) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      xLabels[index],
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                } else {
-                  return Text('');
-                }
-              },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: SizedBox(
+        height: 250, // 그래프 높이
+        child: LineChart(
+          LineChartData(
+            maxY: maxY,
+            minY: 0,
+            backgroundColor: AppColors.backgroundColor,
+            borderData: FlBorderData(
+              show: false, // 테두리 표시 안함
             ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: (maxY / 5).ceilToDouble(),
-              getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: TextStyle(color: Colors.white),
-                );
-              },
+            gridData: FlGridData(
+              show: false, // 그리드 라인 숨기기
             ),
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: Colors.blue,
-            barWidth: 3,
-            belowBarData: BarAreaData(show: false),
-            dotData: FlDotData(
-              show: true,
-            ),
-            // 데이터 포인트 위에 걸음 수 표시
-            showingIndicators: List.generate(spots.length, (index) => index),
-          ),
-        ],
-        // 데이터 포인트 위에 걸음 수 표시하기 위한 extraLinesData
-        extraLinesData: ExtraLinesData(
-          extraLinesOnTop: true,
-          horizontalLines: List.generate(spots.length, (index) {
-            return HorizontalLine(
-              y: spots[index].y,
-              color: Colors.transparent,
-              label: HorizontalLineLabel(
-                show: true,
-                alignment: Alignment.bottomCenter,
-                labelResolver: (line) => '${spots[index].y.toInt()}',
-                style: TextStyle(color: Colors.white),
+            titlesData: FlTitlesData(
+              show: false,
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: false, // 왼쪽 Y축 라벨 숨기기
+                ),
               ),
-            );
-          }),
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            ),
+            lineBarsData: [
+              LineChartBarData(
+                spots: spots,
+                isCurved: true,
+                gradient: LinearGradient(
+                  colors: [AppColors.titleColor, AppColors.primaryColor],
+                ),
+                barWidth: 3,
+                belowBarData: BarAreaData(
+                  show: true,
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primaryColor.withOpacity(0.7),
+                      AppColors.primaryColor.withOpacity(0.0),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  applyCutOffY: false,
+                ),
+                dotData: FlDotData(
+                  show: true,
+                ),
+              ),
+            ],
+            // 터치 시 값 표시를 위한 설정
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (group) => AppColors.inactiveButtonColor,
+                tooltipRoundedRadius: 8,
+                tooltipPadding: EdgeInsets.all(12), // 툴팁 내부 패딩
+                tooltipMargin: 32, // 툴팁과 그래프 간 거리
+                fitInsideHorizontally: true, // 툴팁이 가로로 그래프 안에 맞게 조정
+                fitInsideVertically: true, // 툴팁이 세로로 그래프 안에 맞게 조정
+                getTooltipItems: (touchedSpots) {
+                  return touchedSpots.map((LineBarSpot touchedSpot) {
+                    final textStyle = TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.white,
+                    );
+                    return LineTooltipItem(
+                      '${xLabels[touchedSpot.x.toInt()]}\n${touchedSpot.y.toInt()} 걸음',
+                      textStyle,
+                    );
+                  }).toList();
+                },
+              ),
+              handleBuiltInTouches: true,
+            ),
+          ),
         ),
       ),
     );

@@ -22,6 +22,7 @@ import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
+import 'package:nero_app/utils/version/widget/update_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +32,7 @@ import 'develop/home/information/controller/information_controller.dart';
 import 'develop/home/information/repository/information_repository.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
+import 'utils/version/version_service.dart';
 
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -84,7 +86,7 @@ class MyApp extends StatefulWidget {
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
-  FirebaseAnalyticsObserver(analytics: analytics);
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -130,7 +132,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: _lastRoute,
-      navigatorKey: navigatorKey, // navigatorKey 설정
+      navigatorKey: navigatorKey,
+      // navigatorKey 설정
       navigatorObservers: <NavigatorObserver>[
         MyApp.observer,
         routeObserver,

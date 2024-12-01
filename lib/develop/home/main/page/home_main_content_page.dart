@@ -14,6 +14,7 @@ import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
+import 'package:nero_app/develop/home/main/page/home_health_page.dart';
 import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/main/page/home_popular_community_posts_page.dart';
@@ -574,7 +575,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                 ),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
-                _healthPageButton(), // 수정된 버튼 사용
+                const CustomDivider(),
+                const SizedBox(height: 30),
+                HomeHealthPage(),
+                const SizedBox(height: 40),
                 const CustomDivider(),
                 const SizedBox(height: 30),
                 HomePopularCommunityPostsPage(),
