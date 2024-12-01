@@ -13,6 +13,7 @@ import 'package:nero_app/develop/common/controller/common_layout_controller.dart
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
+import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/repository/clinic_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
@@ -166,7 +167,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(InformationRepository());
         Get.put(InformationController());
         Get.put(CommunityController());
-        // Get.lazyPut(() => CommunityController(), fenix: true);
+        // Get.put(HealthController());
       }),
       getPages: [
         GetPage(
