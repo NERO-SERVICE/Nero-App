@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -171,12 +172,26 @@ class _SettingPageState extends State<SettingPage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _managePhotoPermission() async {
-    Permission permission;
+  // Android 버전 확인 함수 추가
+  Future<int> _getAndroidVersion() async {
     if (Platform.isAndroid) {
-      permission = Permission.storage;
-    } else if (Platform.isIOS) {
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.version.sdkInt; // SDK 버전 반환
+    } else {
+      return -1; // Android가 아니면 -1 반환
+    }
+  }
+
+  Future<void> _managePhotoPermission() async {
+    int sdkInt = await _getAndroidVersion();
+    Permission permission;
+    if (sdkInt >= 33) {
+      // Android 13 이상
       permission = Permission.photos;
+    } else if (sdkInt >= 0) {
+      // Android 13 미만
+      permission = Permission.storage;
     } else {
       CustomSnackbar.show(
         context: context,
@@ -186,26 +201,23 @@ class _SettingPageState extends State<SettingPage> with WidgetsBindingObserver {
       return;
     }
 
-    // 항상 권한 요청 시도
     PermissionStatus status = await permission.request();
 
     if (status.isGranted) {
-      // 권한 허용된 상태
       await openAppSettings();
     } else if (status.isPermanentlyDenied) {
-      // 영구적으로 거부된 경우, 설정으로 바로 이동
       await openAppSettings();
     } else {
-      // 권한이 거부된 경우
       await openAppSettings();
     }
   }
 
   Future<PermissionStatus> _getCurrentPhotoPermissionStatus() async {
-    if (Platform.isAndroid) {
-      return await Permission.storage.status;
-    } else if (Platform.isIOS) {
+    int sdkInt = await _getAndroidVersion();
+    if (sdkInt >= 33) {
       return await Permission.photos.status;
+    } else if (sdkInt >= 0) {
+      return await Permission.storage.status;
     } else {
       return PermissionStatus.denied;
     }
