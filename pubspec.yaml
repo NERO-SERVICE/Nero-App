@@ -80,6 +80,10 @@ dependencies:
   health: ^11.1.0
   permission_handler: ^11.3.1
   fl_chart: ^0.69.2
+  xml2json: ^6.2.5
+  video_player: ^2.9.2
+  better_player: ^0.0.84
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

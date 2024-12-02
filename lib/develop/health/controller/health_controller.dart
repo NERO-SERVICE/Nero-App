@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/model/video_data.dart';
 import 'package:nero_app/develop/health/repository/health_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,11 +15,23 @@ class HealthController extends ChangeNotifier {
   String? _error;
 
   int get todaySteps => _todaySteps;
+
   List<StepCount> get stepsHistory => _stepsHistory;
+
   bool get isLoading => _isLoading;
+
   String? get error => _error;
 
-  /// 권한 요청 메서드
+  List<VideoData> _videos = [];
+
+  List<VideoData> get videos => _videos;
+
+  Future<void> initialize() async {
+    await fetchStepsHistory();
+    await fetchVideoData();
+  }
+
+  // 권한 요청 메서드
   Future<bool> requestPermissions() async {
     _isLoading = true;
     notifyListeners();
@@ -29,7 +42,8 @@ class HealthController extends ChangeNotifier {
     final permissions = [HealthDataAccess.READ];
 
     // 활동 인식 권한 요청
-    final activityPermissionStatus = await Permission.activityRecognition.request();
+    final activityPermissionStatus =
+        await Permission.activityRecognition.request();
     if (!activityPermissionStatus.isGranted) {
       _error = "활동 인식 권한이 필요합니다.";
       _isLoading = false;
@@ -64,8 +78,9 @@ class HealthController extends ChangeNotifier {
     return true;
   }
 
-  /// 걸음 수 데이터 수집 및 서버에 저장
-  Future<void> collectAndSaveSteps({required DateTime startDate, required DateTime endDate}) async {
+  // 걸음 수 데이터 수집 및 서버에 저장
+  Future<void> collectAndSaveSteps(
+      {required DateTime startDate, required DateTime endDate}) async {
     _isLoading = true;
     notifyListeners();
     print("HealthController: collectAndSaveSteps 시작");
@@ -98,9 +113,11 @@ class HealthController extends ChangeNotifier {
     // 날짜별로 걸음 수 합산
     Map<DateTime, int> stepsPerDate = {};
     for (var data in healthData) {
-      DateTime date = DateTime(data.dateFrom.year, data.dateFrom.month, data.dateFrom.day);
+      DateTime date =
+          DateTime(data.dateFrom.year, data.dateFrom.month, data.dateFrom.day);
       final steps = (data.value as NumericHealthValue).numericValue.round();
-      stepsPerDate.update(date, (value) => value + steps, ifAbsent: () => steps);
+      stepsPerDate.update(date, (value) => value + steps,
+          ifAbsent: () => steps);
     }
 
     // 서버에 저장 및 로컬 변수 업데이트
@@ -114,7 +131,8 @@ class HealthController extends ChangeNotifier {
       if (success) {
         stepsList.add(StepCount(id: null, date: date, steps: steps));
       } else {
-        print("HealthController: 서버에 걸음 수를 저장하지 못했습니다. 날짜: $date, 걸음 수: $steps");
+        print(
+            "HealthController: 서버에 걸음 수를 저장하지 못했습니다. 날짜: $date, 걸음 수: $steps");
       }
     }
 
@@ -126,7 +144,7 @@ class HealthController extends ChangeNotifier {
     print("HealthController: 걸음 수 데이터 수집 및 저장 완료");
   }
 
-  /// 서버에서 걸음 수 히스토리 가져오기
+  // 서버에서 걸음 수 히스토리 가져오기
   Future<void> fetchStepsHistory() async {
     _isLoading = true;
     notifyListeners();
@@ -144,10 +162,19 @@ class HealthController extends ChangeNotifier {
     print("HealthController: fetchStepsHistory 완료");
   }
 
-  /// 초기화 메서드
-  Future<void> initialize() async {
-    print("HealthController: initialize 시작");
-    await fetchStepsHistory();
-    print("HealthController: initialize 완료");
+  Future<void> fetchVideoData({int pageNo = 1, int numOfRows = 100}) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _videos = await _repository.fetchVideoData(
+          pageNo: pageNo, numOfRows: numOfRows);
+      _error = null;
+    } catch (e) {
+      _error = "동영상 데이터를 가져오는 중 오류 발생: $e";
+    }
+
+    _isLoading = false;
+    notifyListeners();
   }
 }

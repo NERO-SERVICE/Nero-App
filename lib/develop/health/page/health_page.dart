@@ -3,6 +3,7 @@ import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/page/health_video_page.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -86,6 +87,30 @@ class HealthPage extends StatelessWidget {
                       },
                       child: Text(
                         '걸음 수 데이터 수집 및 저장',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.activeButtonColor,
+                        elevation: 0,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HealthVideoPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '운동 동영상 보기',
                         style: TextStyle(
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w500,
