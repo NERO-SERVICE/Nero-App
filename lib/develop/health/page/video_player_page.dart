@@ -104,21 +104,21 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         body: Center(
           child: _downloadProgress > 0
               ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(value: _downloadProgress),
-                    SizedBox(height: 20),
-                    Text(
-                      '다운로드 중... ${(_downloadProgress * 100).toStringAsFixed(0)}%',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: AppColors.titleColor,
-                      ),
-                    ),
-                  ],
-                )
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(value: _downloadProgress),
+              SizedBox(height: 20),
+              Text(
+                '다운로드 중... ${(_downloadProgress * 100).toStringAsFixed(0)}%',
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: AppColors.titleColor,
+                ),
+              ),
+            ],
+          )
               : CircularProgressIndicator(),
         ),
       );
@@ -130,6 +130,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         child: AspectRatio(
           aspectRatio: _controller.value.aspectRatio,
           child: VideoPlayer(_controller),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _controller.value.isPlaying
+                ? _controller.pause()
+                : _controller.play();
+          });
+        },
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
         ),
       ),
     );

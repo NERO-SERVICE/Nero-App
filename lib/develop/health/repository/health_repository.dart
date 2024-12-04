@@ -1,10 +1,9 @@
-import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
+import 'package:dio/dio.dart' as origindio;
 import 'package:nero_app/develop/health/model/health.dart';
-import 'package:nero_app/develop/health/model/video_data.dart';
+import 'package:nero_app/develop/health/model/health_user_info.dart';
+import 'package:nero_app/develop/health/model/paginated_video_data.dart';
 
 class HealthRepository {
   final DioService _dioService = Get.find<DioService>();
@@ -54,62 +53,81 @@ class HealthRepository {
     }
   }
 
-  // 동영상 데이터 가져오기
-  Future<List<VideoData>> fetchVideoData({int pageNo = 1, int numOfRows = 100}) async {
-    final String apiUrl = dotenv.env['HEALTH_OPEN_API_VIDEO'] ?? '';
-    final String serviceKey = dotenv.env['HEALTH_OPEN_API_SECRET_KEY'] ?? '';
-
+  // HealthUserInfo 가져오기
+  Future<HealthUserInfo?> fetchHealthUserInfo() async {
     try {
-      final response = await _dioService.externalGet(
-        apiUrl,
-        params: {
-          'serviceKey': serviceKey,
-          'pageNo': pageNo.toString(),
-          'numOfRows': numOfRows.toString(),
-          'resultType': 'JSON',
-        },
-        requireToken: false,
+      final response = await _dioService.get(
+        '/health/health_info/',
       );
 
       if (response.statusCode == 200) {
-        var data = response.data;
-
-        if (data is String) {
-          try {
-            data = jsonDecode(data);
-          } catch (e) {
-            // JSON 파싱 실패 시 XML인지 확인
-            if (data.startsWith('<')) {
-              // XML 파싱 및 오류 처리
-              print('Received XML error response');
-              throw Exception('API Error: Invalid response format or service key');
-            } else {
-              throw Exception('Failed to parse response data: $e');
-            }
-          }
-        }
-
-        if (data is Map<String, dynamic>) {
-          if (data['response']['header']['resultCode'] == '00') {
-            final body = data['response']['body'];
-            List<dynamic> items = body['items']['item'];
-
-            List<VideoData> videos = items.map((item) {
-              return VideoData.fromJson(item);
-            }).toList();
-
-            return videos;
-          } else {
-            throw Exception("API Error: ${data['response']['header']['resultMsg']}");
-          }
+        List<dynamic> responseData = response.data;
+        if (responseData.isNotEmpty) {
+          return HealthUserInfo.fromJson(responseData[0]);
         } else {
-          throw Exception("Failed to parse response data");
+          return null;
         }
       } else {
-        throw Exception("Failed to fetch video data: ${response.statusCode}");
+        throw Exception("Failed to fetch health user info");
       }
     } catch (e) {
-      print('Failed to fetch video data: $e');
+      print('Failed to fetch health user info: $e');
+      throw e;
+    }
+  }
+
+  // HealthUserInfo 생성 또는 업데이트
+  Future<HealthUserInfo> createOrUpdateHealthUserInfo(
+      HealthUserInfo info) async {
+    try {
+      final existingInfo = await fetchHealthUserInfo();
+      origindio.Response response;
+
+      if (existingInfo != null) {
+        // 업데이트
+        response = await _dioService.put(
+          '/health/health_info/${existingInfo.id}/',
+          data: info.toJson(),
+        );
+      } else {
+        // 생성
+        response = await _dioService.post(
+          '/health/health_info/',
+          data: info.toJson(),
+        );
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return HealthUserInfo.fromJson(response.data);
+      } else {
+        throw Exception("Failed to create or update health user info");
+      }
+    } catch (e) {
+      print('Failed to create or update health user info: $e');
+      throw e;
+    }
+  }
+
+  // 추천 동영상 데이터를 서버에서 가져오는 메서드 (페이지네이션)
+  Future<PaginatedVideoData> fetchRecommendedVideos(String sportsStep, {int page = 1, int pageSize = 10}) async {
+    try {
+      final response = await _dioService.get(
+        '/health/videos/recommendations/',
+        params: {
+          'sports_step': sportsStep,
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return PaginatedVideoData.fromJson(response.data);
+      } else {
+        throw Exception(
+            "Failed to fetch recommended videos: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Failed to fetch recommended videos: $e');
       throw e;
     }
   }

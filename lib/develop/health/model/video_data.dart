@@ -1,22 +1,22 @@
 class VideoData {
   final String fileUrl;
-  final String snapTm;
+  final double snapTm;
   final String vdoDesc;
-  final String fileSz;
+  final int fileSz;
   final String fileTypeNm;
   final String operNm;
-  final String fpsCnt;
+  final double fpsCnt;
   final int rowNum;
   final String fileNm;
   final String resolution;
   final String aggrpNm;
-  final String frmeNo;
+  final int frmeNo;
   final String imgFileNm;
   final String imgFileUrl;
-  final String imgFileSn;
+  final int imgFileSn;
   final String fbctnYr;
   final String dataType;
-  final String vdoLen;
+  final int vdoLen;
   final String lang;
   final String trngNm;
   final String jobYmd;
@@ -49,28 +49,28 @@ class VideoData {
 
   factory VideoData.fromJson(Map<String, dynamic> json) {
     return VideoData(
-      fileUrl: json['file_url'] ?? '',
-      snapTm: json['snap_tm'].toString(),
-      vdoDesc: json['vdo_desc'] ?? '',
-      fileSz: json['file_sz'].toString(),
-      fileTypeNm: json['file_type_nm'] ?? '',
-      operNm: json['oper_nm'] ?? '',
-      fpsCnt: json['fps_cnt'].toString(),
-      rowNum: int.parse(json['row_num'].toString()),
-      fileNm: json['file_nm'] ?? '',
-      resolution: json['resolution'] ?? '',
-      aggrpNm: json['aggrp_nm'] ?? '',
-      frmeNo: json['frme_no'].toString(),
-      imgFileNm: json['img_file_nm'] ?? '',
-      imgFileUrl: json['img_file_url'] ?? '',
-      imgFileSn: json['img_file_sn'].toString(),
-      fbctnYr: json['fbctn_yr'] ?? '',
-      dataType: json['data_type'] ?? '',
-      vdoLen: json['vdo_len'] ?? '',
-      lang: json['lang'] ?? '',
-      trngNm: json['trng_nm'] ?? '',
-      jobYmd: json['job_ymd'] ?? '',
-      vdoTtlNm: json['vdo_ttl_nm'] ?? '',
+      fileUrl: json['file_url']?.toString() ?? '',
+      snapTm: (json['snap_tm'] as num?)?.toDouble() ?? 0.0,
+      vdoDesc: json['vdo_desc']?.toString() ?? '',
+      fileSz: json['file_sz'] != null ? int.parse(json['file_sz'].toString()) : 0,
+      fileTypeNm: json['file_type_nm']?.toString() ?? '',
+      operNm: json['oper_nm']?.toString() ?? '',
+      fpsCnt: (json['fps_cnt'] as num?)?.toDouble() ?? 0.0,
+      rowNum: json['row_num'] != null ? int.parse(json['row_num'].toString()) : 0,
+      fileNm: json['file_nm']?.toString() ?? '',
+      resolution: json['resolution']?.toString() ?? '',
+      aggrpNm: json['aggrp_nm']?.toString() ?? '',
+      frmeNo: json['frme_no'] != null ? int.parse(json['frme_no'].toString()) : 0,
+      imgFileNm: json['img_file_nm']?.toString() ?? '',
+      imgFileUrl: json['img_file_url']?.toString() ?? '',
+      imgFileSn: json['img_file_sn'] != null ? int.parse(json['img_file_sn'].toString()) : 0,
+      fbctnYr: json['fbctn_yr']?.toString() ?? '',
+      dataType: json['data_type']?.toString() ?? '',
+      vdoLen: json['vdo_len'] != null ? int.parse(json['vdo_len'].toString()) : 0,
+      lang: json['lang']?.toString() ?? '',
+      trngNm: json['trng_nm']?.toString() ?? '',
+      jobYmd: json['job_ymd']?.toString() ?? '',
+      vdoTtlNm: json['vdo_ttl_nm']?.toString() ?? '',
     );
   }
 }

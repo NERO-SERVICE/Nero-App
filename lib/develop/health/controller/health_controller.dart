@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/model/health_user_info.dart';
 import 'package:nero_app/develop/health/model/video_data.dart';
 import 'package:nero_app/develop/health/repository/health_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,13 +23,41 @@ class HealthController extends ChangeNotifier {
 
   String? get error => _error;
 
-  List<VideoData> _videos = [];
+  List<VideoData> _recommendedVideos = [];
+  List<VideoData> get recommendedVideos => _recommendedVideos;
 
-  List<VideoData> get videos => _videos;
+  HealthUserInfo? _healthUserInfo;
+  HealthUserInfo? get healthUserInfo => _healthUserInfo;
+
+  // sportsStep 상태 변수
+  String _selectedSportsStep = '준비운동'; // 기본값 설정
+  String get selectedSportsStep => _selectedSportsStep;
+
+  set selectedSportsStep(String value) {
+    _selectedSportsStep = value;
+    // 스포츠 단계가 변경되면 추천 동영상 초기화 및 첫 페이지 로드
+    _recommendedVideos = [];
+    _currentPage = 1;
+    _hasMore = true;
+    fetchRecommendedVideos();
+    notifyListeners();
+  }
+
+  // 페이지네이션 관련 변수
+  int _currentPage = 1;
+  bool _hasMore = true;
+  bool _isFetchingMore = false;
+
+  // **Public getter** for _hasMore
+  bool get hasMore => _hasMore;
+
+  // **Public getter** for _isFetchingMore (optional)
+  bool get isFetchingMore => _isFetchingMore;
 
   Future<void> initialize() async {
     await fetchStepsHistory();
-    await fetchVideoData();
+    await fetchHealthUserInfo();
+    // 추천 동영상은 사용자가 sports_step을 선택할 때 가져옵니다.
   }
 
   // 권한 요청 메서드
@@ -43,7 +72,7 @@ class HealthController extends ChangeNotifier {
 
     // 활동 인식 권한 요청
     final activityPermissionStatus =
-        await Permission.activityRecognition.request();
+    await Permission.activityRecognition.request();
     if (!activityPermissionStatus.isGranted) {
       _error = "활동 인식 권한이 필요합니다.";
       _isLoading = false;
@@ -102,7 +131,8 @@ class HealthController extends ChangeNotifier {
         startTime: startDate,
         endTime: endDate,
       );
-      print("HealthController: 걸음 수 데이터 가져오기 성공, 데이터 개수: ${healthData.length}");
+      print(
+          "HealthController: 걸음 수 데이터 가져오기 성공, 데이터 개수: ${healthData.length}");
     } catch (e) {
       _error = "걸음 수 데이터 가져오기 중 오류 발생: $e";
       _isLoading = false;
@@ -114,7 +144,7 @@ class HealthController extends ChangeNotifier {
     Map<DateTime, int> stepsPerDate = {};
     for (var data in healthData) {
       DateTime date =
-          DateTime(data.dateFrom.year, data.dateFrom.month, data.dateFrom.day);
+      DateTime(data.dateFrom.year, data.dateFrom.month, data.dateFrom.day);
       final steps = (data.value as NumericHealthValue).numericValue.round();
       stepsPerDate.update(date, (value) => value + steps,
           ifAbsent: () => steps);
@@ -162,19 +192,81 @@ class HealthController extends ChangeNotifier {
     print("HealthController: fetchStepsHistory 완료");
   }
 
-  Future<void> fetchVideoData({int pageNo = 1, int numOfRows = 100}) async {
+  // HealthUserInfo 가져오기
+  Future<void> fetchHealthUserInfo() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _videos = await _repository.fetchVideoData(
-          pageNo: pageNo, numOfRows: numOfRows);
+      _healthUserInfo = await _repository.fetchHealthUserInfo();
       _error = null;
     } catch (e) {
-      _error = "동영상 데이터를 가져오는 중 오류 발생: $e";
+      _error = "HealthUserInfo를 가져오는 중 오류 발생: $e";
     }
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  // HealthUserInfo 생성 또는 업데이트
+  Future<void> createOrUpdateHealthUserInfo(HealthUserInfo info) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _healthUserInfo = await _repository.createOrUpdateHealthUserInfo(info);
+      _error = null;
+    } catch (e) {
+      _error = "HealthUserInfo를 저장하는 중 오류 발생: $e";
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  // 추천 동영상 가져오기 (페이지네이션)
+  Future<void> fetchRecommendedVideos({bool loadMore = false}) async {
+    if (_isLoading || _isFetchingMore || (!hasMore && loadMore)) return;
+
+    if (loadMore) {
+      _isFetchingMore = true;
+      notifyListeners();
+    } else {
+      _isLoading = true;
+      notifyListeners();
+    }
+
+    try {
+      // 페이지 번호 계산
+      final page = loadMore ? _currentPage + 1 : 1;
+
+      final paginatedData = await _repository.fetchRecommendedVideos(
+        _selectedSportsStep,
+        page: page,
+        pageSize: 10,
+      );
+
+      if (loadMore) {
+        _recommendedVideos.addAll(paginatedData.results);
+        _currentPage = page;
+      } else {
+        _recommendedVideos = paginatedData.results;
+        _currentPage = 1;
+      }
+
+      // 다음 페이지가 있는지 확인
+      _hasMore = paginatedData.next != null;
+
+      _error = null;
+    } catch (e) {
+      _error = "추천 동영상을 가져오는 중 오류 발생: $e";
+    } finally {
+      if (loadMore) {
+        _isFetchingMore = false;
+      } else {
+        _isLoading = false;
+      }
+      notifyListeners();
+    }
   }
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/health/page/health_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:nero_app/develop/health/page/health_write_page.dart';
 
 class HomeHealthPage extends StatelessWidget {
   final HealthController _healthController = Get.put(HealthController());
@@ -68,6 +69,23 @@ class HomeHealthPage extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 15,
               color: Color(0xffD9D9D9),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: GestureDetector(
+            onTap: () {
+              Get.to(() => HealthWritePage());
+            },
+            child: Text(
+              '테스트',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: Color(0xffD0EE17),
+              ),
             ),
           ),
         ),
