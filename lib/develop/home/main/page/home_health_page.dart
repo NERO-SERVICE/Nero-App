@@ -44,7 +44,7 @@ class HomeHealthPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => HealthPage());
+                  Get.to(() => HealthWritePage());
                 },
                 child: Text(
                   '더보기',
@@ -69,23 +69,6 @@ class HomeHealthPage extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 15,
               color: Color(0xffD9D9D9),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: GestureDetector(
-            onTap: () {
-              Get.to(() => HealthWritePage());
-            },
-            child: Text(
-              '테스트',
-              style: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: Color(0xffD0EE17),
-              ),
             ),
           ),
         ),
