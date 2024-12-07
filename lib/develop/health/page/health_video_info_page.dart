@@ -63,6 +63,7 @@ class HealthVideoInfoPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          elevation: 0,
         ),
         child: Row(
           children: [
@@ -137,7 +138,6 @@ class HealthVideoInfoPage extends StatelessWidget {
               content: '국민체육진흥공단과 함께\n건강한 운동습관을 만들어보아요',
             ),
             const SizedBox(height: 20),
-            // Custom Buttons
             _buildCustomButton(
               context,
               labelTop: '준비운동',

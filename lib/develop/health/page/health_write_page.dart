@@ -4,6 +4,7 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
@@ -21,12 +22,11 @@ class _HealthWritePageState extends State<HealthWritePage> {
   final _formKey = GlobalKey<FormState>();
 
   int _fitnessLevel = 1;
-  int _age = 20;
-  double _height = 170;
-  double _weight = 60;
-  double _waistCircumference = 80;
   String _gender = 'M';
-  String _coawFlagNm = '참가증';
+  int? _age;
+  double? _height;
+  double? _weight;
+  double? _waistCircumference;
 
   final FocusNode _focusNodeAge = FocusNode();
   final FocusNode _focusNodeHeight = FocusNode();
@@ -75,7 +75,6 @@ class _HealthWritePageState extends State<HealthWritePage> {
         _weight = info.weight;
         _waistCircumference = info.waistCircumference;
         _gender = info.gender;
-        _coawFlagNm = info.coawFlagNm;
       });
     }
   }
@@ -90,12 +89,11 @@ class _HealthWritePageState extends State<HealthWritePage> {
 
       HealthUserInfo info = HealthUserInfo(
         fitnessLevel: _fitnessLevel,
-        age: _age,
-        height: _height,
-        weight: _weight,
-        waistCircumference: _waistCircumference,
+        age: _age!,
+        height: _height!,
+        weight: _weight!,
+        waistCircumference: _waistCircumference!,
         gender: _gender,
-        coawFlagNm: _coawFlagNm,
       );
 
       try {
@@ -120,7 +118,6 @@ class _HealthWritePageState extends State<HealthWritePage> {
               context: context, message: '건강 정보가 저장을 실패했습니다', isSuccess: false);
         }
       } catch (e) {
-        // 저장 작업 중 오류 발생 시 즉시 로딩 종료 및 오류 메시지 표시
         setState(() {
           _isLoading = false; // 로딩 종료
         });
@@ -147,7 +144,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
 
       CustomSnackbar.show(
         context: context,
-        message: '걸음 수 데이터가 성공적으로 가져와졌습니다.',
+        message: '걸음 수 데이터를 성공적으로 가져왔습니다',
         isSuccess: true,
       );
     } catch (e) {
@@ -172,6 +169,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
     TextInputType keyboardType = TextInputType.text,
     List<TextInputFormatter>? inputFormatters,
     int? maxLength,
+    String? hintText,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -210,6 +208,13 @@ class _HealthWritePageState extends State<HealthWritePage> {
                 decoration: TextDecoration.none,
               ),
               decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: AppColors.hintTextColor,
+                ),
                 counterText: '',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -231,8 +236,80 @@ class _HealthWritePageState extends State<HealthWritePage> {
                     ? const Color(0xffD0EE17).withOpacity(0.1)
                     : const Color(0xff3B3B3B),
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStyledButtonField({
+    required String labelText,
+    required VoidCallback onPressed,
+    required bool isLoading,
+    required String buttonText,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // 라벨 텍스트
+        SizedBox(
+          width: 80,
+          child: Text(
+            labelText,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: AppColors.titleColor,
+            ),
+          ),
+        ),
+        SizedBox(width: 10),
+        // 버튼 부분
+        Expanded(
+          child: Container(
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Color(0xff4285F4).withOpacity(0.2),
+              border: Border.all(
+                color: Color(0xff4285F4),
+                width: 1,
+              ),
+            ),
+            child: TextButton(
+              onPressed: isLoading ? null : onPressed,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                backgroundColor:
+                    isLoading ? Color(0xff4285F4).withOpacity(0.2) : Colors.transparent,
+              ),
+              child: isLoading
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xffD0EE17)),
+                        strokeWidth: 1,
+                      ),
+                    )
+                  : Text(
+                      buttonText,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: AppColors.titleColor,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -420,117 +497,6 @@ class _HealthWritePageState extends State<HealthWritePage> {
     );
   }
 
-  Widget _coawFlagButtonBar() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'COAW 등급',
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-            color: Color(0xff959595),
-          ),
-        ),
-        SizedBox(height: 8.0),
-        AnimatedButtonBar(
-          backgroundColor: Color(0xff3C3C3C),
-          foregroundColor: Color(0xffD0EE17),
-          radius: 16.0,
-          innerVerticalPadding: 13,
-          children: [
-            ButtonBarEntry(
-              onTap: () {
-                setState(() {
-                  _coawFlagNm = '1등급';
-                });
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                // Reduced horizontal padding
-                child: Text(
-                  '1등급',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0Xff959595),
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ),
-            ),
-            ButtonBarEntry(
-              onTap: () {
-                setState(() {
-                  _coawFlagNm = '2등급';
-                });
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Text(
-                  '2등급',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0Xff959595),
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ),
-            ),
-            ButtonBarEntry(
-              onTap: () {
-                setState(() {
-                  _coawFlagNm = '3등급';
-                });
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Text(
-                  '3등급',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0Xff959595),
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ),
-            ),
-            ButtonBarEntry(
-              onTap: () {
-                setState(() {
-                  _coawFlagNm = '참가증';
-                });
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Text(
-                  '참가증',
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0Xff959595),
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -539,173 +505,154 @@ class _HealthWritePageState extends State<HealthWritePage> {
           appBar: CustomDetailAppBar(
             title: '건강 정보 입력',
           ),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.all(32),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      'assets/develop/exercise.png',
-                      width: 200,
-                      height: 200,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-
-                  // 체력 등급
-                  _fitnessLevelButtonBar(),
-                  SizedBox(height: 8),
-
-                  // 성별
-                  _genderButtonBar(),
-                  SizedBox(height: 8),
-
-                  // COAW
-                  _coawFlagButtonBar(),
-                  SizedBox(height: 30),
-
-                  // 나이
-                  _buildStyledTextField(
-                    labelText: '나이',
-                    initialValue: '$_age',
-                    focusNode: _focusNodeAge,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '나이를 입력해주세요.';
-                      }
-                      if (int.tryParse(value) == null) {
-                        return '유효한 나이를 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _age = int.parse(value!);
-                    },
-                  ),
-                  SizedBox(height: 30),
-
-                  // 키
-                  _buildStyledTextField(
-                    labelText: '키 (cm)',
-                    initialValue: '$_height',
-                    focusNode: _focusNodeHeight,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '키를 입력해주세요.';
-                      }
-                      if (double.tryParse(value) == null) {
-                        return '유효한 키를 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _height = double.parse(value!);
-                    },
-                  ),
-                  SizedBox(height: 30),
-
-                  // 몸무게
-                  _buildStyledTextField(
-                    labelText: '몸무게 (kg)',
-                    initialValue: '$_weight',
-                    focusNode: _focusNodeWeight,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '몸무게를 입력해주세요.';
-                      }
-                      if (double.tryParse(value) == null) {
-                        return '유효한 몸무게를 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _weight = double.parse(value!);
-                    },
-                  ),
-                  SizedBox(height: 30),
-
-                  // 허리둘레
-                  _buildStyledTextField(
-                    labelText: '허리둘레 (cm)',
-                    initialValue: '$_waistCircumference',
-                    focusNode: _focusNodeWaist,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '허리둘레를 입력해주세요.';
-                      }
-                      if (double.tryParse(value) == null) {
-                        return '유효한 허리둘레를 입력해주세요.';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _waistCircumference = double.parse(value!);
-                    },
-                  ),
-                  SizedBox(height: 30),
-
-                  ElevatedButton(
-                    onPressed: _isFetchingSteps ? null : _fetchSteps,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff3C3C3C),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+          body: GestureDetector(
+            behavior: HitTestBehavior.opaque, // 모든 터치 이벤트를 감지
+            onTap: () {
+              FocusScope.of(context).unfocus(); // 포커스 해제하여 키보드 숨기기
+            },
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(32),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        'assets/develop/exercise.png',
+                        width: 200,
+                        height: 200,
                       ),
                     ),
-                    child: _isFetchingSteps
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Text(
-                            '걸음 수 가져오기',
-                            style: TextStyle(
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xffFFFFFF),
-                              fontSize: 16,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                  ),
-                  SizedBox(height: 20),
-
-                  // 저장
-                  ElevatedButton(
-                    onPressed: _saveHealthUserInfo,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff3C3C3C),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                    SizedBox(height: 30),
+            
+                    // 체력 등급
+                    _fitnessLevelButtonBar(),
+                    SizedBox(height: 8),
+            
+                    // 성별
+                    _genderButtonBar(),
+                    SizedBox(height: 32),
+            
+                    // 나이
+                    _buildStyledTextField(
+                      labelText: '나이',
+                      initialValue: _age != null ? _age.toString() : '',
+                      focusNode: _focusNodeAge,
+                      keyboardType: TextInputType.number,
+                      hintText: '숫자로 입력하세요',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '나이를 입력해주세요.';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return '유효한 나이를 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _age = int.parse(value!);
+                      },
+                    ),
+                    SizedBox(height: 30),
+            
+                    // 키
+                    _buildStyledTextField(
+                      labelText: '키 (cm)',
+                      initialValue: _height != null ? _height.toString() : '',
+                      focusNode: _focusNodeHeight,
+                      keyboardType: TextInputType.number,
+                      hintText: '숫자로 입력하세요',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '키를 입력해주세요.';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return '유효한 키를 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _height = double.parse(value!);
+                      },
+                    ),
+                    SizedBox(height: 30),
+            
+                    // 몸무게
+                    _buildStyledTextField(
+                      labelText: '몸무게 (kg)',
+                      initialValue: _weight != null ? _weight.toString() : '',
+                      focusNode: _focusNodeWeight,
+                      keyboardType: TextInputType.number,
+                      hintText: '숫자로 입력하세요',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '몸무게를 입력해주세요.';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return '유효한 몸무게를 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _weight = double.parse(value!);
+                      },
+                    ),
+                    SizedBox(height: 30),
+            
+                    // 허리둘레
+                    _buildStyledTextField(
+                      labelText: '허리둘레 (cm)',
+                      initialValue: _waistCircumference != null ? _waistCircumference.toString() : '',
+                      focusNode: _focusNodeWaist,
+                      keyboardType: TextInputType.number,
+                      hintText: '숫자로 입력하세요',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '허리둘레를 입력해주세요.';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return '유효한 허리둘레를 입력해주세요.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _waistCircumference = double.parse(value!);
+                      },
+                    ),
+                    SizedBox(height: 30),
+            
+                    _buildStyledButtonField(
+                      labelText: '걸음 수',
+                      onPressed: _fetchSteps,
+                      isLoading: _isFetchingSteps,
+                      buttonText: '걸음 수 가져오기',
+                    ),
+                    SizedBox(height: 30),
+            
+                    // 저장
+                    ElevatedButton(
+                      onPressed: _saveHealthUserInfo,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff3C3C3C),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(
+                        '저장',
+                        style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xffFFFFFF),
+                          fontSize: 16,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      '저장',
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xffFFFFFF),
-                        fontSize: 16,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

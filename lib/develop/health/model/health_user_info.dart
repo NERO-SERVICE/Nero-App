@@ -6,7 +6,6 @@ class HealthUserInfo {
   final double weight;
   final double waistCircumference;
   final String gender;
-  final String coawFlagNm;
 
   HealthUserInfo({
     this.id,
@@ -16,7 +15,6 @@ class HealthUserInfo {
     required this.weight,
     required this.waistCircumference,
     required this.gender,
-    required this.coawFlagNm,
   });
 
   factory HealthUserInfo.fromJson(Map<String, dynamic> json) {
@@ -28,7 +26,6 @@ class HealthUserInfo {
       weight: (json['weight'] as num).toDouble(),
       waistCircumference: (json['waist_circumference'] as num).toDouble(),
       gender: json['gender'],
-      coawFlagNm: json['coaw_flag_nm'],
     );
   }
 
@@ -40,7 +37,6 @@ class HealthUserInfo {
       'weight': weight,
       'waist_circumference': waistCircumference,
       'gender': gender,
-      'coaw_flag_nm': coawFlagNm,
     };
   }
 }

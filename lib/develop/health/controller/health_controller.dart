@@ -6,6 +6,8 @@ import 'package:nero_app/develop/health/model/video_data.dart';
 import 'package:nero_app/develop/health/repository/health_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../model/predicted_steps_data.dart';
+
 class HealthController extends ChangeNotifier {
   final Health _health = Health();
   final HealthRepository _repository = HealthRepository();
@@ -16,11 +18,9 @@ class HealthController extends ChangeNotifier {
   String? _error;
 
   int get todaySteps => _todaySteps;
-
   List<StepCount> get stepsHistory => _stepsHistory;
 
   bool get isLoading => _isLoading;
-
   String? get error => _error;
 
   List<VideoData> _recommendedVideos = [];
@@ -28,6 +28,9 @@ class HealthController extends ChangeNotifier {
 
   HealthUserInfo? _healthUserInfo;
   HealthUserInfo? get healthUserInfo => _healthUserInfo;
+
+  PredictedStepsData? _predictedStepsData;
+  PredictedStepsData? get predictedStepsData => _predictedStepsData;
 
   // sportsStep 상태 변수
   String _selectedSportsStep = '준비운동'; // 기본값 설정
@@ -47,17 +50,13 @@ class HealthController extends ChangeNotifier {
   int _currentPage = 1;
   bool _hasMore = true;
   bool _isFetchingMore = false;
-
-  // **Public getter** for _hasMore
   bool get hasMore => _hasMore;
-
-  // **Public getter** for _isFetchingMore (optional)
   bool get isFetchingMore => _isFetchingMore;
 
   Future<void> initialize() async {
     await fetchStepsHistory();
     await fetchHealthUserInfo();
-    // 추천 동영상은 사용자가 sports_step을 선택할 때 가져옵니다.
+    await fetchPredictedSteps();
   }
 
   // 권한 요청 메서드
@@ -174,14 +173,45 @@ class HealthController extends ChangeNotifier {
     print("HealthController: 걸음 수 데이터 수집 및 저장 완료");
   }
 
-  // 서버에서 걸음 수 히스토리 가져오기
+  // 서버에서 걸음 수 히스토리 가져오기 (최근 7일 데이터만 필터링)
   Future<void> fetchStepsHistory() async {
     _isLoading = true;
     notifyListeners();
     print("HealthController: fetchStepsHistory 시작");
 
     try {
-      _stepsHistory = await _repository.fetchStepsFromBackend();
+      // 오늘 날짜 기준으로 최근 7일
+      DateTime today = DateTime.now();
+      DateTime sevenDaysAgo = today.subtract(Duration(days: 6));
+
+      // 백엔드에서 모든 데이터를 가져온 후, 최근 7일만 필터링
+      List<StepCount> allSteps = await _repository.fetchStepsFromBackend();
+      _stepsHistory = allSteps.where((step) {
+        return step.date.isAfter(sevenDaysAgo.subtract(Duration(days: 1))) &&
+            step.date.isBefore(today.add(Duration(days: 1)));
+      }).toList();
+
+      // 최근 7일 중 데이터가 없는 날짜 찾기
+      List<DateTime> last7Days = List.generate(
+          7,
+              (index) => DateTime(
+              today.year, today.month, today.day)
+              .subtract(Duration(days: index)));
+      last7Days = last7Days.reversed.toList(); // 오래된 날짜부터
+
+      for (var date in last7Days) {
+        bool exists =
+        _stepsHistory.any((step) => isSameDate(step.date, date));
+        if (!exists) {
+          // 데이터가 없는 날짜에 대해 기본 걸음 수를 0으로 추가 (사용자가 수정 가능)
+          _stepsHistory
+              .add(StepCount(id: null, date: date, steps: 0));
+        }
+      }
+
+      // 날짜 순으로 정렬
+      _stepsHistory.sort((a, b) => a.date.compareTo(b.date));
+
       _error = null;
     } catch (e) {
       _error = "걸음 수 히스토리 가져오기 중 오류 발생: $e";
@@ -190,6 +220,34 @@ class HealthController extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     print("HealthController: fetchStepsHistory 완료");
+  }
+
+  bool isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  // 예측 걸음 수 데이터 가져오기
+  Future<void> fetchPredictedSteps() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final data = await _repository.fetchPredictedSteps();
+
+      if (data.error != null) {
+        _error = data.error;
+      } else {
+        _predictedStepsData = data;
+        _error = null;
+      }
+    } catch (e) {
+      _error = "예측 걸음 수 데이터를 가져오는 중 오류 발생: $e";
+    }
+
+    _isLoading = false;
+    notifyListeners();
   }
 
   // HealthUserInfo 가져오기
@@ -266,6 +324,53 @@ class HealthController extends ChangeNotifier {
       } else {
         _isLoading = false;
       }
+      notifyListeners();
+    }
+  }
+
+  // 특정 날짜에 걸음 수 업데이트
+  Future<bool> updateSteps(int steps, DateTime date) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      bool success = await _repository.sendStepsToBackend(steps, date);
+      if (success) {
+        // 로컬 stepsHistory 업데이트
+        int index =
+        _stepsHistory.indexWhere((step) => isSameDate(step.date, date));
+        if (index != -1) {
+          _stepsHistory[index] =
+              StepCount(id: _stepsHistory[index].id, date: date, steps: steps);
+        } else {
+          _stepsHistory.add(StepCount(id: null, date: date, steps: steps));
+        }
+        // 날짜 순으로 정렬
+        _stepsHistory.sort((a, b) => a.date.compareTo(b.date));
+        _error = null;
+
+        // 최근 7일 중 모든 날짜에 걸음 수가 존재하는지 확인
+        bool allStepsPresent =
+        _stepsHistory.every((step) => step.steps > 0);
+        if (allStepsPresent) {
+          // 모든 날짜에 걸음 수가 존재하면 알고리즘 재실행
+          await fetchPredictedSteps();
+          await fetchHealthUserInfo();
+        }
+
+        notifyListeners();
+        return true;
+      } else {
+        _error = "서버에 걸음 수를 저장하지 못했습니다.";
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _error = "걸음 수를 업데이트하는 중 오류 발생: $e";
+      notifyListeners();
+      return false;
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }

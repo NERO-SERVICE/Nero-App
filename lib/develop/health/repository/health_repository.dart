@@ -4,6 +4,7 @@ import 'package:dio/dio.dart' as origindio;
 import 'package:nero_app/develop/health/model/health.dart';
 import 'package:nero_app/develop/health/model/health_user_info.dart';
 import 'package:nero_app/develop/health/model/paginated_video_data.dart';
+import 'package:nero_app/develop/health/model/predicted_steps_data.dart';
 
 class HealthRepository {
   final DioService _dioService = Get.find<DioService>();
@@ -49,6 +50,31 @@ class HealthRepository {
       }
     } catch (e) {
       print('Failed to fetch steps data: $e');
+      throw e;
+    }
+  }
+
+  Future<List<StepCount>> fetchStepsFromBackendWithinDateRange(DateTime startDate, DateTime endDate) async {
+    try {
+      final response = await _dioService.get(
+        '/health/steps/',
+        params: {
+          'start_date': startDate.toIso8601String().split('T')[0], // YYYY-MM-DD 형식
+          'end_date': endDate.toIso8601String().split('T')[0],
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> responseData = response.data;
+
+        List<StepCount> steps = responseData.map((json) => StepCount.fromJson(json)).toList();
+
+        return steps;
+      } else {
+        throw Exception("Failed to fetch steps data");
+      }
+    } catch (e) {
+      print('Failed to fetch steps data within date range: $e');
       throw e;
     }
   }
@@ -129,6 +155,22 @@ class HealthRepository {
     } catch (e) {
       print('Failed to fetch recommended videos: $e');
       throw e;
+    }
+  }
+
+  // 다음 주 예측 걸음 수를 가져오기 위한 메서드
+  Future<PredictedStepsData> fetchPredictedSteps() async {
+    try {
+      final response = await _dioService.get('/health/steps/predict/');
+
+      if (response.statusCode == 200) {
+        return PredictedStepsData.fromJson(response.data);
+      } else {
+        return PredictedStepsData(error: "Failed to fetch predicted steps. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Failed to fetch predicted steps: $e');
+      return PredictedStepsData(error: "Failed to fetch predicted steps: $e");
     }
   }
 }

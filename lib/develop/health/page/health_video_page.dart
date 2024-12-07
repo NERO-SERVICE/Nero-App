@@ -87,20 +87,21 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
 
   Widget _buildContent(HealthController controller) {
     if (controller.isLoading && controller.recommendedVideos.isEmpty) {
-      // Initial loading state
+      // 초기 로딩 상태
       return Center(child: CustomLoadingIndicator());
     } else if (controller.error != null) {
-      // Error state
       return Center(child: Text(controller.error!));
     } else if (controller.recommendedVideos.isEmpty) {
-      // No data state
       return Center(child: Text('추천 동영상이 없습니다.'));
     } else {
-      final videos = controller.recommendedVideos;
+      final videos = controller.recommendedVideos.length > 5
+          ? controller.recommendedVideos.sublist(0, 5)
+          : controller.recommendedVideos;
+
       return ListView.builder(
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        itemCount: videos.length + 2, // +1 for header, +1 for loading/all loaded
+        itemCount: videos.length + 2,
         itemBuilder: (context, index) {
           if (index == 0) {
             return _healthVideoTitle(
@@ -127,7 +128,6 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
                     ),
                   ),
                 ),
-                // Video item
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -153,7 +153,6 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image Container
                         ClipRRect(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16),
@@ -162,8 +161,8 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
                           child: CachedNetworkImage(
                             imageUrl: video.imgFileUrl + video.imgFileNm,
                             fit: BoxFit.cover,
-                            width: 120, // Fixed width
-                            height: 120, // Fixed height
+                            width: 120,
+                            height: 120,
                             placeholder: (context, url) => Shimmer.fromColors(
                               baseColor: Colors.grey[300]!,
                               highlightColor: Colors.grey[100]!,
@@ -198,7 +197,7 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
                           ),
                         ),
                         SizedBox(width: 16),
-                        // Text Content
+                        // 텍스트 내용
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(
@@ -240,8 +239,7 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
               ],
             );
           } else {
-            // Loading indicator or all loaded message
-            if (controller.hasMore) {
+            if (controller.hasMore && videos.length < 5) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Center(child: CustomLoadingIndicator()),
