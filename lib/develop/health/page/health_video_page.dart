@@ -105,7 +105,7 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
         itemBuilder: (context, index) {
           if (index == 0) {
             return _healthVideoTitle(
-              content: '건강정보를 바탕으로 추천하는 영상으로\n건강한 습관을 만들어요',
+              content: '아래의 추천 순위에 따라\n원하는 프로그램으로 운동해보아요',
             );
           } else if (index <= videos.length) {
             VideoData video = videos[index - 1];

@@ -503,7 +503,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
       children: [
         Scaffold(
           appBar: CustomDetailAppBar(
-            title: '건강 정보 입력',
+            title: '나의 건강정보 입력',
           ),
           body: GestureDetector(
             behavior: HitTestBehavior.opaque, // 모든 터치 이벤트를 감지
@@ -620,12 +620,23 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       },
                     ),
                     SizedBox(height: 30),
-            
+
                     _buildStyledButtonField(
                       labelText: '걸음 수',
                       onPressed: _fetchSteps,
                       isLoading: _isFetchingSteps,
-                      buttonText: '걸음 수 가져오기',
+                      buttonText: '나의 걸음 수 연동하기',
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      '*플레이스토어에서 \'피트니스\'와 \'헬스커넥트\' 어플리케이션 설치가 필요해요',
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 10,
+                        color:
+                        AppColors.hintTextColor,
+                      ),
                     ),
                     SizedBox(height: 30),
             
@@ -671,7 +682,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          '분석중...',
+                          'AI 분석 중...',
                           style: TextStyle(
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w600,
@@ -682,7 +693,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                         ),
                         SizedBox(height: 30),
                         Text(
-                          'AI알고리즘을 통해\n입력한 정보를 분석하고 있어요',
+                          '딥러닝 알고리즘이\n당신의 건강정보를\n분석 중이에요',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Pretendard',
@@ -690,6 +701,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                             fontSize: 14,
                             color: Color(0xffFFFFFF),
                             decoration: TextDecoration.none,
+                            height: 1.3// 문단 간격
                           ),
                         ),
                       ],

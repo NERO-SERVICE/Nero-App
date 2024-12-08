@@ -106,7 +106,7 @@ class HealthVideoInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomDetailAppBar(title: '운동 동영상(Beta)'),
+      appBar: CustomDetailAppBar(title: '국민체력100 운동처방'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +121,7 @@ class HealthVideoInfoPage extends StatelessWidget {
             const SizedBox(height: 20),
             Center(
               child: Text(
-                '운동 동영상 추천에 활용되는 자료는\n국민체육진흥공단에서 제공해주었습니다.',
+                '운동 동영상 추천에 활용되는 자료는\n국민체육진흥공단에서 제공해주었습니다',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontFamily: 'Pretendard',
@@ -132,16 +132,15 @@ class HealthVideoInfoPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 60),
-            // Start-aligned Health Title
             _healthTitle(
-              title: '운동 동영상 추천',
+              title: '맞춤형 운동처방 프로그램',
               content: '국민체육진흥공단과 함께\n건강한 운동습관을 만들어보아요',
             ),
             const SizedBox(height: 20),
             _buildCustomButton(
               context,
               labelTop: '준비운동',
-              labelBottom: '다치지 않게 가볍게 시작해요',
+              labelBottom: '다치지 않도록 가볍게 시작해요',
               onPressed: () => _navigateToVideoPage(context, '준비운동'),
             ),
             _buildCustomButton(
@@ -153,7 +152,7 @@ class HealthVideoInfoPage extends StatelessWidget {
             _buildCustomButton(
               context,
               labelTop: '마무리운동',
-              labelBottom: '끝까지 마무리를 지어요',
+              labelBottom: '끝까지 놓지 말아요',
               onPressed: () => _navigateToVideoPage(context, '마무리운동'),
             ),
             const SizedBox(height: 20), // Extra spacing at the bottom

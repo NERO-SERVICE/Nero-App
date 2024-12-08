@@ -24,14 +24,13 @@ class HomeHealthPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 제목과 더보기 버튼
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                '건강기능(Beta)',
+                '개인 맞춤형 운동 가이드',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w600,
@@ -63,7 +62,7 @@ class HomeHealthPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Text(
-            '국민체육진흥공단의 데이터로\n내 일상을 관리할 수 있어요',
+            '국민체육진흥공단과 함께하는 나의 건강상태 진단\n인공지능 기반 맞춤형 운동 프로그램을 제공해드려요.',
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w500,

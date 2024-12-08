@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nero_app/app_colors.dart';
 import 'package:nero_app/develop/common/components/custom_detail_app_bar.dart';
+import 'package:nero_app/develop/common/components/custom_loading_indicator.dart';
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/health/enum/waste_emoji.dart';
@@ -386,7 +387,7 @@ class HealthPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              '맞춤형 칼로리 계산',
+              '예상 칼로리 소모량',
               style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.w600,
@@ -478,10 +479,55 @@ class HealthPage extends StatelessWidget {
     );
   }
 
+  Widget _buildHealthVideoInfo() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        decoration: BoxDecoration(
+          color: AppColors.activeButtonColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '운동 동영상 추천',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: AppColors.titleColor,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Image.asset(
+              'assets/develop/health_video.png',
+              width: 100,
+              height: 100,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              '국민체력100 체력측정을 통해\n부여받은 체력등급에 따라\n알맞은 운동 프로그램을 추천해드려요',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.hintTextColor,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildCustomButton(
       BuildContext context, {
-        required String labelTop,
-        required String labelBottom,
+        required String label,
         required VoidCallback onPressed,
         EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -493,42 +539,33 @@ class HealthPage extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: padding,
           backgroundColor: const Color(0xff323232),
+          side: const BorderSide(color: Color(0xffD0EE17), width: 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    labelTop,
-                    style: const TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Color(0xffFFFFFF),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    labelBottom,
-                    style: const TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: Color(0xffD9D9D9),
-                    ),
-                  ),
-                ],
+            // 중앙에 텍스트 배치
+            Center(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Color(0xffFFFFFF),
+                ),
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Color(0xffD0EE17),
+            // 오른쪽 끝에 아이콘 배치
+            Align(
+              alignment: Alignment.centerRight,
+              child: Icon(
+                Icons.chevron_right,
+                color: const Color(0xffD0EE17),
+              ),
             ),
           ],
         ),
@@ -536,19 +573,20 @@ class HealthPage extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => HealthController()..initialize(),
       child: Scaffold(
         appBar: CustomDetailAppBar(
-          title: '건강 정보 (Beta)',
+          title: 'AI 분석 결과',
         ),
         backgroundColor: AppColors.backgroundColor,
         body: Consumer<HealthController>(
           builder: (context, controller, child) {
             if (controller.isLoading && controller.stepsHistory.isEmpty) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoadingIndicator());
             }
 
             if (controller.error != null && controller.stepsHistory.isEmpty) {
@@ -574,7 +612,7 @@ class HealthPage extends StatelessWidget {
                       children: [
                         SizedBox(height: 20),
                         StepsChart(stepData: controller.stepsHistory),
-                        SizedBox(height: 36),
+                        SizedBox(height: 60),
                         Container(
                           child: Text(
                             '최근 7일 걸음 데이터',
@@ -586,6 +624,7 @@ class HealthPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(height: 24),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
@@ -619,7 +658,7 @@ class HealthPage extends StatelessWidget {
                             );
                           },
                         ),
-                        SizedBox(height: 60),
+                        SizedBox(height: 100),
                         if (controller.predictedStepsData != null &&
                             controller.predictedStepsData!.error == null)
                           Builder(builder: (context) {
@@ -713,11 +752,30 @@ class HealthPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 60),
+                                SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                                      child: Text(
+                                        '*최근 걸음 수가 급격히 증가하거나 감소하면 함께 반영되어요',
+                                        style: TextStyle(
+                                          fontFamily: 'Pretendard',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                          color:
+                                          AppColors.hintTextColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 100),
                                 _healthTitle(
-                                  title: '나의 건강 알아보기',
+                                  title: '나의 건강수준 알아보기',
                                   content:
-                                  'AI가 분석한 신체 정보를 기반으로\n나와 같은 그룹을 확인할 수 있어요',
+                                  'BMI와 허리둘레를 통해\n내기 속한 그룹 대비\n건강 위험수준을 알아보아요',
                                 ),
                                 SizedBox(height: 32),
                                 _buildUserInfoContainer(data),
@@ -760,32 +818,32 @@ class HealthPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 42),
+                                SizedBox(height: 100),
                                 _healthTitle(
                                   title: '맞춤형 칼로리 계산',
                                   content:
-                                  '지금 체중으로 얼마나 달려야 할까?',
+                                  '지금 체중으로 얼마나 빨리 걸어야 할까요?\n시간 당 예상 칼로리 소모량을 확인하세요',
                                 ),
                                 SizedBox(height: 36),
                                 _buildCalorieContainer(data),
-                                SizedBox(height: 60),
+                                SizedBox(height: 100),
                                 _healthTitle(
                                   title:
-                                  '나를 위한 운동 처방 동영상 추천',
+                                  '나를 위한 운동처방 프로그램',
                                   content:
-                                  '어떤 운동부터 하면 좋을지 고민 되시나요?\n국민체력100에서 추천하는 운동 처방에 따라 시작해봐요',
+                                  '어떤 운동부터 하면 좋을지 고민 되시나요?\n국민체육진흥공단에서 추천하는\n운동 처방 가이드에 따라 시작해봐요',
                                 ),
                               ],
                             );
                           })
                         else
                           SizedBox.shrink(),
-                        SizedBox(height: 16),
+                        SizedBox(height: 36),
+                        _buildHealthVideoInfo(),
+                        SizedBox(height: 24),
                         _buildCustomButton(
                           context,
-                          labelTop: '운동 동영상 보기',
-                          labelBottom:
-                          '등록한 신체 정보를 바탕으로 추천해드려요',
+                          label: '운동 동영상 보기',
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -803,7 +861,7 @@ class HealthPage extends StatelessWidget {
                     child: Container(
                       color: Colors.black.withOpacity(0.3),
                       child: Center(
-                        child: CircularProgressIndicator(),
+                        child: CustomLoadingIndicator(),
                       ),
                     ),
                   ),
