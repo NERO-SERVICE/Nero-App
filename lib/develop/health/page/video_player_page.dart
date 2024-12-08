@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nero_app/app_colors.dart';
@@ -18,7 +19,8 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  late VideoPlayerController _controller;
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
   bool _initialized = false;
   double _downloadProgress = 0.0;
 
@@ -29,29 +31,27 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   }
 
   Future<void> _initializeVideo() async {
-    // 저장할 파일 경로 생성
-    final directory = await getApplicationDocumentsDirectory();
-    final videosDir = Directory('${directory.path}/videos');
-    if (!await videosDir.exists()) {
-      await videosDir.create(recursive: true);
-    }
+    try {
+      // 저장할 파일 경로 생성
+      final directory = await getApplicationDocumentsDirectory();
+      final videosDir = Directory('${directory.path}/videos');
+      if (!await videosDir.exists()) {
+        await videosDir.create(recursive: true);
+      }
 
-    final filePath = '${videosDir.path}/${widget.video.fileNm}';
+      final filePath = '${videosDir.path}/${widget.video.fileNm}';
+      final file = File(filePath);
 
-    final file = File(filePath);
-
-    if (await file.exists()) {
-      // 로컬에 파일이 있으면 그 파일로 동영상 플레이어 초기화
-      _controller = VideoPlayerController.file(file)
-        ..initialize().then((_) {
-          setState(() {
-            _initialized = true;
-          });
-          _controller.play();
+      if (await file.exists()) {
+        // 로컬에 파일이 있으면 그 파일로 동영상 플레이어 초기화
+        _videoPlayerController = VideoPlayerController.file(file);
+        await _videoPlayerController.initialize();
+        _createChewieController();
+        setState(() {
+          _initialized = true;
         });
-    } else {
-      // 파일이 없으면 다운로드
-      try {
+      } else {
+        // 파일이 없으면 다운로드
         final dio = Dio();
 
         setState(() {
@@ -74,25 +74,39 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         );
 
         // 다운로드 후 동영상 플레이어 초기화
-        _controller = VideoPlayerController.file(file)
-          ..initialize().then((_) {
-            setState(() {
-              _initialized = true;
-            });
-            _controller.play();
-          });
-      } catch (e) {
-        print('동영상 다운로드 오류: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('동영상을 불러오는데 실패했습니다.')),
-        );
+        _videoPlayerController = VideoPlayerController.file(file);
+        await _videoPlayerController.initialize();
+        _createChewieController();
+        setState(() {
+          _initialized = true;
+        });
       }
+    } catch (e) {
+      print('동영상 다운로드 오류: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('동영상을 불러오는데 실패했습니다.')),
+      );
     }
+  }
+
+  void _createChewieController() {
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController,
+      autoPlay: true,
+      looping: false,
+      materialProgressColors: ChewieProgressColors(
+        playedColor: AppColors.primaryColor.withOpacity(0.5),
+        handleColor: AppColors.primaryColor,
+        backgroundColor: Colors.white,
+        bufferedColor: AppColors.primaryTextColor,
+      ),
+    );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _chewieController?.dispose();
+    _videoPlayerController.dispose();
     super.dispose();
   }
 
@@ -127,21 +141,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     return Scaffold(
       appBar: CustomDetailAppBar(title: widget.video.vdoTtlNm),
       body: Center(
-        child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play();
-          });
-        },
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        child: Chewie(
+          controller: _chewieController!,
         ),
       ),
     );

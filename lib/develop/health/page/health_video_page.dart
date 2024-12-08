@@ -105,7 +105,7 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
         itemBuilder: (context, index) {
           if (index == 0) {
             return _healthVideoTitle(
-              content: 'AI가 추천해주는 동영상으로\n건강한 습관을 만들어요',
+              content: '건강정보를 바탕으로 추천하는 영상으로\n건강한 습관을 만들어요',
             );
           } else if (index <= videos.length) {
             VideoData video = videos[index - 1];
@@ -197,7 +197,6 @@ class _HealthVideoPageState extends State<HealthVideoPage> {
                           ),
                         ),
                         SizedBox(width: 16),
-                        // 텍스트 내용
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(
