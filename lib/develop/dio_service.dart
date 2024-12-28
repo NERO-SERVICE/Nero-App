@@ -260,4 +260,19 @@ class DioService {
       {Map<String, dynamic>? data}) async {
     return _dio.delete(url, data: data);
   }
+
+  // 외부 API 호출을 위한 Dio 인스턴스 생성
+  final dio.Dio externalDio = dio.Dio();
+
+  // 외부 API 호출을 위한 GET 메서드
+  Future<dio.Response<dynamic>> externalGet(String url,
+      {Map<String, dynamic>? params, bool requireToken = false}) async {
+    dio.Options options = dio.Options(
+      responseType: dio.ResponseType.plain, // 응답을 String으로 받음
+    );
+    if (!requireToken) {
+      options.extra = {'requireToken': false};
+    }
+    return externalDio.get(url, queryParameters: params, options: options);
+  }
 }

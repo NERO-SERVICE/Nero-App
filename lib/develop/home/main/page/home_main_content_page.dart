@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/health/controller/health_controller.dart';
+import 'package:nero_app/develop/health/page/health_page.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
+import 'package:nero_app/develop/home/main/page/home_health_page.dart';
 import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/main/page/home_popular_community_posts_page.dart';
@@ -41,6 +44,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final String _threadUrl = 'https://www.threads.net/@nero.cat_official';
   final String _twitterUrl = 'https://x.com/nerolaboratory';
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  // HealthController 인스턴스 추가
+  final HealthController _healthController = Get.put(HealthController());
 
   Future<void> _launchUrl(String url, String appUrlScheme) async {
     final Uri appUri = Uri.parse(appUrlScheme);
@@ -108,6 +114,24 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
         maxLines: null, // 무제한 줄 수 허용
         softWrap: true, // 줄바꿈 가능
         overflow: TextOverflow.visible,
+      ),
+    );
+  }
+
+  /// 건강 데이터 보기 버튼 수정
+  Widget _healthPageButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Get.to(() => HealthPage());
+      },
+      child: Text('건강 데이터 보기'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue, // 버튼 색상
+        foregroundColor: Colors.white, // 텍스트 색상
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }
@@ -545,6 +569,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ],
                 ),
+                HomeHealthPage(),
+                const SizedBox(height: 40),
+                const CustomDivider(),
+                const SizedBox(height: 30),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),
