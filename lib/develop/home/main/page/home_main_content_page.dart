@@ -1,20 +1,27 @@
+// lib/develop/home/main/page/home_main_content_page.dart
+
 import 'dart:ui';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:health/health.dart'; // 추가
 import 'package:nero_app/develop/common/components/custom_divider.dart';
+import 'package:nero_app/develop/health/controller/health_controller.dart'; // HealthController 임포트
+import 'package:nero_app/develop/health/page/health_page.dart';
 import 'package:nero_app/develop/home/information/model/information.dart';
 import 'package:nero_app/develop/home/information/repository/information_repository.dart';
 import 'package:nero_app/develop/home/magazine/model/magazine.dart';
 import 'package:nero_app/develop/home/magazine/repository/magazine_repository.dart';
+import 'package:nero_app/develop/home/main/page/home_health_page.dart';
 import 'package:nero_app/develop/home/main/page/home_information_page.dart';
 import 'package:nero_app/develop/home/main/page/home_magazine_page.dart';
 import 'package:nero_app/develop/home/main/page/home_popular_community_posts_page.dart';
 import 'package:nero_app/develop/home/notification/controller/notification_controller.dart';
 import 'package:nero_app/develop/home/notification/model/notification_model.dart';
 import 'package:nero_app/develop/home/notification/page/notification_detail_page.dart';
+import 'package:provider/provider.dart'; // 필요 시 추가
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,11 +34,11 @@ class HomeMainContentPage extends StatefulWidget {
 
 class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final NotificationController _notificationController =
-      Get.put(NotificationController(), permanent: true);
+  Get.put(NotificationController(), permanent: true);
   final PageController _pageController =
-      PageController(viewportFraction: 0.6, initialPage: 1000);
+  PageController(viewportFraction: 0.6, initialPage: 1000);
   final InformationRepository _informationRepository =
-      Get.find<InformationRepository>();
+  Get.find<InformationRepository>();
   final MagazineRepository _magazineRepository = MagazineRepository();
   late Future<List<Information>> _latestInformationsFuture;
   late Future<List<Magazine>> _latestMagazinesFuture;
@@ -41,6 +48,9 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   final String _threadUrl = 'https://www.threads.net/@nero.cat_official';
   final String _twitterUrl = 'https://x.com/nerolaboratory';
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  // HealthController 인스턴스 추가
+  final HealthController _healthController = Get.put(HealthController());
 
   Future<void> _launchUrl(String url, String appUrlScheme) async {
     final Uri appUri = Uri.parse(appUrlScheme);
@@ -112,6 +122,24 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
     );
   }
 
+  /// 건강 데이터 보기 버튼 수정
+  Widget _healthPageButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Get.to(() => HealthPage());
+      },
+      child: Text('건강 데이터 보기'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue, // 버튼 색상
+        foregroundColor: Colors.white, // 텍스트 색상
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
   Widget _notificationOne(NotificationModel notification) {
     return GestureDetector(
       onTap: () async {
@@ -126,13 +154,13 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
             Positioned.fill(
               child: notification.imageUrls.isNotEmpty
                   ? Image.network(
-                      notification.imageUrls.first,
-                      fit: BoxFit.cover,
-                    )
+                notification.imageUrls.first,
+                fit: BoxFit.cover,
+              )
                   : Image.asset(
-                      'assets/develop/default.png',
-                      fit: BoxFit.cover,
-                    ),
+                'assets/develop/default.png',
+                fit: BoxFit.cover,
+              ),
             ),
             Positioned.fill(
               child: Container(
@@ -330,7 +358,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
-        () {
+            () {
           if (_notificationController.isLoading.value) {
             return SingleChildScrollView(
               child: Column(
@@ -522,7 +550,7 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                                 parameters: {
                                   'page_index': index,
                                   'page_title': notifications[
-                                          index % notifications.length]
+                                  index % notifications.length]
                                       .title,
                                 },
                               );
@@ -545,6 +573,10 @@ class _HomeMainContentPageState extends State<HomeMainContentPage> {
                     ),
                   ],
                 ),
+                HomeHealthPage(),
+                const SizedBox(height: 40),
+                const CustomDivider(),
+                const SizedBox(height: 30),
                 HomeInformationPage(),
                 const SizedBox(height: 40),
                 const CustomDivider(),

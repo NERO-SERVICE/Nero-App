@@ -77,8 +77,14 @@ dependencies:
   app_version_update: ^5.0.3
   upgrader: ^11.3.0
   image_picker: ^1.1.2
+  health: ^11.1.0
   permission_handler: ^11.3.1
-  device_info_plus: ^11.1.1
+  fl_chart: ^0.69.2
+  xml2json: ^6.2.5
+  video_player: ^2.9.2
+  better_player: ^0.0.84
+  path_provider: ^2.1.5
+  chewie: ^1.8.5
 
 dev_dependencies:
   flutter_test:
@@ -117,6 +123,7 @@ flutter:
     - assets/lottie/
     - assets/develop/
     - assets/develop/month/
+    - assets/develop/emoji/
     - .env
 
   fonts:

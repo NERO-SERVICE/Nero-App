@@ -79,6 +79,7 @@ class AuthenticationRepository extends GetxService {
     final response = await dioService.get('/accounts/userinfo/', params: {
       'access_token': accessToken,
     });
+    print("카카오 토큰: ${accessToken}");
     if (response.statusCode == 200) {
       return response.data;
     } else if (response.statusCode == 404) {
@@ -101,6 +102,7 @@ class AuthenticationRepository extends GetxService {
       User kakaoUser = await UserApi.instance.me();
 
       var kakaoAccessToken = token.accessToken;
+
       final signUpResponse = await signUpWithKakaoServer(kakaoAccessToken);
 
       return signUpResponse;

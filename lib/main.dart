@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +13,7 @@ import 'package:nero_app/develop/common/controller/common_layout_controller.dart
 import 'package:nero_app/develop/common/controller/data_load_controller.dart';
 import 'package:nero_app/develop/community/controllers/community_controller.dart';
 import 'package:nero_app/develop/fastmemo/repository/fastmemo_repository.dart';
+import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/splash/controller/splash_controller.dart';
 import 'package:nero_app/develop/todaylog/clinic/repository/clinic_repository.dart';
 import 'package:nero_app/develop/todaylog/recall/controller/recall_controller.dart';
@@ -23,7 +22,6 @@ import 'package:nero_app/develop/user/model/nero_user.dart';
 import 'package:nero_app/develop/user/repository/authentication_repository.dart';
 import 'package:nero_app/develop/user/repository/user_repository.dart';
 import 'package:nero_app/route/develop_routes.dart';
-import 'package:nero_app/utils/version/version_service.dart';
 import 'package:nero_app/utils/version/widget/update_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +32,7 @@ import 'develop/home/information/controller/information_controller.dart';
 import 'develop/home/information/repository/information_repository.dart';
 import 'develop/login/controller/login_controller.dart';
 import 'firebase_options.dart';
+import 'utils/version/version_service.dart';
 
 late SharedPreferences prefs;
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -73,6 +72,9 @@ void main() async {
         ChangeNotifierProvider<SurveyRecallController>(
           create: (_) => SurveyRecallController(),
         ),
+        ChangeNotifierProvider<HealthController>(
+          create: (_) => HealthController(),
+        ),
       ],
       child: MyApp(),
     ),
@@ -84,7 +86,7 @@ class MyApp extends StatefulWidget {
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
-  FirebaseAnalyticsObserver(analytics: analytics);
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -130,7 +132,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return GetMaterialApp(
       title: '네로 프로젝트',
       initialRoute: _lastRoute,
-      navigatorKey: navigatorKey, // navigatorKey 설정
+      navigatorKey: navigatorKey,
+      // navigatorKey 설정
       navigatorObservers: <NavigatorObserver>[
         MyApp.observer,
         routeObserver,
@@ -167,6 +170,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Get.put(InformationRepository());
         Get.put(InformationController());
         Get.put(CommunityController());
+        // Get.put(HealthController());
       }),
       getPages: [
         GetPage(
