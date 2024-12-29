@@ -39,7 +39,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
   @override
   void initState() {
     super.initState();
-    _loadHealthUserInfo();
+    _initializeHealthData();
 
     _focusNodeAge.addListener(() {
       setState(() {});
@@ -64,8 +64,12 @@ class _HealthWritePageState extends State<HealthWritePage> {
     super.dispose();
   }
 
+  Future<void> _initializeHealthData() async {
+    await _healthController.initialize();
+    await _loadHealthUserInfo();
+  }
+
   Future<void> _loadHealthUserInfo() async {
-    await _healthController.fetchHealthUserInfo();
     final info = _healthController.healthUserInfo;
     if (info != null) {
       setState(() {
@@ -701,7 +705,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                               fontSize: 14,
                               color: Color(0xffFFFFFF),
                               decoration: TextDecoration.none,
-                              height: 1.3// 문단 간격
+                              height: 1.3 // 문단 간격
                           ),
                         ),
                       ],
