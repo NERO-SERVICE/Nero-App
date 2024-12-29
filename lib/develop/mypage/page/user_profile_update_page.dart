@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -151,17 +152,32 @@ class _UserProfileUpdatePageState extends State<UserProfileUpdatePage> {
     });
   }
 
-  Future<void> _pickProfileImage() async {
-    PermissionStatus status;
+  // Android 버전 확인 함수 추가
+  Future<int> _getAndroidVersion() async {
     if (Platform.isAndroid) {
-      status = await Permission.storage.status;
-      if (!status.isGranted) {
-        status = await Permission.storage.request();
-      }
-    } else if (Platform.isIOS) {
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.version.sdkInt; // SDK 버전 반환
+    } else {
+      return -1; // Android가 아니면 -1 반환
+    }
+  }
+
+  Future<void> _pickProfileImage() async {
+    int sdkInt = await _getAndroidVersion();
+    PermissionStatus status;
+
+    if (sdkInt >= 33) {
+      // Android 13 이상
       status = await Permission.photos.status;
       if (!status.isGranted) {
         status = await Permission.photos.request();
+      }
+    } else if (sdkInt >= 0) {
+      // Android 13 미만
+      status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
       }
     } else {
       return;
