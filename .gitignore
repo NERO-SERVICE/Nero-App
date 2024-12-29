@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -43,6 +45,6 @@ app.*.map.json
 /android/app/release
 
 .env
-firebase.json
+firebase.json.
 firebase_options.dart
 assets/data

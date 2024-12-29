@@ -39,7 +39,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
   @override
   void initState() {
     super.initState();
-    _loadHealthUserInfo();
+    _initializeHealthData();
 
     _focusNodeAge.addListener(() {
       setState(() {});
@@ -64,8 +64,12 @@ class _HealthWritePageState extends State<HealthWritePage> {
     super.dispose();
   }
 
+  Future<void> _initializeHealthData() async {
+    await _healthController.initialize();
+    await _loadHealthUserInfo();
+  }
+
   Future<void> _loadHealthUserInfo() async {
-    await _healthController.fetchHealthUserInfo();
     final info = _healthController.healthUserInfo;
     if (info != null) {
       setState(() {
@@ -288,28 +292,28 @@ class _HealthWritePageState extends State<HealthWritePage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 backgroundColor:
-                    isLoading ? Color(0xff4285F4).withOpacity(0.2) : Colors.transparent,
+                isLoading ? Color(0xff4285F4).withOpacity(0.2) : Colors.transparent,
               ),
               child: isLoading
                   ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Color(0xffD0EE17)),
-                        strokeWidth: 1,
-                      ),
-                    )
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  valueColor:
+                  AlwaysStoppedAnimation<Color>(Color(0xffD0EE17)),
+                  strokeWidth: 1,
+                ),
+              )
                   : Text(
-                      buttonText,
-                      style: TextStyle(
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: AppColors.titleColor,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
+                buttonText,
+                style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: AppColors.titleColor,
+                  decoration: TextDecoration.none,
+                ),
+              ),
             ),
           ),
         ),
@@ -345,7 +349,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 // Reduced horizontal padding
                 child: Text(
                   '1등급',
@@ -367,7 +371,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: Text(
                   '2등급',
                   style: TextStyle(
@@ -388,7 +392,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: Text(
                   '3등급',
                   style: TextStyle(
@@ -409,7 +413,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: Text(
                   '참가증',
                   style: TextStyle(
@@ -456,7 +460,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 // Reduced horizontal padding
                 child: Text(
                   '남성',
@@ -478,7 +482,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
                 child: Text(
                   '여성',
                   style: TextStyle(
@@ -524,15 +528,15 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       ),
                     ),
                     SizedBox(height: 30),
-            
+
                     // 체력 등급
                     _fitnessLevelButtonBar(),
                     SizedBox(height: 8),
-            
+
                     // 성별
                     _genderButtonBar(),
                     SizedBox(height: 32),
-            
+
                     // 나이
                     _buildStyledTextField(
                       labelText: '나이',
@@ -554,7 +558,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       },
                     ),
                     SizedBox(height: 30),
-            
+
                     // 키
                     _buildStyledTextField(
                       labelText: '키 (cm)',
@@ -576,7 +580,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       },
                     ),
                     SizedBox(height: 30),
-            
+
                     // 몸무게
                     _buildStyledTextField(
                       labelText: '몸무게 (kg)',
@@ -598,7 +602,7 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       },
                     ),
                     SizedBox(height: 30),
-            
+
                     // 허리둘레
                     _buildStyledTextField(
                       labelText: '허리둘레 (cm)',
@@ -639,14 +643,14 @@ class _HealthWritePageState extends State<HealthWritePage> {
                       ),
                     ),
                     SizedBox(height: 30),
-            
+
                     // 저장
                     ElevatedButton(
                       onPressed: _saveHealthUserInfo,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff3C3C3C),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                        EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -696,12 +700,12 @@ class _HealthWritePageState extends State<HealthWritePage> {
                           '딥러닝 알고리즘이\n당신의 건강정보를\n분석 중이에요',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Color(0xffFFFFFF),
-                            decoration: TextDecoration.none,
-                            height: 1.3// 문단 간격
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Color(0xffFFFFFF),
+                              decoration: TextDecoration.none,
+                              height: 1.3 // 문단 간격
                           ),
                         ),
                       ],

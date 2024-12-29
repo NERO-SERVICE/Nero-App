@@ -1,4 +1,4 @@
-import 'package:nero_app/develop/health/model/video_data.dart';
+import 'video_data.dart';
 
 class PaginatedVideoData {
   final int count;

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:nero_app/develop/dio_service.dart';
 import 'package:dio/dio.dart' as origindio;
-import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/model/health_data.dart';
 import 'package:nero_app/develop/health/model/health_user_info.dart';
 import 'package:nero_app/develop/health/model/paginated_video_data.dart';
 import 'package:nero_app/develop/health/model/predicted_steps_data.dart';

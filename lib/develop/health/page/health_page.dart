@@ -5,7 +5,7 @@ import 'package:nero_app/develop/common/components/custom_loading_indicator.dart
 import 'package:nero_app/develop/common/components/custom_snackbar.dart';
 import 'package:nero_app/develop/health/controller/health_controller.dart';
 import 'package:nero_app/develop/health/enum/waste_emoji.dart';
-import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/model/health_data.dart';
 import 'package:nero_app/develop/health/model/predicted_steps_data.dart';
 import 'package:nero_app/develop/health/page/health_video_info_page.dart';
 import 'package:provider/provider.dart';

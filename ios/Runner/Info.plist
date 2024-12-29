@@ -69,8 +69,8 @@
 	<key>NSPhotoLibraryUsageDescription</key>
         <string>In order to access your photo library</string>
     <key>NSHealthShareUsageDescription</key>
-    <string>건강 데이터를 공유하기 위해 권한이 필요합니다.</string>
+        <string>건강 데이터를 공유하기 위해 권한이 필요합니다.</string>
     <key>NSHealthUpdateUsageDescription</key>
-    <string>건강 데이터를 업데이트하기 위해 권한이 필요합니다.</string>
+        <string>건강 데이터를 업데이트하기 위해 권한이 필요합니다.</string>
 </dict>
 </plist>

@@ -1,6 +1,7 @@
+import 'dart:io'; // Platform 체크를 위해 추가
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
-import 'package:nero_app/develop/health/model/health.dart';
+import 'package:nero_app/develop/health/model/health_data.dart';
 import 'package:nero_app/develop/health/model/health_user_info.dart';
 import 'package:nero_app/develop/health/model/video_data.dart';
 import 'package:nero_app/develop/health/repository/health_repository.dart';
@@ -54,9 +55,13 @@ class HealthController extends ChangeNotifier {
   bool get isFetchingMore => _isFetchingMore;
 
   Future<void> initialize() async {
-    await fetchStepsHistory();
-    await fetchHealthUserInfo();
-    await fetchPredictedSteps();
+    // 플랫폼에 따라 권한 요청 및 초기 데이터 가져오기
+    bool hasPermission = await requestPermissions();
+    if (hasPermission) {
+      await fetchStepsHistory();
+      await fetchHealthUserInfo();
+      await fetchPredictedSteps();
+    }
   }
 
   // 권한 요청 메서드
@@ -65,36 +70,44 @@ class HealthController extends ChangeNotifier {
     notifyListeners();
     print("HealthController: 권한 요청 중");
 
-    // 권한 요청을 위한 데이터 타입과 접근 권한 설정
-    final types = [HealthDataType.STEPS];
-    final permissions = [HealthDataAccess.READ];
+    if (Platform.isIOS) {
+      // iOS: HealthKit 권한 요청
+      final types = [HealthDataType.STEPS];
+      final permissions = [HealthDataAccess.READ];
 
-    // 활동 인식 권한 요청
-    final activityPermissionStatus =
-    await Permission.activityRecognition.request();
-    if (!activityPermissionStatus.isGranted) {
-      _error = "활동 인식 권한이 필요합니다.";
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
+      bool hasPermissions = false;
+      try {
+        hasPermissions = await _health.requestAuthorization(
+          types,
+          permissions: permissions,
+        );
+      } catch (e) {
+        _error = "Health 데이터 접근 권한 요청 중 오류 발생: $e";
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
 
-    // Health 패키지 권한 요청
-    bool hasPermissions = false;
-    try {
-      hasPermissions = await _health.requestAuthorization(
-        types,
-        permissions: permissions,
-      );
-    } catch (e) {
-      _error = "Health 데이터 접근 권한 요청 중 오류 발생: $e";
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
+      if (!hasPermissions) {
+        _error = "Health 데이터 접근 권한이 거부되었습니다.";
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } else if (Platform.isAndroid) {
+      // Android: Activity Recognition 권한 요청
+      final activityPermissionStatus = await Permission.activityRecognition.request();
+      if (!activityPermissionStatus.isGranted) {
+        _error = "활동 인식 권한이 필요합니다.";
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
 
-    if (!hasPermissions) {
-      _error = "Health 데이터 접근 권한이 거부되었습니다.";
+      // 추가로 필요한 Android 권한이 있다면 여기서 요청
+      // 예: 위치 권한 등
+    } else {
+      // 기타 플랫폼: 권한 요청 불필요 또는 지원되지 않음
       _isLoading = false;
       notifyListeners();
       return false;
@@ -125,11 +138,23 @@ class HealthController extends ChangeNotifier {
     // 걸음 수 데이터 가져오기
     List<HealthDataPoint> healthData = [];
     try {
-      healthData = await _health.getHealthDataFromTypes(
-        types: [HealthDataType.STEPS],
-        startTime: startDate,
-        endTime: endDate,
-      );
+      if (Platform.isIOS) {
+        // iOS: HealthKit에서 데이터 가져오기
+        healthData = await _health.getHealthDataFromTypes(
+          startTime: startDate,
+          endTime: endDate,
+          types: [HealthDataType.STEPS],
+        );
+      } else if (Platform.isAndroid) {
+        // Android: Google Fit 또는 다른 소스에서 데이터 가져오기
+        // 현재 예제에서는 HealthKit과 동일하게 처리
+        // 필요 시 Android용 별도 데이터 소스를 구현
+        healthData = await _health.getHealthDataFromTypes(
+          startTime: startDate,
+          endTime: endDate,
+          types: [HealthDataType.STEPS],
+        );
+      }
       print(
           "HealthController: 걸음 수 데이터 가져오기 성공, 데이터 개수: ${healthData.length}");
     } catch (e) {
