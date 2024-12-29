@@ -31,7 +31,7 @@ String getEmojiAssetForWaistRisk(WaistRisk? risk) {
   // 1: 낮음, 2: 보통, 3: 약간높음, 4: 높음, 5: 매우높음, 6: 가장높음
   if (risk == null) {
     // 기본값
-    return 'assets/develop/emoji/waist_risk_stage_1.png';
+    return 'assets/develop/emoji/emotional_stage_1.png';
   }
 
   switch (risk) {

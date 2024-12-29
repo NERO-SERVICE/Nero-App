@@ -123,6 +123,7 @@ flutter:
     - assets/lottie/
     - assets/develop/
     - assets/develop/month/
+    - assets/develop/emoji/
     - .env
 
   fonts:
